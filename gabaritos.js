@@ -141,7 +141,28 @@ OAB nº
     }, 
 
     'consigna': { 
-        1: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.
+        1: `6.3. EXERCÍCIO DE AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO (EOAB
+X - ADAPTADO)
+Zenga Modas Ltda., CNPJ: 1.1.0001/00, com sede na Rua Lopes Quintas,
+10, Maceió/AL, encontra-se na seguinte situação: Joana Firmino, brasileira,
+casada, costureira, residente na Rua Lopes Andrade, 20, Maceió/AL, CEP:
+10.0001-00, foi contratada por Zenga Modas Ltda., em 12.09.2008, para exercer
+a função de costureira, na unidade de Maceió/AL, sendo dispensada sem justa
+causa em 11.10.2012, mediante aviso-prévio indenizado. Naquele dia, Joana
+entregou a CTPS à empresa para efetuar as atualizações de férias, e tal
+documento ainda se encontra custodiado no setor de recursos humanos.
+Joana foi cientificada de que, no dia 15.10.2012, às 10h, deveria comparecer
+na empresa para receber suas verbas rescisórias. Contudo, na data e hora
+designadas, a empregada não compareceu.
+
+Procurado por Zenga Modas Ltda. em 17.10.2012, apresente a medida
+judicial adequada à defesa dos interesses empresariais, sem criar dados ou fatos
+não informados, ciente de que a empregada fruiu férias dos períodos 2008/2009
+e 2009/2010 e de que, no armário dela, foi encontrado um telefone celular de sua
+propriedade, que se encontra guardado no almoxarifado da empresa.
+É desnecessária a indicação de valores.
+        
+        AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.
 ZENGA MODAS LTDA., pessoa jurídica de direito privado, inscrita no
 CNPJ sob o no 1.1.0001/00, com sede na Rua Lopes Quintas, 10,
 Maceió/AL, vem, respeitosamente, perante Vossa Excelência, por
@@ -196,8 +217,6 @@ b) a citação da consignatária para levantar os valores, o aparelho celular
 e a CTPS depositados com efeito de quitação ou oferecer resposta, sob
 pena de revelia e declaração da extinção da obrigação (art. 542, II, do
 CPC);
-P á g i n a 113 | 551
- @aryannalinhares @professoraaryannalinhares
 c) a produção de todos os meios de prova em direito admitidos, em
 especial a prova documental;
 d) a procedência do pedido com a declaração de extinção da obrigação
@@ -235,8 +254,6 @@ diploma legal;
 espinhos das flores que manipulava;
 – o pagamento de horas extras com adição de 50%, explicando que cumpria
 a extensa jornada de segunda a sexta-feira, das 10h às 20h, com intervalo de
-P á g i n a 52 | 551
- @aryannalinhares @professoraaryannalinhares
 duas horas para refeição, e aos sábados, das 16h às 20h, sem intervalo;
 – o pagamento da multa do art. 477, § 8º, da CLT, porque o valor das verbas
 rescisórias somente foi creditado na sua conta 20 dias após a comunicação do
@@ -263,8 +280,6 @@ PESSOA/PARAÍBA
 Processo no 98.765.
 FLORICULTURA FLORES BELAS LTDA., qualificação e endereço
 completos, vem, respeitosamente, perante Vossa Excelência, por
-P á g i n a 53 | 551
- @aryannalinhares @professoraaryannalinhares
 intermédio de seu advogado adiante assinado (procuração anexa), com
 escritório profissional no endereço completo, onde recebe intimações e
 notificações, com fulcro nos arts. 847 da CLT e 343 do CPC c/c art. 769
@@ -293,8 +308,6 @@ Segundo estabelece o art. 330, § 1º, I, do CPC, a petição inicial é inepta,
 dentre outras hipóteses, quando lhe faltar pedido, sendo o que aconteceu
 com os descontos salariais relativos ao plano de saúde. A reclamante
 sustenta que eram indevidos, porém não apresenta qualquer pedido.
-P á g i n a 54 | 551
- @aryannalinhares @professoraaryannalinhares
 Esclarece-se que, à luz do art. 337, IV, do CPC, a inépcia da inicial deve
 ser analisada em preliminar de contestação.
 Diante do exposto, requer a extinção do processo sem resolução do
@@ -323,8 +336,6 @@ o adicional por atividade penosa é devido na forma da lei e este não foi
 regulamentado.
 Diante do exposto, requer a improcedência do pedido da reclamante.
 2. Horas extras
-P á g i n a 55 | 551
- @aryannalinhares @professoraaryannalinhares
 A reclamante postulou o pagamento de horas extras com adicional de
 50%, explicando que cumpria a extensa jornada de segunda a sexta-feira,
 das 10h às 20h, com intervalo de duas horas para refeição, e aos sábados,
@@ -353,8 +364,6 @@ O pagamento ocorreu muito antes, 20 dias após a comunicação do aviso.
 Diante do exposto, requer a improcedência do pedido da reclamante.
 4. Devolução dos descontos
 A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
-P á g i n a 56 | 551
- @aryannalinhares @professoraaryannalinhares
 saúde, tendo assinado, na admissão, contra a sua vontade, um documento
 autorizando a subtração mensal.
 Não assiste razão à reclamante, pois ela autorizou expressamente o
@@ -383,8 +392,6 @@ A situação chegou a tal ponto que a segurança terceirizada precisou ser
 chamada para conter a trabalhadora e acompanhá-la até a porta de saída.
 Contudo, quando deixava o portão principal, Estela começou a correr,
 pegou uma pedra do chão e a arremessou violentamente contra o prédio
-P á g i n a 57 | 551
- @aryannalinhares @professoraaryannalinhares
 da empresa, vindo a quebrar uma das vidraças. A empresa gastou
 R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal
 apresentada.
@@ -413,8 +420,6 @@ e, adiante, no mérito, a improcedência dos pedidos formulados pela
 autora, condenando-a ao pagamento de custas processuais e honorários
 advocatícios de 15%, à luz do art. 791-A da CLT.
 Por fim, requer a procedência do pedido reconvencional acrescido de juros
-P á g i n a 58 | 551
- @aryannalinhares @professoraaryannalinhares
 e correção monetária e a condenação da reclamante-reconvinda ao
 pagamento de custas e de honorários advocatícios, nos moldes do art.
 791-A, § 5º, da CLT.
@@ -459,7 +464,102 @@ OAB nº
     },
 
     'emb_exec': { 
-        1: `Cole aqui o texto dos Embargos à Execução...`
+        1: `8.3.EXERCÍCIO DE EMBARGOS À EXECUÇÃO
+Rômulo Delgado Silva, brasileiro, viúvo, empresário, portador da identidade
+n
+o 113, CPF: 114, residente e domiciliado na Avenida Brás Montes, casa 72 – Boa
+Vista – Roraima – CEP: 222, em entrevista com seu advogado, declara que:
+recebeu a visita de um Oficial de Justiça em sua residência; na primeira vez, o
+Oficial o citou para pagamento de uma dívida trabalhista de R$ 150.000,00,
+oriunda da 50a Vara do Trabalho de Boa Vista, no Processo no xxx; 48 horas
+depois, o Oficial retornou e penhorou o imóvel em que o empresário reside,
+avaliando-o, pelo valor de mercado, em R$ 180.000,00; tem apenas esse imóvel,
+no qual mora com sua filha, já que é viúvo; o Oficial de Justiça informou que há
+uma execução movida pela ex-empregada Sônia Cristina de Almeida contra
+Rômulo; nas contas homologadas, verificou-se que a correção monetária foi
+calculada considerando o mês da prestação dos serviços; e, por fim, ao retornar
+para penhorar o imóvel, o Oficial informou que a dívida havia aumentado em 10%,
+porque o juiz aplicou a multa do art. 523, § 1º, do CPC.
+Diante do exposto, elabore a medida judicial adequada para a defesa dos
+interesses do entrevistado, sem criar dados ou fatos não informados. (Valor: 5,0)
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 50a VARA DO TRABALHO DE BOA VISTA,
+RORAIMA
+Processo no xxx
+RÔMULO DELGADO SILVA, já qualificado nos autos em epígrafe, em
+que contende com SÔNIA CRISTINA DE ALMEIDA, também qualificada,
+vem, respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com fulcro no art. 884 da CLT,
+APRESENTAR:
+EMBARGOS À EXECUÇÃO
+pelas razões de fato e de direito a seguir expostas:
+I – DOS FATOS
+O embargante foi surpreendido com a visita de um Oficial de Justiça em
+sua residência, que, na primeira vez, o citou para pagamento de uma
+dívida trabalhista de R$ 150.000,00, oriunda da 50a Vara do Trabalho de
+Boa Vista, no Processo no xxxx e, 48 horas depois, retornou e penhorou
+o imóvel em que reside, avaliando-o, pelo valor de mercado, em
+R$ 180.000,00.
+II – DOS REQUISITOS ESPECÍFICOS
+Destaca-se o atendimento dos seguintes requisitos dos embargos à
+execução:
+a) a garantia integral do juízo: o embargante garantiu integralmente o
+juízo através do imóvel em que reside com sua filha, avaliado em
+R$ 180.000,00;
+b) a tempestividade: os embargos são apresentados no prazo de 5 dias
+úteis contados da garantia do juízo, observado o disposto no art. 884 da
+CLT;
+c) as custas: no valor de R$ 44,26, serão pagas pelo executado ao final
+da execução, consoante determinado pelo art. 789-A, V, da CLT;
+III – MÉRITO
+1. Impenhorabilidade do bem de família
+Na reclamação trabalhista em questão, o embargante, viúvo, teve
+penhorado o único imóvel que possui e em que reside com sua filha,
+avaliado, pelo valor de mercado, em R$ 180.000,00.
+Nos termos do art. 1º da Lei nº 8.009/90, o imóvel residencial próprio do
+casal, ou da entidade familiar, é impenhorável e não responderá por
+qualquer dívida.
+Ressalte-se que, com base na Súmula 364 do STJ, a impenhorabilidade
+de bem de família abrange também o imóvel pertencente a pessoas
+viúvas.
+Dessa forma, o bem em questão não é passível de penhora, razão pela
+qual requer seja desconstituída a penhora realizada.
+2. Multa do art. 523, § 1º, do CPC
+O juiz aplicou a multa de 10% prevista no art. 523, § 1º, do CPC.
+Tal multa é indevida no Processo do Trabalho. A aplicação subsidiária do
+Código de Processo Civil ao Direito Processual do Trabalho, nos termos
+dos arts. 769 e 889 da CLT, exige dois requisitos: a ausência de
+disposição na CLT e a compatibilidade da norma supletiva com os
+princípios do Processo do Trabalho. Ocorre que existe disciplina
+específica na CLT acerca do procedimento de execução de sentença,
+consoante se observa nos arts. 880, 882 e 883 da CLT. Tais artigos
+preveem o prazo e a garantia da dívida por depósito ou por nomeação à
+penhora de bens, tantos quantos bastem ao pagamento da importância
+da condenação, acrescido das despesas processuais, custas e juros de
+mora. Não se aplica, portanto, a multa prevista no art. 523, § 1º, do CPC
+ao Processo Trabalhista.
+Nesse sentido, é o posicionamento do TST firmado no recurso de revista
+repetitivo nº IRR-1786-24.2015.5.04.0000.
+Diante do exposto, requer seja afastada a multa do art. 523, § 1º, do CPC.
+3. Excesso de penhora
+Como referido, na execução em questão, a liquidação importou em
+R$ 50.000,00 e o imóvel penhorado foi avaliado em R$ 100.000,00.
+Nos termos do art. 883 da CLT e do art. 831 do CPC, a penhora deverá
+recair sobre tantos bens quantos bastem para o pagamento do principal
+atualizado, dos juros, das custas e dos honorários advocatícios.
+Contrariando os dispositivos legais, o valor do imóvel penhorado supera
+de forma significativa o necessário para a quitação da dívida, ocasionando
+o excesso de penhora.
+Diante do exposto, requer a liberação do bem penhorado.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer o recebimento dos embargos, a notificação do
+embargado para manifestar-se no prazo de 5 dias úteis e a procedência dos
+pedidos formulados.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°`
     },
 
     'epe': { 
