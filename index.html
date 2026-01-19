@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - 18 PEÇAS COMPLETAS</title>
+    <title>SISTEMA JOAQUIM - ESTUDO ATIVO</title>
     <style>
-        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --fgv-color: #e11d48; }
+        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --postit-bg: #fef08a; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #334155; }
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         #main-app { display: none; }
         header { background: var(--primary); color: white; padding: 18px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 100; }
         .main-layout { display: flex; flex-direction: column; min-height: 100vh; }
         @media (min-width: 768px) { .main-layout { flex-direction: row; } .sidebar { width: 320px; height: 100vh; position: sticky; top: 0; } }
-        .sidebar { background: var(--sidebar-bg); color: white; padding: 15px; overflow-y: auto; }
+        .sidebar { background: var(--sidebar-bg); color: white; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
         .nav-btn { width: 100%; text-align: left; padding: 12px; margin-bottom: 5px; border: none; background: rgba(255,255,255,0.08); color: #f8fafc; cursor: pointer; border-radius: 6px; font-size: 0.8rem; }
         .nav-btn.active { background: var(--accent); font-weight: bold; border-left: 4px solid #fff; }
+        
+        /* Estilo do Post-it */
+        .notes-container { margin-top: 20px; background: var(--postit-bg); padding: 15px; border-radius: 8px; color: #854d0e; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        .notes-container h4 { margin: 0 0 10px 0; font-size: 0.9rem; border-bottom: 1px solid #facc15; padding-bottom: 5px; }
+        #aula-notes { width: 100%; height: 150px; background: transparent; border: none; resize: none; font-family: 'Verdana', sans-serif; font-size: 0.85rem; outline: none; color: #713f12; }
+
         .content-area { padding: 15px; flex-grow: 1; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box; }
         #joaquim { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 70vh; border: 1px solid #e2e8f0; font-family: 'Times New Roman', serif; line-height: 1.5; }
         .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; }
@@ -35,7 +41,15 @@
 <div id="main-app">
     <header>PRÁTICA 2ª FASE DIREITO DO TRABALHO</header>
     <div class="main-layout">
-        <nav class="sidebar" id="menuLateral"></nav>
+        <nav class="sidebar">
+            <div id="menuLateral"></div>
+            
+            <div class="notes-container">
+                <h4>📌 ANOTAÇÕES DA AULA</h4>
+                <textarea id="aula-notes" placeholder="Digite aqui as dicas da professora..."></textarea>
+                <small style="font-size: 0.6rem; opacity: 0.7;">Salvamento automático ativo</small>
+            </div>
+        </nav>
         <main class="content-area">
             <div id="joaquim"></div>
         </main>
@@ -46,7 +60,6 @@
 
 <script>
     var dbGabaritos = {};
-
     const nomesPecas = {
         rt: "01. Reclamação Trabalhista", consigna: "02. Consignação em Pagamento", inquerito: "03. Inquérito Falta Grave",
         cont: "04. Contestação", ed: "05. Embargos de Declaração", replica: "06. Réplica",
@@ -57,17 +70,14 @@
     };
 
     function liberar() {
-        // ESSA PARTE É CRUCIAL: Ela puxa os dados do arquivo externo
         if (typeof window.dbGabaritosExternos !== 'undefined') {
             dbGabaritos = window.dbGabaritosExternos;
-        } else if (typeof dbGabaritosExternos !== 'undefined') {
-            dbGabaritos = dbGabaritosExternos;
         }
-
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         montarMenu();
         loadPeca('rt');
+        loadSavedNotes(); // Carrega as notas salvas
     }
 
     function montarMenu() {
@@ -76,32 +86,41 @@
         ).join('');
     }
 
+    // Lógica para salvar notas automaticamente
+    document.addEventListener('input', function (e) {
+        if (e.target.id === 'aula-notes') {
+            localStorage.setItem('joaquim_notas', e.target.value);
+        }
+    });
+
+    function loadSavedNotes() {
+        const saved = localStorage.getItem('joaquim_notas');
+        if (saved) document.getElementById('aula-notes').value = saved;
+    }
+
     function loadPeca(key) {
         let botoes = '', blocos = '';
-        // Busca a lista de gabaritos da peça selecionada
         const lista = dbGabaritos[key] || {};
         const indices = Object.keys(lista);
 
         if (indices.length > 0) {
             indices.forEach(num => {
                 let id = `${key}_${num}`;
-                let textoOriginal = lista[num];
                 botoes += `<button class="gab-btn" onclick="toggleG('${id}')">📖 Gabarito ${num}</button>`;
-                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${textoOriginal}</div>`;
+                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${lista[num]}</div>`;
             });
         } else {
-            botoes = `<p style="color:gray; font-size:0.8rem; grid-column: span 2; text-align:center;">Nenhum texto cadastrado no gabaritos.js para esta peça.</p>`;
+            botoes = `<p style="color:gray; font-size:0.8rem; grid-column: span 2; text-align:center;">Sem gabarito no arquivo .js</p>`;
         }
 
         document.getElementById('joaquim').innerHTML = `
             <button class="copy-btn" onclick="copyContent()">COPIAR PETIÇÃO</button>
             <div class="gabarito-panel">
-                <div style="font-weight:bold; font-size:0.7rem; color:var(--accent); margin-bottom:5px;">REFERÊNCIAS:</div>
                 <div class="gab-grid">${botoes}</div>
                 ${blocos}
             </div>
             <div class="peca-header">${nomesPecas[key].split('. ')[1]}</div>
-            <div id="texto-final" contenteditable="true">ID: 936045\n\n(Digite ou cole sua peça final aqui...)</div>
+            <div id="texto-final" contenteditable="true">ID: 936045\n\n(Digite sua peça aqui...)</div>
         `;
 
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -111,9 +130,9 @@
 
     function toggleG(id) {
         const el = document.getElementById(id);
-        const estaVisivel = el.style.display === 'block';
+        const visivel = el.style.display === 'block';
         document.querySelectorAll('.gab-content').forEach(d => d.style.display = 'none');
-        el.style.display = estaVisivel ? 'none' : 'block';
+        el.style.display = visivel ? 'none' : 'block';
     }
 
     function copyContent() {
@@ -125,7 +144,7 @@
         areaCopia.select();
         document.execCommand('copy');
         document.body.removeChild(areaCopia);
-        alert("Petição copiada com sucesso!");
+        alert("Petição copiada!");
     }
 </script>
 </body>
