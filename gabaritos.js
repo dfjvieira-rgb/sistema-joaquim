@@ -219,7 +219,211 @@ OAB no`,
     },
 
     'cont': { 
-        1: `Cole aqui o texto da Contestação...`
+        1: `2.6. EXERCÍCIO DE CONTESTAÇÃO (EOB XXV)
+Você foi contratado(a) pela Floricultura Flores Belas Ltda., que recebeu
+citação de uma reclamação trabalhista com pedido certo, determinado e com
+indicação do valor, movida em 27/02/2018 pela ex-empregada Estela, que tramita
+perante o juízo da 50a Vara do Trabalho de João Pessoa/PB e recebeu o número
+98.765.
+Estela foi floricultora na empresa em questão de 25/10/2012 a 29/12/2017 e
+ganhava mensalmente o valor correspondente a dois salários mínimos.
+Na demanda, requereu os seguintes itens:
+– a aplicação da penalidade criminal cominada no art. 49 da CLT contra os
+sócios da ré, uma vez que eles haviam cometido a infração prevista no referido
+diploma legal;
+– o pagamento de adicional de penosidade, na razão de 30% sobre o saláriobase, porque, no exercício da sua atividade, era constantemente furada pelos
+espinhos das flores que manipulava;
+– o pagamento de horas extras com adição de 50%, explicando que cumpria
+a extensa jornada de segunda a sexta-feira, das 10h às 20h, com intervalo de
+P á g i n a 52 | 551
+ @aryannalinhares @professoraaryannalinhares
+duas horas para refeição, e aos sábados, das 16h às 20h, sem intervalo;
+– o pagamento da multa do art. 477, § 8º, da CLT, porque o valor das verbas
+rescisórias somente foi creditado na sua conta 20 dias após a comunicação do
+aviso prévio, concedido na forma indenizada, extrapolando o prazo legal.
+Afirmou, ainda, que foi obrigada a aderir ao desconto para o plano de saúde,
+tendo assinado na admissão, contra a sua vontade, um documento autorizando a
+subtração mensal.
+A sociedade empresária informou que, assim que foi cientificada do aviso
+prévio, Estela teve uma reação violenta, gritando e dizendo-se injustiçada com a
+atitude do empregador. A situação chegou a tal ponto que a segurança
+terceirizada precisou ser chamada para conter a trabalhadora e acompanhá-la até
+a porta de saída. Contudo, quando deixava o portão principal, Estela começou a
+correr, pegou uma pedra do chão e a arremessou violentamente contra o prédio
+da empresa, vindo a quebrar uma das vidraças. A empresa informa que gastou
+R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal que exibiu, além
+de apresentar a guia da RAIS comprovando possuir 7 empregados, os
+contracheques da autora e o documento assinado pela empregada autorizando o
+desconto de plano de saúde.
+Diante dessa narrativa, apresente a peça pertinente na melhor defesa dos
+interesses da reclamada. (Valor: 5,00).
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE JOÃO
+PESSOA/PARAÍBA
+Processo no 98.765.
+FLORICULTURA FLORES BELAS LTDA., qualificação e endereço
+completos, vem, respeitosamente, perante Vossa Excelência, por
+P á g i n a 53 | 551
+ @aryannalinhares @professoraaryannalinhares
+intermédio de seu advogado adiante assinado (procuração anexa), com
+escritório profissional no endereço completo, onde recebe intimações e
+notificações, com fulcro nos arts. 847 da CLT e 343 do CPC c/c art. 769
+da CLT, OFERECER:
+CONTESTAÇÃO com pedido de reconvenção
+à reclamação trabalhista que lhe move ESTELA, já qualificada nos autos
+em epígrafe, pelas razões de fato e de direito a seguir expostas.
+I – PRELIMINAR
+1. Incompetência da Justiça do Trabalho
+A reclamante postula a aplicação da penalidade criminal cominada no art.
+49 da CLT contra os sócios da ré, uma vez que eles haviam cometido a
+infração prevista no referido diploma legal.
+Não se inserem na competência da Justiça do Trabalho as ações penais.
+Esclarece-se que a incompetência da Justiça do Trabalho é matéria que
+deve ser tratada em preliminar de contestação, nos termos do art. 337, II,
+do CPC.
+Diante do exposto, requer a extinção do processo sem resolução do
+mérito, com base no art. 485, IV, do CPC (ausência de pressupostos de
+constituição e de desenvolvimento válido e regular do processo), quanto
+ao pedido de condenação criminal dos sócios da reclamada.
+2. Inépcia da petição inicial
+A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
+saúde, tendo assinado, na admissão, contra a sua vontade, um documento
+autorizando a subtração mensal, contudo não formula qualquer pedido.
+Segundo estabelece o art. 330, § 1º, I, do CPC, a petição inicial é inepta,
+dentre outras hipóteses, quando lhe faltar pedido, sendo o que aconteceu
+com os descontos salariais relativos ao plano de saúde. A reclamante
+sustenta que eram indevidos, porém não apresenta qualquer pedido.
+P á g i n a 54 | 551
+ @aryannalinhares @professoraaryannalinhares
+Esclarece-se que, à luz do art. 337, IV, do CPC, a inépcia da inicial deve
+ser analisada em preliminar de contestação.
+Diante do exposto, requer a extinção do processo sem resolução do
+mérito, nos moldes dos arts. 485, I, e 330, I, do CPC (indeferimento da
+petição inicial), em relação aos descontos salariais relativos ao plano de
+saúde.
+II – PREJUDICIAL DE MÉRITO
+1. Prescrição quinquenal - parcial
+Em reclamação trabalhista ajuizada em 27/02/2018, a reclamante postulou
+parcelas que retroagem à data de sua admissão, que ocorreu em
+25/10/2012.
+Com fundamento nos arts. 7º, XXIX, da CF e 11 da CLT, o direito de ação
+quanto a créditos resultantes das relações de trabalho prescreve em 5
+anos, contados da data do ajuizamento da ação (Súmula 308, I, do TST).
+Diante do exposto, requer a extinção do processo com resolução do
+mérito, nos termos do art. 487, II, do CPC, quanto às parcelas anteriores
+aos últimos 5 anos, contados do ajuizamento da ação, ou seja, anteriores
+a 27/02/2013, que foram postuladas.
+III – MÉRITO
+1. Adicional de penosidade
+A reclamante postulou o pagamento de adicional de penosidade, na razão
+de 30% sobre o salário-base, porque, no exercício da sua atividade, era
+constantemente furada pelos espinhos das flores que manipulava.
+Não assiste razão à reclamante, pois o art. 7º, XXIII, da CF determina que
+o adicional por atividade penosa é devido na forma da lei e este não foi
+regulamentado.
+Diante do exposto, requer a improcedência do pedido da reclamante.
+2. Horas extras
+P á g i n a 55 | 551
+ @aryannalinhares @professoraaryannalinhares
+A reclamante postulou o pagamento de horas extras com adicional de
+50%, explicando que cumpria a extensa jornada de segunda a sexta-feira,
+das 10h às 20h, com intervalo de duas horas para refeição, e aos sábados,
+das 16h às 20h, sem intervalo.
+Não assiste razão à reclamante, pois laborava 8 horas diárias, de segunda
+a sexta-feira, e 4 horas aos sábados, logo o limite constitucional, de 8
+horas diárias e 44 semanais, não foi ultrapassado, à luz dos arts. 7º, XIII,
+da CF e 58 da CLT.
+Diante do exposto, requer a improcedência do pedido da reclamante.
+3. Multa do art. 477, § 8º, da CLT
+A reclamante postulou o pagamento da multa do art. 477, § 8º, da CLT,
+porque o valor das verbas rescisórias somente foi creditado na sua conta
+20 dias após a comunicação do aviso-prévio, concedido na forma
+indenizada, extrapolando o prazo legal.
+Não assiste razão à reclamante, pois, com fundamento no art. 477, § 6º,
+da CLT, o prazo para pagamento das verbas rescisórias é de até 10 dias,
+contados da data do término do contrato de trabalho, o que ocorre após o
+aviso-prévio.
+A comunicação da dispensa ocorreu em 29/12/2017, sendo o aviso-prévio
+indenizado. Por sua vez, o aviso-prévio era de 45 dias, visto que a
+reclamante laborou 5 anos completos para a reclamada. Portanto, o
+término do contrato ocorreu somente em 12/02/2018. Apenas a partir
+desta data é que se conta o prazo de 10 dias para o pagamento das verbas
+rescisórias.
+O pagamento ocorreu muito antes, 20 dias após a comunicação do aviso.
+Diante do exposto, requer a improcedência do pedido da reclamante.
+4. Devolução dos descontos
+A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
+P á g i n a 56 | 551
+ @aryannalinhares @professoraaryannalinhares
+saúde, tendo assinado, na admissão, contra a sua vontade, um documento
+autorizando a subtração mensal.
+Não assiste razão à reclamante, pois ela autorizou expressamente o
+desconto para aderir ao plano de saúde, conforme anexo.
+Nos moldes da Súmula 342 do TST, é lícito o desconto salarial efetuado
+pelo empregador, com a autorização prévia e por escrito do empregado,
+para ser integrado em planos de saúde.
+Estabelece a OJ 160 da SDI-1 do TST que é inválida a presunção de vício
+de consentimento resultante do fato de ter o empregado anuído
+expressamente com descontos salariais na oportunidade da admissão. É
+de se exigir demonstração concreta do vício de vontade.
+Dessa forma e com fulcro no art. 818, I, da CLT, cabe à reclamante
+comprovar o vício de consentimento arguido por ser fato constitutivo de
+seu direito.
+Diante do exposto, requer a improcedência do pedido da reclamante.
+IV – RECONVENÇÃO
+1. Requisitos da Reconvenção
+Encontram-se presentes os requisitos da reconvenção previstos no art.
+343 do CPC, que compreendem a legitimidade ativa e passiva e a
+conexão. Demonstrados os requisitos da reconvenção, passa-se à
+pretensão reconvencional.
+2. Pedido Reconvencional – Dano Material
+Assim que foi cientificada do aviso prévio, a reclamante teve uma reação
+violenta, gritando e dizendo-se injustiçada com a atitude do empregador.
+A situação chegou a tal ponto que a segurança terceirizada precisou ser
+chamada para conter a trabalhadora e acompanhá-la até a porta de saída.
+Contudo, quando deixava o portão principal, Estela começou a correr,
+pegou uma pedra do chão e a arremessou violentamente contra o prédio
+P á g i n a 57 | 551
+ @aryannalinhares @professoraaryannalinhares
+da empresa, vindo a quebrar uma das vidraças. A empresa gastou
+R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal
+apresentada.
+Encontram-se presentes os requisitos da responsabilidade civil, previstos
+nos arts.186 e 927 do CC, que compreendem: culpa, dano e nexo.
+Observe-se:
+A culpa verifica-se pela prática do ato ilícito de quebrar a vidraça da
+empresa dolosamente.
+O dano foi de R$ 300,00 para recolocação da vidraça.
+O nexo também está presente na medida em que o dano decorreu do ato
+ilícito praticado pela empregada.
+Diante do exposto, requer a condenação da reclamante-reconvinda ao
+pagamento de indenização por danos materiais (dano emergente), no
+importe de R$ 300,00, e de honorários advocatícios sucumbenciais de
+15%, nos termos do art. 791-A, § 5º, da CLT.
+Valor do pedido: R$ 300,00
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer a produção de todos os meios de prova em
+direito admitidos, inclusive o depoimento pessoal da reclamante, sob a
+consequência de confissão.
+Requer o acolhimento da preliminar de mérito para reconhecer a
+incompetência da Justiça do Trabalho para julgar crimes e para declarar
+extinto o processo sem resolução de mérito quanto aos descontos para
+ser integrada em plano de saúde, o acolhimento da prejudicial de mérito
+e, adiante, no mérito, a improcedência dos pedidos formulados pela
+autora, condenando-a ao pagamento de custas processuais e honorários
+advocatícios de 15%, à luz do art. 791-A da CLT.
+Por fim, requer a procedência do pedido reconvencional acrescido de juros
+P á g i n a 58 | 551
+ @aryannalinhares @professoraaryannalinhares
+e correção monetária e a condenação da reclamante-reconvinda ao
+pagamento de custas e de honorários advocatícios, nos moldes do art.
+791-A, § 5º, da CLT.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+`
     },
 
     'ed': { 
