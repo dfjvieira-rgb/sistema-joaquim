@@ -137,12 +137,81 @@ OAB no
     }, // <-- Aqui estava o erro: você tinha fechado com }; e agora usei apenas }, para continuar
 
     'consigna': { 
-        1: `Cole aqui o texto da Consignação em Pagamento - Gabarito 1...`,
+        1: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.
+ZENGA MODAS LTDA., pessoa jurídica de direito privado, inscrita no
+CNPJ sob o no 1.1.0001/00, com sede na Rua Lopes Quintas, 10,
+Maceió/AL, vem, respeitosamente, perante Vossa Excelência, por
+intermédio de seu advogado adiante assinado (procuração anexa), com
+escritório profissional no endereço completo, onde recebe intimações e
+notificações, com fulcro no art. 539 do CPC c/c art. 769 da CLT,
+PROPOR:
+AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO
+em face de JOANA FIRMINO, brasileira, casada, costureira, residente na
+Rua Lopes Andrade, 20, Maceió/AL, CEP: 10.0001-00, pelas razões de
+fato e de direito a seguir expostas.
+I – FATOS
+A consignatária foi contratada por Zenga Modas Ltda., em 12.09.2008,
+para exercer a função de costureira, na unidade de Maceió/AL, sendo
+dispensada sem justa causa em 11.10.2012, mediante aviso-prévio
+indenizado. Em seu armário, foi encontrado um telefone celular de sua
+propriedade. Joana foi cientificada de que, no dia 15.10.2012, às 10h,
+deveria comparecer na empresa para receber suas verbas rescisórias.
+Contudo, na data e hora designadas, a empregada não compareceu.
+A consignante tem o intuito de pagar as verbas devidas à consignatária,
+razão pela qual propôs a presente medida processual.
+II – MÉRITO
+Em razão da extinção do contrato de trabalho sem justa causa, são
+devidas à consignatária as seguintes verbas, no importe de R$ ..., as
+quais a consignante pretende depositar com o objetivo de que seja
+P á g i n a 112 | 551
+ @aryannalinhares @professoraaryannalinhares
+declarada extinta a obrigação:
+a) Saldo de salário (11 dias)...............................R$.............
+b) Aviso-prévio (42 dias) ....................................R$.............
+c) 13º salário proporcional (11/12)......................R$.............
+d) Férias em dobro – 2010/2011 + 1/3 ...............R$.............
+e) Férias + 1/3 (2011/2012)................................R$.............
+f) Férias proporcionais (2/12) + 1/3 ....................R$.............
+g) Multa de 40% do FGTS..................................R$.............
+Total devido .......................................................R$.............
+Requer, ainda, a devolução do aparelho celular e a entrega da CTPS,
+nos moldes do art. 542, I, do CPC.
+Postula a consignante o depósito das verbas, do celular e da CTPS,
+visando à extinção da obrigação, nos termos do art. 546 do CPC.
+Postula também o depósito dos documentos que comprovam a
+comunicação da extinção do contrato de trabalho aos órgãos
+competentes para acesso da consignatária ao seguro-desemprego e ao
+FGTS.
+Ressalte-se que, por não haver atraso no pagamento das verbas
+rescisórias, é indevida a multa prevista no art. 477, § 8º, da CLT.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) o deferimento do depósito dos valores referidos, do aparelho celular e
+da CTPS (art. 542, I, do CPC);
+b) a citação da consignatária para levantar os valores, o aparelho celular
+e a CTPS depositados com efeito de quitação ou oferecer resposta, sob
+pena de revelia e declaração da extinção da obrigação (art. 542, II, do
+CPC);
+P á g i n a 113 | 551
+ @aryannalinhares @professoraaryannalinhares
+c) a produção de todos os meios de prova em direito admitidos, em
+especial a prova documental;
+d) a procedência do pedido com a declaração de extinção da obrigação
+e condenação da consignatária ao pagamento de custas e honorários
+advocatícios no importe 15%, com base no art. 791-A da CLT.
+Atribui-se à causa o valor de R$....
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no`,
         2: `Cole aqui o texto da Consignação em Pagamento - Gabarito 2...`
     },
 
     'inquerito': { 
-        1: `Cole aqui o texto do Inquérito para Apuração de Falta Grave...`
+        1: `Cole aqui o texto do Inquérito para Apuração de Falta Grave...`,
+        2: `Cole aqui o texto do Inquérito para Apuração de Falta Grave...`
+        3: `Cole aqui o texto do Inquérito para Apuração de Falta Grave...`
     },
 
     'cont': { 
