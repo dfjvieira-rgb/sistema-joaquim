@@ -133,6 +133,75 @@ pede deferimento.
 Local e data.
 Advogado(a)
 OAB no
-        `
+`
+    }, // <-- Aqui estava o erro: você tinha fechado com }; e agora usei apenas }, para continuar
+
+    'consigna': { 
+        1: `Cole aqui o texto da Consignação em Pagamento - Gabarito 1...`,
+        2: `Cole aqui o texto da Consignação em Pagamento - Gabarito 2...`
+    },
+
+    'inquerito': { 
+        1: `Cole aqui o texto do Inquérito para Apuração de Falta Grave...`
+    },
+
+    'cont': { 
+        1: `Cole aqui o texto da Contestação...`
+    },
+
+    'ed': { 
+        1: `Cole aqui o texto dos Embargos de Declaração...`
+    },
+
+    'replica': { 
+        1: `Cole aqui o texto da Réplica à Contestação...`
+    },
+
+    'ro': { 
+        1: `Cole aqui o texto do Recurso Ordinário...`
+    },
+
+    'rade': { 
+        1: `Cole aqui o texto do Recurso Adesivo...`
+    },
+
+    'ai': { 
+        1: `Cole aqui o texto do Agravo de Instrumento...`
+    },
+
+    'rr': { 
+        1: `Cole aqui o texto do Recurso de Revista...`
+    },
+
+    'emb_tst': { 
+        1: `Cole aqui o texto dos Embargos ao TST...`
+    },
+
+    're_stf': { 
+        1: `Cole aqui o texto do Recurso Extraordinário...`
+    },
+
+    'emb_exec': { 
+        1: `Cole aqui o texto dos Embargos à Execução...`
+    },
+
+    'epe': { 
+        1: `Cole aqui o texto da Exceção de Pré-Executividade...`
+    },
+
+    'ap': { 
+        1: `Cole aqui o texto do Agravo de Petição...`
+    },
+
+    'emb_terc': { 
+        1: `Cole aqui o texto dos Embargos de Terceiro...`
+    },
+
+    'ms': { 
+        1: `Cole aqui o texto do Mandado de Segurança...`
+    },
+
+    'ar': { 
+        1: `Cole aqui o texto da Ação Rescisória...`
     }
-};
+}; // <-- Só fecha tudo aqui no final de todas as peças!
