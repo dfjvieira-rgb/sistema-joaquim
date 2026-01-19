@@ -19,11 +19,12 @@
         #joaquim { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 70vh; border: 1px solid #e2e8f0; font-family: 'Times New Roman', serif; line-height: 1.5; }
         .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; }
         .gab-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
-        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
+        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
+        .gab-btn:hover { background: #2563eb; }
         .gab-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; white-space: pre-wrap; color: #1e293b; }
         .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        .peca-header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        #texto-final { outline: none; min-height: 200px; white-space: pre-wrap; }
+        .peca-header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 15px; font-family: 'Segoe UI', sans-serif; }
+        #texto-final { outline: none; min-height: 400px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -45,41 +46,7 @@
 <script src="gabaritos.js"></script>
 
 <script>
-    // Inicializamos o banco de dados principal
-    var dbGabaritos = { 'rt': {} };
-
-    const complementos = {
-        'rt': { 
-            2: "F5071219 - Gab 2 RT (Vazio)",
-            3: "F5071219 - Gab 3 RT"
-        },
-        'consigna': { 
-            1: "F5071219 - Gab 1 Consignação",
-            2: "F5071219 - Gab 2 Consignação"
-        },
-        'inquerito': { 1: "F5071219 - Gab 1 Inquérito" },
-        'cont': { 1: "F5071219 - Gab 1 Contestação" },
-        'ed': { 1: "F5071219 - Gab 1 Emb. Declaração" },
-        'replica': { 1: "F5071219 - Gab 1 Réplica" },
-        'ro': { 1: "F5071219 - Gab 1 Rec. Ordinário" },
-        'rade': { 1: "F5071219 - Gab 1 Rec. Adesivo" },
-        'ai': { 1: "F5071219 - Gab 1 Agravo Instr." },
-        'rr': { 1: "F5071219 - Gab 1 Rec. Revista" },
-        'emb_tst': { 1: "F5071219 - Gab 1 Emb. TST" },
-        're_stf': { 1: "F5071219 - Gab 1 Rec. Extraordinário" },
-        'emb_exec': { 1: "F5071219 - Gab 1 Emb. Execução" },
-        'epe': { 1: "F5071219 - Gab 1 Exceção Pré-Exec." },
-        'ap': { 1: "F5071219 - Gab 1 Agravo Petição" },
-        'emb_terc': { 1: "F5071219 - Gab 1 Emb. Terceiro" },
-        'ms': { 1: "F5071219 - Gab 1 Mand. Segurança" },
-        'ar': { 1: "F5071219 - Gab 1 Ação Rescisória" }
-    };
-
-    // Mescla complementos
-    Object.keys(complementos).forEach(key => {
-        if(!dbGabaritos[key]) dbGabaritos[key] = {};
-        Object.assign(dbGabaritos[key], complementos[key]);
-    });
+    var dbGabaritos = {};
 
     const nomesPecas = {
         rt: "01. Reclamação Trabalhista", consigna: "02. Consignação em Pagamento", inquerito: "03. Inquérito Falta Grave",
@@ -91,13 +58,11 @@
     };
 
     function liberar() {
-        // Integra dados do arquivo externo se existirem
+        // Carrega os dados do gabaritos.js para dentro do sistema
         if (typeof dbGabaritosExternos !== 'undefined') {
-            Object.keys(dbGabaritosExternos).forEach(key => {
-                if (!dbGabaritos[key]) dbGabaritos[key] = {};
-                Object.assign(dbGabaritos[key], dbGabaritosExternos[key]);
-            });
+            dbGabaritos = dbGabaritosExternos;
         }
+        
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         montarMenu();
@@ -113,18 +78,30 @@
     function loadPeca(key) {
         let botoes = '', blocos = '';
         const lista = dbGabaritos[key] || {};
-        for(let i=1; i<=10; i++){
-            let id = `${key}_${i}`;
-            let texto = lista[i] || `Conteúdo não cadastrado para o Gabarito ${i}.`;
-            botoes += `<button class="gab-btn" onclick="toggleG('${id}')">📖 Gabarito ${i}</button>`;
-            blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${i}:</strong>\n\n${texto}</div>`;
+        const chavesDisponiveis = Object.keys(lista);
+
+        if (chavesDisponiveis.length > 0) {
+            chavesDisponiveis.forEach(num => {
+                let id = `${key}_${num}`;
+                let texto = lista[num];
+                botoes += `<button class="gab-btn" onclick="toggleG('${id}')">📖 Gabarito ${num}</button>`;
+                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${texto}</div>`;
+            });
+        } else {
+            botoes = `<p style="color:gray; font-size:0.8rem; grid-column: span 2; text-align:center;">Nenhum gabarito cadastrado para esta peça no arquivo externo.</p>`;
         }
+
         document.getElementById('joaquim').innerHTML = `
             <button class="copy-btn" onclick="copyContent()">COPIAR PETIÇÃO</button>
-            <div class="gabarito-panel"><div class="gab-grid">${botoes}</div>${blocos}</div>
+            <div class="gabarito-panel">
+                <div style="font-weight:bold; font-size:0.7rem; color:var(--accent); margin-bottom:5px;">REFERÊNCIAS DISPONÍVEIS:</div>
+                <div class="gab-grid">${botoes}</div>
+                ${blocos}
+            </div>
             <div class="peca-header">${nomesPecas[key].split('. ')[1]}</div>
             <div id="texto-final" contenteditable="true">ID: 936045\n\n(Digite ou cole sua peça final aqui...)</div>
         `;
+
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         if(document.getElementById('btn_'+key)) document.getElementById('btn_'+key).classList.add('active');
         window.scrollTo(0,0);
@@ -132,9 +109,9 @@
 
     function toggleG(id) {
         const el = document.getElementById(id);
-        const v = el.style.display === 'block';
+        const estaAberto = el.style.display === 'block';
         document.querySelectorAll('.gab-content').forEach(d => d.style.display = 'none');
-        el.style.display = v ? 'none' : 'block';
+        el.style.display = estaAberto ? 'none' : 'block';
     }
 
     function copyContent() {
