@@ -45,12 +45,9 @@
 <script src="gabaritos.js"></script>
 
 <script>
-    // Se o arquivo gabaritos.js falhar, criamos um objeto vazio para não quebrar o código
-    if (typeof dbGabaritos === 'undefined') {
-        var dbGabaritos = { 'rt': {} };
-    }
+    // Inicializamos o banco de dados principal
+    var dbGabaritos = { 'rt': {} };
 
-    // Adicionamos os outros gabaritos menores aqui para não sobrecarregar
     const complementos = {
         'rt': { 
             2: "F5071219 - Gab 2 RT (Vazio)",
@@ -78,7 +75,7 @@
         'ar': { 1: "F5071219 - Gab 1 Ação Rescisória" }
     };
 
-    // Mescla o conteúdo do arquivo externo com os complementos acima
+    // Mescla complementos
     Object.keys(complementos).forEach(key => {
         if(!dbGabaritos[key]) dbGabaritos[key] = {};
         Object.assign(dbGabaritos[key], complementos[key]);
@@ -93,33 +90,18 @@
         emb_terc: "16. Embargos de Terceiro", ms: "17. Mandado de Segurança", ar: "18. Ação Rescisória"
     };
 
-function liberar() {
-    // 1. Tenta capturar os dados do arquivo externo e mesclar no dbGabaritos
-    if (typeof dbGabaritosExternos !== 'undefined') {
-        Object.keys(dbGabaritosExternos).forEach(key => {
-            if (!dbGabaritos[key]) dbGabaritos[key] = {};
-            // Copia os gabaritos pesados para dentro do banco de dados principal
-            Object.assign(dbGabaritos[key], dbGabaritosExternos[key]);
-        });
-        console.log("Dados externos integrados com sucesso!");
-    } else {
-        console.warn("Atenção: dbGabaritosExternos não encontrado. Verifique se o arquivo gabaritos.js carregou.");
-    }
-
-    // 2. Esconde a tela de login e mostra o app
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-
-    // 3. Inicializa a interface (Menu e primeira peça)
-    montarMenu();
-    loadPeca('rt');
-}
-
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    montarMenu();
-    loadPeca('rt');
-}
+    function liberar() {
+        // Integra dados do arquivo externo se existirem
+        if (typeof dbGabaritosExternos !== 'undefined') {
+            Object.keys(dbGabaritosExternos).forEach(key => {
+                if (!dbGabaritos[key]) dbGabaritos[key] = {};
+                Object.assign(dbGabaritos[key], dbGabaritosExternos[key]);
+            });
+        }
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        montarMenu();
+        loadPeca('rt');
     }
 
     function montarMenu() {
@@ -144,7 +126,7 @@ function liberar() {
             <div id="texto-final" contenteditable="true">ID: 936045\n\n(Digite ou cole sua peça final aqui...)</div>
         `;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn_'+key).classList.add('active');
+        if(document.getElementById('btn_'+key)) document.getElementById('btn_'+key).classList.add('active');
         window.scrollTo(0,0);
     }
 
@@ -169,4 +151,3 @@ function liberar() {
 </script>
 </body>
 </html>
-
