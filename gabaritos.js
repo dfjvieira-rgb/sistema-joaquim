@@ -11,8 +11,6 @@ Relata que foi contratado no mesmo dia em que Juan para exercer a mesma
 função, na mesma filial. O trabalho se dava com a mesma perfeição técnica e
 produtividade, porém Juan recebia salário fixo de R$ 2.500,00 por mês.
 
-P á g i n a 9 | 551
-@aryannalinhares @professoraaryannalinhares
 O senhor Fininho conta que, em janeiro do ano da extinção do contrato, faltou
 ao trabalho por um dia para comparecer em juízo como parte no processo em que
 litigava contra seu ex-empregador. Embora tenha apresentado a certidão da
@@ -42,9 +40,6 @@ RECLAMAÇÃO TRABALHISTA, pelo rito (...)
 
 em face de HEART ATTACK GRILL LTDA., qualificação e endereço
 completos, e SINDICATO DOS EMPREGADOS ..., qualificação e
-
-P á g i n a 10 | 551
-@aryannalinhares @professoraaryannalinhares
 endereço completos, pelas razões de fato e de direito a seguir expostas.
 I – MÉRITO
 1. Equiparação salarial
@@ -73,8 +68,6 @@ em que litigava contra seu antigo empregador, muito embora tivesse
 apresentado certidão da Justiça do Trabalho confirmando suas
 alegações.
 
-P á g i n a 11 | 551
-@aryannalinhares @professoraaryannalinhares
 Com base no art. 473, VIII, da CLT e súmula 155, TST, o empregado
 poderá deixar de comparecer ao serviço para comparecimento como
 parte na Justiça do Trabalho.
@@ -103,8 +96,6 @@ acordo coletivo de trabalho que estabelece a redução dos depósitos do
 FGTS e a condenação da reclamada ao pagamento das diferenças
 salariais. R$
 
-P á g i n a 12 | 551
-@aryannalinhares @professoraaryannalinhares
 5. Honorários advocatícios
 Requer a condenação da reclamada ao pagamento de honorários
 advocatícios, no importe de 15%, sobre o valor que resultar da liquidação,
@@ -132,9 +123,6 @@ para oferecer resposta à reclamação trabalhista, sob pena de revelia
 e confissão quanto à matéria de fato;
 b) a produção de todos os meios de prova em direito admitidos, em
 especial a prova documental, o depoimento pessoal e a oitiva de
-
-P á g i n a 13 | 551
-@aryannalinhares @professoraaryannalinhares
 testemunhas; e
 c) por fim, a procedência dos pedidos com a condenação da
 reclamada ao pagamento das verbas pleiteadas, acrescidas de
