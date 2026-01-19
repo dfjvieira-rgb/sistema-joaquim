@@ -1,5 +1,5 @@
-// Este arquivo armazena apenas os textos (gabaritos)
-const dbGabaritos = {
+// Use VAR para permitir que o arquivo principal acesse os dados
+var dbGabaritosExternos = {
     'rt': { 
         1: `1.2. EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTA ()
 
