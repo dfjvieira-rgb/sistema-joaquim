@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SISTEMA JOAQUIM - MENTORIA V4</title>
     <style>
-        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --guia-bg: #ecfdf5; }
+        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --guia-bg: #ecfdf5; --law-green: #059669; --tst-blue: #2563eb; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #334155; padding-bottom: 60px; }
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         #main-app { display: none; }
@@ -24,7 +24,7 @@
         .gab-content, .guia-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; font-family: 'Times New Roman', serif; font-size: 0.95rem; }
         .guia-content { background: var(--guia-bg); border-color: #10b981; color: #064e3b; }
         .planalto-tools { margin-top: 10px; padding: 10px; background: #fff; border: 1px solid #10b981; border-radius: 5px; }
-        .btn-planalto { background: #059669; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin: 3px; font-weight: bold; }
+        .btn-planalto { color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin: 3px; font-weight: bold; }
         .btn-clt-direta { background: #1e293b; color: #fff; width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         .edit-guia-area { width: 100%; height: 150px; margin-top: 10px; border: 1px solid #10b981; padding: 10px; border-radius: 5px; }
         .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
@@ -61,9 +61,21 @@
         document.getElementById('menuLateral').innerHTML = Object.keys(nomesPecas).map(k => `<button class="nav-btn" id="btn_${k}" onclick="loadPeca('${k}')">${nomesPecas[k]}</button>`).join('');
     }
 
-    function linkPlanalto(termo) {
-        // Tenta ir o mais direto possível via Google Search "I'm Feeling Lucky" ou busca direcionada
-        const url = `https://www.google.com/search?q=site:planalto.gov.br+${encodeURIComponent(termo)}+compilado&btnI=I`;
+    // NOVA FUNÇÃO CORRIGIDA PARA ARTIGOS, SÚMULAS E OJs
+    function linkDirecionado(termo) {
+        let url = "";
+        const t = termo.trim().toUpperCase();
+
+        // Direcionamento para Jurisprudência (Súmulas e OJs) -> Site do TST
+        if (t.includes("SÚMULA") || t.includes("SUMULA") || t.includes("OJ")) {
+            const buscaTST = `site:tst.jus.br ${termo}`;
+            url = `https://www.google.com/search?q=${encodeURIComponent(buscaTST)}&btnI=I`;
+        } 
+        // Direcionamento para Artigos -> CLT Compilada no Planalto
+        else {
+            const buscaCLT = `site:planalto.gov.br "Decreto-Lei 5452" ${termo}`;
+            url = `https://www.google.com/search?q=${encodeURIComponent(buscaCLT)}&btnI=I`;
+        }
         window.open(url, '_blank');
     }
 
@@ -81,10 +93,16 @@
 
         const guiaTexto = localStorage.getItem('guia_' + key) || dadosPeca.guia || "Escreva aqui os quesitos e fundamentos...";
         
-        // Gera botões para artigos encontrados no texto
-        const arts = guiaTexto.match(/(Art\.|Súmula|OJ)\s?\d+/gi) || [];
+        // Regex aprimorado para capturar Artigos, Súmulas e OJs
+        const arts = guiaTexto.match(/(Art\.|Artigo|Súmula|Sumula|OJ)\s?\d+/gi) || [];
         const uniqueArts = [...new Set(arts)];
-        const botoesArts = uniqueArts.map(a => `<button class="btn-planalto" onclick="linkPlanalto('${a}')">🔎 ${a}</button>`).join('');
+        
+        // Geração de botões com cores diferenciadas
+        const botoesArts = uniqueArts.map(a => {
+            const isJuris = /Súmula|Sumula|OJ/i.test(a);
+            const cor = isJuris ? 'var(--tst-blue)' : 'var(--law-green)';
+            return `<button class="btn-planalto" style="background:${cor}" onclick="linkDirecionado('${a}')">🔎 ${a}</button>`;
+        }).join('');
 
         document.getElementById('joaquim').innerHTML = `
             <button class="copy-btn" onclick="copyText()">COPIAR PEÇA</button>
@@ -97,7 +115,7 @@
                     <div id="view_${key}">${guiaTexto}</div>
                     
                     <div class="planalto-tools">
-                        <strong>Consultar Específicos:</strong><br>${botoesArts || 'Nenhum artigo citado no texto.'}
+                        <strong>Consultar Específicos:</strong><br>${botoesArts || 'Nenhum fundamento citado.'}
                     </div>
 
                     <button onclick="showEditor('${key}')" style="margin-top:15px; cursor:pointer; font-size:11px; color:blue; background:none; border:none; text-decoration:underline;">📝 EDITAR ANOTAÇÕES</button>
@@ -118,6 +136,7 @@
 
     function toggleVis(id) {
         const el = document.getElementById(id);
+        if(!el) return;
         const isVisible = el.style.display === 'block';
         document.querySelectorAll('.gab-content, .guia-content').forEach(d => d.style.display = 'none');
         el.style.display = isVisible ? 'none' : 'block';
@@ -129,7 +148,8 @@
     }
 
     function saveGuia(k) {
-        localStorage.setItem('guia_'+k, document.getElementById('area_'+k).value);
+        const val = document.getElementById('area_'+k).value;
+        localStorage.setItem('guia_'+k, val);
         loadPeca(k);
         alert("Fundamentação salva!");
     }
@@ -140,8 +160,12 @@
         range.selectNode(el);
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
-        document.execCommand('copy');
-        alert("Peça copiada!");
+        try {
+            document.execCommand('copy');
+            alert("Peça copiada!");
+        } catch (err) {
+            alert("Erro ao copiar.");
+        }
     }
 </script>
 </body>
