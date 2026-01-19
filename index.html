@@ -19,9 +19,8 @@
         #joaquim { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 70vh; border: 1px solid #e2e8f0; font-family: 'Times New Roman', serif; line-height: 1.5; }
         .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; }
         .gab-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
-        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
-        .gab-btn:hover { background: #2563eb; }
-        .gab-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; white-space: pre-wrap; color: #1e293b; }
+        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
+        .gab-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; white-space: pre-wrap; color: #1e293b; font-family: 'Times New Roman', serif; }
         .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
         .peca-header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 15px; font-family: 'Segoe UI', sans-serif; }
         #texto-final { outline: none; min-height: 400px; white-space: pre-wrap; }
@@ -58,11 +57,13 @@
     };
 
     function liberar() {
-        // Carrega os dados do gabaritos.js para dentro do sistema
-        if (typeof dbGabaritosExternos !== 'undefined') {
+        // ESSA PARTE É CRUCIAL: Ela puxa os dados do arquivo externo
+        if (typeof window.dbGabaritosExternos !== 'undefined') {
+            dbGabaritos = window.dbGabaritosExternos;
+        } else if (typeof dbGabaritosExternos !== 'undefined') {
             dbGabaritos = dbGabaritosExternos;
         }
-        
+
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         montarMenu();
@@ -77,24 +78,25 @@
 
     function loadPeca(key) {
         let botoes = '', blocos = '';
+        // Busca a lista de gabaritos da peça selecionada
         const lista = dbGabaritos[key] || {};
-        const chavesDisponiveis = Object.keys(lista);
+        const indices = Object.keys(lista);
 
-        if (chavesDisponiveis.length > 0) {
-            chavesDisponiveis.forEach(num => {
+        if (indices.length > 0) {
+            indices.forEach(num => {
                 let id = `${key}_${num}`;
-                let texto = lista[num];
+                let textoOriginal = lista[num];
                 botoes += `<button class="gab-btn" onclick="toggleG('${id}')">📖 Gabarito ${num}</button>`;
-                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${texto}</div>`;
+                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${textoOriginal}</div>`;
             });
         } else {
-            botoes = `<p style="color:gray; font-size:0.8rem; grid-column: span 2; text-align:center;">Nenhum gabarito cadastrado para esta peça no arquivo externo.</p>`;
+            botoes = `<p style="color:gray; font-size:0.8rem; grid-column: span 2; text-align:center;">Nenhum texto cadastrado no gabaritos.js para esta peça.</p>`;
         }
 
         document.getElementById('joaquim').innerHTML = `
             <button class="copy-btn" onclick="copyContent()">COPIAR PETIÇÃO</button>
             <div class="gabarito-panel">
-                <div style="font-weight:bold; font-size:0.7rem; color:var(--accent); margin-bottom:5px;">REFERÊNCIAS DISPONÍVEIS:</div>
+                <div style="font-weight:bold; font-size:0.7rem; color:var(--accent); margin-bottom:5px;">REFERÊNCIAS:</div>
                 <div class="gab-grid">${botoes}</div>
                 ${blocos}
             </div>
@@ -109,9 +111,9 @@
 
     function toggleG(id) {
         const el = document.getElementById(id);
-        const estaAberto = el.style.display === 'block';
+        const estaVisivel = el.style.display === 'block';
         document.querySelectorAll('.gab-content').forEach(d => d.style.display = 'none');
-        el.style.display = estaAberto ? 'none' : 'block';
+        el.style.display = estaVisivel ? 'none' : 'block';
     }
 
     function copyContent() {
