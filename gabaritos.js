@@ -235,44 +235,48 @@ OAB no`,
 Você foi contratado(a) pela Floricultura Flores Belas Ltda., que recebeu
 citação de uma reclamação trabalhista com pedido certo, determinado e com
 indicação do valor, movida em 27/02/2018 pela ex-empregada Estela, que tramita
-perante o juízo da 50a Vara do Trabalho de João Pessoa/PB e recebeu o número
+perante o juízo da 50a Vara do Trabalho de João Pessoa/PB e recebeu o número
 98.765.
 Estela foi floricultora na empresa em questão de 25/10/2012 a 29/12/2017 e
-ganhava mensalmente o valor correspondente a dois salários mínimos.
+ganhava mensalmente o valor correspondente a dois salários mínimos.
 Na demanda, requereu os seguintes itens:
 – a aplicação da penalidade criminal cominada no art. 49 da CLT contra os
-sócios da ré, uma vez que eles haviam cometido a infração prevista no referido
+sócios da ré, uma vez que eles haviam cometido a infração prevista no referido
 diploma legal;
-– o pagamento de adicional de penosidade, na razão de 30% sobre o saláriobase, porque, no exercício da sua atividade, era constantemente furada pelos
+– o pagamento de adicional de penosidade, na razão de 30% sobre o saláriobase, porque, no exercício da sua atividade, era constantemente furada pelos
 espinhos das flores que manipulava;
 – o pagamento de horas extras com adição de 50%, explicando que cumpria
 a extensa jornada de segunda a sexta-feira, das 10h às 20h, com intervalo de
+P á g i n a 52 | 551
+ @aryannalinhares @professoraaryannalinhares
 duas horas para refeição, e aos sábados, das 16h às 20h, sem intervalo;
 – o pagamento da multa do art. 477, § 8º, da CLT, porque o valor das verbas
-rescisórias somente foi creditado na sua conta 20 dias após a comunicação do
+rescisórias somente foi creditado na sua conta 20 dias após a comunicação do
 aviso prévio, concedido na forma indenizada, extrapolando o prazo legal.
-Afirmou, ainda, que foi obrigada a aderir ao desconto para o plano de saúde,
+Afirmou, ainda, que foi obrigada a aderir ao desconto para o plano de saúde,
 tendo assinado na admissão, contra a sua vontade, um documento autorizando a
 subtração mensal.
 A sociedade empresária informou que, assim que foi cientificada do aviso
 prévio, Estela teve uma reação violenta, gritando e dizendo-se injustiçada com a
 atitude do empregador. A situação chegou a tal ponto que a segurança
 terceirizada precisou ser chamada para conter a trabalhadora e acompanhá-la até
-a porta de saída. Contudo, quando deixava o portão principal, Estela começou a
+a porta de saída. Contudo, quando deixava o portão principal, Estela começou a
 correr, pegou uma pedra do chão e a arremessou violentamente contra o prédio
 da empresa, vindo a quebrar uma das vidraças. A empresa informa que gastou
 R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal que exibiu, além
 de apresentar a guia da RAIS comprovando possuir 7 empregados, os
 contracheques da autora e o documento assinado pela empregada autorizando o
-desconto de plano de saúde.
+desconto de plano de saúde.
 Diante dessa narrativa, apresente a peça pertinente na melhor defesa dos
 interesses da reclamada. (Valor: 5,00).
 RESOLUÇÃO
-AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE JOÃO
+AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE JOÃO
 PESSOA/PARAÍBA
 Processo no 98.765.
 FLORICULTURA FLORES BELAS LTDA., qualificação e endereço
 completos, vem, respeitosamente, perante Vossa Excelência, por
+P á g i n a 53 | 551
+ @aryannalinhares @professoraaryannalinhares
 intermédio de seu advogado adiante assinado (procuração anexa), com
 escritório profissional no endereço completo, onde recebe intimações e
 notificações, com fulcro nos arts. 847 da CLT e 343 do CPC c/c art. 769
@@ -301,6 +305,8 @@ Segundo estabelece o art. 330, § 1º, I, do CPC, a petição inicial é inepta,
 dentre outras hipóteses, quando lhe faltar pedido, sendo o que aconteceu
 com os descontos salariais relativos ao plano de saúde. A reclamante
 sustenta que eram indevidos, porém não apresenta qualquer pedido.
+P á g i n a 54 | 551
+ @aryannalinhares @professoraaryannalinhares
 Esclarece-se que, à luz do art. 337, IV, do CPC, a inépcia da inicial deve
 ser analisada em preliminar de contestação.
 Diante do exposto, requer a extinção do processo sem resolução do
@@ -329,6 +335,8 @@ o adicional por atividade penosa é devido na forma da lei e este não foi
 regulamentado.
 Diante do exposto, requer a improcedência do pedido da reclamante.
 2. Horas extras
+P á g i n a 55 | 551
+ @aryannalinhares @professoraaryannalinhares
 A reclamante postulou o pagamento de horas extras com adicional de
 50%, explicando que cumpria a extensa jornada de segunda a sexta-feira,
 das 10h às 20h, com intervalo de duas horas para refeição, e aos sábados,
@@ -357,6 +365,8 @@ O pagamento ocorreu muito antes, 20 dias após a comunicação do aviso.
 Diante do exposto, requer a improcedência do pedido da reclamante.
 4. Devolução dos descontos
 A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
+P á g i n a 56 | 551
+ @aryannalinhares @professoraaryannalinhares
 saúde, tendo assinado, na admissão, contra a sua vontade, um documento
 autorizando a subtração mensal.
 Não assiste razão à reclamante, pois ela autorizou expressamente o
@@ -385,6 +395,8 @@ A situação chegou a tal ponto que a segurança terceirizada precisou ser
 chamada para conter a trabalhadora e acompanhá-la até a porta de saída.
 Contudo, quando deixava o portão principal, Estela começou a correr,
 pegou uma pedra do chão e a arremessou violentamente contra o prédio
+P á g i n a 57 | 551
+ @aryannalinhares @professoraaryannalinhares
 da empresa, vindo a quebrar uma das vidraças. A empresa gastou
 R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal
 apresentada.
@@ -413,6 +425,8 @@ e, adiante, no mérito, a improcedência dos pedidos formulados pela
 autora, condenando-a ao pagamento de custas processuais e honorários
 advocatícios de 15%, à luz do art. 791-A da CLT.
 Por fim, requer a procedência do pedido reconvencional acrescido de juros
+P á g i n a 58 | 551
+ @aryannalinhares @professoraaryannalinhares
 e correção monetária e a condenação da reclamante-reconvinda ao
 pagamento de custas e de honorários advocatícios, nos moldes do art.
 791-A, § 5º, da CLT.
@@ -420,7 +434,99 @@ Nestes termos,
 pede deferimento.
 Local e data.
 Advogado
-OAB nº`
+OAB nº
+Segundo exercício de Contestação (EOB XXV) – Espelho de Correção
+QUESITOS AVALIADOS FAIXA DE
+VALORES
+ATENDIMENTO AO
+QUESITO
+1. Peça com formato de contestação
+dirigida ao juízo da 50ª Vara do Trabalho
+de João Pessoa/PB (0,10).
+0,00/0,10
+2. Qualificação das partes: identificação do
+réu (0,10) e da autora (0,10).
+0,00/0,10/0,2
+0
+3. Indicação do Art. 847, CLT (0,10). 0,00/0,10
+4. Incompetência da Justiça do Trabalho
+para condenação criminal (0,40). Indicação
+Art. 114, inciso IX, CRFB/88 OU Súmula 62
+STJ (0,10).
+0,00/0,40/0,5
+0
+5. Prescrição das pretensões anteriores a
+27.02.2013 OU prescrição das pretensões
+anteriores a cinco anos do ajuizamento da
+ação (0,40). Indicação Art. 7º, inciso XXIX,
+CRFB/88, OU Art. 11, caput, CLT OU
+Súmula 308, inciso I, TST (0,10).
+0,00/0,40/0,5
+0
+P á g i n a 59 | 551
+ @aryannalinhares @professoraaryannalinhares
+QUESITOS AVALIADOS FAIXA DE
+VALORES
+ATENDIMENTO AO
+QUESITO
+6. Adicional de penosidade não foi
+regulamentado (0,40). Indicação Art. 7º,
+inciso XXIII, CRFB/88 (0,10).
+0,00/0,40/0,5
+0
+7. Horas extras indevidas porque o módulo
+constitucional não foi ultrapassado (0,40).
+Indicação Art. 7º, inciso XIII, CRFB/88 OU
+Art. 58, CLT (0,10).
+0,00/0,40/0,5
+0
+8. Indevida a multa do Art. 477 porque o
+pagamento foi feito no prazo legal (0,40).
+Indicação Art. 477, § 6º, CLT (0,10).
+0,00/0,40/0,5
+0
+9. Vício de vontade deve ser provado pela
+autora (0,40). Indicação Art. 818, inciso I,
+CLT OU Art. 373, inciso I, CPC OU Súmula
+342, TST, OU OJ SDI-I 160, TST (0,10).
+OU Arguição de inépcia da petição inicial
+por falta de pedido (0,40). Indicação Art.
+840, § 1º, CLT OU Art. 330, I, CPC, OU Art.
+330, § 1º, I, CPC (0,10).
+0,00/0,40/0,5
+0
+10. Reconvenção, requerendo o valor de
+R$ 300,00 relativo ao vidro quebrado
+(0,40).
+Indicação Art. 186, CC OU Art. 927, caput,
+CC OU Art. 462, § 1º, CLT (0,10).
+0,00/0,40/0,5
+0
+11. Honorários advocatícios na ação
+principal (0,20) e na reconvenção (0,20).
+Indicação do Art. 791-A, CLT (0,10).
+0,00/0,20
+/0,30/0,40/0,
+50
+12. Renovação da(s) preliminar(es) (0,10). 0,00/0,10
+13. Renovação da prejudicial de prescrição
+parcial (0,10) 0,00/0,10
+14. Requerimento de improcedência dos
+pedidos do autor (0,10) e indicação das
+provas a serem produzidas (0,10).
+0,00/0,10/0,2
+0
+P á g i n a 60 | 551
+ @aryannalinhares @professoraaryannalinhares
+QUESITOS AVALIADOS FAIXA DE
+VALORES
+ATENDIMENTO AO
+QUESITO
+15. Procedência da reconvenção (0,10).
+Data, local, advogado e OAB (0,10).
+0,00/0,10/0,2
+0
+`
     },
 
     'emb_exec': { 
