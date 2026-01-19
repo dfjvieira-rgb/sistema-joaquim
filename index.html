@@ -93,11 +93,33 @@
         emb_terc: "16. Embargos de Terceiro", ms: "17. Mandado de Segurança", ar: "18. Ação Rescisória"
     };
 
-    function liberar() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-        montarMenu();
-        loadPeca('rt');
+function liberar() {
+    // 1. Tenta capturar os dados do arquivo externo e mesclar no dbGabaritos
+    if (typeof dbGabaritosExternos !== 'undefined') {
+        Object.keys(dbGabaritosExternos).forEach(key => {
+            if (!dbGabaritos[key]) dbGabaritos[key] = {};
+            // Copia os gabaritos pesados para dentro do banco de dados principal
+            Object.assign(dbGabaritos[key], dbGabaritosExternos[key]);
+        });
+        console.log("Dados externos integrados com sucesso!");
+    } else {
+        console.warn("Atenção: dbGabaritosExternos não encontrado. Verifique se o arquivo gabaritos.js carregou.");
+    }
+
+    // 2. Esconde a tela de login e mostra o app
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+
+    // 3. Inicializa a interface (Menu e primeira peça)
+    montarMenu();
+    loadPeca('rt');
+}
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    montarMenu();
+    loadPeca('rt');
+}
     }
 
     function montarMenu() {
@@ -147,3 +169,4 @@
 </script>
 </body>
 </html>
+
