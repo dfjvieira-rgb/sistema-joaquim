@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Foco Dinâmico</title>
+    <title>SISTEMA JOAQUIM - Workspace Dinâmico</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -11,6 +11,7 @@
             --warning: #f1c40f;
             --success: #27ae60;
             --bg: #f4f7f6;
+            --divider: #bdc3c7;
         }
 
         body {
@@ -23,14 +24,14 @@
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0;
+            flex-shrink: 0; z-index: 20;
         }
 
         #timer { font-size: 1.2rem; color: var(--warning); font-weight: bold; }
 
         /* ABAS MOBILE */
         .tabs-container {
-            display: none; background: #dfe6e9; padding: 5px; gap: 5px; border-bottom: 2px solid #b2bec3;
+            display: none; background: #dfe6e9; padding: 5px; gap: 5px; border-bottom: 2px solid #b2bec3; z-index: 20;
         }
 
         .tab-btn {
@@ -40,67 +41,60 @@
 
         .tab-btn.active { background: var(--accent); color: white; }
 
-        main { flex: 1; display: flex; overflow: hidden; padding: 10px; gap: 10px; }
+        /* ÁREA PRINCIPAL COM DIVISOR */
+        main { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        .content-section { display: none; flex-direction: column; height: 100%; }
-        .content-section.active { display: flex; }
+        .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
-        /* EDITOR */
-        .editor-section { background: white; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; font-family: monospace; }
+        /* Sidebar Fixa */
+        .sidebar-section { width: 180px; background: white; border-right: 1px solid #ddd; padding: 10px; flex-shrink: 0; }
 
-        /* PDF SECTION - FOCO DINÂMICO */
-        .pdf-section { flex: 2; display: flex; flex-direction: column; gap: 10px; transition: all 0.4s ease; }
+        /* Áreas ajustáveis */
+        .editor-section { background: white; padding: 10px; min-width: 200px; }
+        .pdf-section { background: #eee; gap: 10px; padding: 10px; min-width: 200px; }
+
+        /* O DIVISOR (GUTTER) */
+        .resizer {
+            width: 8px;
+            background: var(--divider);
+            cursor: col-resize;
+            transition: background 0.2s;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .resizer:hover { background: var(--accent); }
+        .resizer::after { content: "||"; color: white; font-size: 10px; font-weight: bold; }
+
+        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; font-family: monospace; box-sizing: border-box; }
+
+        /* PDF BOXES */
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #7f8c8d; transition: flex 0.3s ease; }
+        .pdf-box.expanded { flex: 10; }
+        .pdf-box.collapsed { flex: 0.1; min-height: 40px; }
         
-        .pdf-box { 
-            flex: 1; display: flex; flex-direction: column; 
-            background: white; border-radius: 8px; overflow: hidden; 
-            border: 1px solid #7f8c8d; transition: all 0.4s ease;
-        }
-
-        /* Classe de expansão */
-        .pdf-box.expanded { flex: 4 !important; }
-        .pdf-box.collapsed { flex: 0.1 !important; min-height: 40px !important; }
-
-        .pdf-header { 
-            background: #34495e; color: white; padding: 6px 12px; 
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.75rem; font-weight: bold;
-        }
-        
-        .focus-btn { 
-            background: var(--accent); color: white; border: none; 
-            border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.65rem;
-        }
-
+        .pdf-header { background: #34495e; color: white; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .focus-btn { background: var(--accent); color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        .btn-peca { width: 100%; padding: 15px; margin-bottom: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: white; border: 1px solid #ddd; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: left; font-size: 0.8rem; }
         .btn-save { background: var(--success); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
 
-        /* AJUSTES MOBILE */
+        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 900px) {
             .tabs-container { display: flex; }
-            main { padding: 5px; }
-            .content-section { display: none; width: 100% !important; }
+            .resizer { display: none; }
+            .sidebar-section { display: none; }
+            main { flex-direction: column; }
+            .content-section { display: none; width: 100% !important; flex: 1 !important; }
             .content-section.active { display: flex; }
-            .pdf-box { min-height: 400px; flex: none; }
+            .pdf-box { min-height: 350px; flex: none; }
             .pdf-section { overflow-y: auto; }
         }
 
-        /* AJUSTE LANDSCAPE MOBILE */
         @media (max-height: 500px) and (orientation: landscape) {
             header { display: none; }
-            .pdf-box { min-height: 100%; }
-        }
-
-        /* DESKTOP ESPECÍFICO */
-        @media (min-width: 901px) {
-            .tabs-container { display: none; }
-            main { flex-direction: row; }
-            .content-section { display: flex !important; }
-            .sidebar-section { flex: 0 0 180px; }
-            .editor-section { flex: 1.5; }
         }
     </style>
 </head>
@@ -112,27 +106,29 @@
 </header>
 
 <nav class="tabs-container">
-    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">1. PEÇAS</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">2. ESCREVER</button>
-    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">3. GABARITOS</button>
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">MENU</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">ESCRITA</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">GABARITOS</button>
 </nav>
 
-<main>
-    <section id="menu" class="content-section sidebar-section active">
-        <h3 style="margin:0 0 10px 0; font-size: 1rem;">Exames</h3>
-        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV (RO)</button>
-    </section>
+<main id="container">
+    <aside id="menu" class="content-section sidebar-section active">
+        <h4 style="margin:0 0 10px 0;">EXAMES</h4>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV</button>
+    </aside>
 
-    <section id="escrita" class="content-section editor-section active">
+    <section id="escrita" class="content-section editor-section active" style="flex: 1;">
         <button class="btn-save" onclick="salvar()">💾 SALVAR REVISÃO</button>
         <textarea id="texto-rascunho" placeholder="Sua folha de respostas..."></textarea>
     </section>
 
-    <section id="pdfs" class="content-section pdf-section active">
+    <div class="resizer" id="dragMe"></div>
+
+    <section id="pdfs" class="content-section pdf-section active" style="flex: 1;">
         <div class="pdf-box" id="box-enunciado">
             <div class="pdf-header">
                 <span>📄 ENUNCIADO</span>
-                <button class="focus-btn" onclick="focarPdf('enunciado')">FOCO / RESET</button>
+                <button class="focus-btn" onclick="focarPdf('enunciado')">FOCO</button>
             </div>
             <iframe id="view-enunciado" src="about:blank"></iframe>
         </div>
@@ -140,7 +136,7 @@
         <div class="pdf-box" id="box-gabarito">
             <div class="pdf-header">
                 <span>✅ GABARITO</span>
-                <button class="focus-btn" onclick="focarPdf('gabarito')">FOCO / RESET</button>
+                <button class="focus-btn" onclick="focarPdf('gabarito')">FOCO</button>
             </div>
             <iframe id="view-gabarito" src="about:blank"></iframe>
         </div>
@@ -148,6 +144,36 @@
 </main>
 
 <script>
+    // --- LÓGICA DO DIVISOR ARRASTÁVEL (DESKTOP) ---
+    const resizer = document.getElementById('dragMe');
+    const leftSide = document.getElementById('escrita');
+    const rightSide = document.getElementById('pdfs');
+
+    let x = 0; let y = 0; let leftWidth = 0;
+
+    const mouseDownHandler = function (e) {
+        x = e.clientX;
+        leftWidth = leftSide.getBoundingClientRect().width;
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+        resizer.style.background = "var(--accent)";
+    };
+
+    const mouseMoveHandler = function (e) {
+        const dx = e.clientX - x;
+        const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
+        leftSide.style.flex = `0 0 ${newLeftWidth}%`;
+    };
+
+    const mouseUpHandler = function () {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+        resizer.style.background = "";
+    };
+
+    resizer.addEventListener('mousedown', mouseDownHandler);
+
+    // --- LÓGICA DE ABAS E FOCO ---
     function switchTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -155,31 +181,15 @@
         document.getElementById('btn-' + tabId).classList.add('active');
     }
 
-    // NOVA FUNÇÃO DE FOCO PARA COMPUTADOR E MOBILE
     function focarPdf(tipo) {
-        const boxEnunciado = document.getElementById('box-enunciado');
-        const boxGabarito = document.getElementById('box-gabarito');
-
-        if (tipo === 'enunciado') {
-            if (boxEnunciado.classList.contains('expanded')) {
-                boxEnunciado.classList.remove('expanded');
-                boxGabarito.classList.remove('collapsed');
-            } else {
-                boxEnunciado.classList.add('expanded');
-                boxEnunciado.classList.remove('collapsed');
-                boxGabarito.classList.add('collapsed');
-                boxGabarito.classList.remove('expanded');
-            }
+        const e = document.getElementById('box-enunciado');
+        const g = document.getElementById('box-gabarito');
+        if(tipo === 'enunciado') {
+            e.classList.toggle('expanded'); g.classList.toggle('collapsed');
+            e.classList.remove('collapsed'); g.classList.remove('expanded');
         } else {
-            if (boxGabarito.classList.contains('expanded')) {
-                boxGabarito.classList.remove('expanded');
-                boxEnunciado.classList.remove('collapsed');
-            } else {
-                boxGabarito.classList.add('expanded');
-                boxGabarito.classList.remove('collapsed');
-                boxEnunciado.classList.add('collapsed');
-                boxEnunciado.classList.remove('expanded');
-            }
+            g.classList.toggle('expanded'); e.classList.toggle('collapsed');
+            g.classList.remove('collapsed'); e.classList.remove('expanded');
         }
     }
 
@@ -191,14 +201,14 @@
 
     function salvar() {
         const t = document.getElementById('texto-rascunho').value;
-        if(!t) return alert("Vazio!");
         const blob = new Blob([t], {type:'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Treino_Joaquim.txt';
+        a.download = 'Revisao_Joaquim.txt';
         a.click();
     }
 
+    // Cronômetro
     let tempo = 18000;
     setInterval(() => {
         let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
@@ -206,12 +216,10 @@
         if (tempo > 0) tempo--;
     }, 1000);
 
-    // Garante visualização correta no PC ao iniciar
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 900) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.add('active'));
-        }
-    });
+    // Ajuste inicial Mobile/Desktop
+    if (window.innerWidth < 900) {
+        switchTab('menu');
+    }
 </script>
 
 </body>
