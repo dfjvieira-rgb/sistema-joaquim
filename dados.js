@@ -1461,8 +1461,182 @@ Local e data,
 Advogado
 OAB nº
 
+//11.3. EXERCÍCIOS DE EMBARGOS DE TERCEIRO
+11.3.1. Primeiro exercício
+Josué Brilhante ajuizou, perante a 1a Vara do Trabalho do Rio de Janeiro,
+reclamatória trabalhista em face de Pinceladas Ltda.
+Foi proferida sentença pelo juízo da 1a Vara do Trabalho que acolheu em
+parte os pedidos formulados.
+Transitada em julgado a decisão, foi elaborada a conta geral pelo perito do
+juízo no montante de R$ xxx.
+Os referidos cálculos de liquidação foram homologados, após a
+manifestação das partes.
+Na sequência, determinou o juízo exequendo a citação da executada para,
+no prazo de 48 horas, cumprir a decisão condenatória ou garantir a execução, sob
+pena de penhora.
+A executada deixou passar in albis o prazo determinado pelo juízo, não
+pagou o valor executado e nem nomeou bens à penhora. A empresa não se
+manifestou em razão de não possuir bens nem numerário suficientes para
+satisfazer a determinação imposta pela sentença de mérito.
+O juízo determinou a penhora dos bens da executada que fossem suficientes
+para garantir a execução, todavia, o oficial de justiça nada encontrou no endereço
+da reclamada, o que certificou nos autos.
+Em razão disso, o reclamante localizou um imóvel de propriedade do sócio
+da reclamada, sr. Claudionor, casado sob o regime de comunhão parcial de bens
+com a sra. Marietinha Severo, e pediu ao juízo que a penhora recaísse sobre o
+bem indicado, com endereço na Rua Barcelona no 222, Rio de Janeiro/RJ.
+O juízo da 1a Vara do Trabalho do Rio de Janeiro acolheu o pedido do autor
+e determinou a penhora do bem imóvel supramencionado. O oficial de justiça
+compareceu no endereço indicado pelo reclamante e penhorou o imóvel de
+P á g i n a 181 | 551
+@aryannalinhares @professoraaryannalinhares
+propriedade do casal. Constou do mandado de penhora apenas o nome do sr.
+Claudionor.
+Marietinha Severo, esposa de Claudionor, insurgiu-se contra o comando
+do juízo e, para garantir a intangibilidade de sua propriedade, procurou um
+advogado que, após detalhada entrevista, concluiu que, não obstante o imóvel
+não se enquadre no conceito legal de bem de família, merecia defesa em face
+da condição de mulher do executado e do regime de comunhão de bens.
+A cliente, na oportunidade, levou consigo uma cópia autenticada da Certidão
+de Casamento onde consta o regime de bens e o pacto antenupcial, fotocópia
+autêntica do registro de imóveis indicando o casal como legítimos proprietários do
+imóvel objeto da penhora, bem como o contrato social da empresa Pinceladas
+Ltda., mostrando que os sócios da referida empresa são: Ana Paula Ambrósio e
+Claudionor. Os documentos comprovam que o bem penhorado foi adquirido após
+o enlace matrimonial.
+Na qualidade de advogado de Marietinha Severo, elabore a peça processual
+adequada para garantir o legítimo direito que a lei assegura à sua constituinte em
+relação ao imóvel do qual é proprietária.
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA 1a VARA DO TRABALHO DE RIO DE
+JANEIRO/RJ
+Distribuição por dependência aos autos nº ...
+MARIETINHA SEVERO, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe intimações e notificações,
+com fulcro nos art. 674 do CPC, PROPOR:
+EMBARGOS DE TERCEIRO
+em face de JOSUÉ BRILHANTE, qualificação e endereço completos,
+qualificação e endereço completos, pelas razões de fato e de direito a
+seguir expostas.
+I – DOS FATOS
+Josué Brilhante ajuizou reclamatória trabalhista em face de Pinceladas
+Ltda.
+Transitada em julgado a decisão, foi elaborada a conta geral pelo perito e
+homologada pelo juízo.
+Na sequência, determinou o juízo exequendo a citação da executada para,
+no prazo de 48 horas, cumprir a decisão condenatória ou garantir a
+execução, sob pena de penhora.
+A executada deixou passar in albis o prazo determinado pelo juízo, não
+pagou o valor executado e nem nomeou bens à penhora.
+O juízo, então, determinou a penhora dos bens da empresa que fossem
+suficientes para garantir a execução, todavia o oficial de justiça nada
+encontrou no endereço da reclamada, o que certificou nos autos.
+Em razão disso, o reclamante localizou um imóvel de propriedade do sócio
+da reclamada, sr. Claudionor, casado sob o regime de comunhão parcial
+de bens com a sra. Marietinha Severo, e pediu ao juízo que a penhora
+recaísse sobre o bem indicado, com endereço na Rua Barcelona, no 222,
+Rio de Janeiro/RJ.
+O juízo da 1a Vara do Trabalho do Rio de Janeiro acolheu o pedido do autor
+e determinou a penhora do bem imóvel supramencionado.
+O oficial de justiça compareceu no endereço indicado pelo reclamante e
+penhorou o imóvel de propriedade do casal. Constou do mandado de
+penhora apenas o nome do sr. Claudionor.
+II – REQUISITOS ESPECÍFICOS
+Destaca-se inicialmente o seguinte:
+1. Da distribuição por dependência
+A distribuição deve ocorrer por dependência perante o mesmo juízo que
+ordenou a apreensão do bem em questão (RT nº ...), à luz do art. 676 do
+CPC.
+2. Legitimidade
+Com base do art. 674 do CPC, esclarece-se que a embargante é parte
+legítima para propor o feito, pois, embora não seja parte no processo, seu
+bem foi penhorado.
+Segundo demonstra o contrato social da empresa Pinceladas Ltda. anexo,
+os sócios da empresa executada são: Ana Paula Ambrósio e Claudionor.
+O bem penhorado, entretanto, está em nome de Claudionor e Marietinha
+Severo, casados.
+Ressalte-se que, nos termos art. 674, § 2º, I, do CPC e da Súmula 134 do
+STJ, considera-se também terceiro o cônjuge quando defende a posse de
+bens dotais, próprios, reservados ou de sua meação.
+Inquestionável, portanto, que a embargante tem legitimidade para propor
+estes embargos de terceiro.
+3. Tempestividade
+A presente ação é tempestiva, uma vez que proposta antes do término do
+        prazo legal de 5 dias úteis, contados a partir da adjudicação, da alienação
+por iniciativa particular ou da arrematação, de acordo com o art. 675 do
+CPC.
+4. Prova sumária da posse e da constrição judicial (art. 677 do CPC)
+Nos termos do art. 677 do CPC, exige-se para a propositura dos embargos
+de terceiro a prova sumária da posse e da constrição judicial. A prova
+sumária da posse do bem em questão se faz pela fotocópia autêntica do
+registro de imóveis indicando o casal, Claudionor e Marietinha Severo,
+como legítimos proprietários do imóvel objeto da penhora.
+A prova da constrição judicial faz-se pelo mandado de penhora anexo,
+expedido apenas nome do sr. Claudionor.
+5. Custas
+As custas processuais, no valor de R$ 44,26, serão pagas pelo executado
+ao final da execução, consoante determinado pelo art. 789-A, V, da CLT.
+III – PRELIMINAR
+1. Nulidade por ausência do incidente de desconsideração da
+personalidade jurídica da empresa
+Na reclamação trabalhista autuada sob o nº xxx, o juízo determinou a
+penhora dos bens da executada que fossem suficientes para garantir a
+execução, todavia, o oficial de justiça nada encontrou no endereço da
+reclamada, o que certificou nos autos.
+Em razão disso, a pedido do reclamante, o juiz penhorou um imóvel do
+sócio da reclamada, sr. Claudionor, casado sob o regime de comunhão
+parcial de bens com a sra. Marietinha Severo, ou seja, desconsiderou a
+personalidade jurídica sem o devido procedimento legal.
+Com fundamento nos arts. 133 e segs. do CPC, aplicáveis no Processo do
+Trabalho como determina o art. 855-A da CLT, para que pudesse ocorrer a
+desconsideração da personalidade jurídica da empresa, deveria ter sido
+instaurado o incidente de desconsideração e citado o sr. Claudionor para
+manifestar-se e requerer provas cabíveis em 15 dias úteis, o que não
+ocorreu. São, portanto, nulos os atos processuais que determinaram a
+citação e penhora do bem também pertencente à embargante.
+Diante do exposto, requer seja desfeita a penhora realizada.
+Caso não seja esse o entendimento desse D. Juízo, requer a análise do
+mérito a seguir exposto.
+IV – MÉRITO
+Na Reclamação Trabalhista nº xxx, foi penhorado um imóvel pertencente a
+Marietinha Severo e Claudionor, muito embora a execução estivesse
+tramitando contra a empresa Pinceladas Ltda., cujos sócios são Ana Paula
+Ambrósio e Claudionor.
+A embargante é casada em regime de comunhão parcial de bens e sua
+meação não pode ser objeto de penhora em ação movida contra a empresa
+de que seu cônjuge é sócio, uma vez que, com fulcro no art. 1.666 do CC,
+as dívidas contraídas por qualquer dos cônjuges na administração de seus
+bens particulares e em benefício destes não obrigam os bens comuns.
+A certidão de casamento e o registro do imóvel anexos demonstram que o
+bem penhorado foi adquirido pelo casal após o enlace matrimonial.
+Nos moldes do art. 843 do CPC, visto que a penhora recaiu sobre um bem
+indivisível, a meação do cônjuge alheio à execução incidirá sobre o produto
+da alienação do bem.
+Diante do exposto, requer seja ressalvado à embargante 50% do valor que
+se alcance em futura alienação em hasta pública
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a distribuição por dependência perante o mesmo juízo que ordenou a
+apreensão do bem em questão (RT nº ...), nos termos do art. 676 do CPC;
+b) a citação do embargado para contestar a presente ação no prazo de 15
+dias úteis, conforme estabelece o art. 679 do CPC;
+c) o protesto pela produção de todos os meios de prova em direito
+admitidos, em especial a prova documental;
+d) por fim, a procedência do pedido, ressalvando à embargante 50% do
+valor que se alcance em futura alienação em hasta pública, à luz do art.
+843 do CPC, e condenando o embargado ao pagamento de honorários
+advocatícios, à razão de 15%, com base no art. 791-A, da CLT.
+Atribui-se à causa o valor de R$ ... .
+Nestes termos,
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
 
         
+
 
 
 
