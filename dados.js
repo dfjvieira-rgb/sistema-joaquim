@@ -2483,7 +2483,71 @@ Local e data.
 Advogado(a)
 OAB nº
 
+//17.1. ESTRUTURA E EXERCÍCIO DA EXCEÇÃO DE INCOMPETÊNCIA
+Segue o exercício de exceção de incompetência para estudo de sua estrutura.
+José foi contratado em Curitiba pela empresa Alfa Ltda. O contrato de trabalho
+celebrado entre as partes previa a cidade de Curitiba para prestação dos serviços.
+José foi dispensado imotivadamente no dia 07.10.2019. Em janeiro de 2020, José
+ingressou com uma reclamação trabalhista perante a 1a Vara do Trabalho de Foz
+do Iguaçu postulando seus consectários legais, porque lá passou a residir. Na
+qualidade de advogado(a) da empresa Alfa Ltda., sabendo que essa não possui
+filial, tampouco qualquer atividade comercial na cidade de Foz do Iguaçu,
+proponha a medida legal cabível.
 
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 1a VARA DO TRABALHO DE FOZ DO
+IGUAÇU/PR
+Excipiente: Empresa Alfa Ltda.
+Exceto: José
+Processo no
+EMPRESA ALFA LTDA., qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe notificações e
+intimações, com fulcro no art. 800 da CLT, OFERECER:
+EXCEÇÃO DE INCOMPETÊNCIA
+na reclamação trabalhista que lhe move JOSÉ, já qualificado nos autos
+em epígrafe, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+A excipiente esclarece que o reclamante exceto foi contratado em
+Curitiba/PR. Os serviços sempre foram prestados em Curitiba/PR,
+localidade acordada entre as partes desde o início do contrato de
+trabalho. No dia 07 de outubro de 2019, a excipiente dispensou o exceto
+imotivadamente e este ajuizou reclamação trabalhista em Foz do Iguaçu,
+que não é o local da prestação dos serviços ou da contratação. Logo, o
+juízo é incompetente para processar e julgar essa ação.
+II – DOS REQUISITOS ESPECÍFICOS
+Esta exceção está sendo apresentada no prazo de 5 dias úteis contados
+do recebimento da notificação, conforme prevê o art. 800 da CLT.
+III – MÉRITO
+1. Incompetência territorial
+O art. 651, caput e § 3º, da CLT disciplina a competência relativa na
+Justiça do Trabalho, asseverando que a competência territorial é
+determinada pela localidade onde o empregado prestar serviços ao
+empregador, ainda que tenha sido contratado noutro local.
+Ante o dispositivo, é evidente a incompetência territorial do Juízo para
+processar e julgar a reclamação trabalhista em questão, pois o
+reclamante exceto jamais laborou em Foz do Iguaçu. Ademais, é
+oportuno esclarecer que a excipiente não possui filial, tampouco
+desenvolveu qualquer atividade nessa cidade.
+Diante da exposição supra, requer que os autos sejam remetidos para a
+Vara do Trabalho de Curitiba/PR, local da prestação dos serviços do
+reclamante exceto.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer a excipiente que este Juízo receba a exceção,
+suspenda o feito e intime o exceto a se manifestar em 5 dias úteis, nos
+termos do art. 800, §§ 1º e 2º, da CLT.
+Requer a produção de todos os meios de prova em direito admitidos, em
+especial a prova testemunhal e documental.
+Por fim, requer o reconhecimento da incompetência deste Juízo para
+julgar a demanda e a remessa dos autos ao juízo de Curitiba para que o
+processo retome seu curso com a designação de audiência, a
+apresentação de defesa e a instrução processual perante o juízo
+competente (art. 800, § 4º, da CLT).
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado(a)
 
 
 
