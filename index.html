@@ -2,78 +2,81 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA JOAQUIM - Mobile Friendly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SISTEMA JOAQUIM - Mobile PRO</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #3498db;
             --warning: #f1c40f;
             --success: #27ae60;
+            --bg: #f4f7f6;
         }
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            margin: 0; background: #f4f7f6;
-            min-height: 100vh; display: flex; flex-direction: column;
+            margin: 0; background: var(--bg);
+            height: 100vh; display: flex; flex-direction: column;
         }
 
         header {
             background: var(--primary); color: white;
-            padding: 10px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
+            padding: 8px 15px; display: flex; justify-content: space-between; align-items: center;
         }
 
-        #timer { font-size: 1.2rem; color: var(--warning); font-weight: bold; }
+        #timer { font-size: 1.1rem; color: var(--warning); font-weight: bold; }
 
-        main { 
-            display: flex; flex: 1; padding: 10px; gap: 10px; 
+        /* Navegação por Abas (Exclusivo Mobile) */
+        .tabs {
+            display: flex; background: #ddd; gap: 2px;
         }
 
-        /* CONFIGURAÇÃO PARA COMPUTADOR */
-        @media (min-width: 769px) {
-            main { flex-direction: row; overflow: hidden; height: calc(100vh - 60px); }
-            .sidebar { width: 180px; overflow-y: auto; }
-            .editor-area { flex: 1.2; }
-            .pdf-display { flex: 1.5; }
-            textarea { height: 100%; }
+        .tab-btn {
+            flex: 1; padding: 12px; border: none; background: #eee;
+            cursor: pointer; font-weight: bold; color: #666; font-size: 0.8rem;
         }
 
-        /* CONFIGURAÇÃO PARA CELULAR */
-        @media (max-width: 768px) {
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; }
-            .editor-area { width: 100%; height: 400px; }
-            .pdf-display { width: 100%; height: 800px; } /* Dá espaço para os dois PDFs */
-            #timer { font-size: 1rem; }
+        .tab-btn.active {
+            background: white; color: var(--accent); border-bottom: 3px solid var(--accent);
         }
 
-        .sidebar, .editor-area, .pdf-box {
-            background: white; border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 10px;
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+        .content-section {
+            display: none; flex-direction: column; height: 100%; padding: 10px; box-sizing: border-box;
         }
 
+        .content-section.active { display: flex; }
+
+        /* Ajustes específicos das seções */
+        .sidebar-list { list-style: none; padding: 0; }
         .btn-peca {
-            width: 100%; padding: 12px; margin-bottom: 8px;
-            background: #fff; border: 1px solid #ddd; border-radius: 5px;
-            cursor: pointer; text-align: left; font-size: 0.9rem;
+            width: 100%; padding: 15px; margin-bottom: 10px;
+            background: white; border: 1px solid #ddd; border-radius: 8px;
+            text-align: left; font-size: 1rem;
         }
 
-        .btn-peca:hover { background: var(--accent); color: white; }
-
-        .editor-area { display: flex; flex-direction: column; }
         textarea {
-            flex: 1; width: 100%; padding: 10px; border: 1px solid #ecf0f1;
-            border-radius: 6px; font-family: monospace; font-size: 1rem;
-            resize: none; box-sizing: border-box;
+            flex: 1; width: 100%; padding: 12px; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 16px; /* Evita zoom automático no iOS */
+            resize: none; font-family: monospace;
         }
 
-        .pdf-display { display: flex; flex-direction: column; gap: 10px; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
-        .pdf-label { background: #34495e; color: white; padding: 5px; text-align: center; font-size: 0.7rem; }
-        iframe { width: 100%; height: 100%; border: none; min-height: 300px; }
+        .pdf-frame { flex: 1; border: none; width: 100%; border-radius: 8px; background: white; }
 
-        .btn-save { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        .btn-save {
+            background: var(--success); color: white; border: none;
+            padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px;
+        }
+
+        /* Desktop: Mantém as 3 colunas se a tela for grande */
+        @media (min-width: 900px) {
+            .tabs { display: none; }
+            main { flex-direction: row; }
+            .content-section { display: flex !important; flex: 1; border-right: 1px solid #ddd; }
+            .content-section:last-child { border-right: none; }
+            .sidebar-section { flex: 0 0 200px; }
+        }
     </style>
 </head>
 <body>
@@ -83,49 +86,63 @@
     <div id="timer">05:00:00</div>
 </header>
 
-<main>
-    <nav class="sidebar">
-        <h3 style="margin-top:0; font-size: 0.9rem;">EXAMES</h3>
-        <button class="btn-peca" onclick="carregarDuplo('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV</button>
-    </nav>
+<div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="switchTab('menu')">MENU</button>
+    <button class="tab-btn" onclick="switchTab('escrita')">RASCUNHO</button>
+    <button class="tab-btn" onclick="switchTab('pdfs')">PDFs</button>
+</div>
 
-    <section class="editor-area">
-        <button class="btn-save" onclick="salvarTreino()">💾 SALVAR REVISÃO</button>
-        <textarea id="rascunho" placeholder="Redija sua peça aqui..."></textarea>
+<main>
+    <section id="menu" class="content-section active sidebar-section">
+        <h3 style="margin-top:0;">Exames</h3>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV (RO)</button>
+        <p style="color: #888; font-size: 0.8rem;">Clique no exame e depois mude para a aba RASCUNHO ou PDFs.</p>
     </section>
 
-    <section class="pdf-display">
-        <div class="pdf-box">
-            <div id="label-enunciado" class="pdf-label">📄 ENUNCIADO</div>
-            <iframe id="view-enunciado" src="about:blank"></iframe>
-        </div>
-        <div class="pdf-box">
-            <div id="label-gabarito" class="pdf-label">✅ GABARITO</div>
-            <iframe id="view-gabarito" src="about:blank"></iframe>
+    <section id="escrita" class="content-section">
+        <button class="btn-save" onclick="salvar()">💾 SALVAR NO CELULAR</button>
+        <textarea id="texto" placeholder="Digite sua peça aqui..."></textarea>
+    </section>
+
+    <section id="pdfs" class="content-section">
+        <div style="display:flex; flex-direction:column; height: 100%; gap: 10px;">
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <span style="font-size:0.7rem; font-weight:bold; background:#34495e; color:white; padding:3px; text-align:center;">ENUNCIADO</span>
+                <iframe id="view-enunciado" class="pdf-frame" src="about:blank"></iframe>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <span style="font-size:0.7rem; font-weight:bold; background:#34495e; color:white; padding:3px; text-align:center;">GABARITO</span>
+                <iframe id="view-gabarito" class="pdf-frame" src="about:blank"></iframe>
+            </div>
         </div>
     </section>
 </main>
 
 <script>
-    function carregarDuplo(enunciado, gabarito, nome) {
-        document.getElementById('view-enunciado').src = "./" + enunciado;
-        document.getElementById('view-gabarito').src = "./" + gabarito;
-        document.getElementById('label-enunciado').innerText = "📄 ENUNCIADO " + nome;
-        document.getElementById('label-gabarito').innerText = "✅ GABARITO " + nome;
+    function switchTab(id) {
+        // Remove active de tudo
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        // No mobile, faz scroll automático para o rascunho após escolher a peça
-        if (window.innerWidth < 768) {
-            document.querySelector('.editor-area').scrollIntoView({ behavior: 'smooth' });
-        }
+        // Ativa a correta
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
     }
 
-    function salvarTreino() {
-        const texto = document.getElementById('rascunho').value;
-        if (!texto.trim()) return alert("Escreva algo!");
-        const blob = new Blob([texto], { type: "text/plain" });
-        const a = document.createElement("a");
+    function carregarExame(enunciado, gabarito) {
+        document.getElementById('view-enunciado').src = "./" + enunciado;
+        document.getElementById('view-gabarito').src = "./" + gabarito;
+        // Pula para a aba de rascunho automaticamente ao escolher
+        if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    function salvar() {
+        const t = document.getElementById('texto').value;
+        if(!t) return alert("Escreva algo!");
+        const blob = new Blob([t], {type: 'text/plain'});
+        const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "Treino_OAB.txt";
+        a.download = 'Estudo_Joaquim.txt';
         a.click();
     }
 
@@ -134,8 +151,7 @@
         let h = Math.floor(tempo / 3600);
         let m = Math.floor((tempo % 3600) / 60);
         let s = tempo % 60;
-        document.getElementById('timer').textContent = 
-            `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         if (tempo > 0) tempo--;
     }, 1000);
 </script>
