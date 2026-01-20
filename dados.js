@@ -563,7 +563,7 @@ pede deferimento.
 Local e data.
 Advogado
 OAB nº
- // 1. RECLAMAÇÃO TRABALHISTA
+ // 1. Recurso Ordinário
  ► Primeiro exercício de Recurso Ordinário
 Em face da sentença abaixo, você, na qualidade de advogado do
 reclamante, deverá interpor o recurso cabível para a instância superior,
@@ -688,6 +688,7 @@ Advogado
 OAB no
 
         
+
 
 
 
