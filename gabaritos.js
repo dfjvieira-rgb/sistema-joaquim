@@ -133,6 +133,7 @@ Local e data.
 Advogado(a)
 OAB nº`,
         'guia': `1. EQUIPARAÇÃO SALARIAL: Art. 461 da CLT. Diferença não superior a 2 anos na função.\n2. DESCONTOS: Art. 473, VIII e Súmula 155 do TST.\n3. FGTS: O Art. 611-B, III da CLT impede a redução por norma coletiva.`
+        'guia': `1. EQUIPARAÇÃO SALARIAL: Art. 461 da CLT. Diferença não superior a 2 anos na função.\n2. DESCONTOS: Art. 473, VIII e Súmula 155 do TST.\n3. FGTS: O Art. 611-B, III da CLT impede a redução por norma coletiva.`
     },
 
     // 2. CONSIGNAÇÃO EM PAGAMENTO
