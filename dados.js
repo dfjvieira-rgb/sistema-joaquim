@@ -2812,6 +2812,380 @@ Advogado
 OAB n°
 
 
+//20.5. Exercício de Embargos ao TST
+A 4a Turma do Colendo TST, ao julgar o recurso de revista, manteve o
+acórdão regional, julgando improcedente o pedido de FGTS sobre o aviso-prévio
+indenizado e o pedido de reintegração do empregado por ser membro suplente
+representante dos empregados na CIPA. O acórdão foi proferido na reclamação
+trabalhista nº xxx movida por Luis Alejandro Velasco em face de Gabriel Garcia
+Marquez Ltda. Na condição de advogado do reclamante, apresente a medida
+processual cabível.
+RESOLUÇÃO
+À 4ª TURMA DO COLENDO TRIBUNAL SUPERIOR DO TRABALHO
+Processo n°
+LUIS ALEJANDRO VELASCO, já qualificado nos autos em epígrafe, em
+que contende com GABRIEL GARCIA MARQUEZ LTDA., também
+qualificado, vem, respeitosamente, perante Vossa Excelência, por
+intermédio de seu advogado abaixo assinado, com fulcro no art. 894, II, da
+CLT, INTERPOR:
+EMBARGOS AO TST
+para a Colenda Seção de Dissídios Individuais do TST.
+Encontram-se presentes todos os pressupostos de admissibilidade deste
+recurso, dentre os quais se destacam:
+a) a tempestividade: foi interposto no prazo de 8 dias úteis, nos termos do
+art. 894 da CLT.
+b) o prequestionamento: a matéria objeto do presente recurso foi tratada
+no acórdão recorrido, estando, portanto, devidamente prequestionada, à
+luz da Súmula 297 do TST.
+Diante do exposto, requer o recebimento do presente recurso, bem como a
+intimação da outra parte para apresentar as contrarrazões aos embargos,
+no prazo de 8 dias úteis, conforme determina o art. 900 da CLT, e a
+posterior remessa à Colenda Seção de Dissídios Individuais do TST.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+À COLENDA SEÇÃO DE DISSÍDIOS INDIVIDUAIS DO TRIBUNAL
+SUPERIOR DO TRABALHO
+RAZÕES DOS EMBARGOS AO TST POR DIVERGÊNCIA
+I – MÉRITO
+1. FGTS sobre o aviso-prévio indenizado
+O respeitável acórdão recorrido, proferido pela 4a Turma do Colendo
+TST, julgou improcedente o pedido de FGTS sobre o aviso-prévio
+indenizado.
+Observa-se, pelo seguinte trecho do acórdão recorrido, que a matéria foi
+tratada no acórdão impugnado, estando prequestionada (Súmula 297,
+TST): “...” .
+Tal decisão caracteriza divergência jurisprudencial, uma vez que
+contraria a Súmula 305 do TST.
+A Súmula 305 do TST institui o seguinte: “O pagamento relativo ao
+período de aviso-prévio, trabalhado ou não, está sujeito à contribuição para
+o FGTS”.
+Apesar de a Súmula 305 do TST estabelecer que o FGTS incide sobre o
+aviso-prévio indenizado, a 4a Turma do TST posicionou-se de forma
+contrária, decidindo que o FGTS não incide sobre o aviso prévio
+indenizado.
+Refuta-se a fundamentação apresentada pela 4a Turma do Colendo TST
+no acórdão recorrido por ser contrária ao entendimento sumulado deste
+Tribunal.
+Diante do exposto, requer a reforma do acórdão recorrido para julgar
+procedente o pedido de FGTS sobre o aviso-prévio indenizado.
+2. Reintegração
+O respeitável acórdão recorrido, proferido pela 4a Turma do Colendo
+TST, julgou improcedente o pedido de reintegração do empregado por ser
+membro suplente representante dos empregados na CIPA.
+Observa-se, pelo seguinte trecho do acórdão recorrido, que a matéria foi
+tratada no acórdão impugnado, estando prequestionada (Súmula 297,
+TST): “...” .
+Tal decisão caracteriza divergência jurisprudencial, uma vez que
+contraria a Súmula 339, I, do TST.
+A Súmula 339, I, do TST determina o seguinte: “O suplente da CIPA goza
+da garantia de emprego prevista no art. 10, II, a, do ADCT, a partir da
+promulgação da Constituição Federal de 1988”.
+Apesar de a Súmula 339, I, do TST instituir que o suplente da CIPA goza
+da garantia de emprego prevista no art. 10, II, “a”, do ADCT, a 4a Turma
+do TST posicionou-se de forma contrária, decidindo que o recorrente
+não tem direito à reintegração por ser suplente.
+Refuta-se a fundamentação apresentada pela 4a Turma do Colendo TST
+no acórdão recorrido por ser contrária ao entendimento sumulado deste
+Tribunal.
+Diante exposto, requer a reforma do acórdão recorrido para julgar
+procedente o pedido de reintegração.
+II – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso e, no
+mérito, o provimento para fins de reforma do acórdão para julgar
+procedentes as postulações do recorrente.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+
+//21.6. Exercício de recurso extraordinário
+Joana trabalhou como auxiliar de enfermagem no hospital Vida Plena S/A
+por cinco anos. Durante esse período, exercia suas funções em contato direto
+com pacientes portadores de doenças infectocontagiosas, realizando
+procedimentos diários que a expunham a agentes biológicos.
+Ao ser dispensada sem justa causa, Joana ajuizou reclamação trabalhista
+pleiteando o pagamento do adicional de insalubridade em grau máximo (40%
+sobre o salário mínimo), alegando que, apesar de a empresa fornecer
+Equipamentos de Proteção Individual (EPIs), não havia comprovação de que
+eliminavam totalmente os riscos.
+        A Vara do Trabalho julgou procedente o pedido, condenando a empresa ao
+pagamento do adicional de insalubridade em grau máximo, fundamentando-se
+no art. 7º, XXIII, da Constituição Federal.
+A empresa interpôs Recurso Ordinário e o Tribunal Regional do Trabalho
+(TRT) reformou parcialmente a sentença, reduzindo o adicional para grau médio
+(20% sobre o salário mínimo), sob o argumento de que os EPIs minimizavam os
+riscos, embora não houvesse prova de que os eliminavam totalmente.
+Diante dessa decisão, a empresa interpôs Recurso de Revista, e o Tribunal
+Superior do Trabalho (TST) reformou integralmente a decisão, afastando o
+adicional de insalubridade. A justificativa foi de que o simples fornecimento de
+EPIs seria suficiente para suprimir a insalubridade, ainda que não houvesse
+prova técnica dessa eliminação completa.
+Ocorre que o art. 7º, XXIII, da Constituição Federal assegura o pagamento
+do adicional de insalubridade aos trabalhadores expostos a condições nocivas à
+saúde, e a decisão do TST contrariou diretamente esse dispositivo constitucional.
+Diante dessa decisão, Joana interpôs Embargos à SDI-1 do TST,
+sustentando que o entendimento do TST contrariava a Súmula 289 do próprio
+tribunal, que estabelece que o simples fornecimento de EPIs não exime o
+empregador do pagamento do adicional de insalubridade. Entretanto, a SDI
+manteve a decisão do recurso de revista, sob o fundamento de que o
+posicionamento do TST estava em conformidade com o entendimento
+jurisprudencial da Corte.
+Considerando que você é advogado(a) de Joana, elabore a peça
+processual cabível para a defesa dos interesses da trabalhadora.
+Linha do Tempo das Decisões
+1. Vara do Trabalho → Sentença procedente.
+        P á g i n a 309 | 551
+@aryannalinhares @professoraaryannalinhares
+• Reconheceu o direito ao adicional de insalubridade em grau máximo, com
+base no art. 7º, XXIII, da CF.
+2. TRT – Recurso Ordinário da Empresa → Sentença reformada parcialmente.
+• Reduziu o adicional para grau médio (20%), alegando que o hospital
+fornecia EPIs, embora não tenha sido demonstrada a total eliminação do
+risco.
+3. TST – Recurso de Revista da Empresa → Decisão reformada.
+• Afastou totalmente o adicional de insalubridade, com o argumento de que
+o simples fornecimento de EPIs já seria suficiente para eliminar o direito
+ao adicional.
+4. Embargos à SDI-1 do TST – Interpostos pela Recorrente
+• Foram rejeitados sob o fundamento de que a decisão estava em
+conformidade com o entendimento do TST.
+Pontos-chaves para você identificar o cabimento do Recurso
+Extraordinário:
+• A decisão do TST contrariou diretamente a Constituição (art. 7º, XXIII,
+CF), ao afastar um direito fundamental do trabalhador sem comprovação
+da eliminação total do risco.
+• Como os Embargos à SDI-1 foram rejeitados, a decisão dos Embargos foi
+a última instância, tornando cabível o Recurso Extraordinário ao STF.
+        RESOLUÇÃO
+COLENDO TRIBUNAL SUPERIOR DO TRABALHO
+Recorrente: Joana
+Recorrido: Hospital Vida Plena S/A
+Processo n°: XXXXX-XX.2024.5.XX.XXXX
+JOANA, já qualificada nos autos em epígrafe, em que contende com
+HOSPITAL VIDA PLENA S/A, também qualificado, vem respeitosamente
+perante Vossa Excelência, por intermédio de seu advogado abaixo assinado,
+com fulcro no art. 102, III, “a”, da Constituição da República e no art. 1.029
+do CPC, INTERPOR:
+RECURSO EXTRAORDINÁRIO
+Para o SUPREMO TRIBUNAL FEDERAL
+Encontram-se presentes os pressupostos de admissibilidade deste recurso,
+dentre os quais se destacam:
+a) Custas: Já recolhidas no momento da interposição de recursos anteriores.
+b) Tempestividade: O recurso foi interposto dentro do prazo de 15 dias úteis,
+conforme art. 1.003, §5º, do CPC.
+c) O acórdão proferido nos Embargos à SDI-1 do TST esgotou as possibilidades
+recursais na Justiça do Trabalho, sendo cabível o presente recurso.
+d) Repercussão Geral: nos termos do art. 102, §3º, CF, e do art. 1.035 do CPC,
+a matéria discutida afeta milhares de trabalhadores da área da saúde, sendo
+de relevância econômica, política e social.
+e) Prequestionamento: A matéria foi expressamente tratada no acórdão
+impugnado, nos termos da Súmula 297 do TST.
+        Diante do exposto, requer o recebimento do presente recurso, a intimação da
+outra parte para apresentar contrarrazões ao recurso extraordinário no prazo
+de 15 dias úteis, conforme estabelece o artigo 1.030 do CPC, e a posterior
+remessa ao Supremo Tribunal Federal.
+Nesses Termos,
+Pede deferimento.
+Local, Data.
+Advogado
+OAB nº
+AO COLENDO SUPREMO TRIBUNAL FEDERAL
+RAZÕES DO RECURSO EXTRAORDINÁRIO
+I – MÉRITO
+01. Adicional de insalubridade
+O Colendo Tribunal Superior do Trabalho (TST) afastou o direito ao adicional
+de insalubridade da recorrente, sob o argumento de que o simples fornecimento
+de Equipamentos de Proteção Individual (EPIs) eliminaria qualquer risco de
+exposição a agentes biológicos.
+Tal decisão caracteriza ofensa literal e direta à Constituição da República, na
+medida em que contraria o art. 7º, XXIII, da Constituição, que assegura o
+adicional de insalubridade aos trabalhadores expostos a agentes nocivos.
+Apesar de o art. 7º, XXIII, da Constituição Federal garantir expressamente o
+direito ao adicional de insalubridade aos trabalhadores expostos a agentes
+nocivos, o acórdão recorrido posicionou-se em sentido contrário, afastando o
+pagamento do adicional sem comprovar a eliminação completa do risco
+biológico.
+        Não se pode admitir decisão contrária à Constituição, especialmente quando
+há evidente violação a um direito fundamental do trabalhador, como é o caso
+da proteção à saúde no ambiente laboral.
+Diante do exposto, requer a reforma da decisão para garantir à recorrente o
+adicional de insalubridade em grau máximo (40% sobre o salário mínimo).
+II – REQUERIMENTOS FINAIS
+Diante do exposto requer o conhecimento do presente recurso e no mérito, o
+provimento do recurso para fins de reforma do acórdão, garantindo à recorrente
+o adicional de insalubridade em grau máximo (40%).
+Nesses Termos,
+Pede deferimento.
+Local, Data.
+Advogado
+OAB nº
+
+//22.4. Exercício de agravo de instrumento
+Por entender cabível e necessário, tendo em vista o teor da sentença
+condenatória de primeiro grau (valor provisoriamente arbitrado à condenação:
+R$ 2.000,00), a empresa apresentou Embargos de Declaração. O Juízo, ao
+decidir sobre os embargos, julgou a medida protelatória, rejeitou ditos embargos
+e impôs ao embargante a multa de 2% (dois por cento) sobre o valor da causa. A
+reclamada interpôs recurso ordinário. O juízo “a quo” não recebeu o recurso.
+Considerou-o intempestivo, com o fundamento de que os embargos declaratórios
+que o Juízo entenda protelatórios não têm o condão de interromper o prazo para
+a interposição de qualquer recurso. Ademais, entendeu deserto o mesmo recurso
+por falta de depósito do valor da mencionada multa. Na condição de advogado da
+empresa, elabore a medida cabível, apresentando os fundamentos que busquem
+a reversão do despacho que indeferiu o processamento do Recurso Ordinário.
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+Processo no
+EMPRESA, já qualificada nos autos em epígrafe, em que contende com o
+AGRAVADO, também qualificado, vem, respeitosamente, perante Vossa
+Excelência, por intermédio de seu advogado adiante assinado, com base
+no art. 897, “b”, da CLT, INTERPOR:
+AGRAVO DE INSTRUMENTO
+para o Egrégio Tribunal Regional do Trabalho da ... Região.
+Encontram-se presentes todos os pressupostos de admissibilidade de
+recurso, dentre os quais se destacam:
+a) a tempestividade: o recurso foi interposto no prazo de 8 dias úteis, nos
+termos do art. 897 da CLT.
+b) o agravo de instrumento é instruído com as cópias de todas as peças da
+presente reclamação trabalhista, incluindo as obrigatórias exigidas no art.
+897, § 5º, I, da CLT.
+À luz do art. 830 da CLT, o patrono do agravante, sob sua responsabilidade
+pessoal, declara a autenticidade dos documentos oferecidos em cópia para
+formação do presente agravo.
+Diante do exposto, requer o recebimento do presente recurso, a intimação
+da outra parte para apresentar a contraminuta ao agravo de instrumento e
+as contrarrazões ao recurso ordinário, no prazo de 8 dias úteis, conforme
+estabelece o art. 897, § 6º, da CLT, e a posterior remessa ao Egrégio
+Tribunal Regional do Trabalho da ... Região.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO
+MINUTA DE AGRAVO DE INSTRUMENTO
+I – DA TEMPESTIVIDADE DO RECURSO PRINCIPAL
+O juízo “a quo” denegou seguimento ao recurso ordinário interposto pelo
+ora agravante, alegando intempestividade, com o fundamento de que os
+embargos de declaração julgados protelatórios não teriam o condão de
+interromper o prazo para a interposição de qualquer recurso.
+A decisão não merece ser mantida, pois consoante preceitua o art. 1.026
+do CPC, os embargos de declaração interrompem o prazo para outros
+recursos em favor de qualquer das partes.
+Estabelece o art. 897-A, § 3º, da CLT que os embargos não interrompem o
+prazo para interposição de outros recursos apenas em 3 hipóteses:
+intempestividade, irregularidade de representação e falta de assinatura.
+Logo, independente de o juízo entender que os embargos são
+protelatórios, eles têm o condão de interromper o prazo para interposição
+de outros recursos.
+Dessa maneira, o prazo para a interposição do recurso ordinário começou
+a fluir a partir da decisão proferida de embargos de declaração, sendo,
+portanto, tempestivo.
+Diante do cumprimento de todos os pressupostos de admissibilidade do
+recurso ordinário, inclusive em relação à tempestividade, requer o
+provimento do agravo de instrumento.
+II – DA MULTA
+O juízo “a quo” denegou seguimento ao recurso ordinário interposto pelo
+ora agravante, por entendê-lo deserto por falta de depósito do valor da
+multa de 2% sobre o valor da causa, aplicada na decisão proferida nos
+embargos de declaração.
+        A decisão não merece ser mantida, pois, segundo determina o art. 1.026,
+§ 3º, do CPC, somente na reiteração de embargos protelatórios o depósito
+é condição para a interposição de qualquer outro recurso.
+Diante do exposto, tendo em vista que o recurso ordinário não é deserto,
+requer o provimento do agravo de instrumento.
+III – REQUERIMENTOS FINAIS
+Ante o exposto, requer o conhecimento do presente agravo, bem como o
+seu provimento, estabelecendo o recebimento e o processamento do
+recurso ordinário.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+
+//23.3. Exercício de Agravo Interno
+O empregado João “Café Forte” dos Santos ajuizou reclamação trabalhista
+em face da empresa Pão Quentinho Indústria de Panificados Ltda., alegando
+jornada excessiva e pleiteando o pagamento de horas extras e reflexos.
+O Juízo de 1ª instância acolheu parcialmente os pedidos e condenou a
+reclamada ao pagamento das verbas pleiteadas.
+Inconformada, a empresa interpôs recurso ordinário, efetuando o depósito
+recursal.
+Contudo, ao analisar os autos, o relator do Tribunal Regional do Trabalho
+negou seguimento ao recurso, monocraticamente, sob o fundamento de que o
+valor do depósito recursal estava R$ 22,00 inferior ao montante exigido pela
+tabela oficial do TST.
+        Ocorre que a empresa não foi intimada para complementar o valor, sendo
+declarada, de imediato, a deserção do recurso ordinário.
+Na condição de advogado(a) da empresa Pão Quentinho Indústria de
+Panificados Ltda., elabore a peça processual cabível para impugnar a decisão
+monocrática, utilizando os fundamentos jurídicos pertinentes
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DESEMBARGADOR RELATOR DA
+EGRÉGIA ___ TURMA DO TRIBUNAL REGIONAL DO TRABALHO DA
+___ REGIÃO
+Agravante: Pão Quentinho Indústria de Panificados Ltda.
+Agravado: João “Café Forte” dos Santos
+Processo nº
+PÃO QUENTINHO INDÚSTRIA DE PANIFICADOS LTDA., já
+qualificada nos autos em epígrafe, em que contende com JOÃO “CAFÉ
+FORTE” DOS SANTOS, também qualificado, vem, respeitosamente,
+perante Vossa Excelência, por intermédio de seu advogado infra-assinado,
+com fundamento no art. 1.021 do CPC e no art. 769 da CLT, interpor
+AGRAVO INTERNO
+para a Egrégia ___ Turma do Tribunal Regional do Trabalho da ___ Região,
+pelas razões de fato e de direito a seguir expostas.
+Encontram-se presentes todos os pressupostos de admissibilidade do
+presente recurso, dentre os quais se destaca a tempestividade, uma vez
+que o prazo de 8 dias úteis foi observado, nos termos do art. 6º da Lei
+5.584/70.
+Diante do exposto, requer o recebimento do presente recurso, a
+retratação deste Douto Juízo, nos termos do art. 1.021, §2º, do CPC, para
+determinar a intimação da agravante para complementar o depósito
+recursal em 5 dias úteis e, na sequência, dar seguimento do recurso
+ordinário interposto. Caso não ocorra a retratação, requer a remessa à
+Egrégia ___ Turma do Tribunal Regional do Trabalho da ___ Região.
+Nestes termos,
+Pede deferimento.
+Local, data.
+Advogado(a)
+OAB nº
+
+EGRÉGIA ___ TURMA DO TRIBUNAL REGIONAL DO TRABALHO DA
+REGIÃO
+MINUTA DE AGRAVO INTERNO
+I - MÉRITO
+01. Depósito Recursal
+O relator, em decisão monocrática, negou seguimento ao recurso
+ordinário da agravante, sob o fundamento de deserção, porque o depósito
+recursal foi realizado de forma incompleta, faltando R$ 22,00. Contudo, não
+foi assegurada à parte a oportunidade de complementar o valor, sendo
+declarada de imediato a deserção.
+Nos termos do art. 1.007, §2º, do CPC, constatada a insuficiência do
+preparo, o recorrente deve ser intimado para, em cinco dias, complementar
+o valor devido. Da mesma forma, a OJ 140 da SDI-1 do TST dispõe que a
+deserção somente ocorre se, após a intimação, a parte não efetuar a
+complementação, o que não ocorreu no presente caso.
+Diante do exposto, requer a reforma da decisão para garantir a
+complementação e, consequentemente, o regular processamento do
+recurso ordinário.
+II – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do agravo interno e o seu
+provimento, para que seja reformada a decisão, garantindo a
+complementação do depósito e, consequentemente, o regular
+processamento do recurso ordinário, submetendo-o ao julgamento da
+Turma.
+Nestes termos,
+Pede deferimento.
+Local, data.
+Advogado(a)
+OAB nº
 
 
 
