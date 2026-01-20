@@ -1,5 +1,6 @@
 // Use VAR para permitir que o arquivo principal acesse os dados
 var dbGabaritosExternos = {
+        // 1. RECLAMAÇÃO TRABALHISTA
     'rt': { 
         1: `1.2. EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTA
 José Fininho foi contratado pela empresa Heart Attack Grill Ltda., para
@@ -129,4 +130,5 @@ Advogado(a)
 OAB nº`
     }
 };
+
 
