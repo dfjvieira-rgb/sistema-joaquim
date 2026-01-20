@@ -3187,6 +3187,172 @@ Local, data.
 Advogado(a)
 OAB nº
 
+//24.13. Exercício de Embargos de Declaração
+
+(CESPE – 128º OAB/SP – Adaptado) Em ação processada na cidade de
+São Paulo, foi indeferido o processamento do recurso ordinário interposto pelo
+reclamante, o que motivou a apresentação de recurso de agravo de instrumento.
+Ocorre que o último dia do prazo para a interposição do referido agravo de
+instrumento correspondia a 25 de janeiro, feriado municipal na cidade de São
+Paulo, o que foi claramente destacado e comprovado pelo agravante no recurso.
+Desse modo, a petição somente foi apresentada no dia seguinte, isto é, 26 de
+janeiro. Ao julgar o agravo de instrumento, o Tribunal Regional do Trabalho, não
+se recordando da existência do feriado municipal no dia 25 de janeiro e não
+verificando que, em razão disso, o vencimento do prazo seria no dia 26 de janeiro,
+por lapso, considerou o agravo de instrumento intempestivo e dele não conheceu.
+Elabore, na condição de advogado do reclamante, a peça processual
+adequada ao caso.
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR
+... QUE COMPÕE A ... TURMA DO EGRÉGIO TRIBUNAL REGIONAL DO
+TRABALHO DA 2ª REGIÃO.
+Processo no
+NOME DO EMBARGANTE, já qualificado nos autos em epígrafe, em que
+contende com NOME DO EMBARGADO, também qualificado, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado abaixo assinado, com base nos arts. 897-A e 769 da CLT e
+1.022 e seguintes do CPC, OPOR:
+EMBARGOS DE DECLARAÇÃO
+pelas razões de fato e de direito a seguir expostas.
+I - TEMPESTIVIDADE
+O presente recurso foi interposto no prazo de 5 dias úteis, nos termos do
+art. 897-A da CLT.
+II – MANIFESTO EQUÍVOCO NA ANÁLISE DE PRESSUPOSTO
+EXTRÍNSECO: TEMPESTIVIDADE
+A respeitável decisão considerou intempestivo o agravo de instrumento
+interposto pelo ora embargante e dele não conheceu, entendendo que o
+último dia do prazo recaiu em 25/01, feriado municipal.
+Houve manifesto equívoco na análise dos pressupostos extrínsecos do
+recurso.
+Nos termos do art. 775 da CLT, os prazos contam-se em dias úteis, de
+modo que o prazo recursal não pode se encerrar em dia de feriado. Logo,
+o último dia do prazo recaiu no dia 26/01.
+Ressalte-se que, quando da interposição do agravo de instrumento, o
+agravante comprova que 25/01 é dia de feriado municipal, observando o
+disposto no art. 1.003, § 6º, do CPC e na Súmula 385, I, do TST.
+Diante do exposto, requer seja declarado o manifesto equívoco na análise
+do pressuposto extrínseco do recurso de agravo de instrumento, no que
+tange à tempestividade, a fim de que seja conhecido e a ele seja dado
+seguimento.
+III – REQUERIMENTOS FINAIS
+Isto posto, requer o recebimento do presente recurso, a intimação da outra
+parte para apresentar manifestação aos embargos, no prazo de 5 dias úteis,
+nos moldes do art. 897-A, § 2º, da CLT, bem como o provimento do presente
+recurso, para que seja declarado o equívoco na análise do pressuposto
+extrínseco do recurso de agravo de instrumento, devendo o mesmo ser
+conhecido e a ele dado seguimento.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//25.4. Exercício de ação possessória
+José e Maria, todos trabalhadores da empresa Desejam Boa Sorte Ltda.,
+com o apoio do Sindicato Profissional de categoria, resolvem aderir à greve
+deflagrada pela categoria, objetivando pressionar a empresa a conceder reajuste
+salarial de 15%. Ocorre que eles invadiram a sede da empresa, acamparam no
+local e passaram a impedir que o empregador e outros empregados que não
+aderiram à greve ingressassem no estabelecimento. Outrossim, destruíram
+totalmente o automóvel da empresa avaliado em R$ 40.000,00. Na qualidade de
+advogado(a) da empresa Desejam Boa Sorte Ltda., promova a medida judicial
+cabível objetivando garantir o acesso do empregador e demais empregados à
+empresa.
+        
+RESOLUÇÃO
+AO DOUTO JUÍZO DA VARA DE TRABALHO DE ...
+DESEJAM BOA SORTE LTDA., qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe intimações e notificações,
+com fulcro nos art. 561 do CPC e art. 769 da CLT, PROPOR:
+AÇÃO DE REINTEGRAÇÃO DE POSSE COM PEDIDO DE LIMINAR
+em face de MARIA, qualificação e endereço completos, José, qualificação
+e endereço completos, e do SINDICATO..., na pessoa do seu presidente,
+Sr. ...., qualificação e endereço completos, pelas razões de fato e de direito
+a seguir expostas.
+I – DOS FATOS
+José e Maria, trabalhadores da empresa Desejam Boa Sorte Ltda., com o
+apoio do Sindicato Profissional de categoria, resolveram aderir à greve
+deflagrada pela categoria, objetivando pressionar a empresa a conceder
+reajuste salarial de 15%.
+Outrossim, destruíram totalmente o automóvel da empresa avaliado em
+R$ 40.000.00.
+II – DOS REQUISITOS ESPECÍFICOS
+1. Da competência da justiça do trabalho
+Nos termos da Súmula Vinculante 23 do STF e do art. 114, II, da CF, a
+Justiça do Trabalho é competente para processar e julgar ação possessória
+ajuizada em decorrência do exercício do direito de greve pelos trabalhadores
+da iniciativa privada.
+2. Prova da posse, do esbulho, da data do esbulho e da perda da posse
+Os documentos anexos comprovam a posse, o esbulho, a data deste e a
+perda da posse pela tomada dos trabalhadores e sindicatos da empresa,
+acampando na mesma, nos moldes do art. 561 do CPC.
+III – MÉRITO
+1. Reintegração
+O art. 560 do CPC estabelece que o possuidor tem direito a ser reintegrado
+na posse no caso de esbulho.
+Da mesma forma, o art. 1.210 do CC/2002 institui que o possuidor tem
+direito a ser restituído na posse em caso de esbulho.
+Embora garantido constitucionalmente (art. 9º da CF/88) e previsto na Lei
+no 7.783/89, à luz do art. 6º, § 1º, da Lei no 7.783/89, o movimento grevista
+deve ser pacífico, sendo que os meios adotados pelos empregados não
+poderão violar ou constranger os direitos e garantias fundamentais de
+outrem.
+Por outro lado, o mesmo art. 6º, em seu parágrafo § 3º, dispõe que as
+manifestações e atos de persuasão utilizados pelos grevistas não poderão
+impedir o acesso ao trabalho nem causar ameaça ou dano à propriedade
+ou pessoa.
+No presente caso, os atos praticados pelos trabalhadores grevistas,
+incentivados pelo Sindicato Profissional, constituem abuso do direito de
+greve e flagrante esbulho possessório a ser imediatamente repelido por
+este juízo através da expedição do competente mandado de liminar da
+reintegração de posse, uma vez que a demandante vem sofrendo prejuízo
+irreparável, seja pela destruição do seu patrimônio, seja pela
+impossibilidade de cumprir seus compromissos e gerenciar a empresa, em
+face do esbulho ilegalmente praticado.
+2. Indenização por perdas e danos
+Consoante referido, os trabalhadores, com o apoio do sindicato, destruíram
+totalmente o automóvel da empresa avaliado em R$ 40.000,00.
+Encontram-se presentes os requisitos da responsabilidade civil, previstos
+nos arts. 186 e 927 do CC, quais sejam: culpa, dano e nexo. Veja:
+
+A culpa resta caracterizada pela conduta ilícita praticada pelos
+trabalhadores ao destruírem o automóvel da empresa, uma vez que, nos
+termos do art. 6º, §§ 1º, e 3º, da Lei no 7.783/89, os grevistas não podem
+violar ou constranger os direitos e garantias fundamentais de outrem.
+O dano verifica-se pela destruição de um automóvel da empresa causando-
+lhe um prejuízo de R$ 40.000,00. E, por fim, o nexo também está presente,
+visto que o dano decorreu da conduta ilícita dos trabalhadores e seu
+sindicato.
+Consoante preceitua o art. 555, I, do CPC, é possível cumular pedido
+possessório com o de indenização por perdas e danos.
+Diante do exposto, requer a condenação dos réus ao ressarcimento do
+valor do prejuízo.
+IV – LIMINAR
+Requer, com fundamento no art. 562 do CPC, a expedição do mandado de
+reintegração de posse, sem ouvir o réu.
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a concessão do mandado de reintegração, em caráter liminar, sem
+oitiva da parte contrária, com base no art. 562 do CPC;
+b) a citação do réu, à luz do art. 564 do CPC, para, querendo, contestar a
+ação no prazo de 15 (quinze) dias úteis;
+c) a produção de todos os meios de prova em direito admitidos, em
+especial a prova documental, depoimento pessoal e oitiva de testemunhas;
+d) por fim, o julgamento procedente da ação de reintegração de posse,
+bem como a fixação de pena em caso de novo esbulho possessório e a
+condenação solidária dos demandados à indenização no valor de
+R$ 40.000,00 (quarenta mil reais), em virtude de eles terem destruído um
+veículo da empresa.
+Atribui-se à causa o valor de R$ 40.000,00.
+
+Nestes termos,
+pede deferimento.
+Local e data
+Advogado
+OAB no
+
 
 
 
