@@ -3,272 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard OAB 2ª Fase - Trabalho</title>
+    <title>Simulador OAB 2ª Fase (ABNT)</title>
+    
+    <!-- CSS Incorporado -->
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #e74c3c;
-            --text-light: #ecf0f1;
-            --bg: #f5f6fa;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg);
-            flex-direction: column;
+            padding: 0;
+            background-color: #f4f4f4;
         }
 
-        /* Top Bar & Timer */
         header {
-            background-color: var(--primary);
+            background-color: #333;
             color: white;
-            padding: 10px 20px;
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
         }
 
         #timer {
-            font-family: 'Courier New', Courier, monospace;
             font-size: 1.5rem;
-            color: #f1c40f;
             font-weight: bold;
+            color: #ffeb3b; /* Amarelo para destaque */
         }
 
-        /* Container Principal */
-        .wrapper {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Sidebar Responsiva */
-        nav {
-            width: 260px;
-            background-color: var(--secondary);
-            color: white;
-            overflow-y: auto;
-            transition: 0.3s;
-        }
-
-        nav h3 {
-            padding: 15px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            border-bottom: 1px solid #456789;
-        }
-
-        nav button {
-            width: 100%;
-            padding: 12px 15px;
-            background: none;
-            border: none;
-            color: white;
-            text-align: left;
-            cursor: pointer;
-            border-bottom: 1px solid #2c3e50;
-        }
-
-        nav button:hover { background: #456789; }
-
-        /* Área de Conteúdo */
         main {
+            display: flex;
+            margin: 1rem;
+        }
+
+        .sidebar {
             flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 240px;
+            max-height: 80vh; 
+            overflow-y: auto; 
         }
 
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        .sidebar h2 {
+            margin-top: 0;
         }
 
-        /* Abas Internas */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ddd;
-        }
-
-        .tab-btn {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background: #ddd;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #007bff;
             color: white;
+            border: none;
+            cursor: pointer;
+            text-align: left;
         }
 
-        .tab-content { display: none; padding: 15px 0; }
-        .tab-content.active { display: block; }
+        .sidebar button:hover {
+            background-color: #0056b3;
+        }
 
-        /* Estilo Texto Jurídico */
-        .peca-text {
-            font-family: 'Times New Roman', serif;
+        .content {
+            flex: 4;
+            margin-left: 1rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #gabarito-output {
+            margin-top: 1rem;
+            padding: 2rem; 
+            background-color: #fff;
+            font-family: "Times New Roman", Times, serif; 
+            line-height: 1.5; 
             font-size: 12pt;
-            line-height: 1.5;
+        }
+        
+        /* Estilo para parágrafos: Recuo de primeira linha */
+        #gabarito-output p {
+            text-indent: 1.25cm; 
+            margin-top: 0;
+            margin-bottom: 1em;
             text-align: justify;
         }
 
-        /* Campos de Edição */
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            resize: vertical;
+        /* Títulos centrados */
+        #gabarito-output .center {
+            text-align: center;
+            text-indent: 0; /* Remove o recuo dos títulos */
+            font-weight: bold;
+            margin-bottom: 1em;
         }
-
-        .grid-correcoes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+        
+        /* Itens de lista (pedidos) */
+        #gabarito-output ul {
+            list-style-type: lower-alpha;
+            padding-left: 1.25cm;
         }
-
-        .box-correcao {
-            border: 1px solid #ddd;
-            padding: 10px;
-            background: #fff9e6;
-            border-radius: 5px;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .wrapper { flex-direction: column; }
-            nav { width: 100%; height: 200px; }
-            header h1 { font-size: 1rem; }
+        #gabarito-output li {
+            margin-bottom: 0.5em;
+            text-indent: 0; /* Remove recuo dos itens da lista */
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>OAB Trabalho 2026</h1>
-    <div id="timer">05:00:00</div>
-</header>
+    <header>
+        <h1>Simulador OAB 2ª Fase</h1>
+        <div id="timer">05:00:00</div>
+    </header>
 
-<div class="wrapper">
-    <nav>
-        <h3>Peças Processuais</h3>
-        <button onclick="selecionarPeca('rt1')">Reclamação Trabalhista 01</button>
-        <button onclick="selecionarPeca('consigna1')">Consignação em Pagamento</button>
-        <button onclick="selecionarPeca('cont1')">Contestação</button>
-        <button onclick="selecionarPeca('ro1')">Recurso Ordinário</button>
-        
-        <h3>Minha Legislação</h3>
-        <button onclick="abrirLegislacao()">📝 Editar Súmulas/Artigos</button>
-    </nav>
-
-    <main id="main-content">
-        <div class="card" id="welcome-msg">
-            <h2>Bem-vindo ao seu Dashboard de Estudos</h2>
-            <p>Selecione uma peça no menu lateral para começar o simulado ou revisar correções.</p>
-        </div>
-
-        <div id="peca-container" style="display:none;">
-            <h2 id="peca-titulo">Título da Peça</h2>
+    <main>
+        <nav class="sidebar">
+            <h2>Tipos de Peça</h2>
             
-            <div class="tabs">
-                <button class="tab-btn active" onclick="showTab(event, 'gabarito')">Gabarito</button>
-                <button class="tab-btn" onclick="showTab(event, 'fundamentacao')">Fundamentação</button>
-                <button class="tab-btn" onclick="showTab(event, 'correcoes')">Caderno de Erros (10)</button>
-            </div>
+            <!-- LISTA COMPLETA DE BOTÕES -->
+            <button onclick="loadGabarito('rt', 1)">Reclamação Trabalhista (RT) 1</button>
+            <button onclick="loadGabarito('consigna', 1)">Consignação em Pagamento 1</button>
+            <button onclick="loadGabarito('consigna', 2)">Consignação em Pagamento 2</button>
+            <button onclick="loadGabarito('inquerito', 1)">Inquérito (Falta Grave) 1</button>
+            <button onclick="loadGabarito('inquerito', 2)">Inquérito (Falta Grave) 2</button>
+            <button onclick="loadGabarito('inquerito', 3)">Inquérito (Falta Grave) 3</button>
+            <button onclick="loadGabarito('cont', 1)">Contestação 1</button>
+            <button onclick="loadGabarito('ed', 1)">Embargos de Declaração (ED) 1</button>
+            <button onclick="loadGabarito('replica', 1)">Réplica à Contestação 1</button>
+            <button onclick="loadGabarito('ro', 1)">Recurso Ordinário (RO) 1</button>
+            <button onclick="loadGabarito('rade', 1)">Recurso Adesivo (RAde) 1</button>
+            <button onclick="loadGabarito('ai', 1)">Agravo de Instrumento (AI) 1</button>
+            <button onclick="loadGabarito('rr', 1)">Recurso de Revista (RR) 1</button>
+            <button onclick="loadGabarito('emb_tst', 1)">Embargos ao TST 1</button>
+            <button onclick="loadGabarito('re_stf', 1)">Recurso Extraordinário (RE STF) 1</button>
+            <button onclick="loadGabarito('emb_exec', 1)">Embargos à Execução 1</button>
+            <button onclick="loadGabarito('epe', 1)">Exceção de Pré-Executividade 1</button>
+            <button onclick="loadGabarito('ap', 1)">Agravo de Petição (AP) 1</button>
+            <button onclick="loadGabarito('emb_terc', 1)">Embargos de Terceiro 1</button>
+            <button onclick="loadGabarito('ms', 1)">Mandado de Segurança (MS) 1</button>
+            <button onclick="loadGabarito('ar', 1)">Ação Rescisória (AR) 1</button>
+            
+        </nav>
 
-            <!-- Gabarito -->
-            <div id="gabarito" class="tab-content active peca-text">
-                Conteúdo do Gabarito...
+        <section class="content">
+            <h2>Conteúdo do Gabarito</h2>
+            <div id="gabarito-output">
+                Selecione um gabarito no menu ao lado para visualizar o conteúdo.
             </div>
-
-            <!-- Fundamentação -->
-            <div id="fundamentacao" class="tab-content">
-                <h3>Artigos, OJs e Súmulas</h3>
-                <div id="fundamentos-view" style="background:#e8f4fd; padding:15px; border-radius:8px;">
-                    <!-- Lista automática de fundamentos -->
-                </div>
-            </div>
-
-            <!-- Caderno de Erros -->
-            <div id="correcoes" class="tab-content">
-                <h3>Minhas 10 Correções & Dicas da Professora</h3>
-                <div class="grid-correcoes">
-                    <!-- Gerado por JS -->
-                    <div class="box-correcao"><strong>1ª Correção:</strong> <textarea placeholder="O que errei?"></textarea></div>
-                    <div class="box-correcao"><strong>Dica Professora:</strong> <textarea placeholder="Anotações da aula..."></textarea></div>
-                    <!-- Repetir até 10 via JS ou manualmente -->
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
-</div>
 
-<script>
-    // Banco de Dados das Peças
-    const dbPecas = {
-        'rt1': {
-            titulo: "Reclamação Trabalhista - José Fininho",
-            texto: "<p><p>1.2. EXERC&Iacute;CIO I DE RECLAMA&Ccedil;&Atilde;O TRABALHISTA<br>Jos&eacute; Fininho foi contratado pela empresa Heart Attack Grill Ltda., para<br>trabalhar na cidade de Florian&oacute;polis/SC, como gar&ccedil;om, mediante sal&aacute;rio de<br>R$ 2.000,00.<br>O empregado afirma que uma das especialidades da Lanchonete era o<br>sandu&iacute;che denominado quadruple bypass com 4 hamb&uacute;rgueres: 1 quilo de carne<br>e 8.000 calorias.<br>Relata que foi contratado no mesmo dia em que Juan para exercer a mesma<br>fun&ccedil;&atilde;o, na mesma filial. O trabalho se dava com a mesma perfei&ccedil;&atilde;o t&eacute;cnica e<br>produtividade, por&eacute;m Juan recebia sal&aacute;rio fixo de R$ 2.500,00 por m&ecirc;s.<br>O senhor Fininho conta que, em janeiro do ano da extin&ccedil;&atilde;o do contrato, faltou<br>ao trabalho por um dia para comparecer em ju&iacute;zo como parte no processo em que<br>litigava contra seu ex-empregador. Embora tenha apresentado a certid&atilde;o da<br>Justi&ccedil;a do Trabalho confirmando suas alega&ccedil;&otilde;es, o dia foi descontado do seu<br>sal&aacute;rio.<br>O empregado comenta tamb&eacute;m que trabalhava 8 horas di&aacute;rias de segunda<br>a sexta-feira e usufru&iacute;a de apenas 30 minutos de intervalo intrajornada.<br>No curso do contrato, o empregador depositava apenas 4% do valor da<br>remunera&ccedil;&atilde;o a t&iacute;tulo de FGTS, pois havia acordo coletivo de trabalho autorizando<br>o recolhimento de apenas metade do valor.<br>Na qualidade de advogado(a) do reclamante, apresente a medida<br>processual cab&iacute;vel para a defesa de seus direitos.<br>Nos casos em que a lei exigir liquida&ccedil;&atilde;o de valores, n&atilde;o se faz necess&aacute;ria<br>sua apresenta&ccedil;&atilde;o pelo Examinando, pois admite-se que o escrit&oacute;rio possui setor<br>pr&oacute;prio ou contratado especificamente para tal fim. (Valor: 5,00)<br><br>RESOLU&Ccedil;&Atilde;O<br>AO DOUTO JU&Iacute;ZO DA ... VARA DO TRABALHO DE<br>FLORIAN&Oacute;POLIS/SC<br>JOS&Eacute; FININHO, gar&ccedil;om, qualifica&ccedil;&atilde;o e endere&ccedil;o completos, vem,<br>respeitosamente, perante Vossa Excel&ecirc;ncia, por interm&eacute;dio de seu<br>advogado adiante assinado (procura&ccedil;&atilde;o anexa), com escrit&oacute;rio<br>profissional no endere&ccedil;o completo, onde recebe intima&ccedil;&otilde;es ou<br>notifica&ccedil;&otilde;es, com fulcro no art. 840, caput e &sect; 1&ordm;, da CLT, PROPOR:<br>RECLAMA&Ccedil;&Atilde;O TRABALHISTA, pelo rito (...)<br>em face de HEART ATTACK GRILL LTDA., qualifica&ccedil;&atilde;o e endere&ccedil;o<br>completos, e SINDICATO DOS EMPREGADOS ..., qualifica&ccedil;&atilde;o e endere&ccedil;o completos, pelas raz&otilde;es de fato e de direito a seguir expostas.<br>I &ndash; M&Eacute;RITO<br>1. Equipara&ccedil;&atilde;o salarial<br>O reclamante foi contratado pela reclamada no mesmo dia em que Juan<br>para exercer a mesma fun&ccedil;&atilde;o, na mesma filial, com a mesma<br>produtividade e perfei&ccedil;&atilde;o t&eacute;cnica, por&eacute;m, enquanto recebia R$ 2.000,00,<br>o seu colega recebia sal&aacute;rio fixo de R$ 2.500,00 por m&ecirc;s.<br>Nos termos do art. 461, caput e &sect; 1&ordm;, da CLT, &eacute; devido o mesmo sal&aacute;rio<br>aos empregados do mesmo empregador que exer&ccedil;am a mesma fun&ccedil;&atilde;o,<br>no mesmo estabelecimento comercial, com a mesma produtividade e<br>perfei&ccedil;&atilde;o t&eacute;cnica e cuja diferen&ccedil;a de tempo de servi&ccedil;o para o mesmo<br>empregador n&atilde;o seja superior a quatro anos e de tempo na fun&ccedil;&atilde;o n&atilde;o<br>seja superior a dois anos.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada ao pagamento<br>das diferen&ccedil;as salariais, bem como de seus reflexos nas verbas<br>contratuais e rescis&oacute;rias (aviso pr&eacute;vio, d&eacute;cimo terceiro, f&eacute;rias acrescidas<br>de 1/3 e FGTS - dep&oacute;sitos e multa de 40%).<br>Por fim, requer a retifica&ccedil;&atilde;o da CTPS do empregado para constar o seu<br>real sal&aacute;rio, no valor e R$ 2.500,00, nos termos do art. 29, &sect; 1&ordm;, da CLT.<br>R$<br>2. Devolu&ccedil;&atilde;o do desconto<br>A reclamada descontou do sal&aacute;rio do reclamante um dia de trabalho no<br>m&ecirc;s de janeiro do ano da extin&ccedil;&atilde;o do contrato, em raz&atilde;o de o reclamante<br>ter faltado ao trabalho para comparecer em ju&iacute;zo como parte no processo<br>em que litigava contra seu antigo empregador, muito embora tivesse<br>apresentado certid&atilde;o da Justi&ccedil;a do Trabalho confirmando suas<br>alega&ccedil;&otilde;es.<br>Com base no art. 473, VIII, da CLT e s&uacute;mula 155, TST, o empregado<br>poder&aacute; deixar de comparecer ao servi&ccedil;o para comparecimento como<br>parte na Justi&ccedil;a do Trabalho.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada &agrave; devolu&ccedil;&atilde;o do<br>dia de trabalho descontado de seu sal&aacute;rio. R$<br>3. Intervalo intrajornada<br>O reclamante trabalhava 8 horas di&aacute;rias de segunda a sexta-feira e<br>usufru&iacute;a de apenas 30 minutos de intervalo intrajornada.<br>Nos termos do art. 71, caput, da CLT, aqueles que laboram mais de 6<br>horas di&aacute;rias fazem jus a um intervalo intrajornada de, no m&iacute;nimo, 1 hora,<br>o qual n&atilde;o era observado.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada ao pagamento do<br>per&iacute;odo suprimido, ou seja, de 30 minutos di&aacute;rios, acrescidos de 50%, &agrave;<br>luz do art. 71, &sect; 4&ordm;, da CLT. R$<br>4. Diferen&ccedil;as de FGTS<br>No curso do contrato, o empregador depositava apenas 4% do valor da<br>remunera&ccedil;&atilde;o do reclamante a t&iacute;tulo de FGTS, pois havia acordo coletivo<br>de trabalho autorizando o recolhimento de apenas metade do valor.<br>Nos termos do art. 611-B, III, da CLT, &eacute; il&iacute;cita e, portanto, nula a cl&aacute;usula<br>de acordo coletivo de trabalho que implique redu&ccedil;&atilde;o do valor dos<br>dep&oacute;sitos mensais do FGTS. Ressalte-se que, o art. 15 da Lei n&ordm;<br>8.036/90 determina que os dep&oacute;sitos do FGTS devem ser de 8% da<br>remunera&ccedil;&atilde;o paga ou devida ao trabalhador no m&ecirc;s anterior.<br>Diante do exposto, requer a declara&ccedil;&atilde;o de nulidade da cl&aacute;usula do<br>acordo coletivo de trabalho que estabelece a redu&ccedil;&atilde;o dos dep&oacute;sitos do<br>FGTS e a condena&ccedil;&atilde;o da reclamada ao pagamento das diferen&ccedil;as<br>salariais. R$<br>5. Honor&aacute;rios advocat&iacute;cios<br>Requer a condena&ccedil;&atilde;o da reclamada ao pagamento de honor&aacute;rios<br>advocat&iacute;cios, no importe de 15%, sobre o valor que resultar da liquida&ccedil;&atilde;o,<br>&agrave; luz do art. 791-A da CLT. R$<br>II &ndash; PEDIDOS<br>Diante do exposto, requer:<br>a) a condena&ccedil;&atilde;o da reclamada ao pagamento das diferen&ccedil;as salariais,<br>bem como de seus reflexos nas verbas contratuais e rescis&oacute;rias<br>R$ ............................................................................. ;<br>b) a condena&ccedil;&atilde;o da reclamada &agrave; devolu&ccedil;&atilde;o do dia de trabalho<br>descontado de seu sal&aacute;rio ................................. R$ .... ;<br>c) a condena&ccedil;&atilde;o da reclamada ao pagamento do per&iacute;odo suprimido, ou<br>seja, de 30 minutos di&aacute;rios, acrescidos de 50%, nos termos do art.<br>71, &sect; 4&ordm;, da CLT ............................................. R$.... ;<br>d) a declara&ccedil;&atilde;o de nulidade da cl&aacute;usula do acordo coletivo de trabalho<br>que institui a redu&ccedil;&atilde;o dos dep&oacute;sitos do FGTS e a condena&ccedil;&atilde;o da<br>reclamada ao pagamento das diferen&ccedil;as salariais;<br>e) a condena&ccedil;&atilde;o da reclamada ao pagamento de honor&aacute;rios<br>advocat&iacute;cios, no importe de 15% sobre o valor que resultar da<br>liquida&ccedil;&atilde;o, &agrave; luz do art. 791-A da CLT.<br>III &ndash; REQUERIMENTOS FINAIS<br>Diante do exposto, requer:<br>a) a notifica&ccedil;&atilde;o da Reclamada e do Sindicato dos Empregados em...,<br>para oferecer resposta &agrave; reclama&ccedil;&atilde;o trabalhista, sob pena de revelia<br>e confiss&atilde;o quanto &agrave; mat&eacute;ria de fato;<br>b) a produ&ccedil;&atilde;o de todos os meios de prova em direito admitidos, em<br>especial a prova documental, o depoimento pessoal e a oitiva de testemunhas; e<br>c) por fim, a proced&ecirc;ncia dos pedidos com a condena&ccedil;&atilde;o da<br>reclamada ao pagamento das verbas pleiteadas, acrescidas de<br>juros e corre&ccedil;&atilde;o monet&aacute;ria.<br>Atribui-se &agrave; causa o valor de R$... .<br>Nestes termos,<br>pede deferimento.<br>Local e data.<br>Advogado(a)<br>OAB n&ordm;</p></p>",
-            fundamentos: "Art. 840, §1º CLT; Súmula 155 TST; Art. 461 CLT (Equiparação); Art. 71 CLT (Intervalo)."
-        },
-        'consigna1': {
-            titulo: "Ação de Consignação em Pagamento - Zenga Modas",
-            texto: "<p>AO DOUTO JUÍZO DA... [Texto da Consignação]</p>",
-            fundamentos: "Art. 539 CPC; Art. 769 CLT; Art. 477 CLT."
+    <script>
+        // --- SEUS DADOS DE GABARITO (Com RT e Consignação formatadas em HTML/ABNT) ---
+        window.dbGabaritosExternos = {
+            'rt': {
+                1: `<p class="center">AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE FLORIANÓPOLIS/SC</p>
+                    <p><strong>JOSÉ FININHO</strong>, garçom, qualificação e endereço completos, vem, respeitosamente, perante Vossa Excelência, por intermédio de seu advogado adiante assinado (procuração anexa), com escritório profissional no endereço completo, onde recebe intimações ou notificações, com fulcro no art. 840, caput e § 1o, da CLT, PROPOR:</p>
+                    <p class="center"><strong>RECLAMAÇÃO TRABALHISTA, pelo rito (...)</strong></p>
+                    <p>em face de <strong>HEART ATTACK GRILL LTDA.</strong>, qualificação e endereço completos, e SINDICATO DOS EMPREGADOS ..., qualificação e endereço completos, pelas razões de fato e de direito a seguir expostas.</p>
+                    
+                    <p><strong>I – MÉRITO</strong></p>
+                    <p><strong>1. Equiparação salarial</strong></p>
+                    <p>O reclamante foi contratado pela reclamada no mesmo dia em que Juan para exercer a mesma função, na mesma filial, com a mesma produtividade e perfeição técnica, porém, enquanto recebia R$ 2.000,00, o seu colega recebia salário fixo de R$ 2.500,00 por mês.</p>
+                    <p>Nos termos do art. 461, caput e § 1o, da CLT, é devido o mesmo salário aos empregados do mesmo empregador que exerçam a mesma função, no mesmo estabelecimento comercial, com a mesma produtividade e perfeição técnica e cuja diferença de tempo de serviço para o mesmo empregador não seja superior a quatro anos e de tempo na função não seja superior a dois anos.</p>
+                    <p>Diante do exposto, requer a condenação da reclamada ao pagamento das diferenças salariais, bem como de seus reflexos nas verbas contratuais e rescisórias (aviso prévio, décimo terceiro, férias acrescidas de 1/3 e FGTS - depósitos e multa de 40%). Por fim, requer a retificação da CTPS do empregado para constar o seu real salário, no valor e R$ 2.500,00, nos termos do art. 29, § 1o, da CLT. R$</p>
+                    
+                    <p><strong>2. Devolução do desconto</strong></p>
+                    <p>A reclamada descontou do salário do reclamante um dia de trabalho no mês de janeiro do ano da extinção do contrato, em razão de o reclamante ter faltado ao trabalho para comparecer em juízo como parte no processo em que litigava contra seu antigo empregador, muito embora tivesse apresentado certidão da Justiça do Trabalho confirmando suas alegações.</p>
+                    <p>Com base no art. 473, VIII, da CLT e súmula 155, TST, o empregado poderá deixar de comparecer ao serviço para comparecimento como parte na Justiça do Trabalho.</p>
+                    <p>Diante do exposto, requer a condenação da reclamada à devolução do dia de trabalho descontado de seu salário. R$</p>
+                    
+                    <p><strong>3. Intervalo intrajornada</strong></p>
+                    <p>O reclamante trabalhava 8 horas diárias de segunda a sexta-feira e usufruía de apenas 30 minutos de intervalo intrajornada.</p>
+                    <p>Nos termos do art. 71, caput, da CLT, aqueles que laboram mais de 6 horas diárias fazem jus a um intervalo intrajornada de, no mínimo, 1 hora, o qual não era observado.</p>
+                    <p>Diante do exposto, requer a condenação da reclamada ao pagamento do período suprimido, ou seja, de 30 minutos diários, acrescidos de 50%, à luz do art. 71, § 4o, da CLT. R$</p>
+                    
+                    <p><strong>4. Diferenças de FGTS</strong></p>
+                    <p>No curso do contrato, o empregador depositava apenas 4% do valor da remuneração do reclamante a título de FGTS, pois havia acordo coletivo de trabalho autorizando o recolhimento de apenas metade do valor.</p>
+                    <p>Nos termos do art. 611-B, III, da CLT, é ilícita e, portanto, nula a cláusula de acordo coletivo de trabalho que implique redução do valor dos depósitos mensais do FGTS. Ressalte-se que, o art. 15 da Lei no 8.036/90 determina que os depósitos do FGTS devem ser de 8% da remuneração paga ou devida ao trabalhador no mês anterior.</p>
+                    <p>Diante do exposto, requer a declaração de nulidade da cláusula do acordo coletivo de trabalho que estabelece a redução dos depósitos do FGTS e a condenação da reclamada ao pagamento das diferenças salariais. R$</p>
+
+                    <p><strong>5. Honorários advocatícios</strong></p>
+                    <p>Requer a condenação da reclamada ao pagamento de honorários advocatícios, no importe de 15%, sobre o valor que resultar da liquidação, à luz do art. 791-A da CLT. R$</p>
+
+                    <p><strong>II – PEDIDOS</strong></p>
+                    <p>Diante do exposto, requer:</p>
+                    <ul>
+                        <li>a) a condenação da reclamada ao pagamento das diferenças salariais, bem como de seus reflexos nas verbas contratuais e rescisórias R$ ............................................................................. ;</li>
+                        <li>b) a condenação da reclamada à devolução do dia de trabalho descontado de seu salário ................................. R$ ....;</li>
+                        <li>c) a condenação da reclamada ao pagamento do período suprimido, ou seja, de 30 minutos diários, acrescidos de 50%, nos termos do art. 71, § 4o, da CLT ............................................. R$....;</li>
+                        <li>d) a declaração de nulidade da cláusula do acordo coletivo de trabalho que institui a redução dos depósitos do FGTS e a condenação da reclamada ao pagamento das diferenças salariais;</li>
+                        <li>e) a condenação da reclamada ao pagamento de honorários advocatícios, no importe de 15% sobre o valor que resultar da liquidação, à luz do art. 791-A da CLT.</li>
+                    </ul>
+
+                    <p><strong>III – REQUERIMENTOS FINAIS</strong></p>
+                    <p>Diante do exposto, requer:</p>
+                    <p>a) a notificação da Reclamada e do Sindicato dos Empregados em..., para oferecer resposta à reclamação trabalhista, sob pena de revelia e confissão quanto à matéria de fato;</p>
+                    <p>b) a produção de todos os meios de prova em direito admitidos, em especial a prova documental, o depoimento pessoal e a oitiva de testemunhas; e</p>
+                    <p>c) por fim, a procedência dos pedidos com a condenação da reclamada ao pagamento das verbas pleiteadas, acrescidas de juros e correção monetária.</p>
+
+                    <p>Atribui-se à causa o valor de R$... .</p>
+
+                    <p>Nestes termos,<br>
+                    pede deferimento.</p>
+
+                    <p class="center">RECLAMAÇÃO TRABALHISTA, pelo rito (...) em face de HEART ATTACK GRILL LTDA.</p>
+                    <p class="center">Advogado(a)<br>
+                    OAB no</p>`
+            },
+            'consigna': {
+                1: `<p class="center">AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.</p>
+                    <p>ZENGA MODAS LTDA., pessoa jurídica de direito privado, inscrita no CNPJ sob o no 1.1.0001/00, com sede na Rua Lopes Quintas, 10, Maceió/AL, vem, respeitosamente, perante Vossa Excelência, por intermédio de seu advogado adiante assinado (procuração anexa), com escritório profissional no endereço completo, onde recebe intimações e notificações, com fulcro no art. 539 do CPC c/c art. 769 da CLT, PROPOR:</p>
+                    
+                    <p class="center"><strong>AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO</strong></p>
+                    
+                    <p>em face de JOANA FIRMINO, brasileira, casada, costureira, residente na Rua Lopes Andrade, 20, Maceió/AL, CEP: 10.0001-00, pelas razões de fato e de direito a seguir expostas.</p>
+                    
+                    <p><strong>I – FATOS</strong></p>
+                    <p>A consignatária foi contratada por Zenga Modas Ltda., em 12.09.2008, para exercer a função de costureira, na unidade de Maceió/AL, sendo dispensada sem justa causa em 11.10.2012, mediante aviso-prévio indenizado. Em seu armário, foi encontrado um telefone celular de sua propriedade. Joana foi cientificada de que, no dia 15.10.2012, às 10h, deveria comparecer na empresa para receber suas verbas rescisórias. Contudo, na data e hora designadas, a empregada não compareceu. A consignante tem o intuito de pagar as verbas devidas à consignatária, razão pela qual propôs a presente medida processual.</p>
+                    
+                    <p><strong>II – MÉRITO</strong></p>
+                    <p>Em razão da extinção do contrato de trabalho sem justa causa, são devidas à consignatária as seguintes verbas, no importe de R$ ..., as quais a consignante pretende depositar com o objetivo de que seja declarada extinta a obrigação:</p>
+                    
+                    <ul>
+                        <li>a) Saldo de salário (11 dias)...............................R$.............</li>
+                        <li>b) Aviso-prévio (42 dias) ....................................R$.............</li>
+                        <li>c) 13º salário proporcional (11/12)......................R$.............</li>
+                        <li>d) Férias em dobro – 2010/2011 + 1/3 ...............R$.............</li>
+                        <li>e) Férias + 1/3 (2011/2012)................................R$.............</li>
+                        <li>f) Férias proporcionais (2/12) + 1/3 ....................R$.............</li>
+                        <li>g) Multa de 40% do FGTS..................................R$.............</li>
+                    </ul>
+                    
+                    <p>Total devido .......................................................R$.............</p>
+                    <p>Requer, ainda, a devolução do aparelho celular e a entrega da CTPS, nos moldes do art. 542, I, do CPC. Postula a consignante o depósito das verbas, do celular e da CTPS, visando à extinção da obrigação, nos termos do art. 546 do CPC. Postula também o depósito dos documentos que comprovam a comunicação da extinção do contrato de trabalho aos órgãos competentes para acesso da consignatária ao seguro-desemprego e ao FGTS.</p>
+                    <p>Ressalte-se que, por não haver atraso no pagamento das verbas rescisórias, é indevida a multa prevista no art. 477, § 8º, da CLT.</p>
+
+                    <p><strong>III – REQUERIMENTOS FINAIS</strong></p>
+                    <p>Diante do exposto, requer:</p>
+                    <ul>
+                        <li>a) o deferimento do depósito dos valores referidos, do aparelho celular e da CTPS (art. 542, I, do CPC);</li>
+                        <li>b) a citação da consignatária para levantar os valores, o aparelho celular e a CTPS depositados com efeito de quitação ou oferecer resposta, sob pena de revelia e declaração da extinção da obrigação (art. 542, II, do CPC);</li>
+                        <li>c) a produção de todos os meios de prova em direito admitidos, em especial a prova documental;</li>
+                        <li>d) a procedência do pedido com a declaração de extinção da obrigação e condenação da consignatária ao pagamento de custas e honorários advocatícios no importe 15%, com base no art. 791-A da CLT.</li>
+                    </ul>
+
+                    <p>Atribui-se à causa o valor de R$....</p>
+
+                    <p>Nestes termos,<br>
+                    pede deferimento.</p>
+
+                    <p>Local e data.</p>
+
+                    <p class="center">Advogado<br>
+                    OAB no</p>`
+            },
+            2: `Cole aqui o texto da Consignação em Pagamento - Gabarito 2...`
+            },
+            'inquerito': {
+                1: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 1...`,
+                2: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 2...`,
+                3: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 3...`
+            },
+            'cont': {
+                1: `Cole aqui o texto da Contestação...`
+            },
+            'ed': {
+                1: `Cole aqui o texto dos Embargos de Declaração...`
+            },
+            'replica': {
+                1: `Cole aqui o texto da Réplica à Contestação...`
+            },
+            'ro': {
+                1: `Cole aqui o texto do Recurso Ordinário...`
+            },
+            'rade': {
+                1: `Cole aqui o texto do Recurso Adesivo...`
+            },
+            'ai': {
+                1: `Cole aqui o texto do Agravo de Instrumento...`
+            },
+            'rr': {
+                1: `Cole aqui o texto do Recurso de Revista...`
+            },
+            'emb_tst': {
+                1: `Cole aqui o texto dos Embargos ao TST...`
+            },
+            're_stf': {
+                1: `Recurso Extraordinário...`
+            },
+            'emb_exec': {
+                1: `Embargos à Execução...`
+            },
+            'epe': {
+                1: `Exceção de Pré-Executividade...`
+            },
+            'ap': {
+                1: `Agravo de Petição...`
+            },
+            'emb_terc': {
+                1: `Embargos de Terceiro...`
+            },
+            'ms': {
+                1: `Mandado de Segurança...`
+            },
+            'ar': {
+                1: `Ação Rescisória...`
+            }
+        };
+        // --- FIM DOS DADOS DE GABARITO ---
+
+
+        // --- Lógica do Visualizador de Gabaritos ---
+        function loadGabarito(tipo, numero) {
+            const outputDiv = document.getElementById('gabarito-output');
+            
+            if (!outputDiv) return; 
+
+            if (window.dbGabaritosExternos && 
+                window.dbGabaritosExternos[tipo] && 
+                window.dbGabaritosExternos[tipo][numero]) {
+                
+                const gabaritoText = window.dbGabaritosExternos[tipo][numero];
+                outputDiv.innerHTML = gabaritoText; 
+                
+            } else {
+                outputDiv.innerHTML = `<p style="color: red;">Gabarito ${tipo.toUpperCase()} ${numero} não encontrado no arquivo de dados.</p>`;
+            }
         }
-    };
 
-    function selecionarPeca(id) {
-        const peca = dbPecas[id];
-        document.getElementById('welcome-msg').style.display = 'none';
-        document.getElementById('peca-container').style.display = 'block';
-        document.getElementById('peca-titulo').innerText = peca.titulo;
-        document.getElementById('gabarito').innerHTML = peca.texto;
-        document.getElementById('fundamentos-view').innerText = peca.fundamentos;
-    }
+        // --- Lógica do Cronômetro (5 horas para OAB 2ª fase) ---
+        let timeLeft = 5 * 60 * 60; 
+        const timerElement = document.getElementById('timer');
 
-    function showTab(evt, tabName) {
-        let contents = document.getElementsByClassName("tab-content");
-        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-        
-        let btns = document.getElementsByClassName("tab-btn");
-        for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-        
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
+        function updateTimer() {
+            if (!timerElement) return;
 
-    function abrirLegislacao() {
-        alert("Recurso de edição: Use os textareas para salvar seus artigos preferidos da CLT e CC!");
-    }
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
 
-    // Cronômetro 5 horas
-    let timeLeft = 5 * 60 * 60;
-    const timerDisplay = document.getElementById('timer');
+            const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerElement.textContent = display;
 
-    setInterval(() => {
-        let h = Math.floor(timeLeft / 3600);
-        let m = Math.floor((timeLeft % 3600) / 60);
-        let s = timeLeft % 60;
-        timerDisplay.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if(timeLeft > 0) timeLeft--;
-    }, 1000);
-</script>
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = "TEMPO ESGOTADO!";
+                timerElement.style.color = "#dc3545";
+                alert("Tempo da prova esgotado!");
+            } else {
+                timeLeft--;
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+    </script>
+
 </body>
 </html>
-
