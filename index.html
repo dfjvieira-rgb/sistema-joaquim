@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace Pro</title>
+    <title>SISTEMA JOAQUIM - Workspace Total</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -22,6 +22,7 @@
             overflow: hidden;
         }
 
+        /* HEADER E TABS */
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
@@ -32,7 +33,11 @@
             display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 100;
         }
 
-        body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
+        /* MODO ZEN - AGORA COBRE TUDO NO MOBILE TAMBÉM */
+        body.zen-mode header, 
+        body.zen-mode .tabs-container { 
+            display: none !important; 
+        }
 
         .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
@@ -43,12 +48,15 @@
         
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
 
+        /* BOTÃO ZEN FLUTUANTE */
         .btn-zen {
             position: absolute; bottom: 20px; right: 20px; z-index: 2000;
             background: var(--primary); color: white; border: none;
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
+            opacity: 0.9;
         }
+        body.zen-mode .btn-zen { background: var(--danger); }
 
         /* SIDEBAR */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
@@ -65,20 +73,20 @@
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
         /* DIVISOR */
-        .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
         .resizer:hover { background: var(--accent); }
 
         /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; -webkit-overflow-scrolling: touch; }
         
-        /* Classes de Foco Corrigidas */
-        .pdf-box.expanded { flex: 20 !important; }
+        .pdf-box.expanded { flex: 25 !important; }
         .pdf-box.collapsed { flex: 0.1 !important; min-height: 40px; }
 
         .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
         .header-actions { display: flex; gap: 5px; }
         .action-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
+        .open-btn { background: var(--warning); color: black; }
         
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
@@ -87,8 +95,11 @@
             .resizer, .sidebar-section { display: none !important; }
             main { flex-direction: column; }
             .content-section { display: none !important; }
-            .content-section.active-mobile { display: flex !important; }
-            #menu { padding: 20px; box-sizing: border-box; }
+            .content-section.active-mobile { display: flex !important; width: 100% !important; height: 100% !important; }
+            
+            /* No Mobile Zen, removemos as bordas para ganhar cada pixel */
+            body.zen-mode .pdf-section { padding: 0; gap: 0; }
+            body.zen-mode .pdf-header { display: none; }
         }
     </style>
 </head>
@@ -128,6 +139,7 @@
             <div class="pdf-header">
                 <span>📄 ENUNCIADO</span>
                 <div class="header-actions">
+                    <button class="action-btn open-btn" onclick="abrirExterno('view-enunciado')">↗ ABRIR</button>
                     <button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button>
                 </div>
             </div>
@@ -138,6 +150,7 @@
             <div class="pdf-header">
                 <span>✅ GABARITO</span>
                 <div class="header-actions">
+                    <button class="action-btn open-btn" onclick="abrirExterno('view-gabarito')">↗ ABRIR</button>
                     <button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button>
                 </div>
             </div>
@@ -155,6 +168,7 @@
         document.querySelectorAll('.btn-zen').forEach(b => {
             b.textContent = isZen ? "🔙 VOLTAR" : "↕ EXPANDIR";
         });
+        // Força o recálculo de layout para o iPad e Mobile
         setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
     }
 
@@ -167,42 +181,34 @@
         if(btn) btn.classList.add('active');
     }
 
-    // FUNÇÃO DE FOCO CORRIGIDA PARA COMPUTADOR
     function focarPdf(tipo) {
         const e = document.getElementById('box-enunciado');
         const g = document.getElementById('box-gabarito');
         const editor = document.getElementById('escrita');
 
         if(window.innerWidth > 900) {
-            // No PC, se clicar em foco, resetamos o flex-basis do arraste para não travar
             editor.style.flex = "1"; 
-            
             if(tipo === 'enunciado') {
-                const isAlreadyExpanded = e.classList.contains('expanded');
-                // Limpa classes
+                const isExpanded = e.classList.contains('expanded');
                 e.classList.remove('expanded', 'collapsed');
                 g.classList.remove('expanded', 'collapsed');
-                
-                if(!isAlreadyExpanded) {
-                    e.classList.add('expanded');
-                    g.classList.add('collapsed');
-                }
+                if(!isExpanded) { e.classList.add('expanded'); g.classList.add('collapsed'); }
             } else {
-                const isAlreadyExpanded = g.classList.contains('expanded');
-                // Limpa classes
+                const isExpanded = g.classList.contains('expanded');
                 e.classList.remove('expanded', 'collapsed');
                 g.classList.remove('expanded', 'collapsed');
-                
-                if(!isAlreadyExpanded) {
-                    g.classList.add('expanded');
-                    e.classList.add('collapsed');
-                }
+                if(!isExpanded) { g.classList.add('expanded'); e.classList.add('collapsed'); }
             }
         } else {
-            // Lógica Mobile (esconde um para mostrar o outro)
+            // Mobile: Alterna visualização
             if(tipo === 'enunciado') { g.style.display = g.style.display === 'none' ? 'flex' : 'none'; e.style.display = 'flex'; }
             else { e.style.display = e.style.display === 'none' ? 'flex' : 'none'; g.style.display = 'flex'; }
         }
+    }
+
+    function abrirExterno(id) {
+        const url = document.getElementById(id).src;
+        if(url && url !== "about:blank") window.open(url, '_blank');
     }
 
     function carregarExame(enunciado, gabarito, btnId) {
@@ -214,22 +220,17 @@
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
-    // Lógica do Arraste
     const resizer = document.getElementById('dragMe');
     const leftSide = document.getElementById('escrita');
     if (resizer) {
         resizer.addEventListener('mousedown', (e) => {
             e.preventDefault();
             document.addEventListener('mousemove', resize);
-            document.addEventListener('mouseup', () => {
-                document.removeEventListener('mousemove', resize);
-            });
+            document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
         });
         function resize(e) {
-            // Se você arrastar, o sistema remove o "foco" automático para priorizar seu movimento
             document.getElementById('box-enunciado').classList.remove('expanded', 'collapsed');
             document.getElementById('box-gabarito').classList.remove('expanded', 'collapsed');
-            
             const newWidth = e.clientX - 240; 
             if (newWidth > 150 && newWidth < (window.innerWidth - 300)) {
                 leftSide.style.flex = `0 0 ${newWidth}px`;
