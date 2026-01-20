@@ -1,155 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISTEMA JOAQUIM - MENTORIA</title>
     <style>
-        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --postit-yellow: #fef9c3; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #334155; padding-bottom: 60px; /* Espaço para o post-it fixo */ }
-        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --postit-yellow: #fef9c3; --guia-bg: #ecfdf5; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #334155; padding-bottom: 60px; }
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        :root { 
+            --primary: #0f172a; 
+            --accent: #3b82f6; 
+            --bg: #f8fafc; 
+            --sidebar-bg: #1e293b; 
+            --postit-yellow: #fef9c3; 
+        }
+        
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background: var(--bg); 
+            color: #334155; 
+        }
+
+        /* LOGIN */
+        #login-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--primary); display: flex; align-items: center; 
+            justify-content: center; z-index: 9999; 
+        }
+
         #main-app { display: none; }
-        header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 100; }
-@@ -16,30 +16,37 @@
-        .nav-btn { width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; border: none; background: rgba(255,255,255,0.08); color: #f8fafc; cursor: pointer; border-radius: 6px; font-size: 0.75rem; }
+
+        /* HEADER */
+        header { 
+            background: var(--primary); color: white; padding: 15px; 
+            text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); 
+        }
+
+        .main-layout { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { 
+            width: 200px; background: var(--sidebar-bg); padding: 15px; 
+            flex-shrink: 0; color: white; 
+        }
+
+        .nav-btn { 
+            width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; 
+            border: none; background: rgba(255,255,255,0.08); color: #f8fafc; 
+            cursor: pointer; border-radius: 6px; font-size: 0.8rem; 
+        }
+
         .nav-btn.active { background: var(--accent); font-weight: bold; }
 
-        /* NOVO POST-IT FLUTUANTE/RETRÁTIL */
-        .postit-fixed { position: fixed; bottom: 0; right: 20px; width: 300px; z-index: 1000; background: var(--postit-yellow); border: 1px solid #eab308; border-radius: 10px 10px 0 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); transition: transform 0.3s; transform: translateY(210px); }
-        /* POST-IT E BUSCA */
-        .postit-fixed { position: fixed; bottom: 0; right: 20px; width: 320px; z-index: 1000; background: var(--postit-yellow); border: 1px solid #eab308; border-radius: 10px 10px 0 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.2); transition: transform 0.3s; transform: translateY(280px); }
+        /* ÁREA DE CONTEÚDO */
+        .content-area { padding: 20px; flex-grow: 1; max-width: 900px; margin: 0 auto; }
+
+        #joaquim { 
+            background: white; padding: 30px; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); min-height: 80vh; 
+        }
+
+        /* PAINEL DE GABARITOS */
+        .gabarito-panel { 
+            background: #f1f5f9; border: 2px solid var(--accent); 
+            padding: 15px; border-radius: 10px; margin-bottom: 25px; 
+        }
+
+        .gab-btn { 
+            background: var(--accent); color: white; border: none; padding: 10px 15px; 
+            border-radius: 6px; font-weight: bold; cursor: pointer; margin-right: 5px; 
+        }
+
+        .guia-btn { 
+            background: #10b981; color: white; border: none; padding: 10px 15px; 
+            border-radius: 6px; font-weight: bold; cursor: pointer; 
+        }
+
+        .gab-content, .guia-content { 
+            display: none; margin-top: 15px; padding: 15px; background: white; 
+            border-radius: 8px; border: 1px solid #cbd5e1; white-space: pre-wrap; 
+            font-family: 'Times New Roman', serif; line-height: 1.6;
+        }
+
+        /* EDITOR DE TEXTO */
+        .copy-btn { 
+            width: 100%; margin-bottom: 15px; background: #10b981; color: white; 
+            border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; 
+        }
+
+        #texto-final { 
+            outline: none; min-height: 600px; font-family: 'Times New Roman', serif; 
+            font-size: 1.2rem; line-height: 1.5; padding-top: 20px; border-top: 1px dashed #ccc;
+        }
+
+        /* POST-IT FIXO */
+        .postit-fixed { 
+            position: fixed; bottom: 0; right: 20px; width: 300px; 
+            background: var(--postit-yellow); border: 1px solid #eab308; 
+            border-radius: 8px 8px 0 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+            z-index: 1000; transition: transform 0.3s; transform: translateY(260px); 
+        }
+
         .postit-fixed.open { transform: translateY(0); }
-        .postit-header { background: #facc15; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; font-size: 0.8rem; border-radius: 10px 10px 0 0; color: #854d0e; }
-        .legal-search { padding: 8px; background: #fef08a; border-bottom: 1px solid #eab308; display: flex; gap: 5px; }
-        .legal-search input { flex: 1; padding: 5px; border: 1px solid #ca8a04; border-radius: 4px; font-size: 0.7rem; }
-        .legal-search button { padding: 5px 8px; background: #854d0e; color: white; border: none; border-radius: 4px; font-size: 0.6rem; cursor: pointer; }
-        #aula-notes { width: 100%; height: 200px; padding: 10px; border: none; background: transparent; resize: none; font-family: 'Verdana', sans-serif; font-size: 0.85rem; outline: none; box-sizing: border-box; }
 
-        .content-area { padding: 15px; flex-grow: 1; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        #joaquim { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 70vh; border: 1px solid #e2e8f0; font-family: 'Times New Roman', serif; }
-        #joaquim { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 70vh; border: 1px solid #e2e8f0; }
-        
-        .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 20px; }
-        .gab-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .gab-btn { background: var(--accent); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
-        .gab-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; font-size: 0.9rem; }
-        
-        /* ESTILO DO GUIA DE ESTUDO */
-        .guia-btn { width: 100%; background: #10b981; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; margin-top: 8px; }
-        .gab-content, .guia-content { display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; font-size: 0.9rem; font-family: 'Times New Roman', serif; }
-        .guia-content { background: var(--guia-bg); border-color: #10b981; color: #064e3b; }
+        .postit-header { 
+            background: #facc15; padding: 10px; cursor: pointer; 
+            display: flex; justify-content: space-between; font-weight: bold; 
+            color: #854d0e; border-radius: 8px 8px 0 0; 
+        }
 
-        .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        #texto-final { outline: none; min-height: 400px; white-space: pre-wrap; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px; }
-        #texto-final { outline: none; min-height: 400px; white-space: pre-wrap; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px; font-family: 'Times New Roman', serif; }
+        .legal-search { padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid #eab308; }
+        .legal-search input { flex: 1; padding: 5px; border: 1px solid #ca8a04; border-radius: 4px; }
+        .legal-search button { background: #854d0e; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; }
+
+        #aula-notes { 
+            width: 100%; height: 200px; padding: 10px; border: none; 
+            background: transparent; resize: none; font-family: cursive; outline: none; 
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <button onclick="liberar()" style="padding:20px; cursor:pointer; font-weight:bold; border-radius:8px; border:none; background:var(--accent); color:white;">ENTRAR NO SISTEMA</button>
+    <button onclick="entrar()" style="padding: 15px 40px; font-size: 1.2rem; cursor: pointer; border-radius: 8px; border: none; background: var(--accent); color: white; font-weight: bold;">ACESSO MENTORIA</button>
 </div>
-<div id="login-screen"><button onclick="liberar()" style="padding:20px; cursor:pointer; font-weight:bold; border-radius:8px; border:none; background:var(--accent); color:white;">ENTRAR NO SISTEMA</button></div>
 
 <div id="main-app">
-    <header>PRÁTICA TRABALHISTA - 2ª FASE</header>
-    <header>SISTEMA JOAQUIM - MENTORIA JURÍDICA</header>
+    <header>SISTEMA JOAQUIM - ÁREA DO ALUNO</header>
     <div class="main-layout">
         <nav class="sidebar" id="menuLateral"></nav>
         <main class="content-area">
-@@ -48,11 +55,9 @@
+            <div id="joaquim">
+                <h2 style="text-align: center; color: #94a3b8; margin-top: 50px;">Selecione uma peça ao lado para começar</h2>
+            </div>
+        </main>
     </div>
 
     <div class="postit-fixed" id="meuPostit">
         <div class="postit-header" onclick="togglePostit()">
-            <span>📌 ANOTAÇÕES DA AULA</span>
-            <span id="setaPostit">▲</span>
+            <span>📌 CONSULTA & NOTAS</span>
+            <span id="seta">▲</span>
         </div>
-        <textarea id="aula-notes" placeholder="Dicas da professora..."></textarea>
-        <div class="postit-header" onclick="togglePostit()"><span>📌 NOTAS & CONSULTA</span><span id="setaPostit">▲</span></div>
-        <div class="legal-search"><input type="text" id="inputArtigo" placeholder="Ex: Art 467"><button onclick="consultarLei()">IR</button></div>
-        <textarea id="aula-notes" placeholder="Notas de aula..."></textarea>
+        <div class="legal-search">
+            <input type="text" id="queryLei" placeholder="Artigo ou Súmula...">
+            <button onclick="buscarLei()">BUSCAR</button>
+        </div>
+        <textarea id="aula-notes" placeholder="Digite suas anotações aqui..."></textarea>
     </div>
 </div>
 
-@@ -78,44 +83,64 @@
+<script src="gabaritos.js"></script>
+<script>
+    function entrar() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        renderizarMenu();
+        const notasSalvas = localStorage.getItem('joaquim_anotacoes');
+        if(notasSalvas) document.getElementById('aula-notes').value = notasSalvas;
+    }
 
-    function loadPeca(key) {
-        let botoes = '', blocos = '';
-        const lista = dbGabaritos[key] || {};
-        Object.keys(lista).forEach(num => {
-            let id = `${key}_${num}`;
-            botoes += `<button class="gab-btn" onclick="toggleG('${id}')">📖 Gabarito ${num}</button>`;
-            blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${lista[num]}</div>`;
-        const dados = dbGabaritos[key] || {};
+    function renderizarMenu() {
+        const pecas = {
+            'rt': '1. Rec. Trabalhista',
+            'cont': '2. Contestação',
+            'consigna': '3. Consignação',
+            'emb_exec': '4. Embargos Exec.',
+            'ro': '5. Recurso Ordinário',
+            'ed': '6. Emb. Declaração',
+            'ap': '7. Agravo de Petição',
+            'ai': '8. Agravo Instrumento',
+            'rr': '9. Recurso Revista',
+            'epe': '10. Exceção Pré-Exec.',
+            'ms': '11. Mandado Seg.'
+        };
+        const menu = document.getElementById('menuLateral');
+        menu.innerHTML = Object.entries(pecas).map(([id, nome]) => 
+            `<button class="nav-btn" onclick="carregarPeca('${id}')" id="btn-${id}">${nome}</button>`
+        ).join('');
+    }
+
+    function carregarPeca(id) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-${id}`).classList.add('active');
+
+        const gabaritoPeca = window.dbGabaritosExternos[id] || {};
         
-        // Separa o que é gabarito numérico do que é o guia
-        Object.keys(dados).forEach(num => {
-            if(!isNaN(num)) {
-                let id = `${key}_${num}`;
-                botoes += `<button class="gab-btn" onclick="toggleContent('${id}')">📖 Gabarito ${num}</button>`;
-                blocos += `<div id="${id}" class="gab-content"><strong>GABARITO ${num}:</strong>\n\n${dados[num]}</div>`;
-            }
-        });
-
-        // Adiciona botão de Guia se existir no gabaritos.js
-        let guiaHtml = '';
-        if(dados.guia) {
-            guiaHtml = `
-                <button class="guia-btn" onclick="toggleContent('${key}_guia')">💡 POR QUE ESSA FUNDAMENTAÇÃO?</button>
-                <div id="${key}_guia" class="guia-content"><strong>GUIA DE ESTUDO - LÓGICA JURÍDICA:</strong>\n\n${dados.guia}</div>
-            `;
+        let botoesGab = '';
+        if(gabaritoPeca[1]) {
+            botoesGab += `<button class="gab-btn" onclick="toggleVisivel('gab-box')">📖 VER GABARITO</button>`;
+        }
+        if(gabaritoPeca.guia) {
+            botoesGab += `<button class="guia-btn" onclick="toggleVisivel('guia-box')">💡 DICAS DA PROF</button>`;
         }
 
         document.getElementById('joaquim').innerHTML = `
-            <button class="copy-btn" onclick="copyContent()">COPIAR PETIÇÃO</button>
-            <div class="gabarito-panel"><div class="gab-grid">${botoes}</div>${blocos}</div>
+            <button class="copy-btn" onclick="copiarTudo()">COPIAR MINHA PETIÇÃO</button>
             <div class="gabarito-panel">
-                <div class="gab-grid">${botoes}</div>
-                ${guiaHtml}
-                ${blocos}
+                ${botoesGab}
+                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Sem gabarito.'}</div>
+                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || ''}</div>
             </div>
-            <div id="texto-final" contenteditable="true">ID: 936045\n\n(Escreva sua peça aqui...)</div>
+            <div id="texto-final" contenteditable="true">ID: 936045\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ...</div>
         `;
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        if(document.getElementById('btn_'+key)) document.getElementById('btn_'+key).classList.add('active');
     }
 
-    function toggleG(id) {
-    function toggleContent(id) {
-        const el = document.getElementById(id);
-        const vis = el.style.display === 'block';
-        document.querySelectorAll('.gab-content').forEach(d => d.style.display = 'none');
-        document.querySelectorAll('.gab-content, .guia-content').forEach(d => d.style.display = 'none');
-        el.style.display = vis ? 'none' : 'block';
-    }
-
-    function consultarLei() {
-        const q = document.getElementById('inputArtigo').value.toLowerCase();
-        if(!q) return;
-        window.open(q.includes("sum") ? "https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/Sumulas_Indice_1_50.html" : "http://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm", '_blank');
+    function toggleVisivel(elementId) {
+        const el = document.getElementById(elementId);
+        const atual = el.style.display;
+        document.getElementById('gab-box').style.display = 'none';
+        document.getElementById('guia-box').style.display = 'none';
+        el.style.display = atual === 'block' ? 'none' : 'block';
     }
 
     function togglePostit() {
         const p = document.getElementById('meuPostit');
         p.classList.toggle('open');
-        document.getElementById('setaPostit').innerText = p.classList.contains('open') ? '▼' : '▲';
+        document.getElementById('seta').innerText = p.classList.contains('open') ? '▼' : '▲';
+    }
+
+    function buscarLei() {
+        const termo = document.getElementById('queryLei').value.toLowerCase();
+        let link = "https://www.google.com/search?q=CLT+planalto+" + termo;
+        if(termo.includes('sum')) link = "https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/Sumulas_Indice_1_50.html";
+        window.open(link, '_blank');
+    }
+
+    function copiarTudo() {
+        const texto = document.getElementById('texto-final').innerText;
+        navigator.clipboard.writeText(texto);
+        alert("Texto copiado!");
     }
 
     document.getElementById('aula-notes').addEventListener('input', (e) => {
-        localStorage.setItem('joaquim_notas', e.target.value);
+        localStorage.setItem('joaquim_anotacoes', e.target.value);
     });
-    document.getElementById('aula-notes').addEventListener('input', (e) => localStorage.setItem('joaquim_notas', e.target.value));
-
-    function copyContent() {
-        const texto = document.getElementById('texto-final').innerText;
-        const area = document.createElement('textarea');
-        area.value = texto; document.body.appendChild(area);
-        area.select(); document.execCommand('copy');
-        document.body.removeChild(area); alert("Copiado!");
-        const t = document.getElementById('texto-final').innerText;
-        const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a);
-        a.select(); document.execCommand('copy'); document.body.removeChild(a); alert("Copiado!");
-    }
 </script>
+</body>
+</html>
