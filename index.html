@@ -33,26 +33,30 @@
         header { 
             background: var(--primary); color: white; padding: 15px; 
             text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); 
+            position: sticky; top: 0; z-index: 100;
         }
 
         .main-layout { display: flex; min-height: 100vh; }
 
-        /* SIDEBAR */
+        /* SIDEBAR COM SCROLL */
         .sidebar { 
             width: 200px; background: var(--sidebar-bg); padding: 15px; 
             flex-shrink: 0; color: white; 
+            height: calc(100vh - 60px); 
+            overflow-y: auto; 
+            position: sticky; top: 60px;
         }
 
         .nav-btn { 
             width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; 
             border: none; background: rgba(255,255,255,0.08); color: #f8fafc; 
-            cursor: pointer; border-radius: 6px; font-size: 0.8rem; 
+            cursor: pointer; border-radius: 6px; font-size: 0.75rem; 
         }
 
         .nav-btn.active { background: var(--accent); font-weight: bold; }
 
         /* ÁREA DE CONTEÚDO */
-        .content-area { padding: 20px; flex-grow: 1; max-width: 900px; margin: 0 auto; }
+        .content-area { padding: 20px; flex-grow: 1; max-width: 900px; margin: 0 auto; width: 100%; }
 
         #joaquim { 
             background: white; padding: 30px; border-radius: 12px; 
@@ -79,6 +83,7 @@
             display: none; margin-top: 15px; padding: 15px; background: white; 
             border-radius: 8px; border: 1px solid #cbd5e1; white-space: pre-wrap; 
             font-family: 'Times New Roman', serif; line-height: 1.6;
+            max-height: 400px; overflow-y: auto;
         }
 
         /* EDITOR DE TEXTO */
@@ -171,7 +176,15 @@
             'ai': '8. Agravo Instrumento',
             'rr': '9. Recurso Revista',
             'epe': '10. Exceção Pré-Exec.',
-            'ms': '11. Mandado Seg.'
+            'ms': '11. Mandado Seg.',
+            'rescisoria': '12. Ação Rescisória',
+            'inquerito': '13. Inquérito Falta Grave',
+            'replica': '14. Réplica',
+            'contrarrazoes': '15. Contrarrazões',
+            'idpj': '16. IDPJ',
+            'cautelar': '17. Medida Cautelar',
+            'cumprimento': '18. Cumprimento Sent.',
+            'manifestacao': '19. Manifestação'
         };
         const menu = document.getElementById('menuLateral');
         menu.innerHTML = Object.entries(pecas).map(([id, nome]) => 
@@ -181,7 +194,8 @@
 
     function carregarPeca(id) {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${id}`).classList.add('active');
+        const botao = document.getElementById(`btn-${id}`);
+        if(botao) botao.classList.add('active');
 
         const gabaritoPeca = window.dbGabaritosExternos[id] || {};
         
@@ -197,8 +211,8 @@
             <button class="copy-btn" onclick="copiarTudo()">COPIAR MINHA PETIÇÃO</button>
             <div class="gabarito-panel">
                 ${botoesGab}
-                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Sem gabarito.'}</div>
-                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || ''}</div>
+                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Texto em branco para preenchimento futuro.'}</div>
+                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || 'Dicas em breve.'}</div>
             </div>
             <div id="texto-final" contenteditable="true">ID: 936045\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ...</div>
         `;
@@ -209,7 +223,7 @@
         const atual = el.style.display;
         document.getElementById('gab-box').style.display = 'none';
         document.getElementById('guia-box').style.display = 'none';
-        el.style.display = atual === 'block' ? 'none' : 'block';
+        el.style.display = (atual === 'block') ? 'none' : 'block';
     }
 
     function togglePostit() {
@@ -220,6 +234,7 @@
 
     function buscarLei() {
         const termo = document.getElementById('queryLei').value.toLowerCase();
+        if(!termo) return;
         let link = "https://www.google.com/search?q=CLT+planalto+" + termo;
         if(termo.includes('sum')) link = "https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/Sumulas_Indice_1_50.html";
         window.open(link, '_blank');
@@ -227,8 +242,9 @@
 
     function copiarTudo() {
         const texto = document.getElementById('texto-final').innerText;
-        navigator.clipboard.writeText(texto);
-        alert("Texto copiado!");
+        navigator.clipboard.writeText(texto).then(() => {
+            alert("Petição copiada com sucesso!");
+        });
     }
 
     document.getElementById('aula-notes').addEventListener('input', (e) => {
