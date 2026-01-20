@@ -1,9 +1,9 @@
 /**
- * gabarito.js - Versão Completa (19 Peças)
- * Banco de dados com limpeza de rodapé e formatação jurídica.
+ * gabarito.js - VERSÃO INTEGRAL (19 CATEGORIAS)
+ * Banco de dados com limpeza de rodapé e formatação de petição.
  */
 
-// 1. BANCO DE DADOS INTEGRAL (19 CATEGORIAS)
+// 1. BANCO DE DADOS (19 CATEGORIAS PARA A BARRA LATERAL)
 window.dbGabaritosExternos = {
     'rt': {
         1: `1.2.EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTA
@@ -91,33 +91,37 @@ IV – REQUERIMENTOS FINAIS: Notificação da embargada e procedência dos pedid
         'guia': `💡 DICAS DE MENTORIA - EMBARGOS:\n\n1. BEM DE FAMÍLIA: Proteção absoluta para moradia única.\n2. MULTA 523 CPC: Inaplicável ao Processo do Trabalho.\n3. PRAZO: 5 dias após a garantia do juízo.`
     },
 
-    // --- LISTA COMPLETA DE 19 CATEGORIAS ---
-    'ro': { 1: "" }, // Recurso Ordinário
-    'ed': { 1: "" }, // Embargos de Declaração
-    'ap': { 1: "" }, // Agravo de Petição
-    'ai': { 1: "" }, // Agravo de Instrumento
-    'rr': { 1: "" }, // Recurso de Revista
-    'epe': { 1: "" }, // Exceção de Pré-Executividade
-    'ms': { 1: "" }, // Mandado de Segurança
-    'acao_resc': { 1: "" }, // Ação Rescisória
-    'inquerito': { 1: "" }, // Inquérito para Apuração de Falta Grave
-    'cautelar': { 1: "" }, // Medida Cautelar
-    'habeas_corpus': { 1: "" }, // Habeas Corpus
-    'habeas_data': { 1: "" }, // Habeas Data
-    'mandado_injuncao': { 1: "" }, // Mandado de Injunção
-    'dissidio_coletivo': { 1: "" }, // Dissídio Coletivo
-    'recurso_adesivo': { 1: "" } // Recurso Adesivo
+    // --- CATEGORIAS ADICIONAIS (TOTALIZANDO 19) ---
+    'ro': { 1: "" },
+    'ed': { 1: "" },
+    'ap': { 1: "" },
+    'ai': { 1: "" },
+    'rr': { 1: "" },
+    'epe': { 1: "" },
+    'ms': { 1: "" },
+    'acao_resc': { 1: "" },
+    'inquerito': { 1: "" },
+    'cautelar': { 1: "" },
+    'habeas_corpus': { 1: "" },
+    'habeas_data': { 1: "" },
+    'mandado_injuncao': { 1: "" },
+    'dissidio_coletivo': { 1: "" },
+    'recurso_adesivo': { 1: "" }
 };
 
-// 2. LÓGICA DE GERENCIAMENTO E FORMATAÇÃO JURÍDICA
+// 2. LÓGICA DE GERENCIAMENTO (REVISADA)
 const GabaritoManager = {
     config: {
+        // Regex para remover rodapés da Aryanna e números de página
         sujeiraRodape: /(P\s?á\s?gi\s?na\s*\d+\s*\|\s*\d+)|(@professoraaryannalinhares)|(@aryannalinhares)/gi,
     },
 
     formatarTexto: function(textoBruto) {
         if (!textoBruto) return "";
+        
+        // Limpeza inicial
         let textoLimpo = textoBruto.replace(this.config.sujeiraRodape, "");
+        
         const linhas = textoLimpo.split('\n');
         let htmlFinal = "";
         let paragrafoAcumulado = "";
@@ -130,7 +134,9 @@ const GabaritoManager = {
                     paragrafoAcumulado = "";
                 }
             } else {
+                // Filtro para títulos e cabeçalhos
                 const ehTitulo = /^(I+|[0-9]+\.|AO DOUTO|RECLAMAÇÃO|Atribui-se|Nestes|RESOLUÇÃO|II –|III –|IV –|V –)/i.test(limpa);
+                
                 if (ehTitulo) {
                     if (paragrafoAcumulado !== "") {
                         htmlFinal += `<p style="margin-bottom: 1.5em; text-indent: 2.5cm; text-align: justify;">${paragrafoAcumulado}</p>`;
@@ -153,12 +159,13 @@ const GabaritoManager = {
         const container = document.getElementById('container-gabarito');
         if (!container) return;
         
-        if (window.dbGabaritosExternos && window.dbGabaritosExternos[categoria]) {
-            const textoBruto = window.dbGabaritosExternos[categoria][questao];
-            if (textoBruto && textoBruto.length > 5) {
-                container.innerHTML = this.formatarTexto(textoBruto);
+        const cat = window.dbGabaritosExternos[categoria];
+        if (cat) {
+            const texto = cat[questao];
+            if (texto && texto.length > 5) {
+                container.innerHTML = this.formatarTexto(texto);
             } else {
-                container.innerHTML = "<p style='text-align:center; padding-top: 100px; color:#999; font-family: sans-serif; text-indent: 0;'>Gabarito em fase de atualização técnica.</p>";
+                container.innerHTML = "<p style='text-align:center; padding-top: 50px; color:#999;'>Gabarito desta peça em fase de atualização.</p>";
             }
         }
     }
