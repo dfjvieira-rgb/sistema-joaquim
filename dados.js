@@ -1635,7 +1635,187 @@ Local e data.
 Advogado
 OAB nº
 
+//11.3.2. Segundo exercício de embargos de terceiro (39º EOAB)
+Ronaldo Santos ajuizou reclamação trabalhista contra seu ex-empregador,
+a sociedade empresária Bolos Caseiros Ltda., em 30/07/2022, tendo a sentença
+julgado procedentes, em parte, os seus pedidos.
+O processo tramitou perante a 2ª Vara do Trabalho de Poços de Caldas,
+recebendo o número 0101056-53.2022.5.03.0002. Nenhuma das partes recorreu
+e, com o trânsito em julgado, iniciou-se a execução.
+A liquidação importou em R$ 10.000,00 (dez mil reais), mas a sociedade
+empresária não pagou voluntariamente, a despeito de citada para tanto. Tentou-
+se fazer a execução forçada com as ferramentas existentes na Vara, igualmente
+sem sucesso. Ronaldo, então, instaurou um incidente de desconsideração da
+personalidade jurídica (IDPJ), que foi julgado procedente, sendo incluídos, no polo
+passivo, os sócios Bruno Dias e César Dias. Eles foram intimados a pagar a dívida,
+mas quedaram-se inertes.
+
+Em razão disso, foi expedido mandado de penhora e avaliação para
+cumprimento, na forma da CLT. O oficial de justiça chegou à residência de Bruno
+Dias às 22 horas e verificou que havia um veículo importado de luxo na garagem
+da casa, que foi então penhorado e avaliado em R$ 200.000,00 (duzentos mil
+reais).
+O oficial retirou-se do local e Bruno Dias recebeu depois o auto de penhora
+e a avaliação pelos Correios. Como a Vara em questão é ágil, foi marcado leilão
+e o veículo foi arrematado por R$ 42.000,00 (quarenta e dois mil reais), estando
+pendente a assinatura do juiz.
+Munido da documentação hábil, Everton Silva o(a) procurou para contratá-
+lo(a) como advogado(a) no dia seguinte à arrematação, para informar que o
+veículo penhorado era dele, e não de Bruno Dias, sócio da executada. Naquele
+dia, Everton estava na casa, pois era aniversário de Bruno e havia uma festa para
+a qual Bruno convidou alguns familiares e amigos. Como o veículo tinha alto valor,
+Bruno concordou que o amigo Everton Silva o guardasse na garagem para evitar
+que o bem ficasse exposto.
+Considerando esses dados e de acordo com a CLT e o CPC, apresente a
+medida destinada à defesa dos interesses de Everton Silva, sem criar dados nem
+fatos inexistentes. (Valor: 5,00)
+Obs.: a peça deve abranger todos os fundamentos de Direito que possam
+ser utilizados para dar respaldo à pretensão. A simples menção ou transcrição do
+dispositivo legal não confere pontuação.
+Nos casos em que a lei exigir liquidação de valores, o examinando deverá
+representá-los somente pela expressão “R$”, admitindo-se que o escritório possui
+setor próprio ou contratado especificamente para tal fim.
+
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 2ª VARA DO TRABALHO DE POÇOS DE
+CALDAS/MG
+Distribuição por dependência aos autos nº 0101056-53.2022.5.03.0002
+EVERTON SILVA, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório profissional
+no endereço completo, onde recebe intimações e notificações, com fulcro
+nos art. 674 do CPC, PROPOR:
+EMBARGOS DE TERCEIRO
+em face de RONALDO SANTOS, qualificação e endereço completos, pelas
+razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+Ronaldo Santos ajuizou reclamatória trabalhista em face de Bolos Caseiros
+Ltda.
+A sentença julgou parcialmente procedentes os pedidos do reclamante e,
+não havendo recurso de nenhuma das partes, transitou em julgado.
+Na sequência, iniciou-se a execução. A liquidação importou em
+R$ 10.000,00, mas a sociedade empresária, regularmente citada, não
+pagou voluntariamente. Tentou-se, então, fazer a execução forçada com
+as ferramentas existentes na Vara, mas sem sucesso.
+O reclamante instaurou um incidente de desconsideração da personalidade
+jurídica em face dos sócios Bruno Dias e César Dias, que foi julgado
+procedente.
+Intimados a pagar a dívida, os sócios deixaram passar in albis o prazo
+determinado pelo juízo, não pagaram o valor executado e nem nomearam
+bens à penhora.
+Em razão disso, foi expedido mandado de avaliação e penhora dos bens
+dos sócios para cumprimento.
+Em visita à residência de Bruno Dias às 22 horas, o oficial de justiça
+encontrou um veículo importado de luxo na garagem da casa. Efetuou a
+penhora e o avaliou em R$ 200.000,00 (duzentos mil reais). O executado
+recebeu depois o auto de penhora e a avaliação pelos Correios.
+Marcado o leilão, o veículo foi arrematado por R$ 42.000,00, ficando
+pendente a assinatura do juiz.
+Ocorre que o veículo pertence ao embargante e não aos sócios da
+empresa.
+II – REQUISITOS ESPECÍFICOS
+Destaca-se inicialmente o seguinte:
+1. Da distribuição por dependência
+A distribuição deve ocorrer por dependência perante o mesmo juízo que
+ordenou a apreensão do bem em questão (RT nº 0101056-
+53.2022.5.03.0002), à luz do art. 676 do CPC.
+2. Legitimidade
+Com base do art. 674 do CPC, esclarece-se que o embargante é parte
+legítima para propor o feito, pois, embora não seja parte no processo, seu
+bem foi penhorado, conforme demonstra o Certificado de Registro e
+Licenciamento de Veículo anexo.
+Inquestionável, portanto, que o embargante tem legitimidade para propor
+estes embargos de terceiro.
+3. Tempestividade
+A presente ação é tempestiva, uma vez que proposta antes do término do
+prazo legal de 5 dias úteis, contados da arrematação, de acordo com o art.
+675 do CPC.
+4. Prova sumária da posse e da constrição judicial (art. 677 do CPC)
+Nos termos do art. 677 do CPC, exige-se para a propositura dos embargos
+de terceiro a prova sumária da posse e da constrição judicial. A prova
+sumária da posse do bem em questão se faz pela fotocópia autêntica do
+Certificado de Registro e Licenciamento de Veículo indicando o
+embargante como legítimo proprietário do veículo objeto da penhora.
+A prova da constrição judicial faz-se pelo mandado de penhora anexo.
+5. Custas
+As custas processuais, no valor de R$ 44,26, serão pagas pelo executado
+ao final da execução, consoante determinado pelo art. 789-A, V, da CLT.
+III – MÉRITO
+1. Da condição de terceiro
+Na Reclamação Trabalhista nº 0101056-53.2022.5.03.0002, foi penhorado
+um veículo importado de luxo pertencente a Everton Silva. Entretanto,
+Everton não possui qualquer ligação com a empresa Bolos Caseiros Ltda.,
+cujos sócios são Bruno Dias e César Dias e contra quem tramita a
+execução.
+O embargante não faz parte do processo. Não é réu na reclamação
+trabalhista em questão, tampouco sócio. Julgado procedente o incidente de
+desconsideração da personalidade jurídica da empresa ré, Bolos Caseiros
+Ltda., seus sócios Bruno Dias e César Dias foram incluídos no polo passivo,
+sendo expedido mandado de penhora e avaliação em seus nomes. Logo,
+o embargante não está envolvido com o processo de nenhuma maneira.
+Não é parte no mesmo, o que por si só lhe garante a condição de terceiro,
+nos termos do caput do art. 674 do CPC, e, também, não participou do
+incidente de desconsideração da personalidade jurídica, o que o enquadra
+na definição de terceiro segundo o art. 674, § 2º, III, do CPC.
+Diante do exposto, requerer o desfazimento da constrição realizada sobre
+o seu bem.
+2. Nulidade da penhora
+Como mencionado, a penhora do veículo do embargante ocorreu às 22
+horas.
+Nos termos do art. 770 da CLT, a penhora, como sendo um ato processual,
+pode ser realizada somente em dias úteis, das 6h às 20h.
+Diante do exposto, requer a declaração de nulidade da penhora e a
+liberação do veículo do embargante.
+3. Excesso de penhora
+Como referido, na execução em questão, a liquidação importou em
+R$ 10.000,00 e o veículo penhorado foi avaliado em R$ 200.000,00.
+Nos termos do art. 883 da CLT e art. 831 do CPC, a penhora deverá recair
+sobre tantos bens quantos bastem para o pagamento do principal
+atualizado, dos juros, das custas e dos honorários advocatícios.
+Contrariando os dispositivos legais, o valor do veículo penhorado supera
+de forma significativa o necessário para a quitação da dívida, ocasionando
+o excesso de penhora.
+Diante do exposto, requer a liberação do bem penhorado.
+4. Nulidade da arrematação
+O veículo penhorado foi avaliado em R$ 200.000,00, entretanto foi
+arrematado por R$ 42.000,00.
+A arrematação do veículo no leilão foi realizada pelo valor vil de
+R$ 42.000,00, não tendo alcançado 50% do valor da avaliação, conforme
+dispõe o parágrafo único do art. 891 do CPC.
+Diante do exposto, requer, em caráter liminar, a declaração de nulidade da
+arrematação.
+IV – LIMINAR
+À luz do art. 678 do CPC, requer a suspensão imediata da medida
+constritiva sobre o veículo penhorado, tendo em vista que foram atendidos
+os requisitos do art. 677 do CPC, quais sejam: a comprovação sumária da
+posse e da qualidade de terceiro, bem como a constrição judicial.
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+
+a) a distribuição por dependência perante o mesmo juízo que ordenou a
+apreensão do bem em questão (RT nº 0101056-53.2022.5.03.0002), nos
+termos do art. 676 do CPC;
+b) o deferimento liminar dos embargos, segundo o art. 678 do CPC,
+determinando suspensão imediata da medida constritiva sobre o veículo
+penhorado.
+c) a citação do embargado para contestar a presente ação no prazo de 15
+dias úteis, conforme estabelece o art. 679 do CPC;
+d) o protesto pela produção de todos os meios de prova em direito
+admitidos, em especial a prova documental;
+e) por fim, a procedência do pedido, o cancelamento da penhora realizada
+e, por conseguinte, a restituição da posse do bem ao embargante, nos
+termos do art. 681 do CPC, bem como a condenação do embargado ao
+pagamento das custas processuais e honorários advocatícios à razão de
+15%, nos moldes do art. 791-A da CLT.
+Atribui-se à causa o valor de R$ 200.000,00.
+Nestes termos,
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
         
+
 
 
 
