@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA JOAQUIM - MENTORIA</title>
+    <title>SISTEMA JOAQUIM - MENTORIA PRO</title>
     <style>
         :root { 
             --primary: #0f172a; 
@@ -34,11 +34,14 @@
             background: var(--primary); color: white; padding: 15px; 
             text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); 
             position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: center; align-items: center; gap: 20px;
         }
+
+        .timer-display { background: #ef4444; padding: 5px 12px; border-radius: 4px; font-family: monospace; font-size: 1.1rem; }
 
         .main-layout { display: flex; min-height: 100vh; }
 
-        /* SIDEBAR COM SCROLL */
+        /* SIDEBAR */
         .sidebar { 
             width: 200px; background: var(--sidebar-bg); padding: 15px; 
             flex-shrink: 0; color: white; 
@@ -61,67 +64,49 @@
         #joaquim { 
             background: white; padding: 30px; border-radius: 12px; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.08); min-height: 80vh; 
+            position: relative;
         }
 
-        /* PAINEL DE GABARITOS */
+        /* GABARITOS */
         .gabarito-panel { 
             background: #f1f5f9; border: 2px solid var(--accent); 
             padding: 15px; border-radius: 10px; margin-bottom: 25px; 
         }
 
-        .gab-btn { 
-            background: var(--accent); color: white; border: none; padding: 10px 15px; 
-            border-radius: 6px; font-weight: bold; cursor: pointer; margin-right: 5px; 
-        }
-
-        .guia-btn { 
-            background: #10b981; color: white; border: none; padding: 10px 15px; 
-            border-radius: 6px; font-weight: bold; cursor: pointer; 
-        }
+        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .guia-btn { background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
         .gab-content, .guia-content { 
             display: none; margin-top: 15px; padding: 15px; background: white; 
             border-radius: 8px; border: 1px solid #cbd5e1; white-space: pre-wrap; 
             font-family: 'Times New Roman', serif; line-height: 1.6;
-            max-height: 400px; overflow-y: auto;
+            max-height: 300px; overflow-y: auto;
         }
 
-        /* EDITOR DE TEXTO */
-        .copy-btn { 
-            width: 100%; margin-bottom: 15px; background: #10b981; color: white; 
-            border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; 
-        }
+        /* EDITOR */
+        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .status-save { font-size: 0.7rem; color: #64748b; font-style: italic; }
 
         #texto-final { 
             outline: none; min-height: 600px; font-family: 'Times New Roman', serif; 
-            font-size: 1.2rem; line-height: 1.5; padding-top: 20px; border-top: 1px dashed #ccc;
+            font-size: 1.2rem; line-height: 1.5; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;
         }
 
-        /* POST-IT FIXO */
+        /* POST-IT */
         .postit-fixed { 
             position: fixed; bottom: 0; right: 20px; width: 300px; 
             background: var(--postit-yellow); border: 1px solid #eab308; 
             border-radius: 8px 8px 0 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
             z-index: 1000; transition: transform 0.3s; transform: translateY(260px); 
         }
-
         .postit-fixed.open { transform: translateY(0); }
-
-        .postit-header { 
-            background: #facc15; padding: 10px; cursor: pointer; 
-            display: flex; justify-content: space-between; font-weight: bold; 
-            color: #854d0e; border-radius: 8px 8px 0 0; 
-        }
+        .postit-header { background: #facc15; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; color: #854d0e; }
+        #aula-notes { width: 100%; height: 200px; padding: 10px; border: none; background: transparent; resize: none; font-family: cursive; outline: none; box-sizing: border-box; }
 
         .legal-search { padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid #eab308; }
         .legal-search input { flex: 1; padding: 5px; border: 1px solid #ca8a04; border-radius: 4px; }
         .legal-search button { background: #854d0e; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; }
 
-        #aula-notes { 
-            width: 100%; height: 200px; padding: 10px; border: none; 
-            background: transparent; resize: none; font-family: cursive; outline: none; 
-            box-sizing: border-box;
-        }
     </style>
 </head>
 <body>
@@ -131,7 +116,12 @@
 </div>
 
 <div id="main-app">
-    <header>SISTEMA JOAQUIM - ÁREA DO ALUNO</header>
+    <header>
+        SISTEMA JOAQUIM - MENTORIA
+        <div class="timer-display" id="timer">05:00:00</div>
+        <button onclick="toggleTimer()" id="btnTimer" style="background: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold;">INICIAR SIMULADO</button>
+    </header>
+    
     <div class="main-layout">
         <nav class="sidebar" id="menuLateral"></nav>
         <main class="content-area">
@@ -150,41 +140,32 @@
             <input type="text" id="queryLei" placeholder="Artigo ou Súmula...">
             <button onclick="buscarLei()">BUSCAR</button>
         </div>
-        <textarea id="aula-notes" placeholder="Digite suas anotações aqui..."></textarea>
+        <textarea id="aula-notes" placeholder="Suas anotações aqui..."></textarea>
     </div>
 </div>
 
 <script src="gabaritos.js"></script>
 <script>
+    let currentPecaId = null;
+    let timerInterval;
+    let secondsLeft = 5 * 60 * 60; // 5 Horas
+
     function entrar() {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         renderizarMenu();
-        const notasSalvas = localStorage.getItem('joaquim_anotacoes');
-        if(notasSalvas) document.getElementById('aula-notes').value = notasSalvas;
+        const notas = localStorage.getItem('joaquim_anotacoes');
+        if(notas) document.getElementById('aula-notes').value = notas;
     }
 
     function renderizarMenu() {
         const pecas = {
-            'rt': '1. Rec. Trabalhista',
-            'cont': '2. Contestação',
-            'consigna': '3. Consignação',
-            'emb_exec': '4. Embargos Exec.',
-            'ro': '5. Recurso Ordinário',
-            'ed': '6. Emb. Declaração',
-            'ap': '7. Agravo de Petição',
-            'ai': '8. Agravo Instrumento',
-            'rr': '9. Recurso Revista',
-            'epe': '10. Exceção Pré-Exec.',
-            'ms': '11. Mandado Seg.',
-            'rescisoria': '12. Ação Rescisória',
-            'inquerito': '13. Inquérito Falta Grave',
-            'replica': '14. Réplica',
-            'contrarrazoes': '15. Contrarrazões',
-            'idpj': '16. IDPJ',
-            'cautelar': '17. Medida Cautelar',
-            'cumprimento': '18. Cumprimento Sent.',
-            'manifestacao': '19. Manifestação'
+            'rt': '1. Rec. Trabalhista', 'cont': '2. Contestação', 'consigna': '3. Consignação',
+            'emb_exec': '4. Embargos Exec.', 'ro': '5. Recurso Ordinário', 'ed': '6. Emb. Declaração',
+            'ap': '7. Agravo de Petição', 'ai': '8. Agravo Instrumento', 'rr': '9. Recurso Revista',
+            'epe': '10. Exceção Pré-Exec.', 'ms': '11. Mandado Seg.', 'rescisoria': '12. Ação Rescisória',
+            'inquerito': '13. Inquérito Falta Grave', 'replica': '14. Réplica', 'contrarrazoes': '15. Contrarrazões',
+            'idpj': '16. IDPJ', 'cautelar': '17. Medida Cautelar', 'cumprimento': '18. Cumprimento Sent.', 'manifestacao': '19. Manifestação'
         };
         const menu = document.getElementById('menuLateral');
         menu.innerHTML = Object.entries(pecas).map(([id, nome]) => 
@@ -193,29 +174,62 @@
     }
 
     function carregarPeca(id) {
+        currentPecaId = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const botao = document.getElementById(`btn-${id}`);
-        if(botao) botao.classList.add('active');
+        document.getElementById(`btn-${id}`).classList.add('active');
 
         const gabaritoPeca = window.dbGabaritosExternos[id] || {};
-        
-        let botoesGab = '';
-        if(gabaritoPeca[1]) {
-            botoesGab += `<button class="gab-btn" onclick="toggleVisivel('gab-box')">📖 VER GABARITO</button>`;
-        }
-        if(gabaritoPeca.guia) {
-            botoesGab += `<button class="guia-btn" onclick="toggleVisivel('guia-box')">💡 DICAS DA PROF</button>`;
-        }
+        const salvo = localStorage.getItem('joaquim_peca_' + id);
+        const textoPadrao = salvo || "ID: 936045\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ...";
 
         document.getElementById('joaquim').innerHTML = `
-            <button class="copy-btn" onclick="copiarTudo()">COPIAR MINHA PETIÇÃO</button>
-            <div class="gabarito-panel">
-                ${botoesGab}
-                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Texto em branco para preenchimento futuro.'}</div>
-                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || 'Dicas em breve.'}</div>
+            <div class="editor-header">
+                <button class="gab-btn" onclick="toggleVisivel('gab-box')">📖 GABARITO</button>
+                <button class="guia-btn" onclick="toggleVisivel('guia-box')">💡 DICAS</button>
+                <span class="status-save" id="save-status">Salvo automaticamente</span>
+                <button onclick="copiarTudo()" style="padding: 5px 10px; cursor: pointer;">COPIAR</button>
             </div>
-            <div id="texto-final" contenteditable="true">ID: 936045\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ...</div>
+            <div class="gabarito-panel" style="padding:0; border:none; margin-bottom:10px;">
+                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Sem gabarito.'}</div>
+                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || ''}</div>
+            </div>
+            <div id="texto-final" contenteditable="true" oninput="salvarTexto()">${textoPadrao}</div>
+            <div id="counter" style="text-align:right; font-size:0.8rem; color:#94a3b8; margin-top:5px;">Caracteres: 0</div>
         `;
+        atualizarContador();
+    }
+
+    function salvarTexto() {
+        if(!currentPecaId) return;
+        const texto = document.getElementById('texto-final').innerText;
+        localStorage.setItem('joaquim_peca_' + currentPecaId, texto);
+        document.getElementById('save-status').innerText = "Guardando...";
+        setTimeout(() => { document.getElementById('save-status').innerText = "Salvo!"; }, 500);
+        atualizarContador();
+    }
+
+    function atualizarContador() {
+        const txt = document.getElementById('texto-final').innerText;
+        document.getElementById('counter').innerText = "Caracteres: " + txt.length;
+    }
+
+    function toggleTimer() {
+        if(timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('btnTimer').innerText = "REOMAR SIMULADO";
+        } else {
+            document.getElementById('btnTimer').innerText = "PAUSAR";
+            timerInterval = setInterval(() => {
+                secondsLeft--;
+                const h = Math.floor(secondsLeft / 3600);
+                const m = Math.floor((secondsLeft % 3600) / 60);
+                const s = secondsLeft % 60;
+                document.getElementById('timer').innerText = 
+                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                if(secondsLeft <= 0) clearInterval(timerInterval);
+            }, 1000);
+        }
     }
 
     function toggleVisivel(elementId) {
@@ -223,7 +237,7 @@
         const atual = el.style.display;
         document.getElementById('gab-box').style.display = 'none';
         document.getElementById('guia-box').style.display = 'none';
-        el.style.display = (atual === 'block') ? 'none' : 'block';
+        el.style.display = atual === 'block' ? 'none' : 'block';
     }
 
     function togglePostit() {
@@ -232,19 +246,16 @@
         document.getElementById('seta').innerText = p.classList.contains('open') ? '▼' : '▲';
     }
 
-    function buscarLei() {
-        const termo = document.getElementById('queryLei').value.toLowerCase();
-        if(!termo) return;
-        let link = "https://www.google.com/search?q=CLT+planalto+" + termo;
-        if(termo.includes('sum')) link = "https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/Sumulas_Indice_1_50.html";
-        window.open(link, '_blank');
-    }
-
     function copiarTudo() {
         const texto = document.getElementById('texto-final').innerText;
-        navigator.clipboard.writeText(texto).then(() => {
-            alert("Petição copiada com sucesso!");
-        });
+        navigator.clipboard.writeText(texto);
+        alert("Petição copiada!");
+    }
+
+    function buscarLei() {
+        const termo = document.getElementById('queryLei').value.toLowerCase();
+        let link = "https://www.google.com/search?q=CLT+planalto+" + termo;
+        window.open(link, '_blank');
     }
 
     document.getElementById('aula-notes').addEventListener('input', (e) => {
