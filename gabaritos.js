@@ -44,11 +44,7 @@
 
 <script>
     const dbGabaritos = {
-        'rt': { 
-            1: `testando`, 
-            2: "F5071219 - Gab 2 RT (Vazio)",
-            3: "F5071219 - Gab 3 RT"
-        },
+        'rt':  { 1: "F5071219 - Gab 1 RT" },
         'consigna': { 1: "F5071219 - Gab 1 Consignação" },
         'inquerito': { 1: "F5071219 - Gab 1 Inquérito" },
         'cont': { 1: "F5071219 - Gab 1 Contestação" },
