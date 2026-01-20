@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Estudo Híbrido</title>
+    <title>SISTEMA JOAQUIM - Estudo Blindado</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -24,11 +24,10 @@
 
         header {
             background: var(--primary); color: white;
-            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
             flex-shrink: 0; z-index: 100;
         }
 
-        /* NAVEGAÇÃO MOBILE (TABS) */
         .tabs-container {
             display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 100;
         }
@@ -51,42 +50,43 @@
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
         }
+        body.zen-mode .btn-zen { background: var(--danger); opacity: 0.8; }
 
-        /* SIDEBAR (LISTA DE EXAMES) */
-        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
+        /* SIDEBAR / ABA PEÇAS */
+        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
         .btn-peca { 
-            width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; 
-            border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; 
-            text-align: left; cursor: pointer; transition: 0.2s;
+            width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
+            border: 2px solid #edf2f7; border-radius: 12px; font-weight: 600; 
+            text-align: left; cursor: pointer; transition: 0.2s; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 10px;
         }
-        .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; }
+        .btn-peca:active { background: #f0f7ff; border-color: var(--accent); }
+        .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; color: var(--accent); }
 
         /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; line-height: 1.5; }
 
-        /* DIVISOR */
+        /* DIVISOR PC */
         .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
-        .resizer:hover { background: var(--accent); }
 
         /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; }
         .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .foco-btn { background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .foco-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
         @media (max-width: 900px) {
-            .tabs-container { display: flex; }
+            .tabs-container { display: flex !important; }
             .resizer, .sidebar-section { display: none !important; }
             main { flex-direction: column; }
-            .content-section { display: none; }
-            .content-section.active { display: flex; width: 100% !important; height: 100% !important; }
-            /* Garante que o menu no mobile apareça como uma lista centralizada */
-            #menu { padding: 20px; box-sizing: border-box; }
-            .btn-peca { font-size: 1rem; padding: 18px; }
+            .content-section { display: none !important; width: 100% !important; }
+            /* Esta classe força a aba a aparecer no mobile */
+            .content-section.active-mobile { display: flex !important; }
+            #menu { padding: 20px; box-sizing: border-box; background: var(--bg); }
             body.zen-mode .pdf-header { display: none; }
         }
     </style>
@@ -105,14 +105,14 @@
 </nav>
 
 <main id="mainContainer">
-    <aside id="menu" class="content-section sidebar-section active">
-        <h4 style="margin-bottom: 15px; color: var(--primary)">LISTA DE EXAMES</h4>
+    <aside id="menu" class="content-section sidebar-section active-mobile">
+        <h4 style="margin-bottom: 15px; color: var(--primary)">SELECIONE O EXAME:</h4>
         <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'btn-ro35')">
-            📂 Exame XXXV (RO)
+            <span>📂</span> Exame XXXV (RO)
         </button>
     </aside>
 
-    <section id="escrita" class="content-section editor-section active">
+    <section id="escrita" class="content-section editor-section">
         <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR</button>
         <button class="btn-save" onclick="salvar()">💾 SALVAR REVISÃO</button>
         <textarea id="texto-rascunho" placeholder="Comece seu rascunho aqui..."></textarea>
@@ -120,7 +120,7 @@
 
     <div class="resizer" id="dragMe"></div>
 
-    <section id="pdfs" class="content-section pdf-section active">
+    <section id="pdfs" class="content-section pdf-section">
         <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR</button>
         <div class="pdf-box" id="box-enunciado">
             <div class="pdf-header">
@@ -153,11 +153,15 @@
     }
 
     function switchTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        // No mobile, removemos a classe active-mobile de todos e aplicamos no selecionado
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        
         const target = document.getElementById(tabId);
-        if(target) target.classList.add('active');
-        document.getElementById('btn-' + tabId).classList.add('active');
+        if(target) target.classList.add('active-mobile');
+        
+        const btn = document.getElementById('btn-' + tabId);
+        if(btn) btn.classList.add('active');
     }
 
     function focarPdf(tipo) {
@@ -180,10 +184,11 @@
         document.getElementById('view-enunciado').src = enunciado + "#view=FitH";
         document.getElementById('view-gabarito').src = gabarito + "#view=FitH";
         
-        // No mobile, após escolher o exame, pula direto para a tela de escrita
+        // No mobile, pula para a escrita automaticamente ao escolher
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
+    // Resizer PC
     const resizer = document.getElementById('dragMe');
     const leftSide = document.getElementById('escrita');
     if (resizer) {
@@ -216,8 +221,10 @@
         if (tempo > 0) tempo--;
     }, 1000);
 
-    // No mobile, inicia sempre na aba de menu para você escolher a peça
-    if (window.innerWidth < 900) switchTab('menu');
+    // INICIALIZAÇÃO CORRETA: No Mobile começa na aba de PEÇAS
+    if (window.innerWidth < 900) {
+        switchTab('menu');
+    }
 </script>
 </body>
 </html>
