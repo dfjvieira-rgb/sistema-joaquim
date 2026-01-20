@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace Premium</title>
+    <title>SISTEMA JOAQUIM - Full Focus</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -12,179 +12,123 @@
             --success: #27ae60;
             --bg: #f4f7f6;
             --divider: #bdc3c7;
-            --text-dark: #2c3e50;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0; background: var(--bg);
             height: 100vh; display: flex; flex-direction: column;
             overflow: hidden;
         }
 
+        /* HEADER E NAV */
         header {
             background: var(--primary); color: white;
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0; z-index: 20; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0; transition: 0.3s;
         }
 
-        #timer { font-size: 1.3rem; color: var(--warning); font-weight: 800; letter-spacing: 1px; }
-
         .tabs-container {
-            display: none; background: #dfe6e9; padding: 5px; gap: 5px; border-bottom: 2px solid #b2bec3; z-index: 20;
+            display: flex; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; transition: 0.3s;
+        }
+
+        /* MODO TELA CHEIA (ZEN) */
+        body.zen-mode header, body.zen-mode .tabs-container {
+            display: none !important;
         }
 
         .tab-btn {
-            flex: 1; padding: 12px 5px; border: none; background: #bdc3c7;
-            border-radius: 5px; font-weight: bold; font-size: 0.75rem; cursor: pointer;
+            flex: 1; padding: 10px 2px; border: none; background: transparent;
+            color: #bdc3c7; font-weight: bold; font-size: 0.7rem; cursor: pointer;
         }
 
-        .tab-btn.active { background: var(--accent); color: white; }
+        .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
+
+        #timer { font-size: 1.1rem; color: var(--warning); font-weight: 800; }
 
         main { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .content-section { display: none; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+        .content-section.active { display: flex; }
 
-        /* SIDEBAR MELHORADA */
-        .sidebar-section { 
-            width: 220px; background: #fff; border-right: 1px solid #ddd; 
-            padding: 20px 15px; flex-shrink: 0; 
-        }
-        
-        .sidebar-section h4 {
-            color: var(--primary);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--accent);
-            display: inline-block;
+        /* BOTÃO FLUTUANTE DE EXPANDIR */
+        .btn-zen {
+            position: absolute; bottom: 15px; right: 15px; z-index: 100;
+            background: var(--primary); color: white; border: none;
+            padding: 10px 15px; border-radius: 50px; font-weight: bold;
+            font-size: 0.7rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            opacity: 0.8;
         }
 
-        /* BOTÃO DE EXAME - ESTILIZADO */
-        .btn-peca { 
-            width: 100%; padding: 14px 12px; margin-bottom: 12px; 
-            background: #fff; border: 2px solid #edf2f7; border-radius: 10px; 
-            font-weight: 600; cursor: pointer; text-align: left; 
-            font-size: 0.95rem; color: var(--text-dark);
-            transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .btn-peca:hover { 
-            border-color: var(--accent); background: #f8fafc; 
-            transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
+        /* EDITOR */
+        .editor-section { background: white; padding: 10px; box-sizing: border-box; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; margin-bottom: 8px; width: 100%; }
+        textarea { flex: 1; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; font-family: monospace; }
 
-        /* EDITOR E BOTÃO SALVAR */
-        .editor-section { background: white; padding: 15px; min-width: 250px; }
-        
-        .btn-save { 
-            background: var(--success); color: white; border: none; 
-            padding: 14px; border-radius: 10px; font-weight: 700; 
-            margin-bottom: 15px; width: 100%; cursor: pointer; 
-            font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
-            transition: background 0.2s;
-            box-shadow: 0 4px 0 #1e8449;
-        }
-        .btn-save:hover { background: #219150; }
-        .btn-save:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e8449; }
+        /* PDFS */
+        .pdf-section { background: #eee; gap: 5px; padding: 5px; overflow-y: auto; }
+        .pdf-box { flex: 0 0 92%; display: flex; flex-direction: column; background: white; border-radius: 8px; border: 1px solid #7f8c8d; margin-bottom: 5px; transition: 0.3s; }
+        .pdf-header { background: #34495e; color: white; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; }
+        .focus-btn { background: var(--accent); color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.6rem; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        textarea { 
-            flex: 1; width: 100%; padding: 20px; border: 2px solid #edf2f7; 
-            border-radius: 12px; font-size: 16px; resize: none; 
-            font-family: 'Courier New', monospace; box-sizing: border-box;
-            line-height: 1.6; color: #2d3748;
-        }
+        /* SIDEBAR (PC) */
+        .sidebar-section { padding: 15px; background: white; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 10px; background: #fff; border: 2px solid #eee; border-radius: 8px; font-weight: bold; text-align: left; cursor: pointer; }
 
-        /* RESIZER */
-        .resizer {
-            width: 10px; background: #e2e8f0; cursor: col-resize; z-index: 10;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .resizer:hover { background: var(--accent); }
-
-        /* PDF SECTION */
-        .pdf-section { background: #f1f5f9; gap: 10px; padding: 10px; min-width: 250px; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e0; transition: flex 0.3s ease; }
-        .pdf-box.expanded { flex: 15; }
-        .pdf-box.collapsed { flex: 0.1; min-height: 45px; }
-        
-        .pdf-header { background: var(--primary); color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        
-        .btn-zoom { background: var(--warning); color: #000; border: none; border-radius: 6px; padding: 4px 10px; font-weight: 700; cursor: pointer; font-size: 0.65rem; margin-right: 5px; }
-        .focus-btn { background: var(--accent); color: white; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.65rem; font-weight: 600; }
-
-        iframe { width: 100%; height: 100%; border: none; background: white; }
-
-        /* AJUSTES MOBILE */
-        @media (max-width: 900px) {
-            .tabs-container { display: flex; }
-            .resizer, .sidebar-section { display: none; }
-            main { flex-direction: column; }
-            .content-section { display: none; width: 100% !important; flex: 1 !important; }
-            .content-section.active { display: flex; }
-            .pdf-box { min-height: 450px; flex: none; margin-bottom: 10px; }
-            .pdf-section { overflow-y: auto; }
-        }
-
-        @media (max-height: 500px) and (orientation: landscape) {
-            header { display: none; }
+        /* DESKTOP */
+        @media (min-width: 901px) {
+            .tabs-container, .btn-zen { display: none; }
+            .sidebar-section { width: 200px; display: flex !important; border-right: 1px solid #ddd; }
+            .editor-section { flex: 1.2; display: flex !important; border-right: 1px solid #ddd; }
+            .pdf-section { flex: 2; display: flex !important; }
+            .pdf-box { flex: 1; }
+            .resizer { width: 8px; background: var(--divider); cursor: col-resize; display: flex; align-items: center; justify-content: center; z-index: 10; }
+            .resizer:hover { background: var(--accent); }
         }
     </style>
 </head>
-<body>
+<body id="bodyTag">
 
 <header>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size: 1.5rem;">⚖️</span>
-        <strong style="font-size: 1.2rem; letter-spacing: 1px;">SISTEMA JOAQUIM</strong>
-    </div>
+    <div>⚖️ <strong>JOAQUIM</strong></div>
     <div id="timer">05:00:00</div>
 </header>
 
 <nav class="tabs-container">
-    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">MENU</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">ESCREVER</button>
-    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">PDFs</button>
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 PEÇAS</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">📄 PROVA</button>
 </nav>
 
-<main id="container">
+<main>
     <aside id="menu" class="content-section sidebar-section active">
-        <h4>Lista de Exames</h4>
-        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">
-            <span>📂</span> Exame XXXV (RO)
-        </button>
-        </aside>
+        <h4 style="margin:0 0 10px 0;">EXAMES:</h4>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV (RO)</button>
+    </aside>
 
-    <section id="escrita" class="content-section editor-section active" style="flex: 1;">
-        <button class="btn-save" onclick="salvar()">
-            💾 SALVAR MINHA REVISÃO
-        </button>
-        <textarea id="texto-rascunho" placeholder="Comece aqui sua petição ou resposta..."></textarea>
+    <section id="escrita" class="content-section editor-section">
+        <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR TELA</button>
+        <button class="btn-save" onclick="salvar()">💾 SALVAR REVISÃO</button>
+        <textarea id="texto-rascunho" placeholder="Escreva aqui..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe"></div>
 
-    <section id="pdfs" class="content-section pdf-section active" style="flex: 1;">
+    <section id="pdfs" class="content-section pdf-section">
+        <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR TELA</button>
         <div class="pdf-box" id="box-enunciado">
             <div class="pdf-header">
-                <span>📄 ENUNCIADO DA PEÇA</span>
-                <div>
-                    <button class="btn-zoom" onclick="abrirFull('view-enunciado')">🔍 TELA CHEIA</button>
-                    <button class="focus-btn" onclick="focarPdf('enunciado')">FOCO</button>
-                </div>
+                <span>📄 ENUNCIADO</span>
+                <button class="focus-btn" onclick="focarPdf('enunciado')">FOCO</button>
             </div>
             <iframe id="view-enunciado" src="about:blank#view=FitH"></iframe>
         </div>
 
         <div class="pdf-box" id="box-gabarito">
             <div class="pdf-header">
-                <span>✅ GABARITO COMENTADO</span>
-                <div>
-                    <button class="btn-zoom" onclick="abrirFull('view-gabarito')">🔍 TELA CHEIA</button>
-                    <button class="focus-btn" onclick="focarPdf('gabarito')">FOCO</button>
-                </div>
+                <span>✅ GABARITO</span>
+                <button class="focus-btn" onclick="focarPdf('gabarito')">FOCO</button>
             </div>
             <iframe id="view-gabarito" src="about:blank#view=FitH"></iframe>
         </div>
@@ -192,30 +136,25 @@
 </main>
 
 <script>
-    // Lógica do Divisor Arrastável
-    const resizer = document.getElementById('dragMe');
-    const leftSide = document.getElementById('escrita');
-    let x = 0; let leftWidth = 0;
+    // Lógica de Expansão Total (Zen Mode)
+    function toggleZen() {
+        const body = document.getElementById('bodyTag');
+        const btns = document.querySelectorAll('.btn-zen');
+        
+        body.classList.toggle('zen-mode');
+        
+        btns.forEach(btn => {
+            if(body.classList.contains('zen-mode')) {
+                btn.textContent = "🔙 VOLTAR AO NORMAL";
+                btn.style.background = "#e74c3c"; // Vermelho para indicar saída
+            } else {
+                btn.textContent = "↕ EXPANDIR TELA";
+                btn.style.background = "#2c3e50";
+            }
+        });
+    }
 
-    resizer.addEventListener('mousedown', function(e) {
-        x = e.clientX;
-        leftWidth = leftSide.getBoundingClientRect().width;
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
-    });
-
-    const mouseMoveHandler = function(e) {
-        const dx = e.clientX - x;
-        const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
-        leftSide.style.flex = `0 0 ${newLeftWidth}%`;
-    };
-
-    const mouseUpHandler = function() {
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
-    };
-
-    // Alternar Abas (Mobile)
+    // Navegação Mobile
     function switchTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -223,7 +162,38 @@
         document.getElementById('btn-' + tabId).classList.add('active');
     }
 
-    // PDF em Nova Aba
-    function abrirFull(id) {
-        const url = document.getElementById(id).src;
-        if(url.includes('about:blank')) return alert("Selec
+    // Foco em PDF
+    function focarPdf(tipo) {
+        const e = document.getElementById('box-enunciado');
+        const g = document.getElementById('box-gabarito');
+        if(tipo === 'enunciado') g.style.display = (g.style.display === 'none' ? 'flex' : 'none');
+        else e.style.display = (e.style.display === 'none' ? 'flex' : 'none');
+    }
+
+    function carregarExame(enunciado, gabarito) {
+        document.getElementById('view-enunciado').src = "./" + enunciado + "#view=FitH";
+        document.getElementById('view-gabarito').src = "./" + gabarito + "#view=FitH";
+        if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    function salvar() {
+        const t = document.getElementById('texto-rascunho').value;
+        const blob = new Blob([t], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Treino.txt';
+        a.click();
+    }
+
+    // Timer
+    let tempo = 18000;
+    setInterval(() => {
+        let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
+        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (tempo > 0) tempo--;
+    }, 1000);
+
+    if (window.innerWidth < 900) switchTab('menu');
+</script>
+</body>
+</html>
