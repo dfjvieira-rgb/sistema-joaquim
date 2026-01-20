@@ -707,10 +707,763 @@ O magistrado nomeou um perito da sua confiança e fixou os honorários periciais
 dele em R$ 4.000,00, determinando que a empresa antecipasse a quantia em
 10 dias, sob pena de execução forçada, e que a prova técnica somente tivesse
 início após o depósito.
+        A sociedade empresária protestou contra a decisão, ponderando que ela violaria
+normas jurídicas, mas o juiz consignou o protesto na ata e manteve intacta a
+decisão. Ainda na audiência, o titular da sociedade empresária pediu a palavra
+e, aflito, explicou que o seu negócio ainda sofria o efeito da pandemia, e que se
+precisasse dispor dos R$ 4.000,00 determinados pelo juiz, não teria como fechar
+a folha de pagamento dos funcionários naquele mês.
+Como o juiz manteve a sua decisão, a reclamada impetrou mandado de
+segurança perante o TRT da 12ª Região contra o ato do juiz da 2ª Vara do
+Trabalho de Florianópolis, Santa Catarina.
+O TRT entretanto, manteve a decisão determinando a antecipação dos
+honorários periciais.
+Você, como advogado(a) da sociedade empresária, de acordo com o
+entendimento consolidado do TST, elabore a medida judicial adequada para
+tentar reverter a decisão. (Valor: 5,00).
+EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR
+PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO
+DA 12ª REGIÃO
+Processo nº XXX
+PIZZARIA CHAPA QUENTE LTDA. já qualificada nos autos em epígrafe,
+em que contende com Evelyn Calabresa, também qualificada, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com fulcro no art. 895, II, da CLT e
+Súmula 201 do TST, INTERPOR:
+RECURSO ORDINÁRIO
+para o Colendo Tribunal Superior do Trabalho da 12ª Região.
+        Encontram-se presentes todos os pressupostos de admissibilidade do
+recurso, dentre os quais se destaca a tempestividade, uma vez que foi
+interposto no prazo de 8 dias úteis, nos termos do art. 895, II, da CLT.
+Diante do exposto, requer o recebimento do presente recurso, a
+intimação da outra parte para apresentar contrarrazões ao recurso
+ordinário, no prazo de 8 dias úteis, conforme dispõe o art. 900 da CLT, e
+a posterior remessa ao Colendo Tribunal Superior do Trabalho.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+COLENDO TRIBUNAL SUPERIOR DO TRABALHO
+RAZÕES DO RECURSO ORDINÁRIO
+I – MÉRITO
+1. Depósito prévio dos honorários periciais
+O Egrégio Tribunal Regional do Trabalho não concedeu a segurança,
+mantendo a decisão do juiz que determinou o depósito prévio dos
+honorários periciais no valor de R$ 4.000,00, a ser realizado no prazo de
+10 dias, sob pena de execução forçada.
+O acórdão não merece ser mantido, pois, nos termos do art. 790-B, § 3º,
+da CLT, “o juízo não poderá exigir adiantamento de valores para
+realização de perícias”.
+É, portanto, ilegal a exigência de depósito prévio de honorários periciais,
+sendo cabível o mandado de segurança contra o ato do juiz. Nesse
+sentido é o entendimento do TST, consubstanciado na OJ 98 da SDI-2
+do TST.
+Diante do exposto, requer a reforma do acórdão para conceder a
+segurança determinando a suspenção do ato do juiz que exigiu o
+depósito prévio dos honorários periciais.
+II – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso e, no
+mérito, o seu provimento para fins de reforma do acórdão para determinar
+a suspenção do ato do juiz que exigiu o depósito prévio dos honorários
+periciais.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+// CONTRARRAZOES 
 
+4.3. Exercício de contrarrazões - Exame de Ordem XX – Porto Velho –
+reaplicação (adaptado)
+Renato trabalhou como motorista para o Restaurante Amargo Ltda., tendo
+sempre recebido salário fixo no valor de R$ 1.600,00 mensais. Diariamente, dirigia
+um veículo com as refeições solicitadas pelos clientes, as quais eram entregues
+por um ajudante. Foi dispensado imotivadamente após dois anos de serviço.
+Ajuizou ação trabalhista distribuída à 99a Vara do Trabalho de Teresina/PI,
+pleiteando diferenças salariais decorrentes da aplicação do piso salarial estipulado
+para os funcionários em bares e restaurantes, conforme a convenção coletiva
+firmada pelo sindicato dos bares e restaurantes com o sindicato dos garçons e
+ajudantes em bares e restaurantes, ambos do estado do Piauí.
+Pleiteou salário in natura pelo uso de veículo do empregador, o qual ficava
+com Renato ao longo da semana útil, devendo deixá-lo na garagem do
+empregador durante o fim de semana de folga, bem como nas férias.
+Pleiteou, ainda, a integração de diárias para viagem, recebidas no valor de
+R$ 400,00 por cada viagem ocorrida, relatando que, ao longo do contrato, viajou
+a serviço por três ocasiões, em três diferentes meses.
+Por último, pleiteou diferenças salariais decorrentes de equiparação salarial
+com outro motorista, o qual, inicialmente, trabalhava como maître, mas, por força
+de decisão do INSS, por limitação física, teve sua função alterada, quando
+percebia R$ 2.000,00 mensais.
+Na audiência, após a apresentação de defesa com documentos, foram
+dispensados os depoimentos pessoais. A parte autora declarou não ter outras
+provas.
+Dez dias após o encerramento normal da audiência, o juiz prolatou sentença
+de improcedência total dos pedidos, com custas fixadas em R$ 500,00.
+Inconformado, Renato, 15 dias após haver sido notificado da decisão de
+improcedência dos pedidos, apresentou a medida jurídica cabível para tentar
+evertê-la, sem juntar qualquer documento.
+Você foi notificado como advogado(a) da empresa para apresentar a peça
+prático-profissional em nome de seu cliente. Redija-a apresentando os
+argumentos pertinentes. (Valor: 5,00)
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 99a VARA DO TRABALHO DE TERESINA/PI
+Processo no
+RESTAURANTE AMARGO LTDA., já qualificado nos autos em epígrafe,
+em que contende com RENATO, também qualificado, vem,
+respeitosamente, perante Vossa Excelência, por seu advogado adiante
+assinado, com fulcro no art. 900 da CLT, OFERECER:
+CONTRARRAZÕES AO RECURSO ORDINÁRIO
+para o Egrégio Tribunal Regional do Trabalho da 22a Região.
+Diante do exposto, requer o recebimento das contrarrazões apresentadas
+e sua posterior remessa ao Egrégio Tribunal Regional do Trabalho.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado.
+OAB no
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA 22ª REGIÃO
+CONTRARRAZÕES AO RECURSO ORDINÁRIO
+I – PRELIMINAR
+1. Intempestividade e deserção
+Somente 15 dias após haver sido notificado da decisão de improcedência
+dos pedidos, o recorrente interpôs o presente recurso e o fez sem juntar o
+comprovante de recolhimento das custas processuais, fixadas em
+R$ 500,00.
+O prazo para interposição do recurso ordinário no Processo do Trabalho é
+de 8 dias, nos termos do art. 895, I, da CLT. Uma vez que foi interposto
+apenas no 15º dia após a notificação da decisão, o recurso é intempestivo,
+razão pela qual não merece ser conhecido.
+        Outrossim, o art. 789, II e § 1º, da CLT estabelece que, no caso de total
+improcedência dos pedidos, o recorrente deve recolher 2% sobre o valor
+da causa, o que nesse caso corresponde a R$ 500,00, no prazo do recurso.
+Como o mesmo não juntou qualquer documento, nota-se que não houve
+recolhimento das custas processuais, sendo, portanto, o recurso deserto.
+Diante do exposto, requer o não recebimento do presente recurso por
+ausência dos pressupostos de admissibilidade, tempestividade e/ou
+deserção.
+II – MÉRITO
+1. Diferenças salariais – piso salarial
+O recorrente postula a reforma da sentença de improcedência quanto ao
+pedido de diferenças salariais decorrentes da aplicação do piso salarial
+estipulado para os funcionários em bares e restaurantes, de acordo com a
+convenção coletiva firmada pelo sindicato dos bares e restaurantes com o
+sindicato dos garçons e ajudantes em bares e restaurantes, ambos do
+estado do Piauí.
+A sentença merece ser mantida, pois o autor, como motorista, é de
+categoria diferenciada, logo não é aplicável a ele a convenção coletiva
+firmada pelo sindicato dos bares e restaurantes com o sindicato dos
+garçons e ajudantes em bares e restaurantes. Nos moldes do art. 511, §
+3º, da CLT, categoria profissional diferenciada é a que se forma pelos
+empregados que exerçam profissões ou funções diferenciadas por força de
+estatuto profissional especial ou em consequência de condições de vida
+singular, como é o caso do recorrente, sendo indevido o pleito de diferenças
+salariais baseado na norma coletiva mencionada.
+Diante do exposto, requer seja mantida a sentença quanto ao pedido em
+questão.
+2. Salário in natura
+O recorrente postula a reforma da sentença de improcedência quanto ao
+pedido de salário in natura pelo uso de veículo do empregador, o qual ficava
+com ele ao longo da semana útil, devendo deixá-lo na garagem do
+empregador durante o fim de semana de folga, bem como nas férias.
+A sentença merece ser mantida, pois, consoante o art. 458, caput, CLT e
+Súmula 367, I, do TST, o autor não usava o veículo para fins privados, mas
+apenas para o trabalho, não tendo, portanto, caráter contraprestacional da
+verba.
+Diante do exposto, requer que a sentença de improcedência seja mantida
+ao pedido de salário in natura.
+3. Diárias de viagem
+O recorrente postula a reforma da sentença de improcedência quanto ao
+pleito de integração de diárias para viagem, recebidas no valor de
+R$ 400,00 por cada viagem ocorrida, relatando que, ao longo do contrato,
+viajou a serviço por três ocasiões, em três diferentes meses.
+A sentença merece ser mantida, pois, com base no art. 457, § 2º, da CLT,
+as diárias de viagem não possuem natureza salarial.
+Diante do exposto, requer seja mantida a sentença de improcedência do
+pedido de integração das diárias de viagem.
+4. Equiparação salarial
+O recorrente postula a reforma da sentença que julgou improcedente o
+pleito de diferenças salariais decorrentes de equiparação salarial com outro
+motorista, o qual inicialmente trabalhava como maître, mas, por força de
+decisão do INSS, por limitação física, teve sua função alterada, quando
+percebia R$ 2.000,00 mensais.
+A sentença merece ser mantida, pois, à luz do art. 461, § 4º, da CLT,
+empregado readaptado não pode ser paradigma para fins de equiparação
+salarial.
+Diante do exposto, requer que a sentença de improcedência do pleito de
+diferenças salariais decorrentes da equiparação salarial seja mantida.
+        III – REQUERIMENTOS FINAIS
+Diante do exposto, requer o acolhimento da preliminar para que seja
+denegado seguimento ao recurso do autor por deserção e intempestividade
+e, sucessivamente, no mérito, seja negado provimento ao recurso, sendo
+mantida a sentença.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado.
+OAB no
+// RECURSO ADESIVO
+
+5.3. Exercício de Recurso Adesivo
+O empregador, ao comparecer pessoalmente, sem advogado, à audiência
+de uma ação em que é cobrado o pagamento de horas extras e do adicional de
+periculosidade calculado sobre a remuneração paga ao empregado, aduz
+simplesmente nada dever ao empregado. Encerrada a instrução, sem produção
+de outras provas, sob a alegação de falta de contestação específica dos fatos, é
+proferida sentença de acolhimento do pedido, com condenação do empregador
+apenas ao pagamento do adicional de periculosidade, calculado sobre a
+remuneração do empregado. O empregador intimado da sentença, embora com
+ela não concorde, não a impugna. O empregado, por sua vez, oferece recurso
+ordinário, postulando o pagamento das horas extraordinárias. Na condição de
+advogado contratado pelo empregador, no momento em que recebida a intimação
+para oferecer sua resposta, tome a providência processual cabível com a intenção
+de afastar a sucumbência do reclamado.
+        RESOLUÇÃO
+
+        PRIMEIRA PARTE DO RECURSO FOLHA DE ROSTO
+
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+Processo nº
+NOME DO RECORRENTE, já qualificado nos autos em epígrafe, em que
+contende com NOME DO RECORRIDO, também qualificado, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com base no art. 895, I, da CLT, na Súmula
+283 do TST e nos arts. 997, § 2º, do CPC e 769 da CLT, INTERPOR:
+RECURSO ORDINÁRIO ADESIVO
+para o Egrégio Tribunal Regional do Trabalho da ... Região.
+Encontram-se presentes todos os pressupostos de admissibilidade do
+recurso, dentre os quais se destacam:
+a) o depósito recursal: recolhido, no valor de R$ ..., conforme guia
+anexa;
+b) as custas processuais: recolhidas, no valor de R$ ...,
+correspondentes a 2% do valor da condenação, conforme guia anexa;
+c) a tempestividade: o recurso é tempestivo, uma vez que foi interposto
+no prazo das contrarrazões, à luz do art. 997, § 2º, I, do CPC.
+d) a interposição de recurso principal e sucumbência recíproca;
+Diante do exposto, requer o recebimento do presente recurso, a intimação
+da outra parte para apresentar as contrarrazões ao recurso ordinário
+adesivo no prazo de 8 dias úteis, nos moldes do art. 900 da CLT, e a
+posterior remessa ao Egrégio Tribunal Regional do Trabalho da ... Região.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+
+CONTRAZARROES
+
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO
+RAZÕES DO RECURSO ORDINÁRIO ADESIVO
+I – PRELIMINAR
+1. Do cerceamento de defesa
+O Juízo “a quo” julgou procedente o pedido de adicional de periculosidade
+do recorrido, sem, no entanto, produzir a prova pericial. A decisão
+fundamentou-se somente na falta de contestação específica dos fatos.
+Com fundamento no art. 195, caput e § 2º, da CLT, se requerido o adicional
+de periculosidade, o juiz designará a produção da prova pericial. A ausência
+de tal prova implica o cerceamento de defesa e, portanto, a violação ao art.
+5º, LV, da CF/88.
+Diante do exposto, requer a nulidade da sentença e a remessa dos autos
+para o juízo que proferiu a decisão, a fim de que seja produzida a prova
+pericial.
+II – MÉRITO
+1. Do adicional de periculosidade
+O Juízo “a quo” julgou procedente o pedido do recorrido, condenando o
+reclamado ao pagamento do adicional de periculosidade calculado sobre a
+remuneração do empregado.
+A sentença não merece ser mantida, pois, nos termos do art. 193, § 1°, da
+CLT e da Súmula 191, I, do TST, o adicional de periculosidade incide
+apenas sobre o salário básico e não sobre este acrescido de outros
+adicionais.
+Diante do exposto, requer a reforma da sentença, a fim de excluir da
+condenação o pagamento do adicional calculado sobre a remuneração do
+empregado, de modo a ser calculado exclusivamente sobre o salário básico
+do reclamante.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso, bem como
+o acolhimento da preliminar para que seja determinada a nulidade da
+sentença e o retorno dos autos ao juízo de primeiro grau, a fim de que seja
+reaberta a instrução, e, sucessivamente, no mérito, o seu provimento, para
+fins de reforma da sentença, para que seja afastada da condenação a base
+de cálculo do adicional de periculosidade sobre a remuneração do
+reclamante.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+// 6.3. EXERCÍCIO DE AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO (EOABX - ADAPTADO)
+
+Zenga Modas Ltda., CNPJ: 1.1.0001/00, com sede na Rua Lopes Quintas,
+10, Maceió/AL, encontra-se na seguinte situação: Joana Firmino, brasileira,
+casada, costureira, residente na Rua Lopes Andrade, 20, Maceió/AL, CEP:
+10.0001-00, foi contratada por Zenga Modas Ltda., em 12.09.2008, para exercer
+a função de costureira, na unidade de Maceió/AL, sendo dispensada sem justa
+causa em 11.10.2012, mediante aviso-prévio indenizado. Naquele dia, Joana
+entregou a CTPS à empresa para efetuar as atualizações de férias, e tal
+documento ainda se encontra custodiado no setor de recursos humanos.
+Joana foi cientificada de que, no dia 15.10.2012, às 10h, deveria comparecer
+na empresa para receber suas verbas rescisórias. Contudo, na data e hora
+designadas, a empregada não compareceu.
+        Procurado por Zenga Modas Ltda. em 17.10.2012, apresente a medida
+judicial adequada à defesa dos interesses empresariais, sem criar dados ou fatos
+não informados, ciente de que a empregada fruiu férias dos períodos 2008/2009
+e 2009/2010 e de que, no armário dela, foi encontrado um telefone celular de sua
+propriedade, que se encontra guardado no almoxarifado da empresa.
+É desnecessária a indicação de valores.
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.
+ZENGA MODAS LTDA., pessoa jurídica de direito privado, inscrita no
+CNPJ sob o no 1.1.0001/00, com sede na Rua Lopes Quintas, 10,
+Maceió/AL, vem, respeitosamente, perante Vossa Excelência, por
+intermédio de seu advogado adiante assinado (procuração anexa), com
+escritório profissional no endereço completo, onde recebe intimações e
+notificações, com fulcro no art. 539 do CPC c/c art. 769 da CLT,
+PROPOR:
+AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO
+em face de JOANA FIRMINO, brasileira, casada, costureira, residente na
+Rua Lopes Andrade, 20, Maceió/AL, CEP: 10.0001-00, pelas razões de
+fato e de direito a seguir expostas.
+I – FATOS
+A consignatária foi contratada por Zenga Modas Ltda., em 12.09.2008,
+para exercer a função de costureira, na unidade de Maceió/AL, sendo
+dispensada sem justa causa em 11.10.2012, mediante aviso-prévio
+indenizado. Em seu armário, foi encontrado um telefone celular de sua
+propriedade. Joana foi cientificada de que, no dia 15.10.2012, às 10h,
+deveria comparecer na empresa para receber suas verbas rescisórias.
+Contudo, na data e hora designadas, a empregada não compareceu.
+A consignante tem o intuito de pagar as verbas devidas à consignatária,
+razão pela qual propôs a presente medida processual.
+II – MÉRITO
+Em razão da extinção do contrato de trabalho sem justa causa, são
+devidas à consignatária as seguintes verbas, no importe de R$ ..., as
+quais a consignante pretende depositar com o objetivo de que seja
+declarada extinta a obrigação:
+a) Saldo de salário (11 dias) ............................... R$ .............
+b) Aviso-prévio (42 dias) .................................... R$ .............
+c) 13º salário proporcional (11/12) ...................... R$ .............
+d) Férias em dobro – 2010/2011 + 1/3 ............... R$ .............
+e) Férias + 1/3 (2011/2012) ................................ R$ .............
+f) Férias proporcionais (2/12) + 1/3 .................... R$ .............
+g) Multa de 40% do FGTS .................................. R$ .............
+Total devido ....................................................... R$ .............
+Requer, ainda, a devolução do aparelho celular e a entrega da CTPS,
+nos moldes do art. 542, I, do CPC.
+Postula a consignante o depósito das verbas, do celular e da CTPS,
+visando à extinção da obrigação, nos termos do art. 546 do CPC.
+Postula também o depósito dos documentos que comprovam a
+comunicação da extinção do contrato de trabalho aos órgãos
+competentes para acesso da consignatária ao seguro-desemprego e ao
+FGTS.
+Ressalte-se que, por não haver atraso no pagamento das verbas
+rescisórias, é indevida a multa prevista no art. 477, § 8º, da CLT.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) o deferimento do depósito dos valores referidos, do aparelho celular e
+da CTPS (art. 542, I, do CPC);
+b) a citação da consignatária para levantar os valores, o aparelho celular
+e a CTPS depositados com efeito de quitação ou oferecer resposta, sob
+pena de revelia e declaração da extinção da obrigação (art. 542, II, do
+CPC);
+c) a produção de todos os meios de prova em direito admitidos, em
+especial a prova documental;
+d) a procedência do pedido com a declaração de extinção da obrigação
+e condenação da consignatária ao pagamento de custas e honorários
+advocatícios no importe 15%, com base no art. 791-A da CLT.
+Atribui-se à causa o valor de R$....
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no
+
+//8.3. EXERCÍCIO DE EMBARGOS À EXECUÇÃO
+Rômulo Delgado Silva, brasileiro, viúvo, empresário, portador da identidade
+no 113, CPF: 114, residente e domiciliado na Avenida Brás Montes, casa 72 – Boa
+Vista – Roraima – CEP: 222, em entrevista com seu advogado, declara que:
+recebeu a visita de um Oficial de Justiça em sua residência; na primeira vez, o
+Oficial o citou para pagamento de uma dívida trabalhista de R$ 150.000,00,
+oriunda da 50a Vara do Trabalho de Boa Vista, no Processo no xxx; 48 horas
+depois, o Oficial retornou e penhorou o imóvel em que o empresário reside,
+avaliando-o, pelo valor de mercado, em R$ 180.000,00; tem apenas esse imóvel,
+no qual mora com sua filha, já que é viúvo; o Oficial de Justiça informou que há
+uma execução movida pela ex-empregada Sônia Cristina de Almeida contra
+Rômulo; nas contas homologadas, verificou-se que a correção monetária foi
+calculada considerando o mês da prestação dos serviços; e, por fim, ao retornar
+para penhorar o imóvel, o Oficial informou que a dívida havia aumentado em 10%,
+porque o juiz aplicou a multa do art. 523, § 1º, do CPC.
+Diante do exposto, elabore a medida judicial adequada para a defesa dos
+interesses do entrevistado, sem criar dados ou fatos não informados. (Valor: 5,0)
+
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 50a VARA DO TRABALHO DE BOA VISTA,
+RORAIMA
+Processo no xxx
+RÔMULO DELGADO SILVA, já qualificado nos autos em epígrafe, em
+que contende com SÔ NIA CRISTINA DE ALMEIDA, também qualificada,
+vem, respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com fulcro no art. 884 da CLT,
+APRESENTAR:
+EMBARGOS À EXECUÇÃO
+pelas razões de fato e de direito a seguir expostas:
+I – DOS FATOS
+O embargante foi surpreendido com a visita de um Oficial de Justiça em
+sua residência, que, na primeira vez, o citou para pagamento de uma
+dívida trabalhista de R$ 150.000,00, oriunda da 50a Vara do Trabalho de
+Boa Vista, no Processo no xxxx e, 48 horas depois, retornou e penhorou
+o imóvel em que reside, avaliando-o, pelo valor de mercado, em
+R$ 180.000,00.
+II – DOS REQUISITOS ESPECÍFICOS
+Destaca-se o atendimento dos seguintes requisitos dos embargos à
+execução:
+a) a garantia integral do juízo: o embargante garantiu integralmente o
+juízo através do imóvel em que reside com sua filha, avaliado em
+R$ 180.000,00;
+b) a tempestividade: os embargos são apresentados no prazo de 5 dias
+úteis contados da garantia do juízo, observado o disposto no art. 884 da
+CLT;
+c) as custas: no valor de R$ 44,26, serão pagas pelo executado ao final
+da execução, consoante determinado pelo art. 789-A, V, da CLT;
+III – MÉRITO
+1. Impenhorabilidade do bem de família
+Na reclamação trabalhista em questão, o embargante, viúvo, teve
+penhorado o único imóvel que possui e em que reside com sua filha,
+avaliado, pelo valor de mercado, em R$ 180.000,00.
+Nos termos do art. 1º da Lei nº 8.009/90, o imóvel residencial próprio do
+casal, ou da entidade familiar, é impenhorável e não responderá por
+qualquer dívida.
+Ressalte-se que, com base na Súmula 364 do STJ, a impenhorabilidade
+de bem de família abrange também o imóvel pertencente a pessoas
+viúvas.
+Dessa forma, o bem em questão não é passível de penhora, razão pela
+qual requer seja desconstituída a penhora realizada.
+2. Multa do art. 523, § 1º, do CPC
+O juiz aplicou a multa de 10% prevista no art. 523, § 1º, do CPC.
+Tal multa é indevida no Processo do Trabalho. A aplicação subsidiária do
+Código de Processo Civil ao Direito Processual do Trabalho, nos termos
+dos arts. 769 e 889 da CLT, exige dois requisitos: a ausência de
+disposição na CLT e a compatibilidade da norma supletiva com os
+princípios do Processo do Trabalho. Ocorre que existe disciplina
+específica na CLT acerca do procedimento de execução de sentença,
+consoante se observa nos arts. 880, 882 e 883 da CLT. Tais artigos
+preveem o prazo e a garantia da dívida por depósito ou por nomeação à
+penhora de bens, tantos quantos bastem ao pagamento da importância
+da condenação, acrescido das despesas processuais, custas e juros de
+mora. Não se aplica, portanto, a multa prevista no art. 523, § 1º, do CPC
+ao Processo Trabalhista.
+Nesse sentido, é o posicionamento do TST firmado no recurso de revista
+repetitivo nº IRR-1786-24.2015.5.04.0000.
+Diante do exposto, requer seja afastada a multa do art. 523, § 1º, do CPC.
+3. Excesso de penhora
+Como referido, na execução em questão, a liquidação importou em
+R$ 50.000,00 e o imóvel penhorado foi avaliado em R$ 100.000,00.
+Nos termos do art. 883 da CLT e do art. 831 do CPC, a penhora deverá
+recair sobre tantos bens quantos bastem para o pagamento do principal
+atualizado, dos juros, das custas e dos honorários advocatícios.
+Contrariando os dispositivos legais, o valor do imóvel penhorado supera
+de forma significativa o necessário para a quitação da dívida, ocasionando
+o excesso de penhora.
+Diante do exposto, requer a liberação do bem penhorado.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer o recebimento dos embargos, a notificação do
+embargado para manifestar-se no prazo de 5 dias úteis e a procedência dos
+pedidos formulados.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+
+//9.3. Exercício de Impugnação à sentença de liquidação
+José Neymar ajuizou reclamação trabalhista em face de Messi
+Transportadora Ltda., alegando que foi admitido em 12.04.2014 e dispensado
+em justa causa em 13.12.2016.
+Postulou a condenação da reclamada ao pagamento do aviso prévio
+proporcional.
+Notificada, a empresa reclamada compareceu à audiência e apresentou
+contestação, impugnando todos os pedidos do reclamante.
+A reclamada foi condenada a pagar o aviso prévio proporcional. A sentença
+não se pronunciou quanto à correção monetária.
+Transitada em julgado a decisão, o perito calculista apresentou cálculos de
+liquidação no valor de R$ ... . Sua conta foi realizada computando 30 dias de
+aviso prévio sem correção monetária, sob a justificativa de que a sentença não
+versou sobre ela.
+Os cálculos foram homologados após a manifestação das partes.
+Expedido mandado de citação e penhora, a executada, em 48 horas,
+nomeou à penhora um veículo marca Fiat, modelo Pálio, ano 2009, garantindo o
+juízo, sendo o reclamante intimado da constrição judicial.
+Na condição de advogado contrato pelo reclamante, apresente a medida
+processual cabível.
+
+RESOLUÇÃO
+
+
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+Processo no
+JOSÉ NEYMAR, já qualificado nos autos em epígrafe, em que contende
+com MESSI TRANSPORTADORA LTDA., também qualificada, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com fulcro no art. 884, caput e § 3o, da CLT,
+APRESENTAR:
+IMPUGNAÇÃO À SENTENÇA DE LIQUIDAÇÃO
+pelas razões de fato e de direito a seguir expostas:
+I – DOS FATOS
+A executada foi condenada a pagar ao exequente o aviso prévio
+proporciona. A sentença não se pronunciou quanto à correção monetária.
+Transitada em julgado a decisão, o perito calculista apresentou cálculos
+de liquidação no valor de R$ ... . Sua conta foi realizada computando 30
+dias apenas de aviso prévio, sem correção monetária.
+Os cálculos foram homologados após a manifestação das partes.
+Expedido mandado de citação e penhora, a executada, em 48 horas,
+nomeou à penhora um veículo marca Fiat, modelo Pálio, ano 2009,
+garantindo o juízo, sendo o exequente intimado da constrição judicial.
+II – DOS REQUISITOS ESPECÍFICOS
+Destaca-se o atendimento dos seguintes requisitos da impugnação à
+sentença de liquidação:
+a) a tempestividade: a presente medida é tempestiva, já que observou o
+prazo legal de 5 dias úteis, contados da ciência da garantia do juízo,
+previsto no art. 884, caput e § 3º, da CLT.
+b) as custas processuais: no valor de R$ 55,35, serão pagas pelo
+executado ao final da execução, consoante determinado pelo art. 789-A,
+        VII, da CLT;
+III – MÉRITO
+1. Aviso prévio
+Em sentença transitada em julgado, foi deferido ao reclamante o aviso
+prévio proporcional, considerando a Lei no 12.506/2011. Apesar disso, o
+perito calculista incluiu nos cálculos de liquidação apenas 30 dias de aviso
+prévio e desconsiderou o aviso prévio proporcional devido. Mesmo assim,
+o juiz homologou os cálculos.
+Segundo o art. 879, § 1o, da CLT, não se poderá modificar ou inovar a
+sentença liquidanda, nem discutir matéria pertinente à causa principal. A
+homologação dos cálculos contrariando os limites impostos pelo título
+executivo judicial implica violação à coisa julgada e, portanto, ao art. 5o,
+XXXVI, da CF.
+Diante do exposto, requer a correção dos cálculos apresentados pelo perito
+calculista, a fim de que o aviso prévio proporcional seja computado nos
+cálculos das verbas trabalhistas deferidas.
+2. Correção monetária
+Não foram incluídos nos cálculos homologados a correção monetária, uma
+vez que a sentença foi omissa a respeito dela.
+Nos termos do art. 322, § 1º, do CPC e da Súmula 211 do TST, a correção
+monetária inclui-se na liquidação, ainda que omisso o pedido inicial ou a
+condenação.
+Diante do exposto, requer a correção dos cálculos homologados, a fim de
+que seja computada a correção monetária.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer o recebimento da impugnação, a intimação do
+executado para se manifestar no prazo de 5 dias úteis e a procedência do
+pedido, a fim de se promover as reformas necessárias na conta
+homologada.
+Nestes termos,
+Pede deferimento.
+Local e data
+Advogado
+OAB n°
+
+//10.7. Exercício - ENUNCIADO 43º EXAME DA OAB
+A sra. Celina Macedo o(a) procurou em seu escritório, como advogado(a),
+desesperada porque a sua aposentadoria, no valor de um salário-mínimo, havia
+sido totalmente bloqueada naquele dia para o pagamento de uma dívida
+trabalhista no valor de R$ 150.000,00 (cento e cinquenta mil reais). O gerente do
+banco, para quem Celina imediatamente ligou, disse que o bloqueio ocorrera por
+ordem do Juiz da 220ª Vara do Trabalho de Campo Grande, nos autos da
+reclamação trabalhista 0100929-76.2019.5.24.0220.
+Tendo o número do processo em mãos, você buscou informações públicas
+no site do Tribunal Regional do Trabalho e verificou que a ação foi proposta contra
+Celina Macedo.
+Logo após a confirmação do bloqueio da aposentadoria, de valor muito
+inferior ao débito, a exequente Ana Lucena requereu a penhora do imóvel em que
+Celina Macedo reside. Já consta despacho com deferimento e determinação para
+a expedição de mandado de penhora e avaliação, o que deixou Celina ainda mais
+apreensiva, pois é o único bem que possui, deixado por herança de sua falecida
+mãe, onde atualmente reside com seus cinco filhos menores, conforme as contas
+de água e luz que apresentou. Na mais otimista hipótese, segundo disse, o
+modesto imóvel vale R$ 35.000,00 (trinta e cinco mil reais).
+Sem o valor da aposentadoria, único rendimento familiar, ela afirmou,
+convictamente, que sua família passará por dificuldades seríssimas e que, talvez,
+não tenha como se alimentar.
+Celina disse que jamais recebeu comunicado ou chamado da justiça, sendo
+surpreendida com o bloqueio. Além disso, ela confirmou que, no início de 2019, a
+exequente Ana Lucena trabalhou em sua residência como empregada doméstica.
+Ocorre que, após cinco meses de trabalho, Ana Lucena desapareceu e nunca
+mais deu notícias.
+Pelas informações que você acessou no acompanhamento processual,
+houve tentativa de citação com a justificativa "não localizado o endereço", sendo
+que o endereço estava correto, coincidente com aquele estampado nas contas de
+água e luz exibidas por Celina Macedo.
+Diante da informação dos Correios, o Juiz determinou a citação por edital,
+mas, considerando que Celina Macedo não comparecera à audiência, foi aplicada
+a revelia e confissão em desfavor dela.
+A condenação transitou em julgado em fevereiro de 2020 e algumas
+tentativas de execução de Celina Macedo foram feitas, sem sucesso, tendo Ana
+Lucena abandonado o processo, mesmo intimada pessoalmente em julho de 2020
+para dar prosseguimento a ele.
+Em junho de 2024, um novo advogado se apresentou para defender o seu
+interesse, requereu a juntada de substabelecimento e o bloqueio de qualquer valor
+ou benefício previdenciário de Celina Macedo, o que foi acatado sem qualquer
+fundamentação jurídica, com início da constrição dos seus bens e direitos.
+Considerando os fatos narrados, elabore a medida processual que permita
+a defesa global dos interesses de sua cliente Celina Macedo, sabendo-se que a
+condição financeira dela tornará impossível a garantia integral do Juízo. (Valor:
+5,00)
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 220ª VARA DO TRABALHO DE CAMPO
+GRANDE/MS
+EXCIPIENTE: Celina Macedo
+EXCEPTA: Ana Lucena
+Processo nº 0100929-76.2019.5.24.0220
+CELINA MACEDO, qualificação e endereço completos, vem,
+respeitosamente, à presença de Vossa Excelência, por intermédio de seu
+advogado abaixo assinado (procuração anexa), com fundamento nos
+arts. 525, § 11, 803, parágrafo único, 518 e 300 do CPC c/c 769, CLT,
+apresentar
+EXCEÇÃO DE PRÉ-EXECUTIVIDADE, com pedido de tutela provisória
+de urgência (liminar)
+em face da execução que lhe move ANA LUCENA, já qualificada nos autos
+em epígrafe, pelas razões de fato e de direito a seguir expostas.
+I – FATOS
+A excipiente, Sra. Celina Macedo, aposentada e responsável por cinco
+filhos menores, foi surpreendida com o bloqueio integral de sua
+aposentadoria, no valor de um salário-mínimo, determinada pelo juízo
+desta Vara nos autos da execução trabalhista em epígrafe. O bloqueio, que
+inviabiliza completamente sua subsistência e de sua família, foi seguido de
+despacho determinando a penhora do único imóvel em que reside, um bem
+de pequeno valor, deixado por sua falecida mãe. Celina jamais foi
+validamente citada na fase de conhecimento, tampouco teve a
+oportunidade de se defender.
+II – REQUISITOS ESPECÍFICOS
+Conforme disposto nos arts. 525, § 11, 518 e 803, II e parágrafo único,
+        todos do CPC, a presente exceção é o instrumento processual cabível para
+impugnar vícios de ordem pública constatados na execução, sem
+necessidade de garantia do juízo, sendo adequada para discutir a nulidade
+da citação, a impenhorabilidade de bens e a prescrição intercorrente.
+III – PRELIMINAR
+01 – Justiça Gratuita
+A excipiente aufere apenas um salário-mínimo mensal a título de
+aposentadoria e sustenta sozinha cinco filhos menores. Essa realidade
+evidencia sua condição de extrema vulnerabilidade econômica, agravada
+pela constrição integral de seus proventos, o que inviabiliza o sustento da
+família e compromete o mínimo existencial.
+Conforme dispõe o art. 790, § 3º, da CLT, a gratuidade da justiça deve ser
+concedida a quem demonstrar insuficiência de recursos, com a percepção
+de salário igual ou inferior a 40% do teto dos benefícios do Regime Geral
+da Previdência Social — como é o caso da executada.
+Diante do exposto, requer-se, o deferimento dos benefícios da justiça
+gratuita à excipiente.
+IV – PREJUDICIAL DE MÉRITO
+01 – Prescrição Intercorrente
+Após o trânsito em julgado da sentença, a execução permaneceu
+paralisada por mais de dois anos, sem qualquer impulso válido da
+exequente. Conforme se verifica nos autos, a última movimentação efetiva
+ocorreu em julho de 2020, quando a parte autora foi intimada pessoalmente
+para dar prosseguimento à execução, o que não foi feito. A retomada do
+processo só ocorreu em 2024, com a constituição de novo advogado.
+Nos termos do art. 11-A, “caput” e §§ 1º e 2º, da CLT, configura-se a
+prescrição intercorrente quando o exequente, mesmo ciente da
+necessidade de cumprimento de determinação judicial, deixa de
+impulsionar o feito por mais de dois anos. Trata-se de matéria de ordem
+pública, reconhecível de ofício, nos termos do § 2º do mesmo dispositivo,
+e também arguível por meio de exceção de pré-executividade.
+Diante do exposto, requer-se o reconhecimento da prescrição intercorrente
+e a consequente extinção do processo executivo, com resolução do mérito,
+nos termos do art. 487, II, do CPC.
+V – MÉRITO
+01 – Nulidade da citação
+Consta nos autos que a citação da excipiente foi realizada por edital,
+embora seu endereço estivesse corretamente indicado nas contas de água
+e luz juntadas posteriormente. Não houve qualquer esgotamento das
+tentativas de localização pessoal, o que torna a citação por edital
+precipitada e, portanto, inválida.
+Nos termos do art. 841 da CLT e dos arts. 239 e 280 do CPC, a citação
+válida é pressuposto indispensável de validade do processo. Além disso,
+por ser revel, a executada deveria ter sido intimada via postal da sentença,
+como determina o art. 852 da CLT, mas isso não ocorreu.
+O executado também não foi citado na execução como determina o art. 880
+da CLT, por consequência, é nula a execução, nos exatos termos do art.
+803, II, e parágrafo único, do CPC.
+Diante do exposto, requer-se a declaração de nulidade da citação e de
+todos os atos processuais subsequentes, inclusive da sentença e da
+presente execução.
+02 – Bem de Família
+O juízo determinou a penhora do único imóvel da excipiente, onde ela
+reside com seus cinco filhos menores.
+Essa decisão não deve ser mantida, pois, conforme estabelece o art. 1º da
+Lei nº 8.009/1990, o único imóvel em que a executada vive com sua família
+é impenhorável, enquadrando-se como bem de família.
+Diante do exposto, requer-se a imediata desconstituição da penhora
+incidente sobre o imóvel da excipiente.
+03 – Penhora do Benefício Previdenciário
+A excipiente teve bloqueado o valor integral de sua aposentadoria,
+correspondente a um salário mínimo, por ordem do juízo. Trata-se de sua
+única fonte de renda e sustento familiar, da qual dependem também seus
+cinco filhos menores.
+Essa decisão não deve ser mantida, pois viola frontalmente o art. 833, IV e
+§ 2º, do CPC, que autoriza a penhora de bem de família para pagamento
+de crédito trabalhista por ser alimentar, mas limitado à 50% dos
+rendimentos líquidos e garantido o recebimento de, pelo menos, um salário-
+mínimo ao executado, conforme dispõe o art. 529, § 3º do CPC e a tese
+vinculante firmada no Tema 75 do TST:
+“Na vigência do Código de Processo Civil de 2015, é válida a penhora dos
+rendimentos (CPC, art. 833, inciso IV) para satisfação de crédito trabalhista,
+desde que observado o limite máximo de 50% dos rendimentos líquidos e
+garantido o recebimento de, pelo menos, um salário mínimo legal pelo
+devedor.”
+No caso concreto, como a executada aufere exatamente um salário
+mínimo, nada poderia ter sido penhorado.
+Diante do exposto, requer-se a desconstituição da penhora sobre o
+benefício previdenciário da excipiente.
+04. Honorários Advocatícios
+Requer-se a condenação da parte exequente ao pagamento de honorários
+advocatícios no percentual de 15% sobre o valor da execução, nos termos
+do art. 791-A da CLT.
+VI - LIMINAR
+01 – Tutela Provisória de Urgência Antecipada (liminar)
+A excipiente teve bloqueado 100% do valor de sua aposentadoria,
+correspondente a um salário mínimo — sua única fonte de sustento —, sem
+que lhe fosse garantido o mínimo existencial, o que compromete
+diretamente a sobrevivência de sua família, composta por cinco filhos
+menores.
+O Código de Processo Civil, em seu art. 300, caput, admite a concessão
+de tutela provisória de urgência antecipada sempre que presentes os
+requisitos da probabilidade do direito e do perigo de dano. Esses requisitos
+estão plenamente configurados: penhora de bem impenhorável (100% da
+aposentadoria no valor de um salário-mínimo), acarretando risco concreto
+de dano irreversível à subsistência da excipiente e de seus filhos menores.
+Diante do exposto, requer-se a concessão de tutela provisória de urgência
+para suspender imediatamente o bloqueio integral da aposentadoria da
+excipiente.
+VII – REQUERIMENTOS FINAIS
+Diante de todo o exposto, requer-se:
+A concessão da tutela provisória de urgência para suspender o bloqueio da
+aposentadoria da excipiente;
+A concessão dos benefícios da justiça gratuita;
+A notificação da excepta para, querendo, se manifestar;
+A prova documental está pré-constituída os autos;
+A procedência de todos os pedidos formulados pela excipiente:
+a) a concessão da justiça gratuita, com fundamento nos arts. 790, §§ 3º e
+4º da CLT;
+b) o reconhecimento da prescrição intercorrente, com a consequente
+extinção da execução, nos termos do art. 11-A da CLT;
+c) A nulidade da citação por edital, com o reconhecimento da inexistência
+de citação válida, tornando nulos todos os atos posteriores, nos termos dos
+arts. 239, 280 e 803, II e parágrafo único, do CPC, bem como, do art. 852
+da CLT.
+d) A desconstituição da penhora do imóvel por se tratar de bem de família,
+nos termos do art. 1º da Lei nº 8.009/1990;
+e) A liberação total da aposentadoria, por ser verba impenhorável nos
+termos do art. 833, IV e § 2º do CPC, e da tese vinculante firmada no Tema
+75 do TST;
+f) A condenação da parte exequente ao pagamento de honorários
+advocatícios de 15% sobre o valor da execução, nos termos do art. 791-A
+da CLT.
+Nestes termos,
+Pede deferimento.
+Local e data,
+Advogado
+OAB nº
 
 
         
+
 
 
 
