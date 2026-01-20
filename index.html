@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace Total</title>
+    <title>SISTEMA JOAQUIM - Workspace Inteligente</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -22,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* HEADER E TABS */
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
@@ -33,11 +32,7 @@
             display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 100;
         }
 
-        /* MODO ZEN - AGORA COBRE TUDO NO MOBILE TAMBÉM */
-        body.zen-mode header, 
-        body.zen-mode .tabs-container { 
-            display: none !important; 
-        }
+        body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
 
         .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
@@ -48,17 +43,14 @@
         
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
 
-        /* BOTÃO ZEN FLUTUANTE */
         .btn-zen {
             position: absolute; bottom: 20px; right: 20px; z-index: 2000;
             background: var(--primary); color: white; border: none;
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
-            opacity: 0.9;
         }
         body.zen-mode .btn-zen { background: var(--danger); }
 
-        /* SIDEBAR */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
         .btn-peca { 
             width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
@@ -67,21 +59,19 @@
         }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; color: var(--accent); }
 
-        /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; min-width: 100px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
-        /* DIVISOR */
         .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
         .resizer:hover { background: var(--accent); }
 
-        /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; -webkit-overflow-scrolling: touch; }
         
-        .pdf-box.expanded { flex: 25 !important; }
-        .pdf-box.collapsed { flex: 0.1 !important; min-height: 40px; }
+        /* Ajuste de Foco Mantendo Proporção */
+        .pdf-box.expanded { flex: 50 !important; }
+        .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
 
         .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
         .header-actions { display: flex; gap: 5px; }
@@ -96,9 +86,6 @@
             main { flex-direction: column; }
             .content-section { display: none !important; }
             .content-section.active-mobile { display: flex !important; width: 100% !important; height: 100% !important; }
-            
-            /* No Mobile Zen, removemos as bordas para ganhar cada pixel */
-            body.zen-mode .pdf-section { padding: 0; gap: 0; }
             body.zen-mode .pdf-header { display: none; }
         }
     </style>
@@ -168,7 +155,6 @@
         document.querySelectorAll('.btn-zen').forEach(b => {
             b.textContent = isZen ? "🔙 VOLTAR" : "↕ EXPANDIR";
         });
-        // Força o recálculo de layout para o iPad e Mobile
         setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
     }
 
@@ -181,13 +167,13 @@
         if(btn) btn.classList.add('active');
     }
 
+    // FOCO CORRIGIDO: Agora não altera o flex do editor
     function focarPdf(tipo) {
         const e = document.getElementById('box-enunciado');
         const g = document.getElementById('box-gabarito');
-        const editor = document.getElementById('escrita');
 
         if(window.innerWidth > 900) {
-            editor.style.flex = "1"; 
+            // Removemos a linha que resetava o editor aqui!
             if(tipo === 'enunciado') {
                 const isExpanded = e.classList.contains('expanded');
                 e.classList.remove('expanded', 'collapsed');
@@ -200,7 +186,6 @@
                 if(!isExpanded) { g.classList.add('expanded'); e.classList.add('collapsed'); }
             }
         } else {
-            // Mobile: Alterna visualização
             if(tipo === 'enunciado') { g.style.display = g.style.display === 'none' ? 'flex' : 'none'; e.style.display = 'flex'; }
             else { e.style.display = e.style.display === 'none' ? 'flex' : 'none'; g.style.display = 'flex'; }
         }
@@ -229,10 +214,12 @@
             document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
         });
         function resize(e) {
+            // Durante o arrasto, removemos as classes de foco para não dar conflito
             document.getElementById('box-enunciado').classList.remove('expanded', 'collapsed');
             document.getElementById('box-gabarito').classList.remove('expanded', 'collapsed');
             const newWidth = e.clientX - 240; 
             if (newWidth > 150 && newWidth < (window.innerWidth - 300)) {
+                // Define um tamanho fixo baseado no seu movimento
                 leftSide.style.flex = `0 0 ${newWidth}px`;
             }
         }
