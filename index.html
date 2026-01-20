@@ -5,22 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISTEMA JOAQUIM - MENTORIA f5071219</title>
     <style>
-        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; }
+        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; background: var(--bg); }
         #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         #main-app { display: none; width: 100%; height: 100vh; flex-direction: column; }
-        header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); }
+        
+        /* Cabeçalho e Cronômetro */
+        header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--accent); flex-shrink: 0; }
+        .timer-container { background: #000; padding: 8px 15px; border-radius: 8px; border: 2px solid var(--accent); display: flex; align-items: center; gap: 10px; }
+        #timer-display { font-family: 'Courier New', monospace; font-size: 1.5rem; color: #fff; font-weight: bold; min-width: 120px; text-align: center; }
+        .timer-controls button { background: var(--accent); border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .timer-controls button.reset { background: var(--danger); }
+
         .main-layout { display: flex; flex-grow: 1; overflow: hidden; }
         .sidebar { width: 280px; background: var(--sidebar-bg); padding: 15px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #334155; }
         .nav-btn { width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; border: none; background: rgba(255,255,255,0.08); color: #f8fafc; cursor: pointer; border-radius: 6px; font-size: 0.8rem; }
         .nav-btn:hover { background: rgba(255,255,255,0.15); }
         .nav-btn.active { background: var(--accent); font-weight: bold; }
+
         .content-area { flex-grow: 1; padding: 20px; overflow-y: auto; }
         #joaquim { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-height: 85vh; border: 1px solid #e2e8f0; max-width: 900px; margin: 0 auto; }
+        
         .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
         .guia-btn { width: 100%; background: #10b981; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 8px; cursor: pointer; }
         .gab-content, .guia-content { display: none; margin-top: 15px; padding: 20px; background: white; border: 1px solid #cbd5e1; white-space: pre-wrap; font-family: 'Times New Roman', serif; font-size: 1.1rem; }
+        
         .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
         #texto-final { outline: none; min-height: 500px; white-space: pre-wrap; margin-top: 20px; border-top: 2px dashed #cbd5e1; padding-top: 20px; font-family: 'Times New Roman', serif; font-size: 1.1rem; }
     </style>
@@ -32,7 +42,16 @@
 </div>
 
 <div id="main-app">
-    <header>SISTEMA JOAQUIM - MENTORIA JURÍDICA</header>
+    <header>
+        <div>SISTEMA JOAQUIM - MENTORIA</div>
+        <div class="timer-container">
+            <span id="timer-display">05:00:00</span>
+            <div class="timer-controls">
+                <button id="startStopBtn" onclick="toggleTimer()">INICIAR</button>
+                <button class="reset" onclick="resetTimer()">RESET</button>
+            </div>
+        </div>
+    </header>
     <div class="main-layout">
         <nav class="sidebar" id="menuLateral"></nav>
         <main class="content-area"><div id="joaquim">Selecione uma peça na barra lateral.</div></main>
@@ -40,26 +59,73 @@
 </div>
 
 <script>
+    // CRONÔMETRO LOGIC
+    let timeLeft = 5 * 60 * 60; // 5 horas em segundos
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+        const hours = Math.floor(timeLeft / 3600);
+        const minutes = Math.floor((timeLeft % 3600) / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer-display').innerText = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        if (timeLeft <= 1800) { // Avisar se faltar 30 min
+            document.getElementById('timer-display').style.color = '#ef4444';
+        } else {
+            document.getElementById('timer-display').style.color = '#fff';
+        }
+    }
+
+    function toggleTimer() {
+        const btn = document.getElementById('startStopBtn');
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.innerText = 'INICIAR';
+        } else {
+            btn.innerText = 'PAUSAR';
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    alert("TEMPO ESGOTADO! Finalize sua peça.");
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timeLeft = 5 * 60 * 60;
+        document.getElementById('startStopBtn').innerText = 'INICIAR';
+        updateTimerDisplay();
+    }
+
+    // BANCO DE DADOS
     const dbGabaritos = {
         'rt': { 1: `EXCELENTÍSSIMO SENHOR DOUTO JUIZ DA ... VARA DO TRABALHO...\n\nRECLAMAÇÃO TRABALHISTA\n\nI - MÉRITO: Equiparação Salarial (Art. 461 CLT), Diferenças de FGTS (Art. 611-B, III CLT), Intervalo Intrajornada (Art. 71 CLT).`, guia: `Fundamente a Equiparação no Art. 461 e o FGTS no Art. 611-B.` },
         'consigna': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nOBJETO: Depósito de verbas rescisórias e pertences (Art. 539 CPC).`, guia: `Use para evitar a multa do Art. 477, § 8º da CLT.` },
         'cont': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nCONTESTAÇÃO COM RECONVENÇÃO\n\nI - PRELIMINARES: Inépcia e Incompetência.\nII - PREJUDICIAL: Prescrição Quinquenal (Art. 7, XXIX CF).`, guia: `A Reconvenção serve para cobrar prejuízos causados pelo empregado.` },
         'emb_exec': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS À EXECUÇÃO\n\nTESE: Impenhorabilidade de Bem de Família (Lei 8.009/90).`, guia: `Prazo de 5 dias após a garantia do juízo.` },
-        'ro': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECURSO ORDINÁRIO\n\nRAZÕES DE RECURSO ORDINÁRIO\n\nEgrégio Tribunal, Colenda Turma...`, guia: `Art. 895, I da CLT. Prazo de 8 dias.` },
-        'ed': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS DE DECLARAÇÃO\n\nTese: Omissão, Contradição ou Obscuridade (Art. 1.022 CPC / 897-A CLT).`, guia: `Prazo de 5 dias. Interrompe o prazo para outros recursos.` },
-        'ap': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE PETIÇÃO\n\nDelimitação de matérias e valores (Art. 897, § 1º da CLT).`, guia: `Recurso cabível na fase de execução.` },
-        'ai': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE INSTRUMENTO\n\nObjetivo: Destrancar recurso que teve seguimento negado (Art. 897, 'b' CLT).`, guia: `Lembre-se do depósito recursal de 50% do valor do recurso denegado.` },
-        'rr': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nRECURSO DE REVISTA\n\nFundamento: Divergência Jurisprudencial ou violação de Lei/CF (Art. 896 CLT).`, guia: `Exige pré-questionamento (Súmula 297 TST).` },
-        'epe': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nTese: Matérias de ordem pública que não exigem dilação probatória.`, guia: `Não exige garantia do juízo.` },
-        'ms': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nMANDADO DE SEGURANÇA\n\nDireito líquido e certo contra ato de autoridade (Lei 12.016/09).`, guia: `Cuidado com o prazo decadencial de 120 dias.` },
-        'ar': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nAÇÃO RESCISÓRIA\n\nArt. 966 do CPC. Desconstituição de decisão transitada em julgado.`, guia: `Prazo decadencial de 2 anos.` },
-        'inquerito': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nArt. 853 da CLT. Empregado detentor de estabilidade.`, guia: `Prazo de 30 dias após a suspensão do empregado.` },
-        'cautelar': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nMEDIDA CAUTELAR / TUTELA DE URGÊNCIA\n\nArt. 300 CPC. Probabilidade do direito e perigo de dano.`, guia: `Pode ser requerida de forma antecedente ou incidental.` },
-        'replica': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRÉPLICA À CONTESTAÇÃO\n\nManifestação sobre documentos e teses defensivas.`, guia: `Foco em rebater as preliminares e documentos novos.` },
-        'rade': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECURSO ADESIVO\n\nArt. 997, § 1º do CPC. Interposto no prazo das contrarrazões.`, guia: `Segue a sorte do recurso principal.` },
-        'emb_tst': { 1: `AO TRIBUNAL SUPERIOR DO TRABALHO...\n\nEMBARGOS AO TST (DIVERGÊNCIA)\n\nArt. 894, II da CLT. Divergência entre Turmas do TST ou entre Turma e a SDI.`, guia: `Recurso estritamente jurídico.` },
-        're_stf': { 1: `AO TRIBUNAL SUPERIOR DO TRABALHO...\n\nRECURSO EXTRAORDINÁRIO\n\nArt. 102, III, 'a' da CF. Violação direta à Constituição Federal.`, guia: `Exige Repercussão Geral.` },
-        'emb_terc': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS DE TERCEIRO\n\nArt. 674 do CPC. Proteção da posse ou propriedade de quem não é parte.`, guia: `Muito comum em penhoras de imóveis ou veículos.` }
+        'ro': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECURSO ORDINÁRIO\n\nRAZÕES DE RECURSO ORDINÁRIO...`, guia: `Art. 895, I da CLT. Prazo de 8 dias.` },
+        'ed': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS DE DECLARAÇÃO\n\nTese: Omissão, Contradição ou Obscuridade.`, guia: `Prazo de 5 dias.` },
+        'ap': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE PETIÇÃO\n\nDelimitação de matérias e valores (Art. 897, § 1º da CLT).`, guia: `Recurso na fase de execução.` },
+        'ai': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE INSTRUMENTO\n\nDestrancar recurso (Art. 897, 'b' CLT).`, guia: `Depósito recursal de 50%.` },
+        'rr': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nRECURSO DE REVISTA\n\nArt. 896 CLT.`, guia: `Exige pré-questionamento.` },
+        'epe': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nMatérias de ordem pública.`, guia: `Sem garantia do juízo.` },
+        'ms': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nMANDADO DE SEGURANÇA\n\nLei 12.016/09.`, guia: `Direito líquido e certo.` },
+        'ar': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nAÇÃO RESCISÓRIA\n\nArt. 966 CPC.`, guia: `Prazo de 2 anos.` },
+        'inquerito': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nArt. 853 CLT.`, guia: `Empregado estável.` },
+        'cautelar': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nMEDIDA CAUTELAR\n\nArt. 300 CPC.`, guia: `Urgência e probabilidade.` },
+        'replica': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRÉPLICA À CONTESTAÇÃO...`, guia: `Combater preliminares.` },
+        'rade': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECURSO ADESIVO\n\nArt. 997 CPC.`, guia: `Prazo das contrarrazões.` },
+        'emb_tst': { 1: `AO TRIBUNAL SUPERIOR DO TRABALHO...\n\nEMBARGOS AO TST\n\nArt. 894, II CLT.`, guia: `Divergência interna no TST.` },
+        're_stf': { 1: `AO TRIBUNAL SUPERIOR DO TRABALHO...\n\nRECURSO EXTRAORDINÁRIO\n\nArt. 102, III CF.`, guia: `Repercussão geral.` },
+        'emb_terc': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS DE TERCEIRO\n\nArt. 674 CPC.`, guia: `Posse ou propriedade de terceiro.` }
     };
 
     const pecasMenu = {
@@ -88,14 +154,14 @@
 
     function loadPeca(key) {
         const dados = dbGabaritos[key];
-        let gabHtml = `<button class="gab-btn" onclick="toggleElement('gab_content')">📖 Ver Gabarito Completo</button>
-                       <div id="gab_content" class="gab-content">${dados[1]}</div>`;
-        let guiaHtml = `<button class="guia-btn" onclick="toggleElement('guia_content')">💡 DICAS DE MENTORIA</button>
-                        <div id="guia_content" class="guia-content">${dados.guia}</div>`;
-
         document.getElementById('joaquim').innerHTML = `
             <button class="copy-btn" onclick="copyText()">COPIAR MINHA PETIÇÃO</button>
-            <div class="gabarito-panel"> ${gabHtml} ${guiaHtml} </div>
+            <div class="gabarito-panel">
+                <button class="gab-btn" onclick="toggleElement('gab_content')">📖 Ver Gabarito Completo</button>
+                <div id="gab_content" class="gab-content">${dados[1]}</div>
+                <button class="guia-btn" onclick="toggleElement('guia_content')">💡 DICAS DE MENTORIA</button>
+                <div id="guia_content" class="guia-content">${dados.guia}</div>
+            </div>
             <div id="texto-final" contenteditable="true">f5071219\n\n(Escreva sua peça aqui...)</div>
         `;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -109,7 +175,7 @@
 
     function copyText() {
         const t = document.getElementById('texto-final').innerText;
-        navigator.clipboard.writeText(t).then(() => alert("Copiado com sucesso!"));
+        navigator.clipboard.writeText(t).then(() => alert("Copiado!"));
     }
 </script>
 </body>
