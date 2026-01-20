@@ -3,162 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador OAB 2ª Fase - Gabaritos</title>
+    <title>Simulador OAB 2ª Fase</title>
     
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
             background-color: #f0f2f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            height: 100vh; display: flex; flex-direction: column;
         }
 
         header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background-color: #2c3e50; color: white;
+            padding: 1rem; display: flex; justify-content: space-between; align-items: center;
         }
 
-        #timer {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #f1c40f;
-        }
+        #timer { font-size: 1.5rem; font-weight: bold; color: #f1c40f; }
 
-        main {
-            display: flex;
-            flex: 1;
-            margin: 1rem;
-            gap: 1rem;
-            overflow: hidden;
-        }
+        main { display: flex; flex: 1; margin: 10px; gap: 10px; overflow: hidden; }
 
         .sidebar {
-            flex: 1;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            min-width: 280px;
-            max-width: 320px;
-            overflow-y: auto; 
+            flex: 1; background: white; padding: 15px; border-radius: 8px;
+            min-width: 250px; max-width: 300px; overflow-y: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            background-color: #fff;
-            color: #34495e;
-            border: 1px solid #dcdde1;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s ease;
+            display: block; width: 100%; padding: 12px; margin-bottom: 8px;
+            background: #3498db; color: white; border: none; border-radius: 5px;
+            cursor: pointer; text-align: left; transition: 0.3s;
         }
 
-        .sidebar button:hover {
-            background-color: #3498db;
-            color: white;
-        }
+        .sidebar button:hover { background: #2980b9; }
 
         .content {
-            flex: 4;
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
+            flex: 4; background: white; padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        #gabarito-container {
-            flex: 1;
-            width: 100%;
-            margin-top: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-        }
+        #gabarito-container { flex: 1; width: 100%; border: 1px solid #ccc; border-radius: 4px; position: relative; }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        .welcome-msg {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            color: #7f8c8d;
+        .msg-vazia {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #7f8c8d; text-align: center;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 style="margin:0; font-size: 1.3rem;">⚖️ Simulador OAB 2ª Fase</h1>
+        <h1 style="margin:0; font-size: 1.2rem;">⚖️ Simulador OAB</h1>
         <div id="timer">05:00:00</div>
     </header>
 
     <main>
         <nav class="sidebar">
-            <h2 style="font-size: 1.1rem;">Peças</h2>
-            <button onclick="loadPDF('ro35.pdf', 'Recurso Ordinário - Exame XXXV')">Recurso Ordinário (XXXV)</button>
+            <h2 style="font-size: 1rem;">Selecione a Peça</h2>
+            <button onclick="visualizarPDF('ro35.pdf')">Recurso Ordinário (Exame XXXV)</button>
         </nav>
 
         <section class="content">
-            <h2 id="titulo-peca">Área do Gabarito</h2>
+            <h2 id="status-pdf" style="margin-top:0; font-size: 1.1rem;">Aguardando seleção...</h2>
             <div id="gabarito-container">
-                <div id="placeholder" class="welcome-msg">Selecione uma peça ao lado.</div>
-                <iframe id="gabarito-viewer" src="" style="display: none;"></iframe>
+                <div id="msg" class="msg-vazia">Nenhum documento carregado</div>
+                <iframe id="pdf-frame" src="" style="display:none;"></iframe>
             </div>
         </section>
     </main>
 
     <script>
-        function loadPDF(arquivo, nomeExibicao) {
-            const viewer = document.getElementById('gabarito-viewer');
-            const placeholder = document.getElementById('placeholder');
-            const titulo = document.getElementById('titulo-peca');
-            
-            // O segredo para o GitHub Pages: ./ força a busca na mesma pasta
-            const caminhoFinal = "./" + arquivo;
+        function visualizarPDF(nomeArquivo) {
+            const frame = document.getElementById('pdf-frame');
+            const msg = document.getElementById('msg');
+            const status = document.getElementById('status-pdf');
 
-            placeholder.style.display = 'none';
-            viewer.style.display = 'block';
-            
-            // Força o recarregamento do iframe
-            viewer.src = caminhoFinal;
-            
-            titulo.innerText = "Gabarito: " + nomeExibicao;
+            // TRUQUE PARA GITHUB PAGES: 
+            // Adicionamos um parâmetro aleatório no final para evitar que o GitHub sirva uma página de erro em cache
+            const cacheBuster = "?v=" + new Date().getTime();
+            const urlFinal = "./" + nomeArquivo + cacheBuster;
 
-            // Log para você verificar no console do navegador (F12) se o caminho está certo
-            console.log("Tentando carregar:", caminhoFinal);
+            msg.style.display = 'none';
+            frame.style.display = 'block';
+            frame.src = urlFinal;
+            
+            status.innerText = "Carregando: " + nomeArquivo;
+
+            console.log("Tentando acessar: " + urlFinal);
         }
 
-        // Cronômetro simplificado
-        function startTimer(duration, display) {
-            let timer = duration;
+        // Cronômetro
+        function iniciarCronometro(segundos, elemento) {
+            let tempo = segundos;
             setInterval(() => {
-                let hours = Math.floor(timer / 3600);
-                let minutes = Math.floor((timer % 3600) / 60);
-                let seconds = Math.floor(timer % 60);
-                display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                if (--timer < 0) timer = 0;
+                let h = Math.floor(tempo / 3600);
+                let m = Math.floor((tempo % 3600) / 60);
+                let s = tempo % 60;
+                elemento.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if (tempo > 0) tempo--;
             }, 1000);
         }
 
-        window.onload = () => startTimer(18000, document.querySelector('#timer'));
+        window.onload = () => iniciarCronometro(18000, document.getElementById('timer'));
     </script>
 </body>
 </html>
