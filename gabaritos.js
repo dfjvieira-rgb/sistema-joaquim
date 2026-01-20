@@ -10,23 +10,27 @@ e 8.000 calorias.
 Relata que foi contratado no mesmo dia em que Juan para exercer a mesma
 função, na mesma filial. O trabalho se dava com a mesma perfeição técnica e
 produtividade, porém Juan recebia salário fixo de R$ 2.500,00 por mês.
-P á g i n a 9 | 551
- @aryannalinhares @professoraaryannalinhares
+
 O senhor Fininho conta que, em janeiro do ano da extinção do contrato, faltou
 ao trabalho por um dia para comparecer em juízo como parte no processo em que
 litigava contra seu ex-empregador. Embora tenha apresentado a certidão da
 Justiça do Trabalho confirmando suas alegações, o dia foi descontado do seu
 salário.
+
 O empregado comenta também que trabalhava 8 horas diárias de segunda
 a sexta-feira e usufruía de apenas 30 minutos de intervalo intrajornada.
+
 No curso do contrato, o empregador depositava apenas 4% do valor da
 remuneração a título de FGTS, pois havia acordo coletivo de trabalho autorizando
 o recolhimento de apenas metade do valor.
+
 Na qualidade de advogado(a) do reclamante, apresente a medida
 processual cabível para a defesa de seus direitos.
+
 Nos casos em que a lei exigir liquidação de valores, não se faz necessária
 sua apresentação pelo Examinando, pois admite-se que o escritório possui setor
 próprio ou contratado especificamente para tal fim. (Valor: 5,00)
+
 RESOLUÇÃO
 AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE
 FLORIANÓPOLIS/SC
@@ -38,10 +42,10 @@ notificações, com fulcro no art. 840, caput e § 1º, da CLT, PROPOR:
 RECLAMAÇÃO TRABALHISTA, pelo rito (...)
 em face de HEART ATTACK GRILL LTDA., qualificação e endereço
 completos, e SINDICATO DOS EMPREGADOS ..., qualificação e
-P á g i n a 10 | 551
- @aryannalinhares @professoraaryannalinhares
 endereço completos, pelas razões de fato e de direito a seguir expostas.
+
 I – MÉRITO
+
 1. Equiparação salarial
 O reclamante foi contratado pela reclamada no mesmo dia em que Juan
 para exercer a mesma função, na mesma filial, com a mesma
@@ -60,6 +64,7 @@ de 1/3 e FGTS - depósitos e multa de 40%).
 Por fim, requer a retificação da CTPS do empregado para constar o seu
 real salário, no valor e R$ 2.500,00, nos termos do art. 29, § 1º, da CLT.
 R$
+
 2. Devolução do desconto
 A reclamada descontou do salário do reclamante um dia de trabalho no
 mês de janeiro do ano da extinção do contrato, em razão de o reclamante
@@ -67,41 +72,46 @@ ter faltado ao trabalho para comparecer em juízo como parte no processo
 em que litigava contra seu antigo empregador, muito embora tivesse
 apresentado certidão da Justiça do Trabalho confirmando suas
 alegações.
-P á g i n a 11 | 551
- @aryannalinhares @professoraaryannalinhares
+
 Com base no art. 473, VIII, da CLT e súmula 155, TST, o empregado
 poderá deixar de comparecer ao serviço para comparecimento como
 parte na Justiça do Trabalho.
+
 Diante do exposto, requer a condenação da reclamada à devolução do
 dia de trabalho descontado de seu salário. R$
+
 3. Intervalo intrajornada
 O reclamante trabalhava 8 horas diárias de segunda a sexta-feira e
 usufruía de apenas 30 minutos de intervalo intrajornada.
 Nos termos do art. 71, caput, da CLT, aqueles que laboram mais de 6
 horas diárias fazem jus a um intervalo intrajornada de, no mínimo, 1 hora,
 o qual não era observado.
+
 Diante do exposto, requer a condenação da reclamada ao pagamento do
 período suprimido, ou seja, de 30 minutos diários, acrescidos de 50%, à
 luz do art. 71, § 4º, da CLT. R$
+
 4. Diferenças de FGTS
 No curso do contrato, o empregador depositava apenas 4% do valor da
 remuneração do reclamante a título de FGTS, pois havia acordo coletivo
 de trabalho autorizando o recolhimento de apenas metade do valor.
+
 Nos termos do art. 611-B, III, da CLT, é ilícita e, portanto, nula a cláusula
 de acordo coletivo de trabalho que implique redução do valor dos
 depósitos mensais do FGTS. Ressalte-se que, o art. 15 da Lei nº
 8.036/90 determina que os depósitos do FGTS devem ser de 8% da
 remuneração paga ou devida ao trabalhador no mês anterior.
+
 Diante do exposto, requer a declaração de nulidade da cláusula do
 acordo coletivo de trabalho que estabelece a redução dos depósitos do
 FGTS e a condenação da reclamada ao pagamento das diferenças
 salariais. R$
-P á g i n a 12 | 551
- @aryannalinhares @professoraaryannalinhares
+
 5. Honorários advocatícios
 Requer a condenação da reclamada ao pagamento de honorários
 advocatícios, no importe de 15%, sobre o valor que resultar da liquidação,
 à luz do art. 791-A da CLT. R$
+
 II – PEDIDOS
 Diante do exposto, requer:
 a) a condenação da reclamada ao pagamento das diferenças salariais,
@@ -118,6 +128,7 @@ reclamada ao pagamento das diferenças salariais;
 e) a condenação da reclamada ao pagamento de honorários
 advocatícios, no importe de 15% sobre o valor que resultar da
 liquidação, à luz do art. 791-A da CLT.
+
 III – REQUERIMENTOS FINAIS
 Diante do exposto, requer:
 a) a notificação da Reclamada e do Sindicato dos Empregados em...,
@@ -125,8 +136,6 @@ para oferecer resposta à reclamação trabalhista, sob pena de revelia
 e confissão quanto à matéria de fato;
 b) a produção de todos os meios de prova em direito admitidos, em
 especial a prova documental, o depoimento pessoal e a oitiva de
-P á g i n a 13 | 551
- @aryannalinhares @professoraaryannalinhares
 testemunhas; e
 c) por fim, a procedência dos pedidos com a condenação da
 reclamada ao pagamento das verbas pleiteadas, acrescidas de
@@ -174,6 +183,7 @@ em face de JOANA FIRMINO, brasileira, casada, costureira, residente na
 Rua Lopes Andrade, 20, Maceió/AL, CEP: 10.0001-00, pelas razões de
 fato e de direito a seguir expostas.
 I – FATOS
+
 A consignatária foi contratada por Zenga Modas Ltda., em 12.09.2008,
 para exercer a função de costureira, na unidade de Maceió/AL, sendo
 dispensada sem justa causa em 11.10.2012, mediante aviso-prévio
@@ -183,12 +193,11 @@ deveria comparecer na empresa para receber suas verbas rescisórias.
 Contudo, na data e hora designadas, a empregada não compareceu.
 A consignante tem o intuito de pagar as verbas devidas à consignatária,
 razão pela qual propôs a presente medida processual.
+
 II – MÉRITO
 Em razão da extinção do contrato de trabalho sem justa causa, são
 devidas à consignatária as seguintes verbas, no importe de R$ ..., as
 quais a consignante pretende depositar com o objetivo de que seja
-P á g i n a 112 | 551
- @aryannalinhares @professoraaryannalinhares
 declarada extinta a obrigação:
 a) Saldo de salário (11 dias)...............................R$.............
 b) Aviso-prévio (42 dias) ....................................R$.............
@@ -200,15 +209,19 @@ g) Multa de 40% do FGTS..................................R$.............
 Total devido .......................................................R$.............
 Requer, ainda, a devolução do aparelho celular e a entrega da CTPS,
 nos moldes do art. 542, I, do CPC.
+
 Postula a consignante o depósito das verbas, do celular e da CTPS,
 visando à extinção da obrigação, nos termos do art. 546 do CPC.
 Postula também o depósito dos documentos que comprovam a
 comunicação da extinção do contrato de trabalho aos órgãos
 competentes para acesso da consignatária ao seguro-desemprego e ao
 FGTS.
+
 Ressalte-se que, por não haver atraso no pagamento das verbas
 rescisórias, é indevida a multa prevista no art. 477, § 8º, da CLT.
+
 III – REQUERIMENTOS FINAIS
+
 Diante do exposto, requer:
 a) o deferimento do depósito dos valores referidos, do aparelho celular e
 da CTPS (art. 542, I, do CPC);
@@ -247,8 +260,6 @@ diploma legal;
 espinhos das flores que manipulava;
 – o pagamento de horas extras com adição de 50%, explicando que cumpria
 a extensa jornada de segunda a sexta-feira, das 10h às 20h, com intervalo de
-P á g i n a 52 | 551
- @aryannalinhares @professoraaryannalinhares
 duas horas para refeição, e aos sábados, das 16h às 20h, sem intervalo;
 – o pagamento da multa do art. 477, § 8º, da CLT, porque o valor das verbas
 rescisórias somente foi creditado na sua conta 20 dias após a comunicação do
@@ -269,14 +280,13 @@ contracheques da autora e o documento assinado pela empregada autorizando o
 desconto de plano de saúde.
 Diante dessa narrativa, apresente a peça pertinente na melhor defesa dos
 interesses da reclamada. (Valor: 5,00).
+
 RESOLUÇÃO
 AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE JOÃO
 PESSOA/PARAÍBA
 Processo no 98.765.
 FLORICULTURA FLORES BELAS LTDA., qualificação e endereço
 completos, vem, respeitosamente, perante Vossa Excelência, por
-P á g i n a 53 | 551
- @aryannalinhares @professoraaryannalinhares
 intermédio de seu advogado adiante assinado (procuração anexa), com
 escritório profissional no endereço completo, onde recebe intimações e
 notificações, com fulcro nos arts. 847 da CLT e 343 do CPC c/c art. 769
@@ -297,6 +307,7 @@ Diante do exposto, requer a extinção do processo sem resolução do
 mérito, com base no art. 485, IV, do CPC (ausência de pressupostos de
 constituição e de desenvolvimento válido e regular do processo), quanto
 ao pedido de condenação criminal dos sócios da reclamada.
+
 2. Inépcia da petição inicial
 A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
 saúde, tendo assinado, na admissão, contra a sua vontade, um documento
@@ -305,19 +316,20 @@ Segundo estabelece o art. 330, § 1º, I, do CPC, a petição inicial é inepta,
 dentre outras hipóteses, quando lhe faltar pedido, sendo o que aconteceu
 com os descontos salariais relativos ao plano de saúde. A reclamante
 sustenta que eram indevidos, porém não apresenta qualquer pedido.
-P á g i n a 54 | 551
- @aryannalinhares @professoraaryannalinhares
+
 Esclarece-se que, à luz do art. 337, IV, do CPC, a inépcia da inicial deve
 ser analisada em preliminar de contestação.
 Diante do exposto, requer a extinção do processo sem resolução do
 mérito, nos moldes dos arts. 485, I, e 330, I, do CPC (indeferimento da
 petição inicial), em relação aos descontos salariais relativos ao plano de
 saúde.
+
 II – PREJUDICIAL DE MÉRITO
 1. Prescrição quinquenal - parcial
 Em reclamação trabalhista ajuizada em 27/02/2018, a reclamante postulou
 parcelas que retroagem à data de sua admissão, que ocorreu em
 25/10/2012.
+
 Com fundamento nos arts. 7º, XXIX, da CF e 11 da CLT, o direito de ação
 quanto a créditos resultantes das relações de trabalho prescreve em 5
 anos, contados da data do ajuizamento da ação (Súmula 308, I, do TST).
@@ -325,7 +337,9 @@ Diante do exposto, requer a extinção do processo com resolução do
 mérito, nos termos do art. 487, II, do CPC, quanto às parcelas anteriores
 aos últimos 5 anos, contados do ajuizamento da ação, ou seja, anteriores
 a 27/02/2013, que foram postuladas.
+
 III – MÉRITO
+
 1. Adicional de penosidade
 A reclamante postulou o pagamento de adicional de penosidade, na razão
 de 30% sobre o salário-base, porque, no exercício da sua atividade, era
@@ -334,39 +348,44 @@ Não assiste razão à reclamante, pois o art. 7º, XXIII, da CF determina que
 o adicional por atividade penosa é devido na forma da lei e este não foi
 regulamentado.
 Diante do exposto, requer a improcedência do pedido da reclamante.
+
 2. Horas extras
-P á g i n a 55 | 551
- @aryannalinhares @professoraaryannalinhares
+
 A reclamante postulou o pagamento de horas extras com adicional de
 50%, explicando que cumpria a extensa jornada de segunda a sexta-feira,
 das 10h às 20h, com intervalo de duas horas para refeição, e aos sábados,
 das 16h às 20h, sem intervalo.
+
 Não assiste razão à reclamante, pois laborava 8 horas diárias, de segunda
 a sexta-feira, e 4 horas aos sábados, logo o limite constitucional, de 8
 horas diárias e 44 semanais, não foi ultrapassado, à luz dos arts. 7º, XIII,
 da CF e 58 da CLT.
+
 Diante do exposto, requer a improcedência do pedido da reclamante.
 3. Multa do art. 477, § 8º, da CLT
 A reclamante postulou o pagamento da multa do art. 477, § 8º, da CLT,
 porque o valor das verbas rescisórias somente foi creditado na sua conta
 20 dias após a comunicação do aviso-prévio, concedido na forma
 indenizada, extrapolando o prazo legal.
+
 Não assiste razão à reclamante, pois, com fundamento no art. 477, § 6º,
 da CLT, o prazo para pagamento das verbas rescisórias é de até 10 dias,
 contados da data do término do contrato de trabalho, o que ocorre após o
 aviso-prévio.
+
 A comunicação da dispensa ocorreu em 29/12/2017, sendo o aviso-prévio
 indenizado. Por sua vez, o aviso-prévio era de 45 dias, visto que a
 reclamante laborou 5 anos completos para a reclamada. Portanto, o
 término do contrato ocorreu somente em 12/02/2018. Apenas a partir
 desta data é que se conta o prazo de 10 dias para o pagamento das verbas
 rescisórias.
+
 O pagamento ocorreu muito antes, 20 dias após a comunicação do aviso.
 Diante do exposto, requer a improcedência do pedido da reclamante.
+
 4. Devolução dos descontos
+
 A reclamante afirma que foi obrigada a aderir ao desconto para o plano de
-P á g i n a 56 | 551
- @aryannalinhares @professoraaryannalinhares
 saúde, tendo assinado, na admissão, contra a sua vontade, um documento
 autorizando a subtração mensal.
 Não assiste razão à reclamante, pois ela autorizou expressamente o
@@ -374,6 +393,7 @@ desconto para aderir ao plano de saúde, conforme anexo.
 Nos moldes da Súmula 342 do TST, é lícito o desconto salarial efetuado
 pelo empregador, com a autorização prévia e por escrito do empregado,
 para ser integrado em planos de saúde.
+
 Estabelece a OJ 160 da SDI-1 do TST que é inválida a presunção de vício
 de consentimento resultante do fato de ter o empregado anuído
 expressamente com descontos salariais na oportunidade da admissão. É
@@ -381,13 +401,17 @@ de se exigir demonstração concreta do vício de vontade.
 Dessa forma e com fulcro no art. 818, I, da CLT, cabe à reclamante
 comprovar o vício de consentimento arguido por ser fato constitutivo de
 seu direito.
+
 Diante do exposto, requer a improcedência do pedido da reclamante.
+
 IV – RECONVENÇÃO
 1. Requisitos da Reconvenção
+
 Encontram-se presentes os requisitos da reconvenção previstos no art.
 343 do CPC, que compreendem a legitimidade ativa e passiva e a
 conexão. Demonstrados os requisitos da reconvenção, passa-se à
 pretensão reconvencional.
+
 2. Pedido Reconvencional – Dano Material
 Assim que foi cientificada do aviso prévio, a reclamante teve uma reação
 violenta, gritando e dizendo-se injustiçada com a atitude do empregador.
@@ -395,8 +419,6 @@ A situação chegou a tal ponto que a segurança terceirizada precisou ser
 chamada para conter a trabalhadora e acompanhá-la até a porta de saída.
 Contudo, quando deixava o portão principal, Estela começou a correr,
 pegou uma pedra do chão e a arremessou violentamente contra o prédio
-P á g i n a 57 | 551
- @aryannalinhares @professoraaryannalinhares
 da empresa, vindo a quebrar uma das vidraças. A empresa gastou
 R$ 300,00 na recolocação do vidro atingido, conforme nota fiscal
 apresentada.
@@ -413,10 +435,13 @@ pagamento de indenização por danos materiais (dano emergente), no
 importe de R$ 300,00, e de honorários advocatícios sucumbenciais de
 15%, nos termos do art. 791-A, § 5º, da CLT.
 Valor do pedido: R$ 300,00
+
 V – REQUERIMENTOS FINAIS
+
 Diante do exposto, requer a produção de todos os meios de prova em
 direito admitidos, inclusive o depoimento pessoal da reclamante, sob a
 consequência de confissão.
+
 Requer o acolhimento da preliminar de mérito para reconhecer a
 incompetência da Justiça do Trabalho para julgar crimes e para declarar
 extinto o processo sem resolução de mérito quanto aos descontos para
@@ -425,8 +450,6 @@ e, adiante, no mérito, a improcedência dos pedidos formulados pela
 autora, condenando-a ao pagamento de custas processuais e honorários
 advocatícios de 15%, à luz do art. 791-A da CLT.
 Por fim, requer a procedência do pedido reconvencional acrescido de juros
-P á g i n a 58 | 551
- @aryannalinhares @professoraaryannalinhares
 e correção monetária e a condenação da reclamante-reconvinda ao
 pagamento de custas e de honorários advocatícios, nos moldes do art.
 791-A, § 5º, da CLT.
@@ -434,99 +457,7 @@ Nestes termos,
 pede deferimento.
 Local e data.
 Advogado
-OAB nº
-Segundo exercício de Contestação (EOB XXV) – Espelho de Correção
-QUESITOS AVALIADOS FAIXA DE
-VALORES
-ATENDIMENTO AO
-QUESITO
-1. Peça com formato de contestação
-dirigida ao juízo da 50ª Vara do Trabalho
-de João Pessoa/PB (0,10).
-0,00/0,10
-2. Qualificação das partes: identificação do
-réu (0,10) e da autora (0,10).
-0,00/0,10/0,2
-0
-3. Indicação do Art. 847, CLT (0,10). 0,00/0,10
-4. Incompetência da Justiça do Trabalho
-para condenação criminal (0,40). Indicação
-Art. 114, inciso IX, CRFB/88 OU Súmula 62
-STJ (0,10).
-0,00/0,40/0,5
-0
-5. Prescrição das pretensões anteriores a
-27.02.2013 OU prescrição das pretensões
-anteriores a cinco anos do ajuizamento da
-ação (0,40). Indicação Art. 7º, inciso XXIX,
-CRFB/88, OU Art. 11, caput, CLT OU
-Súmula 308, inciso I, TST (0,10).
-0,00/0,40/0,5
-0
-P á g i n a 59 | 551
- @aryannalinhares @professoraaryannalinhares
-QUESITOS AVALIADOS FAIXA DE
-VALORES
-ATENDIMENTO AO
-QUESITO
-6. Adicional de penosidade não foi
-regulamentado (0,40). Indicação Art. 7º,
-inciso XXIII, CRFB/88 (0,10).
-0,00/0,40/0,5
-0
-7. Horas extras indevidas porque o módulo
-constitucional não foi ultrapassado (0,40).
-Indicação Art. 7º, inciso XIII, CRFB/88 OU
-Art. 58, CLT (0,10).
-0,00/0,40/0,5
-0
-8. Indevida a multa do Art. 477 porque o
-pagamento foi feito no prazo legal (0,40).
-Indicação Art. 477, § 6º, CLT (0,10).
-0,00/0,40/0,5
-0
-9. Vício de vontade deve ser provado pela
-autora (0,40). Indicação Art. 818, inciso I,
-CLT OU Art. 373, inciso I, CPC OU Súmula
-342, TST, OU OJ SDI-I 160, TST (0,10).
-OU Arguição de inépcia da petição inicial
-por falta de pedido (0,40). Indicação Art.
-840, § 1º, CLT OU Art. 330, I, CPC, OU Art.
-330, § 1º, I, CPC (0,10).
-0,00/0,40/0,5
-0
-10. Reconvenção, requerendo o valor de
-R$ 300,00 relativo ao vidro quebrado
-(0,40).
-Indicação Art. 186, CC OU Art. 927, caput,
-CC OU Art. 462, § 1º, CLT (0,10).
-0,00/0,40/0,5
-0
-11. Honorários advocatícios na ação
-principal (0,20) e na reconvenção (0,20).
-Indicação do Art. 791-A, CLT (0,10).
-0,00/0,20
-/0,30/0,40/0,
-50
-12. Renovação da(s) preliminar(es) (0,10). 0,00/0,10
-13. Renovação da prejudicial de prescrição
-parcial (0,10) 0,00/0,10
-14. Requerimento de improcedência dos
-pedidos do autor (0,10) e indicação das
-provas a serem produzidas (0,10).
-0,00/0,10/0,2
-0
-P á g i n a 60 | 551
- @aryannalinhares @professoraaryannalinhares
-QUESITOS AVALIADOS FAIXA DE
-VALORES
-ATENDIMENTO AO
-QUESITO
-15. Procedência da reconvenção (0,10).
-Data, local, advogado e OAB (0,10).
-0,00/0,10/0,2
-0
-`
+OAB nº`
     },
 
     'emb_exec': { 
@@ -548,7 +479,9 @@ para penhorar o imóvel, o Oficial informou que a dívida havia aumentado em 10%
 porque o juiz aplicou a multa do art. 523, § 1º, do CPC.
 Diante do exposto, elabore a medida judicial adequada para a defesa dos
 interesses do entrevistado, sem criar dados ou fatos não informados. (Valor: 5,0)
+
 RESOLUÇÃO
+
 AO DOUTO JUÍZO DA 50a VARA DO TRABALHO DE BOA VISTA,
 RORAIMA
 Processo no xxx
