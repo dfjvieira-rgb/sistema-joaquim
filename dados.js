@@ -563,7 +563,132 @@ pede deferimento.
 Local e data.
 Advogado
 OAB nº
+ // 1. RECLAMAÇÃO TRABALHISTA
+ ► Primeiro exercício de Recurso Ordinário
+Em face da sentença abaixo, você, na qualidade de advogado do
+reclamante, deverá interpor o recurso cabível para a instância superior,
+informando-a acerca de preparo porventura efetuado.
+... VARA DO TRABALHO DE NOVA IGUAÇÚ, RIO DE JANEIRO
+Processo nº xxx – procedimento sumaríssimo
+AUTOR: JOSÉ JAIME
+RÉ: CAYMAN LTDA.
+Aos... dias do mês de....... de....., às 10 horas, na sala de audiências desta
+Vara do Trabalho, o Meritíssimo Juiz proferiu, observadas as formalidades legais,
+a seguinte
+SENTENÇA
+Dispensado o relatório, a teor do disposto no art. 852-I, in fine, da CLT.
+FUNDAMENTAÇÃO
+DAS FÉRIAS – Restou comprovado que, no último período aquisitivo
+completo do contrato de trabalho, o recorrente teve 5 faltas injustificadas, razão
+pela qual o empregador lhe concedeu apenas 25 dias de férias, sendo indevidos
+os 5 dias de férias postulados. Improcede.
+        DA PRONTIDÃO – Tendo em vista que restou comprovado que o
+empregado laborou 10 horas em regime de prontidão no último mês trabalhado,
+defiro o pagamento de 1/3 dessas horas. Defiro parcialmente.
+DA INSALUBRIDADE – Este pedido fracassa porque a perícia realizada
+comprovou que o agente agressor detectado era diverso do apontado na petição
+inicial. Não procede.
+ANOTAÇÃO DE DISPENSA NA CTPS – O acionante deseja a retificação de
+sua CTPS no tocante à data da dispensa, para incluir o período do aviso-prévio.
+O pedido está fadado ao insucesso, porquanto, no caso em exame, o aviso-prévio
+foi indenizado, isto é, não houve prestação de serviço no seu lapso. Logo, tal
+período não pode ser considerado na anotação da carteira profissional. Não
+procede.
+JUROS E CORREÇÃO MONETÁRIA – Na petição inicial, o autor não
+requereu ambos os títulos, pelo que não deverão ser adicionados aos cálculos
+de liquidação, já que a inicial fixa os contornos da lide e da eventual
+condenação.
+Diante do exposto, julgo procedentes em parte os pedidos, na forma da
+fundamentação, que integra este decisum. Custas de R$ 100,00 sobre
+R$ 5.000,00 pela ré. Intimem-se.
+RESOLUÇÃO – 1º EXERCÍCIO DE RECURSO ORDINÁRIO
+AO DOUTO JUÍZO DA VARA DO TRABALHO DE NOVA IGUAÇU, RIO
+DE JANEIRO
+Processo no XXX
+JOSÉ JAIME, já qualificado nos autos em epígrafe, em que contende
+com CAYMAN LTDA., também qualificada, vem, respeitosamente,
+perante Vossa Excelência, por intermédio de seu advogado adiante
+assinado, com fulcro no art. 895, I, da CLT, INTERPOR:
+RECURSO ORDINÁRIO
+para o Egrégio Tribunal Regional do Trabalho da 1ª Região.
+Encontram-se presentes todos os pressupostos de admissibilidade do
+recurso, dentre os quais se destaca a tempestividade, uma vez que foi
+interposto no prazo de 8 dias úteis, nos termos do art. 895, I, da CLT.
+Diante do exposto, requer o recebimento do presente recurso, a
+intimação da outra parte para apresentar contrarrazões ao recurso
+ordinário, no prazo de 8 dias úteis, conforme dispõe o art. 900 da CLT, e
+a posterior remessa ao Egrégio Tribunal Regional do Trabalho da 1ª
+Região.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA 1ª REGIÃO
+RAZÕES DO RECURSO ORDINÁRIO
+I – MÉRITO
+1. Férias
+O juízo “a quo” julgou improcedente o pedido do recorrente dos 5 dias
+faltantes de férias, sob o argumento de que restou comprovado que, no
+último período aquisitivo completo do contrato de trabalho, ele teve 5
+faltas injustificadas.
+A sentença não merece ser mantida, pois, nos termos do art. 130, I, da
+CLT, o empregado terá direito a 30 dias corridos de férias, quando não
+houver faltado ao serviço mais de 5 vezes durante o período aquisitivo.
+Diante do exposto, requer a reforma da sentença para julgar procedente
+o pedido do recorrente.
+2. Prontidão
+O juízo “a quo” deferiu o pagamento de 1/3 das horas laboradas em
+regime de prontidão.
+A sentença não merece ser mantida, pois, nos termos do art. 244, § 3º,
+da CLT, as horas de prontidão são contadas à razão de 2/3 do salário-
+hora normal.
+Diante do exposto, requer a reforma da sentença para que seja julgado
+procedente o pedido do recorrente.
+3. Adicional de insalubridade
+O juízo “a quo” julgou improcedente o pedido do autor de condenação da
+reclamada ao pagamento do adicional de insalubridade por agente
+agressor diverso do apontado na petição inicial.
+A sentença não merece ser mantida, pois, à luz da Súmula 293 do TST,
+a decisão judicial não fica vinculada ao agente indicado pelo reclamante,
+podendo o juiz deferir o adicional de insalubridade por agente insalubre
+diverso do apontado na inicial.
+Diante do exposto, requer a reforma da sentença para julgar procedente
+o pedido de adicional de insalubridade.
+4. CTPS – Anotação da data de saída
+O juízo “a quo” julgou improcedente o pedido do recorrente de retificação
+de sua CTPS no tocante à data da dispensa para incluir o aviso-prévio
+indenizado, por entender que não houve prestação dos serviços no seu
+lapso.
+A sentença não merece ser mantida, pois, nos termos do art. 487, § 1°,
+da CLT, o aviso-prévio integra o tempo de serviço do empregado. Em
+razão disso, entende o TST, segundo OJ 82 da SDI-1, que a data de
+saída a ser anotada na CTPS do empregado deve ser a do último dia
+do aviso-prévio, seja indenizado ou não.
+Diante do exposto, requer a reforma da sentença para que seja
+determinada a retificação da CTPS, de modo que conste como data de
+saída a do último dia do aviso-prévio indenizado.
+5. Juros e correção monetária
+O juízo “a quo” indeferiu juros e correção monetária ao recorrente em
+razão da ausência de pedido nesse sentido.
+A sentença não merece ser mantida, uma vez que esses são pedidos
+implícitos, com fulcro no art. 322, § 1º, do CPC e na Súmula 211 do TST,
+de modo que se incluem na liquidação, ainda que omisso o pedido inicial
+ou a condenação.
+Diante do exposto, requer a reforma da sentença para inclusão dos juros
+e correção monetária na condenação.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso e, no
+mérito, o seu provimento para fins de reforma da sentença para julgar
+procedentes as postulações do recorrente.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no
+
         
+
 
 
 
