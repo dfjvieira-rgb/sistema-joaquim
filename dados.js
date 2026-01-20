@@ -2548,6 +2548,269 @@ Nestes termos,
 pede deferimento.
 Local e data.
 Advogado(a)
+OAB n°
+
+//18.3. EXERCÍCIO DE INQUÉRITO JUDICIAL PARA APURAÇÃO DE FALTA
+GRAVE
+José Agostinho é empregado da empresa Pastelaria Beiçola Ltda. desde
+01.02.2022, exercendo, no Município de Pindamonhangaba/SP, a função de
+administrador. Em 21.05.2024 foi eleito dirigente sindical. Ocorre que, em
+21.04.2025, descobriu-se que o empregado havia depositado, em sua conta
+bancária, cheque de pagamento feito por cliente à empresa. A revelação do
+ocorrido deu-se porque um cliente havia emitido um cheque sem fundos em favor
+da empresa e ligou propondo ir à mesma levar o dinheiro e resgatar o cheque. O
+contato foi feito com Lineu, supervisor de José, que não conseguiu localizar o
+depósito. Por conta disso, requereu ao cliente que solicitasse ao seu banco uma
+microfilmagem do cheque. Foi quando, para sua surpresa, descobriu que havia
+sido depositado na conta do administrador. No mesmo dia, Lineu suspendeu José
+e registrou a ocorrência na delegacia de polícia, com a instauração de inquérito
+policial.
+Em 25.04.2025, a Pastelaria Beiçola Ltda. pretende dispensar o empregado.
+Para tanto, considerando que você foi procurado nesta data (25/04/2025), elabore
+a medida judicial cabível.
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE
+PINDAMONHANGABA/SP.
+PASTELARIA BEIÇOLA LTDA., qualificação e endereço completos,
+vem, respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe intimações e
+notificações, com fulcro nos arts. 494 e 853 da CLT, PROPOR:
+INQUÉRITO JUDICIAL PARA APURAÇÃO DE FALTA GRAVE
+em face de JOSÉ AGOSTINHO, qualificação e endereço completos,
+pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+José Agostinho é empregado da Pastelaria Beiçola Ltda. desde
+01.02.2022, exercendo a função de administrador. Em 21.05.2024 foi
+eleito dirigente sindical. Ocorre que, em 21.04.2025, descobriu-se que o
+empregado havia depositado, em sua conta bancária, cheque de
+pagamento feito por cliente à empresa. No mesmo dia, Lineu, supervisor
+de José, suspendeu-o e registrou a ocorrência na delegacia de polícia,
+com a instauração de inquérito policial. A presente medida visa à extinção
+do contrato por justa causa do empregado.
+II – REQUISITOS ESPECÍFICOS
+1. Do prazo
+Esclarece-se que o inquérito está sendo proposto dentro do prazo
+decadencial de 30 dias, contados da suspensão do empregado estável
+(arts. 494 e 853 da CLT), a qual ocorreu em 21.04.2025.
+2. Do cabimento do inquérito
+Nos moldes das Súmulas 197 do STF e 379 do TST, o dirigente sindical
+somente pode ser dispensado por justa causa mediante inquérito judicial
+para apuração de falta grave, sendo essa, portanto, a medida cabível
+com este propósito.
+II – MÉRITO
+O empregado é dirigente sindical e, por isso, possui estabilidade
+provisória no emprego desde o registro da candidatura e, se eleito, até
+um ano após o término do mandato, nos termos dos arts. 8º, VIII, da CF
+e 543, § 3º, da CLT.
+Evidencia-se que o reclamado praticou ato de improbidade ao depositar,
+em sua conta bancária, o cheque emitido pelo cliente em favor da
+empresa. Tal conduta caracteriza falta grave, à luz do art. 482, “a”, da
+CLT, justificando a suspensão do dirigente-empregado (art. 494 da CLT)
+e a extinção de seu contrato de trabalho por justa causa.
+Diante do exposto, requer o reconhecimento da prática de falta grave
+pelo empregado e a extinção do contrato de trabalho por justa causa do
+requerido com data retroativa à suspensão.
+III – REQUERIMENTOS FINAIS
+Isto posto, requer:
+a) a notificação do requerido para que ofereça contestação em
+audiência a ser designada por este juízo;
+b) a produção de todos os meios de prova em direito admitidos, em
+especial, a prova documental e testemunhal; e
+c) por fim, o julgamento procedente do pedido e, consequentemente,
+a rescisão do contrato de trabalho por justa causa do requerido,
+retroagindo à data de sua suspensão e a condenação do empregado
+ao pagamento de custas e honorários advocatícios, no importe de
+15%, nos moldes do art. 791-A da CLT.
+Dá-se à causa o valor de R$ ....
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no
+
+//18.4. ESTRUTURA E EXERCÍCIO DE CONTESTAÇÃO AO INQUÉRITO
+JUDICIAL PARA APURAÇÃO DE FALTA GRAVE
+Ewerson Woody é dirigente sindical e, durante o seu mandato, no dia
+19/02/2024, a sociedade empresária Tock Stoy Ltda. alegou que ele praticou
+falta grave e, em razão disso, suspendeu-o. Sessenta dias depois, ajuizou
+inquérito judicial contra ele. Na petição inicial, a sociedade empresária alegou
+que Ewerson Wood praticou falta grave ao agredir fisicamente o seu colega de
+trabalho Naldo Buzz com tapas e socos, em um estádio de futebol, porque Naldo
+havia comprado o último hamburguer disponível na lanchonete do local, tendo o
+ato sido gravado pelo sistema de segurança existente no estádio.
+Como advogado de Ewerson Wood, que foi notificado de que a empresa
+ajuizou inquérito judicial para apuração de falta grave contra ele, elabore a
+medida processual cabível para a sua defesa.
+
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA… VARA DO TRABALHO DE...
+Processo nº
+EWERSON WOODY, qualificação e endereço completos, vem
+respeitosamente perante este Juízo, por intermédio de seu advogado
+adiante assinado (procuração anexa), com escritório profissional no
+endereço completo, onde recebe intimações e notificações, com fulcro
+no art. 847 da CLT, oferecer:
+CONTESTAÇÃO ao INQUÉRITO JUDICIAL PARA APURAÇÃO DE
+FALTA GRAVE,
+proposto por TOCK STOY LTDA., já qualificada nos autos em epígrafe,
+pelas razões de fato e de direito a seguir expostas:
+I – PREJUDICIAL
+01. Decadência
+A empresa reclamante suspendeu o contestante de suas funções em
+19/02/2024, sob a alegação de agressão física a colega de trabalho, não
+superior hierárquico, em estádio de futebol. Contudo, ajuizou o presente
+inquérito judicial 60 dias após a suspensão, ultrapassando o prazo
+legalmente estabelecido para essa medida.
+Nos termos do art. 853 da CLT e da súmula 403 do STF, o empregador
+deve ajuizar o inquérito judicial para apuração de falta grave no prazo
+decadencial de 30 dias, contados da data da suspensão do empregado.
+Diante do exposto, requer o reconhecimento da decadência e a extinção
+do inquérito judicial com resolução do mérito, nos termos do art. 487, II,
+do CPC, assegurando a reintegração do empregado às suas funções,
+com o pagamento dos salários e demais vantagens devidas durante a
+suspensão do contrato.
+
+        II – MÉRITO
+1. Inexistência de falta grave
+A empresa fundamenta a alegação de justa causa na suposta agressão
+física do empregado contra um colega de trabalho, ocorrida em um
+estádio de futebol. Ocorre que o fato se deu fora do ambiente da empresa
+e em momento de lazer, sem qualquer relação com as atividades laborais
+ou com o empregador.
+Nos termos do art. 482, "j" e "k", da CLT, haveria falta grave apenas se a
+agressão física tivesse ocorrido na empresa ou, sendo fora, fosse contra
+empregador ou superior hierárquico. Entretanto, a briga ocorreu com
+colega de trabalho e fora da empresa, o que não caracteriza falta grave.
+Assim, a conduta imputada ao empregado não preenche os requisitos
+legais para a rescisão por justa causa.
+Diante do exposto, requer a improcedência total do inquérito judicial, a
+determinação da reintegração do empregado ao seu posto de trabalho e
+a condenação da empresa ao pagamento dos salários e demais
+vantagens devidas durante o período da suspensão do contrato.
+3. Dos Honorários Advocatícios
+Requer a condenação da empresa reclamante ao pagamento de
+honorários advocatícios fixados em 15% sobre o valor atribuído à causa,
+nos termos do art. 791-A da CLT.
+III – DOS REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+1. A produção de todas as provas admitidas em direito, especialmente
+documental e testemunhal.
+2 O acolhimento da prejudicial de decadência, extinguindo o processo
+com resolução do mérito, nos termos do art. 487, II, do CPC.
+3. Subsidiariamente, no mérito, a improcedência do pedido, declarando
+a inexistência de falta grave, assegurando a reintegração do empregado
+ao seu posto de trabalho e condenando a empresa reclamante ao
+pagamento dos salários e demais vantagens devidas durante a
+suspensão do contrato, acrescidos de juros e correção monetária, bem
+como a condenação da empresa ao pagamento de custas processuais.
+4. A condenação da empresa reclamante ao pagamento de honorários
+advocatícios, fixados em 15% do valor atribuído à causa, nos termos do
+art. 791-A da CLT.
+Nestes termos,
+Pede deferimento.
+Local e data
+Advogado
+OAB nº
+
+//19.8. Exercício de Recurso de Revista
+José Camargo, brasileiro, propôs reclamação trabalhista, pelo rito
+sumaríssimo, em face de sua ex-empregadora Indústria Petroquímica
+Transforma Ouro em Glamour Ltda.
+O reclamante apresentou pedidos líquidos, postulando: equiparação salarial
+com Patrícia Hebe, a qual laborava na mesma função, mas recebia R$ 500,00 a
+mais do que ele; adicional de periculosidade, em razão do labor realizado em
+contato com inflamáveis; e calculado sobre o salário mensalmente recebido.
+A reclamada sustentou que o labor não era perigoso e que as diferenças
+salariais não eram devidas porque a paradigma tinha maior produtividade que o
+reclamante.
+O laudo foi juntado aos autos pelo perito nomeado pelo juízo, que concluiu
+pela existência de periculosidade.
+Foi proferida sentença deferindo o pagamento das diferenças salariais
+perseguidas em razão da equiparação salarial, por entender pela ausência de
+prova do fato impeditivo alegado pela reclamada e o adicional de periculosidade,
+em razão da conclusão do laudo pericial, calculado sobre o conjunto de parcelas
+de natureza salarial do reclamante.
+O juízo ainda arbitrou como valor da condenação a quantia de R$ 23.813,83,
+        e como custas processuais o importe de 2% sobre o valor da condenação.
+Contra a decisão proferida pelo juízo de primeiro grau, a reclamada,
+tempestivamente, interpôs recurso ordinário, impugnando integralmente a
+condenação imposta na sentença, repetindo os argumentos apresentados na
+defesa e destacando os casos de violação ao texto de lei e à jurisprudência
+sumulada. Para tanto, a reclamada realizou o depósito recursal no importe de
+R$ 13.813,83 e recolheu as custas processuais.
+O Tribunal Regional do Trabalho entendeu por conhecer do apelo patronal e
+negar-lhe provimento ao recurso ordinário.
+Na qualidade de advogado, considerando que a decisão foi publicada ontem,
+formule a peça processual cabível em favor da reclamada.
+        RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR
+PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA
+... REGIÃO
+Processo nº
+INDÚSTRIA PETROQUÍMICA TRANSFORMA OURO EM GLAMOUR
+LTDA., já qualificada nos autos em epígrafe, em que contende com JOSÉ
+CAMARGO, também qualificado, vem, respeitosamente, perante Vossa
+Excelência, por intermédio de seu advogado abaixo assinado, com fulcro
+no art. 896, § 9º, da CLT, INTERPOR:
+RECURSO DE REVISTA
+para o Colendo Tribunal Superior do Trabalho.
+Encontram-se presentes todos os pressupostos de admissibilidade deste
+recurso, dentre os quais se destacam:
+a) o depósito recursal: recolhido no valor de R$ 10.000,00, conforme guia
+anexa;
+b) as custas processuais: recolhidas quando da interposição do recurso
+ordinário. Frisa-se que não houve acréscimo no valor das custas e,
+portanto, não há valor algum a ser recolhido;
+c) a tempestividade: foi interposto no prazo de 8 dias úteis, nos termos do
+art. 6º, Lei 5.584/70.
+d) o prequestionamento: a matéria objeto do recurso está prequestionada,
+uma vez que foi tratada no acórdão impugnado, nos termos da Súmula 297
+do Colendo TST;
+e) a transcendência: a causa oferece transcendência com relação aos
+reflexos gerais de natureza política, visto que a decisão recorrida foi
+proferida com desrespeito a súmula do TST, nos moldes do art. 896-A, § 1º,
+II, da CLT.
+        Diante do exposto, requer o recebimento do presente recurso, a intimação
+da outra parte para apresentar as contrarrazões ao recurso de revista no
+prazo de 8 dias úteis, conforme determina o art. 900 da CLT, e a posterior
+remessa ao Colendo Tribunal Superior do Trabalho.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+AO COLENDO TRIBUNAL SUPERIOR DO TRABALHO
+RAZÕES DO RECURSO DE REVISTA
+I – MÉRITO
+1. Adicional de periculosidade
+O Egrégio TRT manteve a sentença que fixou como base de cálculo do
+adicional de periculosidade o conjunto de parcelas de natureza salarial do
+reclamante. Verifica-se pelo trecho a seguir do acórdão recorrido que a
+matéria está prequestionada: “...”.
+Tal decisão caracteriza divergência jurisprudencial. Observe-se:
+A Súmula 191, I, do TST institui o seguinte:
+“Súmula 191, I, do TST. I – O adicional de periculosidade incide apenas
+sobre o salário básico e não sobre este acrescido de outros adicionais. (...)”
+Apesar de a Súmula 191 do TST estabelecer que a base de cálculo do
+adicional de periculosidade é o salário básico do empregado, o juízo “a quo”
+posicionou-se de forma contrária, fixando como base de cálculo o conjunto
+de parcelas de natureza salarial.
+Não se pode admitir decisão regional contrária ao entendimento
+consolidado do Colendo TST.
+Diante do exposto, requer a reforma do acórdão para que seja estabelecida
+como base de cálculo do adicional de periculosidade o salário-base do
+        reclamante.
+II – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso e, no
+mérito, o provimento do recurso para fins de reforma do acórdão nos itens
+supramencionados.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+
 
 
 
