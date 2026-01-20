@@ -1813,8 +1813,169 @@ Pede deferimento.
 Local e data.
 Advogado
 OAB nº
-
+// 12.3. EXERCÍCIO DE AGRAVO DE PETIÇÃO (38º EOAB)
+Josefina Pires ajuizou reclamação trabalhista contra Larissa Barreto em
+março de 2022, requerendo o reconhecimento de vínculo empregatício como
+empregada doméstica, no período de 10/09/2010 a 15/12/2021.
+Afirmou que recebia, por último, o salário de R$ 2.000,00 mensais e que
+jamais recebeu 13º salário ou férias (que requereu por todo o período, sendo as
+férias calculadas sobre a última remuneração), FGTS e horas extras (a partir de
+quando tais direitos passaram a ser devidos ao empregado doméstico), assim
+como honorários advocatícios. A petição inicial indicou estimativa dos valores
+pretendidos e foi distribuída ao juízo da 100ª Vara do Trabalho de Petrópolis/RJ,
+recebendo o número 00500-80.2022.5.01.0100. O rito adotado foi o ordinário, em
+razão do valor postulado.
+Devidamente citada, a reclamada não apresentou contestação, daí porque
+o pedido foi julgado inteiramente procedente à revelia, sendo proferida sentença
+líquida, no valor de R$ 125.000,00.
+Intimadas as partes, não houve interposição de recurso, foi certificado o
+trânsito em julgado e a executada foi citada por oficial de justiça, em maio de 2022,
+para pagamento voluntário, mas quedou-se inerte. Então, o juízo acionou o
+bloqueio de ativos financeiros (penhora on-line), conseguindo reter R$ 2.000,00
+da executada. As novas tentativas de bloqueio foram infrutíferas, sendo então
+expedido mandado de penhora e avaliação de bens. Foi penhorado o imóvel em
+que vivia a executada, avaliado pelo oficial de justiça em R$ 123.000,00, sendo a
+penhora registrada em RGI.
+Garantido o juízo, a executada ajuizou embargos à execução no 5º dia, no
+qual alegou que o imóvel penhorado era um bem de família, pois era proprietária
+de 2 imóveis e residia com sua família em ambos, alternadamente; suscitou
+prescrição parcial; afirmou que o valor retido de sua conta correspondia a parte do
+seu salário (10%), portanto, impenhorável, juntando o extrato confirmando que o
+valor bloqueado era de salário depositado; requereu nova chance de defesa,
+porque teve pouco tempo para contestar, pois a audiência foi marcada para 14
+dias após a citação; que, no cálculo das férias, o juiz não utilizou a evolução
+salarial durante o longevo contrato de trabalho, como deveria ser, mas, sim, a
+última remuneração paga por ocasião da extinção do contrato.
+Após devidamente contestados, o juiz julgou procedente os embargos à
+execução, com os seguintes fundamentos: que apesar de a ex-empregadora
+possuir outro imóvel em bairro próximo, de menor valor (R$ 70.000,00) e onde
+também reside com sua família porque fica mais próximo ao seu emprego, o
+imóvel constritado é o de maior valor e, assim, impenhorável; acolheu a prescrição
+parcial para fixar os cálculos que devem considerar os 5 anos anteriores ao
+ajuizamento da ação, e não todo o período trabalhado; determinou a liberação dos
+R$ 2.000,00 porque salário jamais pode ser penhorado, ainda que parcialmente;
+deferiu nova chance para juntar defesa porque a executada teve prazo de apenas
+2 semanas, o que o magistrado entendeu ser insuficiente para a separação dos
+documentos e contratação de advogado; deferiu o recálculo das férias para
+acompanhar o valor do salário pago ao longo do tempo, e não da última
+remuneração.
+Publicada a decisão, e considerando que você é advogado da trabalhadora,
+redija a peça prático-profissional para a defesa dos interesses da sua cliente em
+juízo, ciente de que, na decisão, não há vício ou falha estrutural que comprometa
+a sua integridade RESOLUÇÃO
+AO DOUTO JUÍZO DA 100ª VARA DO TRABALHO DE
+PETRÓPOLIS/RJ.
+Processo nº 00500-80.2022.5.01.0100
+Agravante: Josefina Pires
+Agravada: Larissa Barreto
+JOSEFINA PIRES, já qualificada nos autos em epígrafe, em que contende
+com LARISSA BARRETO, também qualificada, vem, respeitosamente,
+perante Vossa Excelência, por intermédio de seu advogado adiante
+assinado, com fulcro no art. 897, “a”, da CLT, INTERPOR:
+AGRAVO DE PETIÇÃO
+para o Egrégio Tribunal Regional do Trabalho da 1ª Região.
+Encontram-se presentes todos os pressupostos de admissibilidade do
+recurso, dentre os quais se destacam:
+a) a garantia integral do Juízo foi realizada pelo executado com seus bens,
+quais sejam: R$ 2.000,00 em dinheiro e um imóvel, na forma exigida pelos
+arts. 880 e 884 da CLT;
+b) as custas processuais no valor de R$ 44,26, que serão pagas pela
+executada ao final da execução, conforme determina o art. 789-A, IV, da
+CLT;
+c) tempestividade, uma vez que o recurso foi interposto no prazo de 8 dias
+úteis, nos termos do art. 897 da CLT.
+d) a delimitação de matérias e valores impugnados, fundamentado no art.
+897, § 1º, da CLT:
+i) matérias impugnadas: impenhorabilidade do bem, prescrição,
+impenhorabilidade de salário, nova defesa e cálculo das férias;
+ii) valores impugnados: R$ 125.000,00.
+Diante do exposto, requer o recebimento do presente recurso, a intimação
+da outra parte para apresentar contraminuta ao agravo de petição no prazo
+de 8 dias úteis, segundo estabelece o art. 900 da CLT, e a posterior
+remessa ao Egrégio Tribunal Regional do Trabalho da 1ª Região.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB n°
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA 21ª REGIÃO
+MINUTA DO AGRAVO DE PETIÇÃO
+I - PREJUDICIAL
+1. Prescrição parcial / Quinquenal
+O juízo da execução julgou procedentes os embargos à execução,
+acolhendo a prescrição parcial para fixar os cálculos considerando apenas
+os 5 anos anteriores ao ajuizamento da ação e não todo o período
+trabalhado.
+A sentença não merece ser mantida, pois, nos termos da Súmula 153,
+TST, não se conhece de prescrição não arguida na instância ordinária.
+Como a prescrição não foi arguida no momento certo (a agravada não
+ofereceu contestação e não interpôs recurso ordinário da sentença), não
+poderá ser feita agora, na fase executória.
+Dessa forma, o cálculo deve considerar todo o período trabalhado.
+Diante do exposto, requer a reforma da sentença de embargos para que
+seja mantido o cálculo anterior, no valor de R$ 125.000,00.
+II – MÉRITO
+1. Bem de família
+Em sentença de embargos à execução, o juízo entendeu ser impenhorável
+imóvel de maior valor. A executada possui dois imóveis, em que reside
+com sua família alternadamente: um no valor de R$ 70.000,00 e outro no
+valor de R$ 123.000,00. Apesar de, inicialmente, ter sido constritado o
+imóvel de maior valor, avaliado pelo oficial de justiça em R$ 123.000,00, o
+juízo da execução julgou-o impenhorável justamente por ser de maior
+valor.
+A sentença não merece ser mantida, pois, nos termos do art. 5º, parágrafo
+único, da Lei nº 8.009/90, sendo o executado possuidor de vários imóveis
+utilizados como residência, a impenhorabilidade recairá sobre o de menor
+valor, salvo se outro tiver sido registrado, para esse fim, no Registro de
+Imóveis e na forma do art. 70 do Código Civil. Como não há outro imóvel
+registrado exclusivamente para esse fim, o imóvel de maior valor é o que
+fica sujeito à penhora.
+Dessa forma, o bem avaliado pelo oficial de justiça em R$ 123.000,00 é
+passível de penhora.
+Diante do exposto, requer a reforma da sentença de embargos para que
+seja mantida a penhora realizada sobre esse imóvel.
+2. Bloqueio de salário
+Em sentença de embargos à execução, o juízo determinou a liberação dos
+R$ 2.000,00 bloqueados em penhora on-line, por se tratar de salário.
+A sentença não merece ser mantida, pois, nos termos do art. 833, IV e §
+2º, CPC, é admitida a penhora de salário, ainda mais parcialmente, para
+satisfazer créditos de natureza alimentar de qualquer origem, como é o do
+caso do crédito trabalhista.
+Diante do exposto, requer a reforma da sentença de embargos para
+manter o bloqueio dos R$ 2.000,00.
+3. Nova defesa
+Em sentença de embargos à execução, o juízo deferiu nova chance para
+a executada juntar defesa, tendo em vista entender que o prazo de apenas
+2 semanas foi insuficiente para a separação dos documentos e
+contratação de advogado.
+A sentença não merece ser mantida, pois, nos termos do art. 841, CLT,
+não pode prevalecer a chance de uma nova defesa, já que o prazo legal
+de 5 dias úteis contados do recebimento da notificação, foi devidamente
+observado e a executada não apresentou sua contestação.
+Diante do exposto, requer a reforma da sentença de embargos para que
+não seja deferida nova defesa.
+4. Férias
+Em sentença de embargos à execução, o juízo deferiu o recálculo das
+férias para acompanhar o valor do salário pago ao longo do período
+trabalhado e não o valor da última remuneração da exequente.
+A sentença não merece ser mantida, pois contraria a sentença liquidanda
+proferida nos termos da Súmula 7 do TST segundo a qual a indenização
+pelo não-deferimento das férias no tempo oportuno será calculada com
+base na remuneração devida ao empregado na época da reclamação.
+Diante do exposto, requer a reforma da sentença de embargos para que
+seja mantida a condenação da executada ao pagamento das férias
+calculadas com base no valor da última remuneração da exequente.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer o conhecimento do presente recurso e no
+mérito, o provimento, para fins de reforma da sentença e restabelecimento
+da penhora e do cálculo originais.
+Nestes termos,
+pede deferimento,
+Local e data
+Advogado
+OAB n°
         
+
 
 
 
