@@ -686,8 +686,32 @@ pede deferimento.
 Local e data.
 Advogado
 OAB no
+ // 2. RECURSO ORDINARIO COMPETENCIA ORIGINARIA DO TRT
+
+3.6. RECURSO ORDINÁRIO DE AÇÃO DE COMPETÊNCIA ORIGINÁRIA DO
+TRT
+Evelyn Calabresa ajuizou reclamação trabalhista contra a sociedade empresária
+Pizzaria Chapa Quente Ltda., em 30 de janeiro de 2022, requerendo o
+pagamento do adicional de insalubridade em grau máximo. Evelyn explicou, na
+petição inicial, que trabalhou como cozinheira da pizzaria, de 12/07/2019 a
+05/10/2021, sendo submetida a calor excessivo porque preparava as pizzas em
+fornos que alcançavam altas temperaturas, não recebendo qualquer
+equipamento de proteção individual do ex-empregador. Devidamente citada, a
+sociedade empresária apresentou contestação, afirmando que a temperatura
+alcançada na cozinha estava dentro do limite de tolerância e que, apesar de ser
+uma empresa pequena e familiar, fornecia todos os equipamentos de proteção
+à empregada, requerendo assim a improcedência do pedido.
+Em audiência não houve acordo e então o juiz, com base no art. 195, § 2º, da
+CLT, determinou de ofício a realização de prova pericial.
+O magistrado nomeou um perito da sua confiança e fixou os honorários periciais
+dele em R$ 4.000,00, determinando que a empresa antecipasse a quantia em
+10 dias, sob pena de execução forçada, e que a prova técnica somente tivesse
+início após o depósito.
+
+
 
         
+
 
 
 
