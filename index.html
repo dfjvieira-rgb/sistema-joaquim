@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - V3 Pro</title>
+    <title>SISTEMA JOAQUIM - Estudo Blindado</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -22,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* HEADER E NAV */
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
@@ -33,11 +32,9 @@
             display: flex; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 100;
         }
 
-        /* MODO ZEN (TELA CHEIA) */
         body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
-        body.zen-mode main { height: 100vh; margin-top: 0; }
 
-        .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
 
         #timer { font-size: 1.1rem; color: var(--warning); font-weight: 800; }
@@ -47,49 +44,48 @@
         .content-section { display: none; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
         .content-section.active { display: flex; }
 
-        /* BOTÃO EXPANDIR/VOLTAR FLUTUANTE */
+        /* BOTÃO ZEN MELHORADO */
         .btn-zen {
             position: absolute; bottom: 20px; right: 20px; z-index: 2000;
             background: var(--primary); color: white; border: none;
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
         }
-        body.zen-mode .btn-zen { background: var(--danger); bottom: 10px; right: 10px; opacity: 0.8; }
+        body.zen-mode .btn-zen { background: var(--danger); opacity: 0.7; }
 
         /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; }
-        .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; font-size: 0.9rem; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; line-height: 1.5; }
 
-        /* PDF SECTION */
-        .pdf-section { background: #dcdde1; gap: 0; padding: 0; }
+        /* PDFS */
+        .pdf-section { background: #dcdde1; gap: 0; padding: 0; flex: 1.5; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; }
-        .pdf-header { background: #34495e; color: white; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+        .foco-btn { background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
-        /* SIDEBAR (DESKTOP) */
+        /* SIDEBAR PC */
         .sidebar-section { width: 220px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
         .btn-peca { width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; text-align: left; cursor: pointer; }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; }
 
-        /* RESIZER (DESKTOP) */
+        /* RESIZER PC */
         .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
-        .resizer:hover { background: var(--accent); }
 
         @media (min-width: 901px) {
             .tabs-container { display: none; }
             .sidebar-section, .editor-section, .pdf-section { display: flex !important; }
-            .pdf-box.expanded { flex: 20; }
+            .pdf-box.expanded { flex: 15; }
             .pdf-box.collapsed { flex: 0.1; min-height: 45px; }
         }
 
         @media (max-width: 900px) {
             .resizer, .sidebar-section { display: none !important; }
             main { flex-direction: column; }
-            .pdf-box { width: 100%; flex: 1; border: none; }
-            body.zen-mode .pdf-header { display: none; } /* Ganha mais espaço no mobile */
+            .pdf-box { width: 100%; flex: 1; }
+            body.zen-mode .pdf-header { display: none; }
         }
     </style>
 </head>
@@ -102,4 +98,116 @@
 
 <nav class="tabs-container">
     <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 PEÇAS</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">📄 PROVA</button>
+</nav>
+
+<main id="mainContainer">
+    <aside id="menu" class="content-section sidebar-section active">
+        <h4 style="margin:0 0 15px 0; color:var(--primary)">LISTA DE EXAMES</h4>
+        <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'btn-ro35')">📂 Exame XXXV (RO)</button>
+    </aside>
+
+    <section id="escrita" class="content-section editor-section">
+        <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR</button>
+        <button class="btn-save" onclick="salvar()">💾 SALVAR REVISÃO</button>
+        <textarea id="texto-rascunho" placeholder="Comece sua peça aqui..."></textarea>
+    </section>
+
+    <div class="resizer" id="dragMe"></div>
+
+    <section id="pdfs" class="content-section pdf-section">
+        <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR</button>
+        <div class="pdf-box" id="box-enunciado">
+            <div class="pdf-header">
+                <span>📄 ENUNCIADO</span>
+                <button class="foco-btn" onclick="focarPdf('enunciado')">FOCO</button>
+            </div>
+            <iframe id="view-enunciado" src="about:blank"></iframe>
+        </div>
+
+        <div class="pdf-box" id="box-gabarito">
+            <div class="pdf-header">
+                <span>✅ GABARITO</span>
+                <button class="foco-btn" onclick="focarPdf('gabarito')">FOCO</button>
+            </div>
+            <iframe id="view-gabarito" src="about:blank"></iframe>
+        </div>
+    </section>
+</main>
+
+<script>
+    const bodyTag = document.getElementById('bodyTag');
+
+    function toggleZen() {
+        bodyTag.classList.toggle('zen-mode');
+        const isZen = bodyTag.classList.contains('zen-mode');
+        document.querySelectorAll('.btn-zen').forEach(b => {
+            b.textContent = isZen ? "🔙 VOLTAR" : "↕ EXPANDIR";
+        });
+        setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('btn-' + tabId).classList.add('active');
+    }
+
+    function focarPdf(tipo) {
+        const e = document.getElementById('box-enunciado');
+        const g = document.getElementById('box-gabarito');
+        if(window.innerWidth < 900) {
+            if(tipo === 'enunciado') { g.style.display = g.style.display === 'none' ? 'flex' : 'none'; e.style.display = 'flex'; }
+            else { e.style.display = e.style.display === 'none' ? 'flex' : 'none'; g.style.display = 'flex'; }
+        } else {
+            if(tipo === 'enunciado') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
+            else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
+        }
+    }
+
+    function carregarExame(enunciado, gabarito, btnId) {
+        document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('selected'));
+        document.getElementById(btnId).classList.add('selected');
+        document.getElementById('view-enunciado').src = enunciado + "#view=FitH";
+        document.getElementById('view-gabarito').src = gabarito + "#view=FitH";
+        if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    const resizer = document.getElementById('dragMe');
+    const leftSide = document.getElementById('escrita');
+    if (resizer) {
+        resizer.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
+        });
+        function resize(e) {
+            const newWidth = e.clientX - 220; 
+            if (newWidth > 150 && newWidth < (window.innerWidth - 300)) {
+                leftSide.style.flex = `0 0 ${newWidth}px`;
+            }
+        }
+    }
+
+    function salvar() {
+        const t = document.getElementById('texto-rascunho').value;
+        const blob = new Blob([t], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Revisao_Joaquim.txt';
+        a.click();
+    }
+
+    let tempo = 18000;
+    setInterval(() => {
+        let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
+        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (tempo > 0) tempo--;
+    }, 1000);
+
+    if (window.innerWidth < 900) switchTab('menu');
+</script>
+</body>
+</html>
