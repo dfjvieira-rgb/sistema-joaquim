@@ -2,54 +2,65 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador OAB - Resolvido</title>
+    <title>DEBUG OAB - Localizador de Arquivos</title>
     <style>
-        body { font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background: #2c3e50; color: white; padding: 15px; display: flex; justify-content: space-between; }
-        main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 250px; background: #ecf0f1; padding: 15px; border-right: 1px solid #bdc3c7; }
-        .content { flex: 1; padding: 10px; display: flex; flex-direction: column; }
-        iframe { width: 100%; height: 100%; border: 1px solid #ccc; }
-        button { width: 100%; padding: 12px; background: #2980b9; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #2c3e50; color: white; }
+        .painel { background: #fff; color: #333; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .log { background: #eee; padding: 10px; border-left: 5px solid #e74c3c; font-family: monospace; margin: 10px 0; }
+        button { padding: 15px 25px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
+        iframe { width: 100%; height: 600px; border: 2px solid #ddd; margin-top: 20px; display:none; }
+        a { color: #2980b9; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <span>⚖️ Simulador OAB 2ª Fase</span>
-    <div id="timer">05:00:00</div>
-</header>
-
-<main>
-    <nav class="sidebar">
-        <button onclick="abrir()">Abrir RO (Exame XXXV)</button>
-    </nav>
-
-    <section class="content">
-        <iframe id="meu-pdf" src=""></iframe>
-    </section>
-</main>
-
-<script>
-    function abrir() {
-        // O nome aqui deve ser EXATAMENTE o nome do arquivo que você subiu
-        const nomeArquivo = "gabarito.pdf";
+    <div class="painel">
+        <h1>🛠️ Verificador de Gabarito</h1>
+        <p>Este código vai tentar "forçar" a descoberta do arquivo <strong>ro35.pdf</strong>.</p>
         
-        // O './' força o GitHub a olhar na mesma pasta do index.html
-        document.getElementById('meu-pdf').src = "./" + nomeArquivo;
-    }
+        <button onclick="tentarCarregar()">TENTAR ABRIR GABARITO (ro35.pdf)</button>
 
-    // Timer de 5 horas
-    let tempo = 18000;
-    setInterval(() => {
-        let h = Math.floor(tempo / 3600);
-        let m = Math.floor((tempo % 3600) / 60);
-        let s = tempo % 60;
-        document.getElementById('timer').textContent = 
-            `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if (tempo > 0) tempo--;
-    }, 1000);
-</script>
+        <div id="status" class="log">Aguardando comando...</div>
 
+        <div id="ajuda" style="display:none; margin-top:15px; font-size: 14px; color: #666;">
+            <p><strong>Se o quadro abaixo continuar branco:</strong></p>
+            <ol>
+                <li>Vá no seu GitHub.</li>
+                <li>Clique em "Add File" -> "Upload Files".</li>
+                <li>Suba o PDF e renomeie ele NO GITHUB para <strong>ro35.pdf</strong>.</li>
+                <li>Clique em "Commit changes".</li>
+            </ol>
+        </div>
+
+        <iframe id="meu-frame"></iframe>
+    </div>
+
+    <script>
+        function tentarCarregar() {
+            const frame = document.getElementById('meu-frame');
+            const status = document.getElementById('status');
+            const ajuda = document.getElementById('ajuda');
+            
+            // 1. Descobre o endereço base do seu site automaticamente
+            let urlBase = window.location.href.split('#')[0].split('?')[0];
+            if (!urlBase.endsWith('/')) {
+                urlBase = urlBase.substring(0, urlBase.lastIndexOf('/') + 1);
+            }
+
+            const nomeArquivo = "ro35.pdf";
+            const urlFinal = urlBase + nomeArquivo;
+
+            status.innerHTML = `
+                <strong>Status:</strong> Tentando carregar...<br>
+                <strong>URL Gerada:</strong> <a href="${urlFinal}" target="_blank">${urlFinal}</a><br>
+                <small>Clique no link acima. Se der 404, o arquivo não está no GitHub.</small>
+            `;
+
+            // Tenta forçar o iframe
+            frame.style.display = "block";
+            frame.src = urlFinal;
+            ajuda.style.display = "block";
+        }
+    </script>
 </body>
 </html>
