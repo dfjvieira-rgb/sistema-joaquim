@@ -369,7 +369,245 @@ Nestes termos,
 pede deferimento.
 Local e data.
 Advogado(a)
-OAB nº`
+OAB nº`,
+             'guia': `1.3. EXERCÍCIO II DE RECLAMAÇÃO TRABALHISTA (XXX EOAB)
+Após juntar durante alguns anos suas economias e auxiliado por seus
+familiares, Tito comprou uma motocicleta e começou a trabalhar em 15/12/2018
+como motoboy na Pizzaria Gourmet Ltda., localizada no Município de
+Parauapebas, Estado do Pará, realizando a entrega em domicílio de pizzas e
+outros tipos de massas aos clientes do empregador. A carteira de trabalho de Tito
+foi devidamente assinada, com o valor de 1 salário mínimo mensal.
+        Em razão da atividade desempenhada, Tito poderia escolher diariamente um
+item do cardápio para se alimentar no próprio estabelecimento, sem precisar
+pagar pelo produto. Tito fazia em média 10 entregas em seu turno de trabalho, e
+normalmente recebia R$ 1,00 (um real) de bonificação espontânea de cada
+cliente, gerando uma média de R$ 260,00 (duzentos e sessenta reais) mensais.
+Tito exercia suas funções durante seis dias na semana, com folga na 2ª feira,
+sendo que, uma vez por mês, a folga era em um domingo. A jornada cumprida ia
+das 18h às 3h30, com intervalo de 40 minutos para refeição.
+No mês de agosto de 2019, Tito fez a entrega de uma pizza na casa de um
+cliente. Ocorre que o cozinheiro da pizzaria se confundiu no preparo e assou uma
+pizza de calabresa, sendo que o cliente era alérgico a esse produto (linguiça).
+Ao ver a pizza errada, o cliente foi tomado de fúria incontrolável, começou a
+xingar e a ameaçar Tito, e terminou por soltar seus cães de guarda, dando ordem
+para atacar o entregador. Tito correu desesperadamente, mas foi mordido e
+arranhado pelos animais, sendo lesionado gravemente. Em razão disso, ele
+precisou se afastar por 30 dias para recuperação, recebendo o benefício
+previdenciário pertinente do INSS.
+Tito gastou R$ 30,00 na compra de vacina antirrábica, que por
+recomendação médica foi obrigado a tomar, porque não sabia se os cachorros
+eram vacinados. Em 20 de setembro de 2019, após obter alta do INSS, Tito
+retornou à empresa e foi dispensado, recebendo as verbas rescisórias.
+Nos contracheques de Tito, constam, mensalmente, o pagamento do salário-
+mínimo nacional na coluna de créditos e o desconto de INSS na coluna de
+descontos, sendo que no mês de março de 2019 houve ainda dedução de R$
+31,80 (trinta e um reais e oitenta centavos) a título de contribuição sindical, sem
+que tivesse autorizado o desconto. Tito foi à CEF e solicitou seu extrato analítico,
+onde consta depósito de FGTS durante todo o contrato de trabalho.
+        Considerando que, em outubro de 2019, Tito procurou você, como
+advogado(a), para pleitear os direitos lesados, informando que continua
+desempregado, elabore a peça processual pertinente. (Valor: 5,00)
+Obs.: a peça deve abranger todos os fundamentos de Direito que possam
+ser utilizados para dar respaldo à pretensão. A simples menção ou transcrição do
+dispositivo legal não confere pontuação.
+Nos casos em que a lei exigir liquidação de valores, não será necessário que
+o examinando a apresente, admitindo-se que o escritório possui setor próprio ou
+contratado especificamente para tal fim.
+        RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE
+PARAUAPEBAS/PARÁ
+TITO, qualificação e endereço completos, vem, respeitosamente, perante
+Vossa Excelência, por intermédio de seu advogado adiante assinado
+(procuração anexa), com escritório profissional no endereço completo,
+onde recebe intimações ou notificações, com fulcro nos arts. 840, caput
+e § 1º, da CLT e art. 300 do CPC, PROPOR:
+RECLAMAÇÃO TRABALHISTA, com pedido de tutela provisória de
+urgência antecipada, pelo rito (...)
+em face de PIZZARIA GOURMET LTDA., qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I – PRELIMINAR
+1. Justiça gratuita
+O reclamante encontra-se desempregado, de modo que, nos termos do
+art. 790, § 3º, da CLT, faz jus aos benefícios da gratuidade da justiça.
+        II – MÉRITO
+1. Adicional de periculosidade
+O reclamante trabalhava para a reclamada como motoboy, recebendo
+apenas o salário mínimo.
+Nos termos do art. 193, § 4º, da CLT, são consideradas perigosas as
+atividades de trabalhador em motocicleta.
+Diante do exposto requer a condenação da reclamada ao pagamento do
+adicional de periculosidade de 30% sobre o salário base do reclamante,
+nos termos do art. 193, § 1º, da CLT, bem como dos reflexos nas verbas
+contratuais e rescisória (aviso prévio, décimo terceiro salário, férias
+acrescidas de 1/3, FGTS - depósitos e multa de 40%). R$ ...
+2. Gorjetas
+Tito fazia em média 10 entregas em seu turno de trabalho e,
+normalmente, recebia R$ 1,00 de bonificação espontânea de cada
+cliente, gerando uma média de R$ 260,00 mensais.
+Nos termos do art. 457 da CLT e súmula 354 do TST as gorjetas integram
+a remuneração do trabalhador.
+Diante do exposto, requer a integração das gorjetas recebidas pelo
+reclamante para fins de reflexos nas verbas contratuais e rescisórias
+(décimo terceiro salário, férias acrescidas de 1/3, FGTS - depósitos e
+multa de 40%), bem como, a retificação da CTPS para constar as
+gorjetas recebidas, nos termos do art. 29, § 1º, da CLT. R$ ...
+3. Horas extras
+O reclamante trabalhava seis dias da semana, das 18h às 3h30, com
+intervalo de 40 minutos.
+Nos termos do art. 7º, XIII, da CF e do art. 58 da CLT, a jornada máxima
+é de 8 horas diárias. Esse limite era extrapolado no caso em tela.
+Diante do exposto, requer a condenação da reclamada ao pagamento das
+horas extras, assim consideradas as excedentes da 8ª diária, acrescidas do
+adicional de 50% (art. 7º, XVI, da CF), bem como de seus reflexos em
+verbas contratuais e rescisórias (aviso prévio, décimo terceiro salário, férias
+acrescidas de 1/3, FGTS - depósitos e multa de 40%, DSR). R$ ...
+4. Adicional noturno
+O reclamante trabalhava seis dias da semana, das 18h às 3h30.
+Nos termos do art. 73, caput e § 2º, da CLT, as horas trabalhadas das
+22h às 5h devem ser remuneradas com o acréscimo de 20%.
+Diante do exposto, requer a condenação da reclamada ao pagamento do
+adicional noturno, no importe de 20% do valor da hora diurna, quanto às
+horas que o reclamante ficava à disposição do empregador após as 22h,
+bem como de seus reflexos em verbas contratuais e rescisórias (aviso
+prévio, décimo terceiro salário, férias acrescidas de 1/3, FGTS -
+depósitos e multa de 40%, DSR). R$ ...
+5. Intervalo intrajornada
+O reclamante trabalhava das 18h às 3h30 com intervalo de apenas 40
+minutos.
+Nos termos do art. 71 da CLT, em qualquer trabalho contínuo cuja
+duração exceda de 6 horas é obrigatória a concessão de um intervalo
+para repouso ou alimentação, o qual será, no mínimo, de 1 hora. A
+concessão parcial do intervalo intrajornada mínimo para repouso e
+alimentação implica o pagamento do período suprimido, com acréscimo
+de 50% sobre o valor da remuneração da hora normal de trabalho,
+conforme estabelece o art. 71, § 4º, da CLT.
+Diante do exposto, requer a condenação da reclamada ao pagamento do
+intervalo de 20 minutos diários, acrescido do adicional de 50%. R$ ...
+6. Reintegração
+Ao fazer uma entrega de pizza, Tito foi atacado por cães de guarda por
+ordem do cliente. Apesar de correr desesperadamente, foi mordido e
+arranhado pelos animais, sendo lesionado gravemente. Em razão disso,
+precisou se afastar por 30 dias para recuperação, recebendo o benefício
+previdenciário pertinente do INSS. Em 20 de setembro de 2019, após
+obter alta do INSS, Tito retornou à empresa e foi dispensado, recebendo
+as verbas rescisórias.
+Nos termos do art. 21, II, a, da lei 8.213/91 equipara-se a acidente do
+trabalho o sofrido pelo trabalhador no local e no horário do trabalho, em
+consequência de ato de agressão, praticado por terceiro.
+O reclamante sofreu, portanto, acidente equiparável a acidente do
+trabalho. Ficou mais de 15 dias afastado recebendo auxílio por
+incapacidade temporária acidentária (antigo auxílio-doença acidentário).
+Sendo assim, faz jus à estabilidade provisória no emprego de, no mínimo,
+12 meses após a alta do INSS, nos termos do art. 118 da Lei 8.213/91 e
+súmula 378, I e II, do TST. Logo, o reclamante foi dispensado durante o
+período de estabilidade.
+Diante do exposto, requer a nulidade da dispensa e a reintegração do
+reclamante ou o pagamento de indenização substitutiva, compreendendo
+os salários e demais vantagens devidas ao empregado entre a data da
+dispensa e o final do período estabilitário. R$ ...
+7. Tutela provisória de urgência antecipada
+Conforme referido, o reclamante foi dispensado sem justa causa no curso
+da estabilidade provisória no emprego, sendo devida, portanto, a sua
+reintegração.
+Encontram-se presentes os requisitos autorizadores da concessão de
+tutela antecipada, previstos no art. 300 do CPC, que compreendem: a
+probabilidade do direito e o risco de dano. Verifique:
+Evidencia-se a probabilidade do direito uma vez que o empregado foi
+dispensado no curso da estabilidade provisória no emprego, consoante
+proíbem o art. 118 da Lei 8.213/91 e a Súmula 378, I e II, do TST.
+Já o risco de dano está presente, visto que o reclamante está
+desempregado, dependendo, portanto, do trabalho para sua
+subsistência.
+Diante do exposto, requer a concessão da liminar para a imediata
+reintegração do empregado ao trabalho.
+8. Dano material – dano emergente
+Em razão do acidente do trabalho, Tito gastou R$ 30,00 na compra de
+vacina antirrábica, que, por recomendação médica, foi obrigado a tomar,
+porque não sabia se os cachorros que o atacaram eram vacinados.
+Nos termos dos arts. 186 e 927 do CC, aquele que, por ato ilícito, causar
+dano a outrem tem o dever de repará-lo.
+O empregador tem o dever de indenizar o dano causado ao trabalhador,
+independentemente de culpa, uma vez que sua responsabilidade é
+objetiva, nos termos do art. 927, parágrafo único, do CC, o qual
+estabelece que “haverá obrigação de reparar o dano,
+independentemente de culpa, nos casos especificados em lei, ou quando
+a atividade normalmente desenvolvida pelo autor do dano implicar, por
+sua natureza, risco para os direitos de outrem”. Os danos causados por
+cães constituem risco inerente à profissão de entregador.
+Diante do exposto, requer a condenação da reclamada ao pagamento de
+indenização pelos danos materiais (danos emergentes) no importe de
+R$ 30,00. R$ ...
+9. Dano extrapatrimonial – dano moral
+Conforme já referido, o ataque dos cães ao reclamante quando fazia uma
+entrega de pizza é acidente equiparável a acidente do trabalho.
+Nos termos dos arts. 223-B, 223-C, 223-D e 223-E da CLT e arts. 186 e 927
+do CC, aquele que, por ação ou omissão, ofender a esfera moral do
+trabalhador deve indenizá-lo. No presente caso, o acidente provocou
+grande sofrimento ao trabalhador por violar a sua integridade física. Sendo
+a responsabilidade do empregador objetiva, uma vez que o ataque por cães
+constitui risco inerente à atividade de entregador, o empregador tem o dever
+de indenizar os danos morais, independentemente da demonstração de sua
+culpa.
+Diante do exposto, requer a condenação da reclamada ao pagamento de
+indenização por danos morais. R$ ...
+Ressalte-se que, nos termos do art. 223-F da CLT, a reparação por danos
+extrapatrimoniais pode ser pedida cumulativamente com a indenização
+por danos materiais decorrentes do mesmo ato lesivo. R$ ...
+10. Devolução do desconto da contribuição sindical
+No mês de março de 2019 houve a dedução de R$ 31,80 do salário do
+reclamante a título de contribuição sindical, sem que a tivesse autorizado.
+Nos termos dos arts. 578, 579 e 582 da CLT, a contribuição sindical está
+condicionada à autorização prévia e expressa do empregado, a qual não
+houve no presente caso.
+Diante do exposto, requer a condenação da reclamada ao pagamento
+dos valores descontados do reclamante a título de contribuição sindical
+no curso do contrato. R$ ...
+11. Honorários advocatícios
+Requer a condenação da reclamada ao pagamento de honorários
+advocatícios, no importe de 15% do valor que resultar da liquidação, à
+luz do art. 791-A da CLT. R$ ...
+III – PEDIDOS
+Diante do exposto, requer:
+a) a condenação da reclamada ao pagamento do adicional de
+periculosidade de 30% sobre o salário base do reclamante R$
+b) a integração das gorjetas recebidas pelo reclamante para fins de
+reflexos nas verbas contratuais e rescisórias, bem como a retificação da
+CTPS ..................................................................... R$ .....
+c) a condenação da reclamada ao pagamento das horas extras,
+acrescidas de 50%, bem como de seus reflexos .... R$ .....
+d) condenação da reclamada ao pagamento do adicional noturno, bem
+como de seus reflexos...R$ ............................................
+e) condenação da reclamada ao pagamento de 20 minutos de intervalo
+intrajornada, bem como de seus reflexos ............... R$ .....
+f) a concessão da liminar para a imediata reintegração do empregado ao
+trabalho e, posteriormente, a confirmação da liminar por sentença.
+g) a condenação da reclamada ao pagamento de dano material
+R$ ............................................................................
+h) a condenação da reclamada ao pagamento de dano moral R$
+i) a condenação da reclamada ao pagamento dos valores descontados
+do reclamante a título de contribuição sindical ....... R$ .....
+j) os benefícios da gratuidade da justiça; e
+k) honorários advocatícios, no importe de 15%, sobre o valor líquido da
+condenação ............................................................ R$ .....
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a concessão dos benefícios da gratuidade da justiça;
+b) a concessão da liminar determinando a imediata reintegração do
+reclamante;
+c) a notificação da reclamada para oferecer resposta à reclamação
+trabalhista, sob pena de revelia e confissão quanto à matéria de fato;
+d) a produção de todos os meios de prova em direito admitidos, em
+especial a prova documental, o depoimento pessoal e a oitiva de
+testemunhas;
+e) por fim, a procedência dos pedidos com a condenação da reclamada
+ao pagamento das verbas pleiteadas, acrescidas de juros e correção
+monetária.
+Atribui-se à causa o valor de R$ ... .
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado(a)
+OAB nº`,
         'guia': `1. EQUIPARAÇÃO SALARIAL: Art. 461 da CLT. Diferença não superior a 2 anos na função.\n2. DESCONTOS: Art. 473, VIII e Súmula 155 do TST.\n3. FGTS: O Art. 611-B, III da CLT impede a redução por norma coletiva.`
     },
 
