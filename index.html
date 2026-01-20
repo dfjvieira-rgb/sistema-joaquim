@@ -3,101 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador OAB - Treino de Memória</title>
+    <title>Simulador OAB - Sistema Joaquim</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #3498db;
             --warning: #f1c40f;
-            --bg: #f4f7f6;
+            --success: #27ae60;
+            --text-dark: #34495e;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: var(--bg);
+            background-color: #f4f7f6;
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Cabeçalho */
+        /* Topo */
         header {
             background-color: var(--primary);
             color: white;
-            padding: 0.8rem 1.5rem;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
         }
 
-        #timer {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: var(--warning);
-        }
+        #timer { font-size: 1.6rem; color: var(--warning); font-weight: bold; }
 
+        /* Estrutura Principal */
         main {
             display: flex;
             flex: 1;
-            padding: 1rem;
-            gap: 1rem;
+            padding: 15px;
+            gap: 15px;
             overflow: hidden;
         }
 
-        /* Coluna 1: Menu de Peças */
+        /* Menu Lateral */
         .sidebar {
-            flex: 0 0 260px;
+            width: 260px;
             background: white;
-            padding: 1rem;
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow-y: auto;
         }
 
-        .sidebar h2 {
-            font-size: 1rem;
-            color: var(--primary);
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
+        .sidebar h2 { font-size: 1rem; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 15px; }
 
         .btn-peca {
             display: block;
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 8px;
-            background: white;
+            background: #fff;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: left;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
+            text-align: left;
             transition: 0.3s;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        .btn-peca:hover {
-            background: var(--accent);
-            color: white;
-            transform: translateX(5px);
-        }
+        .btn-peca:hover { background: var(--accent); color: white; transform: translateX(5px); }
 
-        /* Coluna 2: Treino de Memória (Rascunho) */
-        .training-area {
+        /* Área de Treino (Escrita) */
+        .editor-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 10px;
             background: white;
-            padding: 1rem;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .training-area h3 { margin: 0; font-size: 1.1rem; color: var(--primary); }
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
         textarea {
             flex: 1;
@@ -106,61 +99,61 @@
             border: 2px solid #ecf0f1;
             border-radius: 6px;
             font-family: 'Courier New', monospace;
-            font-size: 1rem;
+            font-size: 1.1rem;
             resize: none;
             box-sizing: border-box;
+            line-height: 1.6;
             background: #fafafa;
+            color: var(--text-dark);
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: white;
-        }
+        textarea:focus { outline: none; border-color: var(--accent); background: white; }
 
-        /* Coluna 3: Visualizador de Gabarito */
-        .pdf-area {
-            flex: 1.5;
-            background: #95a5a6;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .pdf-toolbar {
-            background: var(--primary);
+        /* Botão Salvar */
+        .btn-save {
+            background-color: var(--success);
             color: white;
-            padding: 8px 15px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #pdf-viewer {
-            width: 100%;
-            height: 100%;
             border: none;
-            display: none; /* Escondido até selecionar */
-        }
-
-        .placeholder {
-            flex: 1;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            background: #7f8c8d;
+            gap: 8px;
         }
 
-        /* Responsividade */
-        @media (max-width: 1024px) {
-            main { flex-direction: column; overflow: auto; }
-            .sidebar, .training-area, .pdf-area { flex: none; width: 100%; height: 400px; }
+        .btn-save:hover { background-color: #219150; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+        /* Área do PDF */
+        .pdf-container {
+            flex: 1.2;
+            background: #bdc3c7;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .pdf-header {
+            background: #34495e;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Estilo para Impressão / PDF */
+        @media print {
+            header, .sidebar, .btn-save, .pdf-container, p { display: none !important; }
+            main { display: block; padding: 0; }
+            .editor-container { box-shadow: none; padding: 0; width: 100%; }
+            textarea { border: none; font-size: 12pt; height: auto; }
         }
     </style>
 </head>
@@ -169,79 +162,20 @@
 <header>
     <div style="display:flex; align-items:center; gap:10px;">
         <span style="font-size: 1.5rem;">🧠</span>
-        <h1 style="margin:0; font-size: 1.2rem;">SISTEMA JOAQUIM - Treino Ativo</h1>
+        <h1 style="margin:0; font-size: 1.2rem;">SISTEMA JOAQUIM - Treino de Memória</h1>
     </div>
     <div id="timer">05:00:00</div>
 </header>
 
 <main>
     <nav class="sidebar">
-        <h2>📖 GABARITOS</h2>
-        <button class="btn-peca" onclick="abrirGabarito('ro35.pdf', 'Recurso Ordinário XXXV')">📖 Gabarito 1 (RO XXXV)</button>
-        
-        <button class="btn-peca" onclick="abrirGabarito('rt36.pdf', 'Reclamação XXXVI')">📖 Gabarito 2 (RT)</button>
-        <button class="btn-peca" onclick="abrirGabarito('cont37.pdf', 'Contestação XXXVII')">📖 Gabarito 3 (Contestação)</button>
-        <button class="btn-peca" onclick="abrirGabarito('ed38.pdf', 'Embargos XXXVIII')">📖 Gabarito 4 (ED)</button>
-        <button class="btn-peca" onclick="abrirGabarito('ms39.pdf', 'Segurança XXXIX')">📖 Gabarito 5 (MS)</button>
-    </nav>
+        <h2>GABARITOS</h2>
+        <button class="btn-peca" onclick="abrirPDF('ro35.pdf', 'Recurso Ordinário XXXV')">📖 Gabarito 1 (RO XXXV)</button>
+        <button class="btn-peca" onclick="alert('Suba o arquivo rt36.pdf no GitHub primeiro!')">📖 Gabarito 2 (RT)</button>
+        <button class="btn-peca" onclick="alert('Suba o arquivo cont37.pdf no GitHub primeiro!')">📖 Gabarito 3 (Contestação)</button>
+        </nav>
 
-    <section class="training-area">
-        <h3>✍️ Treino de Memória</h3>
-        <p style="font-size: 0.8rem; color: #7f8c8d; margin: 0;">Escreva os fundamentos e artigos antes de conferir:</p>
-        <textarea id="editor" placeholder="Digite aqui sua estrutura... Ex:
-1. Endereçamento: Vara do Trabalho
-2. Fundamento: Art. 840, §1º CLT
-3. Teses: Adicional de Periculosidade..."></textarea>
-        <button onclick="limparTexto()" style="padding: 5px; background: #eee; border: 1px solid #ccc; cursor: pointer; border-radius: 4px; font-size: 0.7rem;">Limpar Editor</button>
-    </section>
-
-    <section class="pdf-area">
-        <div class="pdf-toolbar">
-            <span id="label-peca">Aguardando seleção...</span>
-        </div>
-        <div id="pdf-placeholder" class="placeholder">
-            <div>
-                <p style="font-size: 3rem; margin:0;">📄</p>
-                <p>Termine seu rascunho e<br>selecione uma peça ao lado.</p>
-            </div>
-        </div>
-        <iframe id="pdf-viewer" src=""></iframe>
-    </section>
-</main>
-
-<script>
-    function abrirGabarito(arquivo, nome) {
-        const viewer = document.getElementById('pdf-viewer');
-        const placeholder = document.getElementById('pdf-placeholder');
-        const label = document.getElementById('label-peca');
-
-        // Mostra o PDF e esconde o texto de aviso
-        placeholder.style.display = 'none';
-        viewer.style.display = 'block';
-        
-        // Carrega o arquivo do seu GitHub (./ garante a raiz)
-        viewer.src = "./" + arquivo + "?v=" + new Date().getTime();
-        label.innerText = "Conferindo: " + nome;
-    }
-
-    function limparTexto() {
-        if(confirm("Deseja apagar seu rascunho?")) {
-            document.getElementById('editor').value = "";
-        }
-    }
-
-    // Cronômetro (5 horas)
-    let tempo = 18000;
-    const display = document.getElementById('timer');
-    setInterval(() => {
-        let h = Math.floor(tempo / 3600);
-        let m = Math.floor((tempo % 3600) / 60);
-        let s = tempo % 60;
-        display.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if (tempo > 0) tempo--;
-        else display.textContent = "TEMPO ESGOTADO";
-    }, 1000);
-</script>
-
-</body>
-</html>
+    <section class="editor-container">
+        <div class="editor-header">
+            <h3 style="margin:0; color:var(--primary);">✍️ Folha de Respostas</h3>
+            <button class="btn-save" onclick="gerarRevisao
