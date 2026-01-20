@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Estudo Blindado</title>
+    <title>SISTEMA JOAQUIM - Edição iPad/Mobile</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -43,40 +43,43 @@
         
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
 
-        /* BOTÃO ZEN */
         .btn-zen {
             position: absolute; bottom: 20px; right: 20px; z-index: 2000;
             background: var(--primary); color: white; border: none;
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
         }
-        body.zen-mode .btn-zen { background: var(--danger); opacity: 0.8; }
 
         /* SIDEBAR / ABA PEÇAS */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
         .btn-peca { 
             width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
             border: 2px solid #edf2f7; border-radius: 12px; font-weight: 600; 
-            text-align: left; cursor: pointer; transition: 0.2s; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 10px;
+            text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px;
         }
-        .btn-peca:active { background: #f0f7ff; border-color: var(--accent); }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; color: var(--accent); }
 
         /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
-        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; line-height: 1.5; }
+        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
         /* DIVISOR PC */
         .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
 
-        /* PDFs */
+        /* PDFs - AJUSTE PARA IPAD */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; }
+        .pdf-box { 
+            flex: 1; display: flex; flex-direction: column; background: white; 
+            border: 1px solid #7f8c8d; overflow: hidden; 
+            -webkit-overflow-scrolling: touch; /* ESSENCIAL PARA iOS */
+        }
         .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .foco-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         
+        .header-actions { display: flex; gap: 5px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.6rem; }
+        .open-btn { background: var(--warning); color: black; }
+
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
         @media (max-width: 900px) {
@@ -84,10 +87,8 @@
             .resizer, .sidebar-section { display: none !important; }
             main { flex-direction: column; }
             .content-section { display: none !important; width: 100% !important; }
-            /* Esta classe força a aba a aparecer no mobile */
             .content-section.active-mobile { display: flex !important; }
-            #menu { padding: 20px; box-sizing: border-box; background: var(--bg); }
-            body.zen-mode .pdf-header { display: none; }
+            #menu { padding: 20px; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -106,7 +107,7 @@
 
 <main id="mainContainer">
     <aside id="menu" class="content-section sidebar-section active-mobile">
-        <h4 style="margin-bottom: 15px; color: var(--primary)">SELECIONE O EXAME:</h4>
+        <h4 style="margin-bottom: 15px;">SELECIONE O EXAME:</h4>
         <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'btn-ro35')">
             <span>📂</span> Exame XXXV (RO)
         </button>
@@ -122,10 +123,14 @@
 
     <section id="pdfs" class="content-section pdf-section">
         <button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR</button>
+        
         <div class="pdf-box" id="box-enunciado">
             <div class="pdf-header">
                 <span>📄 ENUNCIADO</span>
-                <button class="foco-btn" onclick="focarPdf('enunciado')">FOCO</button>
+                <div class="header-actions">
+                    <button class="action-btn open-btn" onclick="abrirExterno('view-enunciado')">↗ ABRIR</button>
+                    <button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button>
+                </div>
             </div>
             <iframe id="view-enunciado" src="about:blank"></iframe>
         </div>
@@ -133,7 +138,10 @@
         <div class="pdf-box" id="box-gabarito">
             <div class="pdf-header">
                 <span>✅ GABARITO</span>
-                <button class="foco-btn" onclick="focarPdf('gabarito')">FOCO</button>
+                <div class="header-actions">
+                    <button class="action-btn open-btn" onclick="abrirExterno('view-gabarito')">↗ ABRIR</button>
+                    <button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button>
+                </div>
             </div>
             <iframe id="view-gabarito" src="about:blank"></iframe>
         </div>
@@ -153,13 +161,10 @@
     }
 
     function switchTab(tabId) {
-        // No mobile, removemos a classe active-mobile de todos e aplicamos no selecionado
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
         const target = document.getElementById(tabId);
         if(target) target.classList.add('active-mobile');
-        
         const btn = document.getElementById('btn-' + tabId);
         if(btn) btn.classList.add('active');
     }
@@ -176,19 +181,23 @@
         }
     }
 
+    function abrirExterno(id) {
+        const url = document.getElementById(id).src.split('#')[0];
+        if(url && url !== "about:blank") window.open(url, '_blank');
+    }
+
     function carregarExame(enunciado, gabarito, btnId) {
         document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('selected'));
         const btn = document.getElementById(btnId);
         if(btn) btn.classList.add('selected');
         
-        document.getElementById('view-enunciado').src = enunciado + "#view=FitH";
-        document.getElementById('view-gabarito').src = gabarito + "#view=FitH";
+        // Carrega PDF com suporte a rolagem interna
+        document.getElementById('view-enunciado').src = enunciado;
+        document.getElementById('view-gabarito').src = gabarito;
         
-        // No mobile, pula para a escrita automaticamente ao escolher
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
-    // Resizer PC
     const resizer = document.getElementById('dragMe');
     const leftSide = document.getElementById('escrita');
     if (resizer) {
@@ -221,10 +230,7 @@
         if (tempo > 0) tempo--;
     }, 1000);
 
-    // INICIALIZAÇÃO CORRETA: No Mobile começa na aba de PEÇAS
-    if (window.innerWidth < 900) {
-        switchTab('menu');
-    }
+    if (window.innerWidth < 900) switchTab('menu');
 </script>
 </body>
 </html>
