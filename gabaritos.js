@@ -1,8 +1,3 @@
-/**
- * SISTEMA JOAQUIM - BANCO DE DADOS CONSOLIDADO
- * Versão: 20/01/2026
- */
-
 window.dbGabaritosExternos = {
     // 1. RECLAMAÇÃO TRABALHISTA
     'rt': {
@@ -694,4 +689,4 @@ OAB nº`,
 
     // PEÇAS EM BRANCO (ESTRUTURA)
     'ro': { 1: "Recurso Ordinário: Aguardando conteúdo..." },
-    'ed': {
+    'ed':  { 1: "Recurso Ordinário: Aguardando conteúdo..." },
