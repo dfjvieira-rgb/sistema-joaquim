@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Edição iPad/Mobile</title>
+    <title>SISTEMA JOAQUIM - Workspace Pro</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -50,7 +50,7 @@
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
         }
 
-        /* SIDEBAR / ABA PEÇAS */
+        /* SIDEBAR */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
         .btn-peca { 
             width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
@@ -60,33 +60,33 @@
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; color: var(--accent); }
 
         /* EDITOR */
-        .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; }
+        .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; min-width: 100px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
-        /* DIVISOR PC */
-        .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
+        /* DIVISOR */
+        .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .resizer:hover { background: var(--accent); }
 
-        /* PDFs - AJUSTE PARA IPAD */
-        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; }
-        .pdf-box { 
-            flex: 1; display: flex; flex-direction: column; background: white; 
-            border: 1px solid #7f8c8d; overflow: hidden; 
-            -webkit-overflow-scrolling: touch; /* ESSENCIAL PARA iOS */
-        }
-        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        /* PDFs */
+        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
         
-        .header-actions { display: flex; gap: 5px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.6rem; }
-        .open-btn { background: var(--warning); color: black; }
+        /* Classes de Foco Corrigidas */
+        .pdf-box.expanded { flex: 20 !important; }
+        .pdf-box.collapsed { flex: 0.1 !important; min-height: 40px; }
 
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .header-actions { display: flex; gap: 5px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
+        
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
             .resizer, .sidebar-section { display: none !important; }
             main { flex-direction: column; }
-            .content-section { display: none !important; width: 100% !important; }
+            .content-section { display: none !important; }
             .content-section.active-mobile { display: flex !important; }
             #menu { padding: 20px; box-sizing: border-box; }
         }
@@ -128,7 +128,6 @@
             <div class="pdf-header">
                 <span>📄 ENUNCIADO</span>
                 <div class="header-actions">
-                    <button class="action-btn open-btn" onclick="abrirExterno('view-enunciado')">↗ ABRIR</button>
                     <button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button>
                 </div>
             </div>
@@ -139,7 +138,6 @@
             <div class="pdf-header">
                 <span>✅ GABARITO</span>
                 <div class="header-actions">
-                    <button class="action-btn open-btn" onclick="abrirExterno('view-gabarito')">↗ ABRIR</button>
                     <button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button>
                 </div>
             </div>
@@ -169,44 +167,69 @@
         if(btn) btn.classList.add('active');
     }
 
+    // FUNÇÃO DE FOCO CORRIGIDA PARA COMPUTADOR
     function focarPdf(tipo) {
         const e = document.getElementById('box-enunciado');
         const g = document.getElementById('box-gabarito');
-        if(window.innerWidth < 900) {
+        const editor = document.getElementById('escrita');
+
+        if(window.innerWidth > 900) {
+            // No PC, se clicar em foco, resetamos o flex-basis do arraste para não travar
+            editor.style.flex = "1"; 
+            
+            if(tipo === 'enunciado') {
+                const isAlreadyExpanded = e.classList.contains('expanded');
+                // Limpa classes
+                e.classList.remove('expanded', 'collapsed');
+                g.classList.remove('expanded', 'collapsed');
+                
+                if(!isAlreadyExpanded) {
+                    e.classList.add('expanded');
+                    g.classList.add('collapsed');
+                }
+            } else {
+                const isAlreadyExpanded = g.classList.contains('expanded');
+                // Limpa classes
+                e.classList.remove('expanded', 'collapsed');
+                g.classList.remove('expanded', 'collapsed');
+                
+                if(!isAlreadyExpanded) {
+                    g.classList.add('expanded');
+                    e.classList.add('collapsed');
+                }
+            }
+        } else {
+            // Lógica Mobile (esconde um para mostrar o outro)
             if(tipo === 'enunciado') { g.style.display = g.style.display === 'none' ? 'flex' : 'none'; e.style.display = 'flex'; }
             else { e.style.display = e.style.display === 'none' ? 'flex' : 'none'; g.style.display = 'flex'; }
-        } else {
-            if(tipo === 'enunciado') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
-            else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
         }
-    }
-
-    function abrirExterno(id) {
-        const url = document.getElementById(id).src.split('#')[0];
-        if(url && url !== "about:blank") window.open(url, '_blank');
     }
 
     function carregarExame(enunciado, gabarito, btnId) {
         document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('selected'));
         const btn = document.getElementById(btnId);
         if(btn) btn.classList.add('selected');
-        
-        // Carrega PDF com suporte a rolagem interna
         document.getElementById('view-enunciado').src = enunciado;
         document.getElementById('view-gabarito').src = gabarito;
-        
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
+    // Lógica do Arraste
     const resizer = document.getElementById('dragMe');
     const leftSide = document.getElementById('escrita');
     if (resizer) {
         resizer.addEventListener('mousedown', (e) => {
             e.preventDefault();
             document.addEventListener('mousemove', resize);
-            document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
+            document.addEventListener('mouseup', () => {
+                document.removeEventListener('mousemove', resize);
+            });
         });
         function resize(e) {
+            // Se você arrastar, o sistema remove o "foco" automático para priorizar seu movimento
+            document.getElementById('box-enunciado').classList.remove('expanded', 'collapsed');
+            document.getElementById('box-gabarito').classList.remove('expanded', 'collapsed');
+            
             const newWidth = e.clientX - 240; 
             if (newWidth > 150 && newWidth < (window.innerWidth - 300)) {
                 leftSide.style.flex = `0 0 ${newWidth}px`;
