@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace Inteligente</title>
+    <title>SISTEMA JOAQUIM - Workspace Total</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -18,10 +18,12 @@
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0; background: var(--bg);
-            height: 100vh; display: flex; flex-direction: column;
+            height: 100vh; height: -webkit-fill-available; 
+            display: flex; flex-direction: column;
             overflow: hidden;
         }
 
+        /* CABEÇALHO E NAVEGAÇÃO */
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
@@ -32,7 +34,11 @@
             display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 100;
         }
 
-        body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
+        /* MODO ZEN (EXPANDIR) - ESCONDE TUDO NO MOBILE TAMBÉM */
+        body.zen-mode header, 
+        body.zen-mode .tabs-container { 
+            display: none !important; 
+        }
 
         .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
@@ -43,15 +49,17 @@
         
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
 
+        /* BOTÃO ZEN FLUTUANTE (AJUSTADO PARA MOBILE) */
         .btn-zen {
-            position: absolute; bottom: 20px; right: 20px; z-index: 2000;
+            position: absolute; bottom: 15px; right: 15px; z-index: 2001;
             background: var(--primary); color: white; border: none;
-            padding: 12px 18px; border-radius: 50px; font-weight: bold;
-            font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
+            padding: 10px 15px; border-radius: 50px; font-weight: bold;
+            font-size: 0.7rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
         }
         body.zen-mode .btn-zen { background: var(--danger); }
 
-        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; z-index: 10; }
+        /* SIDEBAR / ABA PEÇAS */
+        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
         .btn-peca { 
             width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
             border: 2px solid #edf2f7; border-radius: 12px; font-weight: 600; 
@@ -59,23 +67,24 @@
         }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; color: var(--accent); }
 
+        /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; min-width: 100px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
+        /* DIVISOR PC */
         .resizer { width: 10px; background: var(--divider); cursor: col-resize; z-index: 150; display: flex; align-items: center; justify-content: center; }
-        .resizer:hover { background: var(--accent); }
 
+        /* ÁREA DE PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; -webkit-overflow-scrolling: touch; }
         
-        /* Ajuste de Foco Mantendo Proporção */
         .pdf-box.expanded { flex: 50 !important; }
         .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
 
-        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         .header-actions { display: flex; gap: 5px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.6rem; }
         .open-btn { background: var(--warning); color: black; }
         
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
@@ -86,7 +95,11 @@
             main { flex-direction: column; }
             .content-section { display: none !important; }
             .content-section.active-mobile { display: flex !important; width: 100% !important; height: 100% !important; }
+            
+            /* Melhoria Mobile Zen */
+            body.zen-mode .pdf-section, body.zen-mode .editor-section { padding: 5px; }
             body.zen-mode .pdf-header { display: none; }
+            body.zen-mode .btn-save { padding: 8px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -155,7 +168,7 @@
         document.querySelectorAll('.btn-zen').forEach(b => {
             b.textContent = isZen ? "🔙 VOLTAR" : "↕ EXPANDIR";
         });
-        setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
+        window.dispatchEvent(new Event('resize'));
     }
 
     function switchTab(tabId) {
@@ -167,22 +180,17 @@
         if(btn) btn.classList.add('active');
     }
 
-    // FOCO CORRIGIDO: Agora não altera o flex do editor
     function focarPdf(tipo) {
         const e = document.getElementById('box-enunciado');
         const g = document.getElementById('box-gabarito');
-
         if(window.innerWidth > 900) {
-            // Removemos a linha que resetava o editor aqui!
             if(tipo === 'enunciado') {
                 const isExpanded = e.classList.contains('expanded');
-                e.classList.remove('expanded', 'collapsed');
-                g.classList.remove('expanded', 'collapsed');
+                e.classList.remove('expanded', 'collapsed'); g.classList.remove('expanded', 'collapsed');
                 if(!isExpanded) { e.classList.add('expanded'); g.classList.add('collapsed'); }
             } else {
                 const isExpanded = g.classList.contains('expanded');
-                e.classList.remove('expanded', 'collapsed');
-                g.classList.remove('expanded', 'collapsed');
+                e.classList.remove('expanded', 'collapsed'); g.classList.remove('expanded', 'collapsed');
                 if(!isExpanded) { g.classList.add('expanded'); e.classList.add('collapsed'); }
             }
         } else {
@@ -214,12 +222,10 @@
             document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
         });
         function resize(e) {
-            // Durante o arrasto, removemos as classes de foco para não dar conflito
             document.getElementById('box-enunciado').classList.remove('expanded', 'collapsed');
             document.getElementById('box-gabarito').classList.remove('expanded', 'collapsed');
             const newWidth = e.clientX - 240; 
             if (newWidth > 150 && newWidth < (window.innerWidth - 300)) {
-                // Define um tamanho fixo baseado no seu movimento
                 leftSide.style.flex = `0 0 ${newWidth}px`;
             }
         }
@@ -237,7 +243,8 @@
     let tempo = 18000;
     setInterval(() => {
         let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
-        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        const display = document.getElementById('timer');
+        if(display) display.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         if (tempo > 0) tempo--;
     }, 1000);
 
