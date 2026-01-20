@@ -2290,7 +2290,88 @@ Atribui-se à causa o valor de R$ 4.000,00.
 Nestes termos,
 pede deferimento.
 Local e data.
-        
+        //15.9. Exercício de Ação Rescisória
+Murilo Adeus, dispensado por justa causa, ajuíza reclamação trabalhista
+contra Emiko Boaprova Ltda. postulando, entre outros direitos, o pagamento de
+férias vencidas acrescidas de 1/3 no valor de R$ 4.000,00. Em sentença, os
+pedidos formulados na exordial são rejeitados em sua integralidade, com o
+fundamento de que a falta grave praticada (agressão física ao superior
+hierárquico) afasta a possibilidade de qualquer crédito ao empregado, mesmo no
+que tange ao pedido de férias vencidas.
+Considerando que transcorreu o prazo legal para a interposição de recurso
+ordinário sem que houvesse qualquer manifestação do reclamante e que esse
+relata que já conseguiu novo emprego em que recebe um pouco acima do teto
+dos benefícios do Regime Geral da Previdência Social, apresente a medida
+processual cabível para defender os interesses do reclamante, ciente de que o
+trânsito em julgado ocorreu há pouco mais de 1 mês.
+
+        RESOLUÇÃO
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO.
+MURILO ADEUS, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe intimações e notificações,
+com fulcro no art. 836 da CLT e no art. 966, V, do CPC, PROPOR:
+AÇÃO RESCISÓRIA
+em face de EMIKO BOAPROVA LTDA., qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+O autor, dispensado por justa causa pelo réu, ajuíza reclamação trabalhista
+postulando, entre outros direitos, o pagamento de férias vencidas. Em
+sentença, os pedidos formulados na exordial foram rejeitados em sua
+integralidade, com o fundamento de que a falta grave praticada (agressão
+física ao superior hierárquico) afasta a possibilidade de qualquer crédito ao
+empregado, mesmo no que tange ao pedido de férias vencidas. A decisão
+transitou em julgado.
+II – REQUISITOS ESPECÍFICOS
+A presente ação rescisória foi proposta com observância das disposições
+legais. Atente-se:
+a) Legitimidade: o autor foi parte na ação cuja decisão se pretende
+desconstituir, sendo, portanto, parte legítima a propor a presente ação
+rescisória, com base no art. 967, I, do CPC.
+b) Tempestividade: como o trânsito em julgado ocorreu há pouco mais
+de um mês, a presente ação é tempestiva, tendo sido observado o prazo
+decadencial de 2 anos para a sua propositura, previsto no art. 975 do CPC
+e na Súmula 100, I, do TST.
+
+        c) Depósito prévio: o depósito prévio foi realizado no importe de
+R$ 800,00, correspondente a 20% do valor da causa, como determina o
+art. 836 da CLT.
+III – MÉRITO
+1. Da violação literal à norma jurídica
+O autor foi dispensado por justa causa, sem receber qualquer verba
+rescisória. Ajuizou reclamação trabalhista postulando, entre outros direitos,
+a condenação da reclamada ao pagamento das férias vencidas acrescidas
+de 1/3. O juiz rejeitou tal pedido, tendo a sentença transitado em julgado.
+A decisão viola literal disposição do art. 146 da CLT, segundo o qual “na
+cessação do contrato de trabalho, qualquer que seja a sua causa, será
+devida ao empregado a remuneração simples ou em dobro, conforme o
+caso, correspondente ao período de férias cujo direito tenha adquirido”.
+Nesse caso, em que há ofensa à literal disposição de lei, a sentença
+merece ser rescindida, nos termos do art. 966, V, do CPC.
+Diante do exposto, requer a desconstituição da sentença e um novo
+julgamento para deferir as férias acrescidas de 1/3, nos termos do art. 968,
+I, do CPC.
+2. Honorários advocatícios
+Requer a condenação da ré ao pagamento de honorários advocatícios à
+razão de 15%, nos termos do art. 791-A da CLT.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a citação da reclamada para apresentar contestação no prazo fixado
+pelo relator, não inferior a 15 nem superior a 30 dias úteis, com base no art.
+970 do CPC, sob pena de revelia;
+b) a produção de todos os meios de prova em direito admitidos, em
+especial a documental, nos termos do art. 972 do CPC; e
+c) por fim, o julgamento procedente da ação rescisória, a fim de rescindir
+a decisão transitada em julgado e um novo julgamento do pedido pelo
+Tribunal para deferir as férias acrescidas de 1/3, nos termos do art. 968, I,
+do CPC.
+Atribui-se à causa o valor de R$ 4.000,00.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
 
 
 
