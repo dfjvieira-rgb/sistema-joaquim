@@ -3353,6 +3353,140 @@ Local e data
 Advogado
 OAB no
 
+//26.2. Estrutura e exercício do Dissídio Coletivo
+Diante de negociações frustradas com o Sindicato dos Hospitais, Clínicas e Casas
+de Saúde do Estado de Minas Gerais, o Sindicato dos Trabalhadores de Hospitais,
+Clínicas e Casas de Saúde do Estado de Minas Gerais, deliberou em assembleia
+regularmente convocada e realizada conforme o art. 859 da CLT, pela deflagração de
+greve geral por tempo indeterminado, com paralisação inclusive das atividades essenciais
+como UTI, pronto-atendimentos e centros cirúrgicos, a partir da próxima semana. A
+assembleia geral com quórum deliberativo qualificado, aprovou o ajuizamento do dissídio
+coletivo, por 2/3 dos associados presentes em segunda convocação, conforme ata anexa,
+em estrita observância à norma consolidada.
+A tentativa de conciliação extrajudicial não teve êxito. O Sindicato da categoria
+econômica, preocupado com a iminente ameaça à saúde pública, procurou você,
+advogado do sindicato patronal, para adotar a medida judicial cabível que assegure a
+legalidade do movimento e a manutenção dos serviços essenciais.
+Obs.: A peça deve abranger todos os fundamentos de Direito que possam ser
+utilizados para dar respaldo à pretensão. A simples menção ou transcrição do dispositivo
+legal não confere pontuação.
+Nos casos em que a lei exigir liquidação de valores, não se faz necessária a
+apresentação pelo Examinando, admitindo-se que o escritório possui setor próprio ou
+contratado especificamente para tal fim. (Valor: 5,00)
+
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DESEMBARGADOR PRESIDENTE DO
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA 3ª REGIÃO
+Sindicato dos Hospitais, Clínicas e Casas de Saúde do Estado
+de Minas Gerais, qualificação e endereço completos, vem, por
+intermédio de seu advogado abaixo assinado (procuração anexa), com
+fulcro no art. 856 da CLT, propor:
+DISSÍDIO COLETIVO DE GREVE, com pedido de tutela de
+urgência em face de Sindicato dos Trabalhadores de Hospitais, Clínicas
+e Casas de Saúde do Estado de Minas, qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+A categoria profissional representada pelo sindicato requerido
+deliberou, em assembleia geral, pela deflagração de greve geral por
+tempo indeterminado, com paralisação inclusive das atividades
+essenciais, como pron-to-atendimentos, UTIs e centros cirúrgicos.
+A tentativa de conciliação extrajudicial entre as partes não teve
+êxito.
+Diante da iminente ameaça à saúde pública, a Requerente,
+regularmente autorizada por sua assembleia sindical, nos termos do art.
+859 da CLT, busca a tutela jurisdicional para assegurar a legalidade do
+movimento e a preservação dos serviços essenciais.
+II - DOS REQUISITOS ESPECÍFICOS
+O presente dissídio coletivo de greve observa os requisitos legais
+indispensáveis à sua propositura, conforme passa a demonstrar.
+
+a) Legitimidade
+A Requerente é entidade sindical representativa da categoria
+econômica da saúde privada no Estado de Minas Gerais, o que lhe
+confere legitimidade ativa para a instauração do dissídio coletivo, nos
+termos do art. 8º, III, da CF
+A paralisação iminente envolve diretamente os estabelecimentos
+por ela representados, motivo pelo qual se impõe sua atuação no polo
+ativo da presente ação.
+b) Aprovação pela Assembleia da Categoria – Art. 859 da CLT
+Nos termos do art. 859 da CLT, a instauração de dissídio coletivo
+por sindicato pressupõe a aprovação prévia em assembleia da categoria
+representada, convocada especificamente para essa finalidade.
+No caso em análise, a Requerente promoveu assembleia geral com
+quórum deliberativo qualificado, tendo sido o ajuizamento autorizado por
+2/3 dos associados presentes em segunda convocação, conforme ata
+anexa, em estrita observância à norma consolidada.
+Tal deliberação legitima formalmente o ajuizamento da presente
+ação coletiva e confere validade processual à representação da entidade
+sindical.
+III – MÉRITO
+01. Greve em serviços essenciais sem plano de contingência
+A entidade sindical profissional deliberou por deflagrar greve geral
+por tempo indeterminado, com abrangência total sobre as atividades das
+clínicas e hospitais da rede privada de saúde em Minas Gerais, inclusive
+os setores de urgência, emergência, UTI e centro cirúrgico. A paralisação
+foi anunciada mesmo após tentativas de negociação frustradas e sem
+apresentação de qualquer plano para garantir a continuidade dos
+serviços essenciais, o que evidencia risco concreto à população atendida
+
+pelas unidades representadas pela Requerente.
+Nos termos do art. 10, inciso II, da Lei nº 7.783/89, os serviços de
+assistência médica e hospitalar são reconhecidos como essenciais,
+exigindo, portanto, a manutenção de atividades inadiáveis durante o
+movimento grevista. O art. 11, “caput” e parágrafo ú n ico, da mesma lei
+impõe ao sindicato profissional o dever de garantir, mesmo durante a
+greve, um contingente mínimo de trabalhadores em atividade suficiente
+para resguardar os direitos fundamentais da coletividade. A ausência de
+qualquer plano de funcionamento durante a paralisação caracteriza
+desvio do exercício regular do direito de greve e autoriza a atuação do
+Poder Judiciário para assegurar a prestação mínima do serviço ou
+reconhecer a abusividade do movimento.
+Diante desse cenário, requer-se, como medida principal, o
+reconhecimento da abusividade da greve anunciada, em razão do
+descumprimento do dever legal de preservação dos serviços essenciais.
+Alternativamente, caso não se reconheça a abusividade, requer-se que
+este Tribunal determine ao sindicato profissional a manutenção
+compulsória de percentuais mínimos de trabalhadores em atividade nos
+setores de urgência e risco iminente à vida, até que sobrevenha solução
+negocial ou sentença normativa definitiva.
+IV – TUTELA PROVISÓRIA DE URGÊNCIA
+Como referido, o sindicato profissional anunciou greve por tempo
+indeterminado abrangendo todos os setores das clínicas privadas
+representadas pela Requerente, inclusive os serviços de urgência, UTI e
+centro cirúrgico, sem apresentação de plano de contingência, o que
+coloca em risco iminente a saúde da população.
+Nos termos do art. 300 do CPC, aplicado subsidiariamente ao
+Processo do Trabalho (art. 769, CLT), estão presentes a probabilidade
+
+do direito, diante da violação aos arts. 10, II, e 11, parágrafo único, da Lei
+nº 7.783/89, e o perigo de dano irreparável, pela interrupção de serviços
+essenciais, o que autoriza a intervenção judicial, conforme o art. 114, §
+3º, da Constituição Federal.
+Diante disso, requer-se a concessão da tutela de urgência, em
+caráter liminar, para que o sindicato profissional seja compelido a manter
+ao menos 50% da força de trabalho nos setores críticos de atendimento
+à saúde, sob pena de multa diária a ser fixada por Vossa Excelência.
+V – DOS REQUERIMENTOS FINAIS
+Diante de todo o exposto, requer a Requerente:
+1 A concessão da tutela de urgência, para determinar ao sindicato
+profissional a manutenção de, no mínimo, 50% da força de trabalho nos
+setores essenciais, sob pena de multa diária;
+2 A designação de audiência de conciliação em 10 dias, nos termos
+do art. 860 da CLT;
+3 A intimação do Ministério Público do Trabalho para que
+acompanhe o feito, conforme art. 114, § 3°, CF e art. 83, VIII, LC 75/93.
+4 A produção de todos os meios de prova em direito admitidas, em
+especial a documental.
+5 Ao final, o julgamento de procedência do dissídio, com o
+reconhecimento da abusividade do movimento grevista ou,
+subsidiariamente, com a fixação judicial das condições mínimas de
+funcionamento dos serviços essenciais durante a paralisação.
+Dá-se à causa o valor de R$
+Nestes termos,
+Pede Deferimento.
+Local e Data
+Advogado
+
 
 
 
