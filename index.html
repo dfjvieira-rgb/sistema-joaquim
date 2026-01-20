@@ -3,155 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentoria OAB - Gabaritos Oficiais</title>
-    <script src="gabarito.js" defer></script>
-    
+    <title>Gabaritos Mentoria OAB</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --bg-site: #f4f7f6;
-            --bg-paper: #ffffff;
-            --border-color: #d1d8e0;
+        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; background: #e9ecef; }
+        
+        /* Barra Lateral */
+        #sidebar { 
+            width: 280px; background: #2c3e50; color: white; 
+            overflow-y: auto; padding: 20px 0; flex-shrink: 0;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-site);
+        .btn-peca {
+            width: 100%; padding: 12px 20px; border: none; background: none;
+            color: #bdc3c7; text-align: left; cursor: pointer; border-bottom: 1px solid #34495e;
         }
+        .btn-peca:hover { background: #34495e; color: white; }
+        .active { background: #1a252f !important; color: white; border-left: 4px solid #3498db; }
 
-        /* BARRA LATERAL */
-        #sidebar {
-            width: 300px;
-            background-color: var(--primary-color);
-            color: white;
-            overflow-y: auto;
-            padding: 20px 0;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-
-        #sidebar h2 {
-            text-align: center;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #ecf0f1;
-            border-bottom: 1px solid #34495e;
-            padding-bottom: 10px;
-        }
-
-        .btn-categoria {
-            width: 100%;
-            padding: 12px 20px;
-            border: none;
-            background: none;
-            color: #bdc3c7;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
-        }
-
-        .btn-categoria:hover {
-            background-color: #34495e;
-            color: white;
-        }
-
-        .btn-categoria.active {
-            background-color: #1a252f;
-            color: white;
-            border-left: 4px solid #3498db;
-        }
-
-        /* ÁREA DE CONTEÚDO */
-        #main-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px;
-        }
-
-        /* O PAPEL DA PETIÇÃO */
+        /* Área do Gabarito (O Papel) */
+        #main { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; }
+        
         #container-gabarito {
-            background-color: var(--bg-paper);
-            width: 100%;
-            max-width: 850px; /* Proporção A4 */
-            min-height: 1100px;
-            padding: 70px 80px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            /* Estilos de fonte para o texto injetado */
-            font-family: "Times New Roman", Times, serif;
-            font-size: 13pt;
-            color: #222;
+            background: white; width: 100%; max-width: 800px; min-height: 1000px;
+            padding: 60px 80px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            font-family: "Times New Roman", Times, serif; font-size: 13pt; line-height: 1.6;
+            color: #333; text-align: justify;
         }
 
-        /* Placeholder quando não há nada selecionado */
-        .empty-state {
-            text-align: center;
-            margin-top: 200px;
-            color: #95a5a6;
-            font-family: sans-serif;
-        }
-
-        @media print {
-            #sidebar { display: none; }
-            #main-content { padding: 0; }
-            #container-gabarito { box-shadow: none; border: none; }
-        }
+        .titulo-juridico { font-weight: bold; text-transform: uppercase; display: block; margin: 20px 0 10px 0; }
+        #container-gabarito p { text-indent: 2.5cm; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <nav id="sidebar">
-        <h2>PEÇAS PRÁTICAS</h2>
-        <button class="btn-categoria" onclick="selecionarPeca('rt', this)">Reclamação Trabalhista</button>
-        <button class="btn-categoria" onclick="selecionarPeca('consigna', this)">Consignação em Pagamento</button>
-        <button class="btn-categoria" onclick="selecionarPeca('cont', this)">Contestação</button>
-        <button class="btn-categoria" onclick="selecionarPeca('emb_exec', this)">Embargos à Execução</button>
-        <button class="btn-categoria" onclick="selecionarPeca('ro', this)">Recurso Ordinário</button>
-        <button class="btn-categoria" onclick="selecionarPeca('ed', this)">Embargos de Declaração</button>
-        <button class="btn-categoria" onclick="selecionarPeca('ap', this)">Agravo de Petição</button>
-        <button class="btn-categoria" onclick="selecionarPeca('ai', this)">Agravo de Instrumento</button>
-        <button class="btn-categoria" onclick="selecionarPeca('rr', this)">Recurso de Revista</button>
-        <button class="btn-categoria" onclick="selecionarPeca('epe', this)">Exceção de Pré-Executividade</button>
-        <button class="btn-categoria" onclick="selecionarPeca('ms', this)">Mandado de Segurança</button>
-        <button class="btn-categoria" onclick="selecionarPeca('acao_resc', this)">Ação Rescisória</button>
-        <button class="btn-categoria" onclick="selecionarPeca('inquerito', this)">Inquérito Falta Grave</button>
-        <button class="btn-categoria" onclick="selecionarPeca('cautelar', this)">Medida Cautelar</button>
-        <button class="btn-categoria" onclick="selecionarPeca('habeas_corpus', this)">Habeas Corpus</button>
-        <button class="btn-categoria" onclick="selecionarPeca('habeas_data', this)">Habeas Data</button>
-        <button class="btn-categoria" onclick="selecionarPeca('mandado_injuncao', this)">Mandado de Injunção</button>
-        <button class="btn-categoria" onclick="selecionarPeca('dissidio_coletivo', this)">Dissídio Coletivo</button>
-        <button class="btn-categoria" onclick="selecionarPeca('recurso_adesivo', this)">Recurso Adesivo</button>
-    </nav>
+<nav id="sidebar">
+    <h3 style="text-align:center">PEÇAS</h3>
+    <button class="btn-peca" onclick="carregar('rt', this)">Reclamação Trabalhista</button>
+    <button class="btn-peca" onclick="carregar('consigna', this)">Consignação em Pagamento</button>
+    <button class="btn-peca" onclick="carregar('cont', this)">Contestação</button>
+    <button class="btn-peca" onclick="carregar('emb_exec', this)">Embargos à Execução</button>
+    <button class="btn-peca" onclick="carregar('ro', this)">Recurso Ordinário</button>
+    <button class="btn-peca" onclick="carregar('ed', this)">Embargos de Declaração</button>
+    <button class="btn-peca" onclick="carregar('ap', this)">Agravo de Petição</button>
+    <button class="btn-peca" onclick="carregar('ai', this)">Agravo de Instrumento</button>
+    <button class="btn-peca" onclick="carregar('rr', this)">Recurso de Revista</button>
+    <button class="btn-peca" onclick="carregar('epe', this)">Exceção de Pré-Executividade</button>
+    <button class="btn-peca" onclick="carregar('ms', this)">Mandado de Segurança</button>
+    <button class="btn-peca" onclick="carregar('acao_resc', this)">Ação Rescisória</button>
+    <button class="btn-peca" onclick="carregar('inquerito', this)">Inquérito Falta Grave</button>
+    <button class="btn-peca" onclick="carregar('cautelar', this)">Medida Cautelar</button>
+    <button class="btn-peca" onclick="carregar('habeas_corpus', this)">Habeas Corpus</button>
+    <button class="btn-peca" onclick="carregar('habeas_data', this)">Habeas Data</button>
+    <button class="btn-peca" onclick="carregar('mandado_injuncao', this)">Mandado de Injunção</button>
+    <button class="btn-peca" onclick="carregar('dissidio_coletivo', this)">Dissídio Coletivo</button>
+    <button class="btn-peca" onclick="carregar('recurso_adesivo', this)">Recurso Adesivo</button>
+</nav>
 
-    <main id="main-content">
-        <div id="container-gabarito">
-            <div class="empty-state">
-                <p>Selecione uma peça na lateral para visualizar o gabarito oficial formatado.</p>
-            </div>
+<main id="main">
+    <div id="container-gabarito">
+        <div style="text-align:center; color:#999; margin-top:200px; font-family:sans-serif;">
+            Selecione uma peça ao lado.
         </div>
-    </main>
+    </div>
+</main>
 
-    <script>
-        function selecionarPeca(id, elemento) {
-            // Remove classe ativa de todos
-            document.querySelectorAll('.btn-categoria').forEach(btn => btn.classList.remove('active'));
-            // Adiciona ao clicado
-            elemento.classList.add('active');
-            
-            // Chama a função que está dentro do gabarito.js
-            // Por padrão, carregamos a questão '1' de cada peça
-            if (typeof GabaritoManager !== 'undefined') {
-                GabaritoManager.renderizarNoSite(id, 1);
-            }
+<script src="gabarito.js"></script>
+<script>
+    function carregar(id, el) {
+        // Marca o botão como ativo
+        document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        
+        // Chama o gerenciador do gabarito.js
+        if (typeof GabaritoManager !== 'undefined') {
+            GabaritoManager.renderizarNoSite(id, 1);
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
