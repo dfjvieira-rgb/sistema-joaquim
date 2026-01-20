@@ -2,65 +2,217 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>DEBUG OAB - Localizador de Arquivos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador OAB 2ª Fase - Sistema Joaquim</title>
+    
     <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #2c3e50; color: white; }
-        .painel { background: #fff; color: #333; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .log { background: #eee; padding: 10px; border-left: 5px solid #e74c3c; font-family: monospace; margin: 10px 0; }
-        button { padding: 15px 25px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
-        iframe { width: 100%; height: 600px; border: 2px solid #ddd; margin-top: 20px; display:none; }
-        a { color: #2980b9; font-weight: bold; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        #timer {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #f1c40f;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            margin: 1rem;
+            gap: 1rem;
+            overflow: hidden;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            padding: 1.2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 280px;
+            max-width: 320px;
+            overflow-y: auto; 
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            color: #34495e;
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar button:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+            transform: translateX(5px);
+        }
+
+        /* Área do PDF */
+        .content {
+            flex: 4;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+
+        #gabarito-container {
+            flex: 1;
+            width: 100%;
+            margin-top: 10px;
+            background-color: #ecf0f1;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #bdc3c7;
+        }
+
+        #gabarito-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .welcome-msg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            main { flex-direction: column; overflow: visible; }
+            .sidebar { max-width: 100%; min-width: auto; }
+            .content { height: 500px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="painel">
-        <h1>🛠️ Verificador de Gabarito</h1>
-        <p>Este código vai tentar "forçar" a descoberta do arquivo <strong>ro35.pdf</strong>.</p>
-        
-        <button onclick="tentarCarregar()">TENTAR ABRIR GABARITO (ro35.pdf)</button>
-
-        <div id="status" class="log">Aguardando comando...</div>
-
-        <div id="ajuda" style="display:none; margin-top:15px; font-size: 14px; color: #666;">
-            <p><strong>Se o quadro abaixo continuar branco:</strong></p>
-            <ol>
-                <li>Vá no seu GitHub.</li>
-                <li>Clique em "Add File" -> "Upload Files".</li>
-                <li>Suba o PDF e renomeie ele NO GITHUB para <strong>ro35.pdf</strong>.</li>
-                <li>Clique em "Commit changes".</li>
-            </ol>
+    <header>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size: 1.5rem;">⚖️</span>
+            <h1 style="margin:0; font-size: 1.2rem;">Simulador OAB 2ª Fase</h1>
         </div>
+        <div id="timer">05:00:00</div>
+    </header>
 
-        <iframe id="meu-frame"></iframe>
-    </div>
+    <main>
+        <nav class="sidebar">
+            <h2>Gabaritos Oficiais</h2>
+            
+            <button onclick="loadPDF('ro35.pdf', 'Recurso Ordinário - Exame XXXV')">Recurso Ordinário (XXXV)</button>
+            
+            <button onclick="alert('Suba o arquivo no GitHub primeiro!')" style="opacity: 0.6; cursor: not-allowed;">Reclamação Trabalhista (Em breve)</button>
+            <button onclick="alert('Suba o arquivo no GitHub primeiro!')" style="opacity: 0.6; cursor: not-allowed;">Contestação (Em breve)</button>
+        </nav>
+
+        <section class="content">
+            <h2 id="titulo-peca">Visualizador de Gabarito</h2>
+            <div id="gabarito-container">
+                <div id="placeholder" class="welcome-msg">
+                    <p>Selecione uma peça no menu lateral para carregar o PDF.</p>
+                </div>
+                <iframe id="gabarito-viewer" src="" style="display: none;"></iframe>
+            </div>
+        </section>
+    </main>
 
     <script>
-        function tentarCarregar() {
-            const frame = document.getElementById('meu-frame');
-            const status = document.getElementById('status');
-            const ajuda = document.getElementById('ajuda');
+        function loadPDF(nomeArquivo, nomeExibicao) {
+            const viewer = document.getElementById('gabarito-viewer');
+            const placeholder = document.getElementById('placeholder');
+            const titulo = document.getElementById('titulo-peca');
             
-            // 1. Descobre o endereço base do seu site automaticamente
-            let urlBase = window.location.href.split('#')[0].split('?')[0];
-            if (!urlBase.endsWith('/')) {
-                urlBase = urlBase.substring(0, urlBase.lastIndexOf('/') + 1);
-            }
+            // Forçamos o recarregamento com um carimbo de tempo para evitar cache do navegador
+            const urlFinal = "./" + nomeArquivo + "?v=" + new Date().getTime();
 
-            const nomeArquivo = "ro35.pdf";
-            const urlFinal = urlBase + nomeArquivo;
-
-            status.innerHTML = `
-                <strong>Status:</strong> Tentando carregar...<br>
-                <strong>URL Gerada:</strong> <a href="${urlFinal}" target="_blank">${urlFinal}</a><br>
-                <small>Clique no link acima. Se der 404, o arquivo não está no GitHub.</small>
-            `;
-
-            // Tenta forçar o iframe
-            frame.style.display = "block";
-            frame.src = urlFinal;
-            ajuda.style.display = "block";
+            placeholder.style.display = 'none';
+            viewer.style.display = 'block';
+            viewer.src = urlFinal;
+            
+            titulo.innerText = "Gabarito: " + nomeExibicao;
         }
+
+        // Cronômetro Progressivo (5 horas)
+        function startTimer(duration, display) {
+            let timer = duration, hours, minutes, seconds;
+            setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = 0;
+                    display.textContent = "TEMPO ESGOTADO!";
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            const fiveHours = 18000; 
+            const display = document.querySelector('#timer');
+            startTimer(fiveHours, display);
+        };
     </script>
+
 </body>
 </html>
