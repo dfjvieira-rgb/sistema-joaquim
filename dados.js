@@ -1974,8 +1974,323 @@ pede deferimento,
 Local e data
 Advogado
 OAB n°
-        
 
+// 13.3. Exercício de Impugnação à Arrematação
+Carlos Eduardo Ribeiro ajuizou reclamação trabalhista em face da empresa
+Alfa Logística e Transporte Rodoviário Ltda., pleiteando o pagamento de verbas
+rescisórias, horas extras e adicional de periculosidade, após ter sido dispensado
+sem justa causa.
+A sentença, proferida pelo juízo da 2ª Vara do Trabalho de Curitiba, Paraná,
+foi parcialmente procedente, condenando a empresa ao pagamento de
+R$ 89.500,00, valor posteriormente atualizado para R$ 92.730,00 na fase de
+liquidação. Iniciada a execução, o juízo determinou a citação da empresa para
+pagamento ou garantia do juízo, no prazo legal, o que não foi cumprido.
+Diante da inércia da executada e da ausência de valores em contas
+bancárias, foi penhorado um caminhão de sua frota, avaliado em R$ 95.000,00.
+O bem foi levado à hasta pública, tendo sido arrematado por R$ 80.000,00, com
+o pagamento de 20% de sinal no ato, conforme determina o art. 888, § 2º, da
+CLT. Na mesma ocasião, foi assinado o auto de arrematação, nos termos do art.
+901 do CPC.
+Ocorre que, passadas mais de 24 horas da arrematação, o arrematante
+não efetuou o pagamento do valor remanescente, tampouco apresentou
+qualquer justificativa ao juízo. A ordem de entrega do veículo ainda não foi
+expedida.
+Na condição de advogado da executada, elabore a medida judicial cabível,
+de modo a possibilitar a continuidade da execução
+        
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 2ª VARA DO TRABALHO DE CURITIBA,
+PARANÁ
+Exequente: Carlos Eduardo Ribeiro
+Executado: ALFA LOGÍSTICA E TRANSPORTE RODOVIÁRIO LTDA.
+Processo nº
+ALFA LOGÍSTICA E TRANSPORTE RODOVIÁRIO LTDA., já qualificada
+nos autos em epígrafe, em que contende com CARLOS EDUARDO
+RIBEIRO, também qualificado, vem, respeitosamente, perante Vossa
+Excelência, por intermédio de seu advogado adiante assinado, com fulcro
+no art. 903, § 1º, III, do CPC e art. 888, § 4º, da CLT, apresentar:
+IMPUGNAÇÃO À ARREMATAÇÃO
+pelas razões de fato e de direito a seguir expostas.
+I – FATOS
+Em reclamação trabalhista movida por Carlos Eduardo Ribeiro em face de
+sua ex-empregadora, foi proferida sentença parcialmente procedente.
+Apurado o valor da condenação em fase de liquidação, chegou-se ao
+montante de R$ 92.730,00.
+Diante da inércia da executada em pagar ou garantir o juízo e da ausência
+de valores em contas bancárias, foi penhorado um caminhão de sua
+propriedade, avaliado em R$ 95.000,00. O bem foi levado à hasta pública,
+tendo sido arrematado por R$ 80.000,00, com pagamento de 20% de sinal
+no ato.
+Na mesma ocasião, foi assinado o auto de arrematação, configurando-se o
+aperfeiçoamento da arrematação. No entanto, o arrematante não efetuou o
+pagamento do saldo restante dentro do prazo legal de 24 horas. Até o
+momento, tampouco foi expedida ordem de entrega do bem.
+        P á g i n a 217 | 551
+@aryannalinhares @professoraaryannalinhares
+II – REQUISITOS ESPECÍFICOS
+01. Tempestividade
+A presente impugnação é tempestiva, tendo em vista que foi apresentada
+dentro do prazo legal de 10 dias úteis, contados da assinatura do auto de
+arrematação, termos do art. 903, § 2º, CPC.
+02. Cabimento
+A impugnação à arrematação é a medida processual cabível para impugnar
+à arrematação, nos termos do art. 903, § 1º, III, do CPC, uma vez que a
+ordem de entrega do veículo ainda não foi expedida.
+III – MÉRITO
+1. Inadimplemento do arrematante – resolução da arrematação
+Conforme narrado, o arrematante efetuou apenas o pagamento do sinal
+correspondente a 20% do valor do bem, sem, no entanto, adimplir o
+restante do preço no prazo legal de 24 horas.
+Nos termos art. 880, §§ 2º e 4º, da CLT, o arrematante deverá garantir o
+lance com o sinal correspondente a 20% do valor da arrematação e, dentro
+de 24 horas, pagar o valor final da arrematação, sob pena de perder, em
+benefício da execução, o sinal dado, voltando à praça os bens executados.
+Ocorre que o arrematante não efetuou o pagamento do saldo restante
+dentro do prazo legal de 24 horas.
+Nos termos do art. 903, § 1º, III, do CPC, tal inadimplemento impõe a
+resolução da arrematação.
+Diante do exposto, requer que seja resolvida a arrematação, com a
+reversão do sinal dado pelo arrematante em favor da execução, voltando
+os bens a novo leilão, do qual não serão admitidos a participar o
+arrematante e o fiador, nos termos do art. 897 do CPC.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto requer:
+a) a intimação do arrematante e do exequente para se manifestarem;
+b) a produção de todos os meios de prova em direito admitidos, em especial
+a documental;
+c) a procedência da presente impugnação, com a consequente resolução
+da arrematação em razão do inadimplemento do arrematante, autorizando-
+se o prosseguimento da execução, com nova hasta pública do bem
+penhorado, bem como, a reversão, em benefício da execução, do valor
+referente ao sinal pago pelo arrematante.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//13.5. Exercício de Impugnação à Adjudicação
+Thaíse Lins ajuizou reclamação trabalhista em face de sua ex-empregadora, a
+empresa Panela de Pressão Industrial Ltda., pleiteando o pagamento de horas extras,
+adicional de insalubridade e indenização por danos morais. A sentença foi parcialmente
+procedente e, após o trânsito em julgado, iniciou-se a fase de execução.
+A empresa executada não efetuou o pagamento, nem garantiu o juízo e, diante
+disso, o juízo da 10ª Vara do Trabalho de Recife/PE determinou a penhora de um imóvel
+de sua propriedade, avaliado em R$ 150.000,00. A executada não apresentou
+embargos à execução, nem a exequente impugnação à sentença de liquidação.
+Posteriormente, a exequente requereu a adjudicação do bem, mesmo tendo crédito no
+valor de apenas R$ 90.000,00, sem, contudo, depositar a diferença de R$ 60.000,00.
+O juízo intimou a empresa executada. Na condição de advogado da executada
+elabore a medida processual cabível.
+        P á g i n a 223 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA 10ª VARA DO TRABALHO DE RECIFE/PE
+Exequente
+Executado
+Processo nº
+PANELA DE PRESSÃO INDUSTRIAL LTDA., já qualificada nos autos em
+epígrafe, em que contende com THAÍSE LINS, também qualificada, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado, com fulcro no art. 876, § 1º e 877 do CPC,
+apresentar:
+IMPUGNAÇÃO À ADJUDICAÇÃO
+Pelas razões de fato e de direito a seguir expostas:
+I – FATOS
+Em reclamação trabalhista movida por Thaíse Lins em face de sua ex-
+empregadora, foi proferida sentença parcialmente procedente, condenando
+a empresa ao pagamento de horas extras, adicional de insalubridade e
+indenização por danos morais. Apurado o valor da condenação em fase de
+liquidação, chegou-se ao montante de R$ 90.000,00.
+Diante da ausência de pagamento voluntário, foi penhorado um imóvel de
+titularidade da executada, avaliado em R$ 150.000,00. A exequente
+requereu a adjudicação do bem, sem realizar o depósito da diferença de
+R$ 60.000,00 entre o valor do crédito e o valor do imóvel.
+Antes da decisão sobre o requerimento, a empresa foi devidamente
+intimada para se manifestar, nos termos do art. 876, § 1º, do CPC, razão
+pela qual apresenta a presente impugnação.
+II – REQUISITOS ESPECÍFICOS
+A presente impugnação é tempestiva, pois foi apresentada no prazo de 5
+dias úteis, contados da intimação da executada após o pedido de
+adjudicação, conforme previsto nos arts. 876, § 1º, e 877 do CPC.
+III – MÉRITO
+1. Inobservância do depósito da diferença – vício no requerimento de
+adjudicação
+Como referido, a exequente requereu a adjudicação do bem avaliado em
+R$ 150.000,00, sem realizar o depósito da diferença de R$ 60.000,00 entre
+o valor do crédito e o valor do imóvel.
+Nos termos do art. 876, § 4º, I, do CPC, o requerente da adjudicação deve,
+no ato do requerimento, depositar a diferença entre o valor do bem e o valor
+do crédito, caso o crédito seja inferior.
+Diante do exposto, indeferimento do pedido de adjudicação, com o
+prosseguimento da execução por meio de outro meio expropriatório
+legalmente cabível, como o leilão judicial;
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+1.A procedência da presente oposição, com o indeferimento do pedido de
+adjudicação, ante a inobservância do art. 876, § 4º, I, do CPC;
+2.O prosseguimento da execução por meio de outro meio expropriatório
+legalmente cabível, como o leilão judicial;
+3.Caso entenda este Juízo, que seja facultado à exequente suprir o vício,
+mediante o depósito da diferença, no prazo a ser fixado.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//14.5. Exercício de Mandado de Segurança
+Evelyn Calabresa ajuizou reclamação trabalhista contra a sociedade empresária
+Pizzaria Chapa Quente Ltda., em 30 de janeiro de 2022, requerendo o
+pagamento do adicional de insalubridade em grau máximo. Evelyn explicou, na
+petição inicial, que trabalhou como cozinheira da pizzaria, de 12/07/2019 a
+05/10/2021, sendo submetida a calor excessivo porque preparava as pizzas em
+fornos que alcançavam altas temperaturas, não recebendo qualquer
+equipamento de proteção individual do ex-empregador. Devidamente citada, a
+sociedade empresária apresentou contestação, afirmando que a temperatura
+alcançada na cozinha estava dentro do limite de tolerância e que, apesar de ser
+uma empresa pequena e familiar, fornecia todos os equipamentos de proteção
+à empregada, requerendo assim a improcedência do pedido.
+        Em audiência não houve acordo e então o juiz, com base no Art. 195, § 2º, da
+CLT, determinou de ofício a realização de prova pericial, apresentando um único
+quesito do juízo, qual seja: “diga o perito se havia agente insalubre no local de
+trabalho de Evelyn e, em caso positivo, em que grau”.
+Além disso, o magistrado proibiu a apresentação de quesitos pelas partes,
+proibiu que os litigantes indicassem assistentes técnicos, nomeou um perito da
+sua confiança e fixou os honorários periciais dele em R$ 4.000,00, determinando
+que a empresa antecipasse a quantia em 10 dias, sob pena de execução
+forçada, e que a prova técnica somente tivesse início após o depósito.
+A sociedade empresária protestou contra a decisão, ponderando que ela violaria
+normas jurídicas, mas o juiz consignou o protesto na ata e manteve intacta a
+decisão. Ainda na audiência, o titular da sociedade empresária pediu a palavra
+e, aflito, explicou que o seu negócio ainda sofria o efeito da pandemia, e que se
+precisasse dispor dos R$ 4.000,00 determinados pelo juiz, não teria como fechar
+a folha de pagamento dos funcionários naquele mês.
+Sabe-se que a reclamação trabalhista em questão tramita perante a 80ª Vara do
+Trabalho de Criciúma/SC sob o número 0000728-84.2022.5.12.0080, e que a
+audiência em questão ocorreu há uma semana.
+Você, como advogado(a) da sociedade empresária, de acordo com o
+entendimento consolidado do TST, elabore a medida judicial adequada para
+tentar reverter a decisão. (Valor: 5,00)
+Obs.: a peça deve abranger todos os fundamentos de Direito que possam ser
+utilizados para dar respaldo à pretensão. A simples menção ou transcrição do
+dispositivo legal não confere pontuação.
+Nos casos em que a lei exigir liquidação de valores, o examinando deverá
+representá-los somente pela expressão “R$”, admitindo-se que o escritório
+possui setor próprio ou contratado especificamente para tal fim.
+        
+RESOLUÇÃO
+
+EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA 12ª REGIÃO
+PIZZARIA CHAPA QUENTE LTDA., qualificação e endereço completos,
+vem, respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com fulcro nos arts. 5º,
+LXIX, e 114, IV, da CF e Lei nº 12.016/2009, IMPETRAR:
+MANDADO DE SEGURANÇA, com pedido liminar
+contra o ato do Juiz 80ª Vara do Trabalho de Criciúma/SC, proferido nos
+autos da RT n° 0000728-84.2022.5.12.0080, em que figura no polo ativo
+Evelyn Calabresa, qualificação e endereço completos, pelas razões de fato
+e de direito a seguir expostas.
+I – DOS FATOS
+Evelyn Calabresa ajuizou reclamação trabalhista em face da impetrante,
+postulando adicional de insalubridade. O juiz determinou a produção da
+prova pericial, entretanto proibiu a reclamada de apresentar quesitos e de
+indicar assistente técnico. Além disso, condicionou a produção da prova
+pericial ao depósito prévio de R$ 4.0000,00 de honorários periciais, que
+deveriam ser antecipados em 10 dias, sob pena de execução forçada.
+Apesar dos protestos da reclamada e mesmo depois desta explicar que o
+seu negócio ainda sofria o efeito da pandemia, e que se precisasse dispor
+dos R$ 4.000,00 determinados pelo juiz, não teria como fechar a folha de
+pagamento dos funcionários naquele mês, o juiz manteve a decisão intacta,
+ferindo direito líquido e certo da impetrante.
+II – REQUISITOS ESPECÍFICOS
+A presente ação foi proposta com observância dos seguintes requisitos:
+1. Do cabimento
+        
+A decisão judicial proferida pela autoridade coatora que proíbe a
+apresentação de quesitos, veda a indicação de assistente técnico e
+determina que a sociedade empresária antecipe os honorários periciais tem
+natureza interlocutória, não sendo passível de recurso imediato. E além
+disso, viola direitos líquidos e certos da impetrante, sendo, portanto, passível
+de impugnação por mandado de segurança.
+Ressalte-se que o TST, em sua OJ 98, SDI-2, confirma expressamente o
+cabimento do mandado de segurança contra o ato juiz que exige a
+antecipação de honorários periciais.
+2. Da tempestividade
+À luz do art. 23 da Lei nº 12.016/2009, o direito de impetrar mandado de
+segurança extinguir-se-á decorridos 120 dias, contados da ciência, pelo
+interessado, do ato impugnado. Como tal prazo ainda não decorreu, uma vez
+que a decisão interlocutória foi proferida pela autoridade coatora em
+audiência realizada há apenas uma semana, o presente mandado de
+segurança é tempestivo.
+III – MÉRITO
+1. Depósito prévio dos honorários periciais
+Conforme referido, apesar do inconformismo da sociedade empresária, o juiz
+condicionou a produção da prova pericial ao depósito prévio dos honorários
+do perito no valor de R$ 4.000,00, a ser realizado no prazo de 10 dias, sob
+pena de execução forçada.
+Nos termos do art. 790-B, § 3º, da CLT, “o juízo não poderá exigir
+adiantamento de valores para realização de perícias”.
+É, portanto, ilegal a exigência de depósito prévio de honorários periciais,
+sendo cabível o mandado de segurança contra o ato do juiz. Nesse sentido,
+temos o entendimento do TST, consubstanciado na OJ 98 da SDI-2 do TST.
+        Diante do exposto, requer a concessão da ordem para suspender o ato do
+juiz que determinou o depósito prévio dos honorários periciais e condicionou
+a produção da prova pericial a sua realização.
+2. Quesitos e assistente técnico
+Como mencionado, o juiz determinou a produção da prova pericial em razão
+do pedido de adicional de insalubridade formulado pela ex-trabalhadora,
+apresentando um único quesito e proibindo a reclamada de indicar outros e
+de nomear assistente técnico.
+Nos termos do art. 465, § 1º, II e III, do CPC, aplicáveis ao Processo do
+Trabalho (art. 769 da CLT), é direito das partes a apresentação de quesitos
+e a indicação de assistentes técnicos.
+Diante do exposto, requer a concessão da ordem para suspender o ato do
+juiz que os proíbe.
+IV – LIMINAR
+Encontram-se presentes os requisitos do art. 7°, III, da Lei nº 12.016/2009,
+autorizadores da concessão de segurança em caráter liminar, quais sejam:
+relevante fundamento da demanda (“fumus boni iuris”) e do ato impugnado
+puder resultar a ineficácia da medida (“periculum in mora”). Verifique:
+O relevante fundamento da demanda (“fumus boni iuris”) verifica-se pela
+violação ao art. 790-B, § 3º, da CLT e OJ 98-SDI-2, do TST, que, consoante
+já referido, determinam ser ilegal a exigência de adiantamento do depósito
+recursal, sob pena de execução forçada e, como condição para a produção
+da prova pericial.
+A possibilidade de a medida se tornar ineficaz (“periculum in mora”) verifica-
+se porque, a manutenção da ordem judicial de 1º grau pode acarretar sério
+prejuízo para a sociedade empresária porque não poderá arcar com a folha
+de pagamento.
+Diante do exposto, requer, em caráter liminar, a concessão da ordem para a
+imediata suspensão do ato que determinou o depósito prévio dos honorários
+periciais.
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a concessão da ordem, em caráter liminar, de acordo com o previsto no
+art. 7º, III, da Lei nº 12.016/2009, sem a oitiva da outra parte, para que se
+suspenda de imediato o ato do juiz que condicionou a prova pericial ao
+depósito prévio dos honorários periciais;
+b) a notificação da autoridade coatora, para que preste informações no prazo
+de 10 dias úteis, à luz do art. 7º, I, da Lei nº 12.016/2009;
+c) a intimação da Evelyn Calabresa, para integrar a lide como litisconsorte
+passivo, por ser terceira interessada;
+d) a abertura de vista ao Ministério Público do Trabalho para que se
+manifeste sobre o feito, no prazo de 10 dias úteis, conforme o art. 12 da Lei
+nº 12.016/2009;
+e) a intimação do Advogado-Geral da União, cientificando-o da impetração
+do presente mandado de segurança, nos exatos termos dos arts. 6º e 7º, II,
+da Lei nº 12.016/2009;
+f) a concessão da segurança em caráter definitivo, confirmando-se os termos
+da liminar anteriormente referida.
+Oportuno ainda salientar que as provas pré-constituídas dos fatos alegados
+que asseguram o direito líquido e certo se encontram anexas, quais sejam:
+(se a proposta fizer referência a algum tipo de prova é aconselhável
+mencioná-las nesse momento);
+Atribui-se à causa o valor de R$ 4.000,00.
+Nestes termos,
+pede deferimento.
+Local e data.
+        
 
 
 
