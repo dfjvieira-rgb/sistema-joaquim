@@ -3830,6 +3830,1159 @@ Local, data.
 Advogado
 OAB nº
 
+//32.2. Estrutura e exercício de ação de execução de título executivo
+extrajudicial
+Para a análise da estrutura da ação de execução de título executivo
+extrajudicial, segue abaixo um exemplo prático:
+Marli laborou durante 4 anos para a empresa ABC Ltda., contudo, quando
+foi despedida sem justa causa, não recebeu valor algum a título de verbas
+rescisórias, salvo o saldo de salário. Diante dessa situação, Marli resolveu propor
+uma reclamação trabalhista, a qual foi submetida à Comissão de Conciliação
+Prévia do Sindicato, onde as partes celebraram acordo no valor de R$ 5.000,00
+(cinco mil reais), que seriam pagos em cinco parcelas todo o dia 03 dos meses
+seguintes. Ocorre que a empresa jamais depositou qualquer valor à reclamante.
+Na qualidade de advogado(a) da empregada, proponha a medida judicial cabível.
+P á g i n a 427 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+MARLI, qualificação e endereço completos, vem, respeitosamente, perante
+Vossa Excelência, por intermédio de seu advogado adiante assinado
+(procuração anexa), com escritório profissional no endereço completo,
+onde recebe intimações e notificações, com fulcro nos arts. 625-E,
+parágrafo único, e 876, caput, ambos da CLT, PROPOR:
+AÇÃO DE EXECUÇÃO DE TÍTULO EXTRAJUDICIAL
+em face de ABC Ltda., qualificação e endereço completos, pelas razões de
+fato e de direito a seguir expostas.
+I – FATOS
+A autora celebrou um acordo trabalhista com a empresa ré perante a
+Comissão de Conciliação Prévia. No termo de conciliação, ficou acordado
+que seria pago à demandante o valor total de R$ 5.000,00, em cinco
+parcelas, de acordo com documento anexo. Ocorre que a empresa ré não
+cumpriu com suas obrigações, tendo em vista que jamais depositou
+qualquer valor para a autora.
+II – MÉRITO
+O art. 625-E, parágrafo único, da CLT, sustenta que o termo de conciliação
+é um título executivo extrajudicial e terá eficácia liberatória geral, exceto
+quanto às parcelas expressamente ressalvadas. Ademais, o art. 876, caput,
+da CLT afirma que a Justiça do Trabalho executará os termos de
+conciliação firmados perante a Comissão de Conciliação Prévia.
+Diante do exposto, requer, com fundamento no art. 880 da CLT, a citação
+da executada para que, no prazo de 48 horas, efetue o pagamento do valor
+de R$ 5.000,00, acrescido de juros e correção monetária. Caso não ocorra
+o pagamento, requer a penhora de bens suficientes à satisfação do crédito,
+com posterior avaliação e expropriação, se necessário.
+P á g i n a 428 | 551
+@aryannalinhares @professoraaryannalinhares
+III – REQUERIMENTOS FINAIS
+A exequente requer que seja expedido o mandado de citação, com cópia
+do termo do acordo não cumprido, ordenando o pagamento no prazo de 48
+horas, sob pena da penhora de bens, nos moldes do art. 880, caput e § 1º,
+da CLT, e seja condenada a executada ao pagamento de custas e
+honorários advocatícios de 15%, com fundamento no art. 791-A da CLT.
+Protesta pela produção de todos os meios de prova em direito admitidos,
+em especial documental e testemunhal.
+Atribui-se à causa o valor de R$ 5.000,00.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB no
+
+//33.5 Exercício de ação monitória
+P á g i n a 444 | 551
+@aryannalinhares @professoraaryannalinhares
+Petrônio trabalhou como vendedor externo na empresa Come Come
+Lanches Ltda. por dois anos. No momento da rescisão contratual, a empresa
+firmou um termo de confissão de dívida, assinado pelo sócio-administrador,
+reconhecendo que deveria pagar a Petrônio R$ 8.500,00 a título de verbas
+rescisórias e multa por atraso no pagamento (art. 477, § 8º, CLT). O documento
+estabelecia que o pagamento seria feito em uma única parcela no prazo de 30
+dias.
+Passados três meses, a empresa não efetuou o pagamento. Petrônio tentou
+contato, mas não obteve resposta. Ele pretende ingressar na Justiça do Trabalho
+para cobrar a dívida da forma mais célere possível. Diante dessa narrativa,
+apresente a peça pertinente na melhor defesa dos interesses de Petrônio.
+P á g i n a 445 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+PETRÔNIO, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório profissional
+no endereço completo, onde recebe intimações e notificações, com fulcro
+no art. 700 do CPC e no art. 769 da CLT, PROPOR:
+AÇÃO MONITÓRIA
+em face de COME COME LANCHES LTDA., qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I - DOS FATOS
+O Reclamante trabalhou para a reclamada na função de vendedor
+externo, no período de //__ a //__, quando foi dispensado sem justa causa.
+No momento da rescisão contratual, a reclamada firmou um termo de
+confissão de dívida, devidamente assinado pelo sócio-administrador (doc.
+anexo), reconhecendo que deveria pagar ao reclamante a quantia de
+R$ 8.500,00, a título de verbas rescisórias e multa por atraso no
+pagamento, conforme detalhado no documento.
+O pagamento foi prometido para o prazo de 30 dias, mas, até a
+presente data, não foi realizado qualquer depósito. O reclamante tentou
+contato por diversos meios, porém, sem êxito.
+Dessa forma, resta ao reclamante buscar a tutela jurisdicional para
+garantir o recebimento do valor confessadamente devido.
+II - DOS REQUISITOS ESPECÍFICOS
+O art. 700 do CPC prevê a possibilidade de ação monitória para a
+cobrança de dívidas fundadas em prova escrita sem eficácia de título
+P á g i n a 446 | 551
+@aryannalinhares @professoraaryannalinhares
+executivo, desde que preenchidos os seguintes requisitos:
+a) Prova escrita da dívida: o termo de confissão de dívida firmado pela
+reclamada comprova inequivocamente o crédito do reclamante.
+b) Natureza não executiva do documento: o termo não possui força
+executiva própria, exigindo a via monitória para sua conversão em título
+executivo judicial.
+c) Inadimplência do devedor: a empresa não realizou o pagamento no
+prazo acordado.
+Assim, presentes os requisitos legais, é plenamente cabível o manejo
+da presente ação monitória.
+III - MÉRITO
+O direito ao recebimento das verbas rescisórias decorre do próprio
+reconhecimento da dívida por parte da reclamada. A confissão expressa do
+débito impede qualquer alegação posterior de inexistência da obrigação.
+Dessa forma, deve ser determinada a expedição do mandado
+monitório, a fim de que a reclamada efetue o pagamento devido no prazo
+legal.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer-se:
+a) A expedição de mandado monitório, determinando que a reclamada
+efetue o pagamento do valor de R$ 8.500,00, acrescido de juros, correção
+monetária e honorários advocatícios de 5%, no prazo de 15 dias úteis, nos
+termos do art. 701 do CPC.
+b) Caso a reclamada não efetue o pagamento e não apresente
+embargos, que seja declarada a conversão do mandado monitório em título
+executivo judicial, autorizando-se o início imediato da execução e
+P á g i n a 447 | 551
+@aryannalinhares @professoraaryannalinhares
+condenando a reclamada ao pagamento de 15% de honorários
+advocatícios sucumbenciais, nos termos do art. 791-A da CLT, além das
+custas processuais.
+c) A produção de todas as provas admitidas em direito, especialmente
+documentais e testemunhais.
+Atribui-se à causa o valor de R$ 8.500,00.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado OAB nº
+
+//33.6 Exercício de embargos à ação monitória
+A empresa Come Come Lanches Ltda., atuante no ramo alimentício, firmou
+contrato de trabalho com Petrônio, que exerceu a função de vendedor externo
+entre 15/01/2020 e 30/06/2022.
+No momento da rescisão, foi assinado pelo estagiário da empresa termo de
+confissão de dívida, reconhecendo que a ex-empregadora ainda devia
+R$ 8.500,00 ao ex-empregado, referente a valores rescisórios. O termo
+estabelecia que o pagamento seria efetuado em 30 dias.
+Entretanto, a empresa alega que o valor foi integralmente quitado em duas
+parcelas, nos dias 15/07/2022 e 30/07/2022, conforme comprovantes anexados.
+Passados alguns meses dos anos de 2025, Petrônio ingressou com uma
+ação monitória, alegando não ter recebido os valores acordados. O juiz deferiu o
+mandado monitório, concedendo 15 dias para pagamento.
+A empresa discorda da cobrança, pois já quitou a dívida e o (a) procura como
+advogado (a) para que adote a medida cabível.
+P á g i n a 449 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+NOME DO EMBARGANTE, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório profissional
+no endereço completo, onde recebe intimações e notificações, com fulcro
+no art. 702 do CPC e no art. 769 da CLT, APRESENTAR:
+EMBARGOS À AÇÃO MONITÓRIA
+em face de NOME DO EMBARGADO, qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+O embargado trabalhou para a embargante no período de 15/01/2020
+a 30/06/2022, exercendo a função de vendedor externo.
+No momento da rescisão contratual, a embargante assinou um termo
+de confissão de dívida, reconhecendo a obrigação de pagar R$ 8.500,00
+referentes a verbas rescisórias, com vencimento em 30 dias.
+No entanto, a referida quantia foi integralmente quitada em duas
+parcelas, realizadas nos dias 15/07/2022 e 30/07/2022, conforme
+comprovantes bancários anexados.
+Apesar do cumprimento integral da obrigação, o embargado ajuizou
+ação monitória alegando que não recebeu os valores devidos. O Juízo
+expediu mandado monitório, determinando o pagamento no prazo de 15
+dias.
+Como a dívida não mais existe, a embargante apresenta os presentes
+embargos monitórios, impugnando a cobrança indevida.
+P á g i n a 450 | 551
+@aryannalinhares @professoraaryannalinhares
+II - DOS REQUISITOS ESPECÍFICOS DOS EMBARGOS
+MONITÓRIOS
+O art. 702 do CPC prevê que os embargos monitórios são o meio
+adequado para contestar a cobrança indevida em ação monitória.
+A oposição de embargos pode ser feita sem necessidade de garantia
+do juízo, suspendendo a exigibilidade da dívida até o julgamento do mérito.
+Com a apresentação dos embargos, o processo deixa de seguir o rito
+monitório e passa a tramitar pelo procedimento comum, permitindo a
+produção de provas para demonstrar a quitação integral da obrigação.
+Assim, preenchidos todos os requisitos legais, requer-se a análise do
+mérito da presente contestação da cobrança.
+III – PREJUDICIAL
+a) Prescrição
+Passaram-se mais de dois anos do término do contrato de trabalho e
+do vencimento da última parcela antes do ajuizamento da ação monitória.
+Nos termos dos art. 7º, XXIX, da CF e 11 da CLT e da súmula 308 do
+TST, o prazo da prescrição bienal é de dois anos.
+Diante do exposto, requer a extinção do processo com resolução do
+mérito, nos termos do art. 487, II, do CPC.
+IV – MÉRITO
+a) Inexistência da Dívida
+O valor exigido pelo embargado já foi integralmente quitado por meio
+de duas transferências bancárias, efetuadas nos dias 15/07/2022 e
+30/07/2022.
+Os comprovantes de pagamento anexados demonstram que não há
+P á g i n a 451 | 551
+@aryannalinhares @professoraaryannalinhares
+qualquer saldo pendente.
+Dessa forma, o pedido monitório deve ser julgado improcedente, pois a
+cobrança é indevida.
+b) Nulidade do Termo de Confissão de Dívida
+Além de a dívida já ter sido paga, o termo de confissão de dívida
+assinado contém vício de representação, pois foi firmado por um estagiário,
+sem poderes expressos para assumir obrigações financeiras em nome da
+empresa.
+O negócio jurídico deve ser realizado por quem tenha capacidade e
+poderes para agir, sob pena de nulidade.
+Assim, caso não seja reconhecida a quitação, requer-se a declaração
+de nulidade do termo de confissão de dívida, impossibilitando sua utilização
+para embasar a cobrança.
+V - DA LIMINAR
+O art. 702, § 4º, do CPC prevê que os embargos monitórios suspendem
+a exigibilidade da dívida até decisão final, desde que haja fundamentos
+plausíveis para contestação da cobrança.
+Como há prova documental suficiente da quitação integral da
+obrigação, requer-se a concessão de efeito suspensivo imediato,
+impedindo qualquer tentativa de execução até o julgamento definitivo do
+mérito.
+VI - DOS REQUERIMENTOS FINAIS
+Diante do exposto, requer-se:
+a) O acolhimento dos embargos monitórios, com a consequente
+improcedência da ação monitória e extinção do mandado monitório.
+b) A concessão de efeito suspensivo, suspendendo imediatamente a
+P á g i n a 452 | 551
+@aryannalinhares @professoraaryannalinhares
+exigibilidade da dívida até o julgamento final.
+c) A produção de todas as provas admitidas em direito, incluindo prova
+documental, testemunhal e pericial, caso necessário.
+d) A condenação do embargado ao pagamento de honorários
+advocatícios sucumbenciais, nos termos do art. 791-A da CLT.
+e) A condenação do embargado por litigância de má-fé, nos termos do
+art. 702, § 10º, do CPC, uma vez que está demonstrada sua intenção de
+obter vantagem indevida.
+Atribui-se à causa o valor de R$ 8.500,00.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado OAB nº
+
+//EXERCÍCIO DE HABEAS CORPUS
+No curso de execução de sentença trabalhista movida por ex-empregado da
+empresa Ewerson & Nina Tech Ltda., o juízo da ___ Vara do Trabalho de ___ determinou
+a penhora de um veículo pertencente à empresa, diligência que foi cumprida por oficial de
+justiça.
+No ato da penhora, o paciente Carlos Henrique, gerente da empresa, foi nomeado
+como fiel depositário do bem, mas expressamente recusou o encargo, o que foi
+devidamente registrado pelo oficial de justiça. Em razão disso, o magistrado dispensou
+Carlos da obrigação, não havendo posterior intimação ou ciência de qualquer ato
+processual envolvendo a guarda do veículo.
+Meses depois, ao dar prosseguimento à execução e determinar o leilão do veículo
+penhorado, a Justiça do Trabalho expediu novo mandado, objetivando a avaliação do bem
+e sua inclusão em hasta pública. Foi nesse momento que o oficial de justiça retornou à
+empresa e constatou que o bem já não se encontrava mais no local informado no auto de
+P á g i n a 462 | 551
+@aryannalinhares @professoraaryannalinhares
+penhora. Diante disso, o magistrado, presumindo que Carlos havia descumprido o dever
+de guarda, determinou sua prisão, que acabou sendo efetivada.
+Como advogado de Carlos Henrique, elabore a medida processual para assegurar
+o seu direito de ir e vir.
+P á g i n a 463 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR
+PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO
+DA ... REGIÃO.
+CARLOS HENRIQUE, qualificação e endereço completos, vem
+respeitosamente perante Vossa Excelência por intermédio do seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe intimações e
+notificações, com fulcro nos artigos 5º, LXVIII, e 114, IV, da CF, c/c
+artigo 647 do CPP e artigo 769 da CLT, impetrar:
+HABEAS CORPUS
+Contra o ato do Juiz da ... Vara do Trabalho de ..., pelas razões de
+fato e de direito a seguir expostas:
+I – FATOS
+Carlos Henrique, gerente da empresa Ewerson & Nina Tech Ltda., foi
+nomeado depositário judicial de um veículo penhorado no âmbito de uma
+execução trabalhista movida por ex-empregado da empresa. Contudo,
+no ato da penhora, recusou expressamente o encargo, o que foi
+registrado pelo oficial de justiça nos autos. Em razão disso, o magistrado
+dispensou o paciente da obrigação e não houve qualquer intimação
+posterior para o exercício da guarda do bem.
+Meses depois, ao dar prosseguimento à execução e determinar o leilão
+do veículo penhorado, o juízo expediu novo mandado, objetivando a
+avaliação do bem e sua inclusão em hasta pública. Foi nesse momento
+que o oficial de justiça retornou à empresa e constatou que o bem já não
+se encontrava mais no local indicado. Diante disso, o magistrado,
+presumindo descumprimento do encargo de fiel depositário, determinou
+a prisão do paciente, a qual foi realizada.
+P á g i n a 464 | 551
+@aryannalinhares @professoraaryannalinhares
+II – REQUISITOS ESPECÍFICOS
+1. Da competência da Justiça do Trabalho
+Oportuno destacar a competência da Justiça do Trabalho para processar
+e julgar “habeas corpus” impetrado em face de ato que envolva matéria
+trabalhista, tendo em vista que o artigo 114, IV, da CF reconhece tal
+atribuição quando o constrangimento ilegal decorre de decisão oriunda
+de juízo trabalhista.
+III – MÉRITO
+01. Prisão do depositário infiel
+O paciente foi nomeado fiel depositário no curso de execução trabalhista,
+mas recusou expressamente o encargo, sendo dispensado pelo próprio
+magistrado. Ainda assim, posteriormente, foi surpreendido com a
+decretação de sua prisão, sob o argumento de que não teria apresentado
+o bem para leilão.
+A referida decisão é manifestamente ilegal, pois viola entendimento
+consolidado dos Tribunais Superiores, especialmente a Súmula
+Vinculante 25 do STF, segundo a qual:
+“É ilícita a prisão civil de depositário infiel, qualquer que seja a
+modalidade do depósito.”
+Ainda que, em tese, fosse possível admitir a prisão do depositário infiel,
+o decreto prisional do impetrante também contraria a Súmula 304 do STJ
+e a OJ 89 da SDI-2 do TST, que exigem, para a validade da investidura
+no encargo, a aceitação expressa do nomeado, com a assinatura do
+termo de compromisso no auto de penhora – condição sem a qual é
+inadmissível qualquer restrição à sua liberdade. No presente caso, o
+paciente recusou formalmente o encargo, sendo expressamente
+dispensado pelo juiz.
+Diante disso, requer-se o reconhecimento da flagrante ilegalidade da
+P á g i n a 465 | 551
+@aryannalinhares @professoraaryannalinhares
+decisão que decretou a prisão do paciente, com a consequente
+concessão definitiva da ordem de “habeas corpus”, para assegurar seu
+direito de locomoção.
+IV – LIMINAR
+Requer-se a concessão de medida liminar urgente, para suspender
+imediatamente os efeitos do ato coator, garantindo ao paciente o pleno
+exercício do direito de locomoção até o julgamento definitivo do presente
+“habeas corpus”.
+Estão presentes o “fumus boni iuris”, diante da manifesta ilegalidade da
+ordem judicial que determinou a prisão do paciente, equivocadamente
+considerado depositário infiel, em afronta à Súmula Vinculante 25 do
+STF, à Súmula 304 do STJ e à OJ 89 da SDI-2 do TST; bem como o
+“periculum in mora”, ante o risco concreto de privação da sua liberdade,
+nos termos do art. 660, § 2º, do CPP.
+Diante do exposto, requer-se a concessão de medida liminar para
+suspender imediatamente os efeitos da ordem de prisão expedida contra
+o paciente, com a consequente expedição de alvará de soltura, caso já
+tenha sido efetivada.
+V – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) A imediata suspensão dos efeitos do ato coator, garantindo ao
+paciente o pleno exercício do direito de locomoção até o julgamento
+definitivo;
+b) A notificação da autoridade coatora para prestar informações no prazo
+legal, na forma do art. 662 do CPP;
+c) O reconhecimento de que as provas estão pré-constituídas nos autos;
+d) Ao final, a concessão da ordem de “habeas corpus”, anulando o ato
+coator, colocando o impetrante imediatamente em liberdade e
+P á g i n a 466 | 551
+@aryannalinhares @professoraaryannalinhares
+assegurando de forma definitiva o direito de locomoção do paciente, nos
+termos do art. 660, § 1º, do CPP.
+Atribui-se a causa o valor R$ ...
+Termos em que,
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//EXERCÍCIO DE HABEAS DATA
+Eduardo Menezes, brasileiro, solteiro, operador de empilhadeira, portador do
+CPF nº 123.456.789-00 e do RG nº 2.345.678-9, residente à Rua das Acácias, nº
+123, Bairro Jardim Primavera, São Paulo/SP, foi dispensado sem justa causa pela
+empresa Ponto Forte Logística Ltda. em 2 de abril de 2024, após quatro anos de
+vínculo empregatício em sua sede em São Paulo/SP.
+Ao comparecer à Caixa Econômica Federal para sacar o FGTS e requerer o
+seguro-desemprego, Eduardo foi informado de que seu contrato de trabalho ainda
+constava como ativo no sistema e-Social, o que impedia o acesso aos benefícios.
+A empresa confirmou ter enviado a comunicação de desligamento e apresentou
+cópia do envio eletrônico. Eduardo então protocolou requerimentos
+administrativos junto à Receita Federal do Brasil e ao Ministério do Trabalho e
+Emprego em 10 de abril de 2024, solicitando a correção dos dados.
+Passados mais de trinta dias, não obteve qualquer resposta das autoridades
+responsáveis. Sem alternativa, procurou você, seu advogado, para adotar a
+medida judicial cabível.
+Na qualidade de advogado de Eduardo, elabore o remédio constitucional
+adequado para garantir a correção dos dados no sistema e-Social, sabendo que
+ele não prefere fazê-lo por meio sigiloso.
+P á g i n a 477 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE SÃO PAULO/SP
+EDUARDO MENEZES, brasileiro, solteiro, operador de empilhadeira,
+portador do CPF nº 123.456.789-00 e do RG nº 2.345.678-9, residente e
+domiciliado na Rua das Acácias, nº 123, Bairro Jardim Primavera, São
+Paulo/SP, CEP 04000-000, vem respeitosamente perante Vossa
+Excelência, por intermédio de seu advogado adiante assinado
+(PROCURAÇÃO ANEXA), com fulcro nos artigos 5º, LXXII, “b” e 114,
+IV, CF e artigo 7º, II, da Lei 9.507/97, IMPETRAR:
+HABEAS DATA
+em face do ato das seguintes autoridades coatoras RECEITA FEDERAL
+DO BRASIL, qualificação e endereço completos, e MINISTÉRIO DO
+TRABALHO E EMPREGO, qualificação e endereço completo, pelas
+razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+O Impetrante trabalhou na empresa Ponto Forte Logística Ltda., no
+período de março de 2020 até 2 de abril de 2024, quando foi dispensado
+sem justa causa.
+Ao comparecer à Caixa Econômica Federal para realizar o saque do
+FGTS e requerer o seguro-desemprego, recebeu a informação de que
+seu vínculo empregatício ainda consta como ativo no sistema e-Social,
+impossibilitando o acesso aos benefícios.
+A empresa confirmou que enviou corretamente a comunicação de
+desligamento, inclusive apresentando cópia do comprovante de envio.
+O Impetrante, então, procurou a Receita Federal do Brasil e o Ministério
+P á g i n a 478 | 551
+@aryannalinhares @professoraaryannalinhares
+do Trabalho e Emprego, apresentando requerimentos administrativos em
+10 de abril de 2024, em que solicitou a retificação das informações.
+Passados mais de 30 dias, não houve qualquer resposta.
+Diante da omissão das autoridades públicas responsáveis pela gestão
+do sistema e-Social, que impede o acesso do Impetrante aos seus
+direitos trabalhistas, não restou alternativa senão recorrer ao Poder
+Judiciário para obter a correção dos dados.
+II – REQUISITOS ESPECÍFICOS
+1.Comprovação da recusa administrativa (art. 8º, parágrafo único, II,
+Lei 9.507/97)
+Nos termos do art. 8º, parágrafo único, II, da CLT, a petição inicial de
+“habeas data” deve ser instruída com prova do decurso de mais de 15
+dias sem decisão sobre o pedido de retificação dos dados. O Impetrante
+anexa os requerimentos formais realizados perante as autoridades
+coatoras, que demonstram que não obteve resposta há mais de 15 dias
+2.Caráter público do banco de dados (art. 1º, parágrafo único, Lei
+9.507/97)
+O e-Social é um sistema de gestão pública digital de dados trabalhistas,
+gerenciado por entes federais e obrigatório para empregadores, sendo,
+portanto, de caráter público, nos termos do art. 1º, parágrafo único, da
+Lei 9.507/97, o que é requisito para o cabimento do “habeas data”.
+3. Direito à retificação das informações (art. 7º, II, Lei 9.507/97)
+O Impetrante pretende retificar erro objetivo em seu vínculo empregatício
+no e-Social, que lhe causa prejuízos financeiros diretos, por meio do
+“habeas data”, como autoriza o art. 7º, II, da Lei 9.507/97
+III – MÉRITO
+01. Retificação de dados pessoais do banco de dados do e-Social
+Como referido, o Impetrante laborou por quatro anos na empresa Ponto
+P á g i n a 479 | 551
+@aryannalinhares @professoraaryannalinhares
+Forte Logística Ltda., tendo sido dispensado sem justa causa em 2 de
+abril de 2024. Após a rescisão, tentou acessar seus direitos trabalhistas
+– FGTS e seguro-desemprego –, mas foi surpreendido com a informação
+de que seu vínculo empregatício ainda constava como ativo no sistema
+e-Social. Procurou a ex-empregadora, que confirmou ter comunicado
+corretamente o desligamento. Em seguida, dirigiu-se à Receita Federal
+do Brasil e ao Ministério do Trabalho e Emprego, apresentando
+requerimentos administrativos para a correção dos dados. Entretanto,
+passados mais de quinze dias, não obteve qualquer resposta.
+Nos termos do art. 5º, inciso LXXII, “b”, da CF, art. 7º, II e art. 8º, da Lei
+9.505/97 o “habeas data” é a medida processual cabível para assegurar
+a retificação de dados incorretos em registros de caráter público, desde
+que haja recusa ou omissão administrativa por mais de quinze dias. O
+banco de dados do e-Social é público, nos termos do art. 1º, parágrafo
+único, da referida lei, e a omissão das autoridades responsáveis
+configura ilegalidade passível de correção judicial.
+Diante do exposto, o Impetrante requer a concessão da ordem para que
+seja determinada a imediata retificação do vínculo empregatício no
+sistema e-Social, com a alteração do status para demissão sem justa
+causa, garantindo-se, assim, o posterior saque do FGTS e o recebimento
+do seguro-desemprego, com a urgência que a situação requer.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) A intimação das autoridades coatoras (Receita Federal do Brasil e
+Ministério do Trabalho e Emprego) para prestar informações no prazo de
+10 dias úteis, nos termos do art. 9º da Lei 9.507/97;
+b) A intimação do Ministério Público do Trabalho para se manifestar no
+prazo de 5 dias úteis, nos termos do art. 12 da Lei 9.507/97;
+P á g i n a 480 | 551
+@aryannalinhares @professoraaryannalinhares
+c) O reconhecimento das provas pré-constituídas da tentativa
+administrativa frustrada, nos termos do art. 8º, parágrafo único, II, da Lei
+9.507/97;
+d) A procedência do pedido, com a determinação da retificação imediata
+do vínculo empregatício no sistema e-Social para viabilizar,
+posteriormente, o saque do FGTS e a habilitação ao seguro-desemprego,
+nos termos do art. 13, da Lei 9.507/97;
+e) Que a decisão judicial seja proferida no prazo máximo de 5 dias úteis,
+conforme determina o art. 12 da Lei 9.507/97;
+f) A isenção de custas, nos termos do art. 21 da Lei 9.507/97 e do art. 5º
+da Lei 9.289/96.
+Atribui-se à causa o valor de R$ ...
+Nesses termos,
+Pede deferimento.
+Advogado
+OAB nº
+
+
+//EXERCÍCIO
+Júlio César trabalhava como operador de máquinas na empresa Império do
+Ferro Siderurgia Ltda., localizada em São Paulo/SP. No exercício de suas
+funções, sofreu um grave acidente típico do trabalho, tendo fraturado o fêmur e o
+punho ao cair de uma plataforma sem proteção.
+Desde então, encontra-se afastado recebendo benefício por incapacidade
+temporária acidentário (antigo auxílio-doença acidentário) em valor inferior a 40%
+do teto dos benefícios do Regime Geral da Previdência Social e, após a alta
+previdenciária, pretende retornar à empresa e permanecer no emprego até o fim
+do período de estabilidade acidentário, nos termos do art. 118 da Lei nº 8.213/91
+e da Súmula 378 do TST.
+Durante o afastamento, foi informado por colegas de que o setor de corte
+térmico, onde exercia suas atividades e que apresentava elevado nível de ruído,
+calor e agentes químicos, será definitivamente desativado nos próximos 30 dias,
+em razão de reestruturação da empresa. Foi ainda informado de que, quando
+retornar ao trabalho, será alocado em outro setor compatível com o cargo para o
+qual foi contratado.
+Temendo não conseguir comprovar a insalubridade do ambiente em que
+trabalhou por três anos sem receber adicional de insalubridade, em reclamação
+trabalhista que pretende ajuizar após o término de seu contrato, Júlio procura seu
+P á g i n a 488 | 551
+@aryannalinhares @professoraaryannalinhares
+advogado para ajuizar a medida processual cabível, entregando cópia dos seus
+contracheques que demonstram que jamais recebeu adicional de insalubridade.
+P á g i n a 489 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SÃO
+PAULO/SP
+Requerente: JÚLIO CÉSAR
+Requerido: IMPÉRIO DO FERRO SIDERURGIA LTDA.,
+JÚLIO CÉSAR, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com fulcro no art. 381,
+I, CPC e art. 769 da CLT, PROPOR:
+AÇÃO DE PRODUÇÃO ANTECIPADA DE PROVA, com pedido de
+tutela provisória de urgência antecipada
+em face de IMPÉRIO DO FERRO SIDERURGIA LTDA., qualificação
+e endereço completos, pelas razões de fato e de direito a seguir
+expostas.
+I – FATOS
+Júlio César trabalhava como operador de máquinas na empresa
+Império do Ferro Siderurgia Ltda., localizada em São Paulo/SP. No
+exercício de suas funções, sofreu um grave acidente típico do trabalho,
+tendo fraturado o fêmur e o punho ao cair de uma plataforma sem
+proteção.
+Desde então, encontra-se afastado recebendo benefício por
+incapacidade temporária acidentária (antigo auxílio-doença acidentário)
+em valor inferior a 40% do teto dos benefícios do Regime Geral da
+Previdência Social e, após a alta previdenciária, pretende retornar à
+empresa e permanecer no emprego até o fim do período de estabilidade
+acidentária, nos termos do art. 118 da Lei nº 8.213/91 e da Súmula 378
+do TST.
+Durante o afastamento, foi informado por colegas de que o setor de
+P á g i n a 490 | 551
+@aryannalinhares @professoraaryannalinhares
+corte térmico, onde exercia suas atividades e que apresentava elevado
+nível de ruído, calor e agentes químicos, será definitivamente desativado
+nos próximos 30 dias, em razão de reestruturação da empresa. Foi ainda
+informado de que, quando retornar ao trabalho, será alocado em outro
+setor compatível com o cargo para o qual foi contratado.
+Temendo não conseguir comprovar a insalubridade do ambiente em
+que trabalhou por três anos sem receber adicional de insalubridade,
+ajuíza a presente ação visando a produção antecipada da prova pericial.
+II – PRELIMINAR
+01. Justiça Gratuita
+O requerente encontra-se afastado recebendo benefício por
+incapacidade temporária acidentária (antigo auxílio-doença acidentário)
+em valor inferior a 40% do teto dos benefícios do Regime Geral da
+Previdência Social de modo que, nos termos do art. 790, § 3º, da CLT,
+faz jus aos benefícios da gratuidade da justiça.
+III – MÉRITO
+01. Produção Antecipada da Prova Pericial
+Como mencionado, o requerente laborou no setor de corte térmico
+por três anos, estando exposto de forma contínua a condições
+potencialmente insalubres. Com o anunciado fechamento do setor,
+haverá impossibilidade futura de realização de perícia técnica no local
+exato da prestação dos serviços, comprometendo a procedência de
+futuro pedido de adicional de insalubridade.
+Nos termos do art. 381, I, do CPC, é cabível a produção antecipada
+da prova quando houver fundado receio de que venha a tornar-se
+impossível ou muito difícil a verificação de certos fatos. Com o
+fechamento do setor em que o requerente trabalhava, será irrealizável a
+produção da prova pericial no futuro, tornando impossível ou muito difícil
+P á g i n a 491 | 551
+@aryannalinhares @professoraaryannalinhares
+a comprovação da insalubridade.
+Ressalte-se que a insalubridade se comprova por perícia, nos termos
+do art. 195 da CLT.
+Logo, restam demonstradas as razões que justificam a produção
+antecipada da prova e os fatos sobre os quais há de recair a prova, nos
+termos do art. 382 do CPC.
+Diante do exposto, requer a produção antecipada de prova pericial
+técnica no setor de corte térmico da requerida, antes de sua desativação,
+para verificar a eventual existência de insalubridade no ambiente de
+trabalho em que o requerente laborou por 3 anos sem receber adicional
+de insalubridade para comparar a insalubridade.
+V – LIMINAR
+01. Tutela Provisória de Urgência
+Como referido, o requerente encontra-se afastado do trabalho,
+recebendo benefício por incapacidade temporária acidentária, e foi
+informado de que o setor de corte térmico, onde exercia suas atividades,
+será definitivamente desativado nos próximos 30 dias.
+Estão presentes os requisitos autorizadores da concessão da tutela
+provisória de urgência, nos termos do art. 300 do CPC, quais sejam: a
+probabilidade do direito e o perigo de dano ou o risco ao resultado útil do
+processo.
+Evidencia-se a probabilidade do direito, pois o requerente laborou
+por três anos no setor de corte térmico sem receber adicional de
+insalubridade, e esse setor será encerrado em 30 dias, o que
+impossibilitará a realização de perícia técnica para a comprovação da
+insalubridade em futura reclamação trabalhista. Por sua vez, o art. 381,
+I, do CPC, prevê que é cabível a produção antecipada da prova quando
+houver risco de que o fato se torne de difícil ou impossível verificação
+P á g i n a 492 | 551
+@aryannalinhares @professoraaryannalinhares
+posteriormente – como ocorre no presente caso.
+O perigo de dano ou o risco ao resultado útil do processo estão
+igualmente configurados, já que, com a iminente desativação do setor, o
+indeferimento da medida liminar poderá tornar inútil a produção da prova
+técnica requerida, inviabilizando a comprovação do direito ao adicional
+de insalubridade.
+Diante do exposto, requer-se a concessão da tutela provisória de
+urgência, para determinar a imediata realização da perícia técnica no
+setor de corte térmico da requerida, antes de sua desativação.
+VI – REQUERIMENTOS FINAIS
+Diante do exposto, requer
+1. Seja deferida a gratuidade da justiça e a tutela provisória de
+urgência para realização imediata da perícia técnica no setor indicado;
+2. Seja determinada a citação da empresa Império do Ferro
+Siderurgia Ltda., para acompanhar o feito e, querendo, requerer a
+produção de qualquer prova no mesmo procedimento, desde que
+relacionada ao mesmo fato (art. 382, §§ 1º e 3º, CPC)
+3. A produção de todos os meios de prova em direto admitidos, em
+especial a apresentação dos contracheques, para demonstrar a
+necessidade da perícia para comprovar a insalubridade, pois o
+reclamante jamais recebeu adicional de insalubridade.
+4. A procedência do pedido, determinando a produção antecipada da
+prova pericial requerida.
+Dá-se à causa o valor de R$ ...
+Nestes termos,
+Pede deferimento.
+Local e Data
+Advogado
+OAB nº
+
+//EXERCÍCIO
+Joana Avelar foi contratada como auxiliar administrativa pela empresa Casa
+& Cor Locações Ltda., que conta com apenas três empregados registrados. Desde
+o início do vínculo, Joana trabalhava de segunda a sábado das 8h às 19h, com
+uma hora de intervalo, sem receber horas extras.
+P á g i n a 506 | 551
+@aryannalinhares @professoraaryannalinhares
+Proposta reclamação trabalhista, a empresa apresentou contestação
+negando as horas extras e alegando genericamente que “os controles de ponto
+sempre refletiram a real jornada da empregada”.
+A reclamante teve acesso a contestação eletrônica antes da audiência.
+Ao perguntar a Joana sobre os cartões mencionados na contestação, relatou
+a seu advogado que, apesar de a empresa possuir poucos empregados, todos
+registravam o ponto em cartões manuais, os quais ela chegou a assinar diversas
+vezes e que comprovariam os horários excedentes.
+Como advogado do reclamante, antes da audiência de inicial, você deverá
+adotar a medida judicial cabível para obter a exibição dos cartões de ponto
+originais, que estão em poder exclusivo da empresa.
+
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___
+Reclamante
+Reclamado
+Processo nº
+JOANA AVELAR, já qualificada nos autos em epígrafe, em que contende
+com Casa & Cor Locações Ltda., também já qualificada, vem, por seu
+advogado infra-assinado, com fulcro no art. 396 do CPC e no art. 769,
+CLT, requerer a:
+EXIBIÇÃO DE DOCUMENTOS (cartões de ponto)
+Pelas razões de fato e de direito a seguir expostos.
+I – FATOS
+A reclamante foi contratada pela reclamada para exercer a função de
+auxiliar administrativa, cumprindo jornada de segunda a sábado, das 8h
+às 19h, com apenas uma hora de intervalo, sem receber pelas horas
+extras prestadas.
+A reclamada, em contestação, negou genericamente a existência de
+horas extras, alegando que os “controles de ponto sempre refletiram a
+real jornada de trabalho da empregada”, sem apresentar qualquer
+documento.
+Ocorre que ela registrava diariamente a jornada em cartões manuais, os
+quais eram por ela assinados. Tais documentos estão sob a posse
+exclusiva da empresa e são essenciais para comprovar a jornada
+efetivamente cumprida.
+II – MÉRITO
+Como referido, a reclamante laborava como auxiliar administrativa das
+P á g i n a 508 | 551
+@aryannalinhares @professoraaryannalinhares
+8h às 19h, de segunda a sábado, com apenas uma hora de intervalo,
+sem receber horas extras. Em contestação, a reclamada negou
+genericamente o labor extraordinário, alegando que os controles de
+ponto refletiam a jornada real, sem, contudo, apresentar qualquer
+documento. A jornada era registrada manualmente em cartões assinados
+pela autora, que permanecem sob a posse exclusiva da empresa e são
+essenciais à apuração da jornada efetivamente cumprida.
+Nos termos do art. 397 do CPC, estão preenchidos os requisitos para o
+juiz determinar a exibição dos cartões de ponto da reclamante: (i) a
+descrição do documento é precisa – cartões manuais de ponto assinados
+pela autora; (ii) sua finalidade é demonstrar os horários efetivamente
+laborados, ligados ao pedido de horas extras; e (iii) há justa indicação de
+sua existência, tanto pelas informações da autora quanto pela menção
+feita na contestação.
+A recusa da reclamada não pode ser admitida, conforme o art. 399, II e
+III, do CPC, pois o documento foi aludido no processo com intuito
+probatório e é comum às partes.
+Diante disso, requer-se que o juiz determine à reclamada que exiba os
+cartões manuais de ponto firmados pela autora, sob pena de aplicação
+da presunção de veracidade quanto à jornada extraordinária, nos termos
+do art. 400 do CPC.
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+1.Que seja intimada a parte ré para apresentar, no prazo de 5 dias úteis,
+os cartões manuais de ponto assinados pela reclamante, abrangendo
+todo o período contratual, nos termos do art. 398 do CPC;
+2.Que, em caso de recusa ou não apresentação injustificada, seja
+aplicada a presunção de veracidade das alegações da autora quanto à
+P á g i n a 509 | 551
+@aryannalinhares @professoraaryannalinhares
+jornada de trabalho, conforme o art. 400 do CPC;
+Nestes termos,
+Pede deferimento.
+Local e data
+Advogado
+OAB nº
+
+//39.5. EXERCÍCIO
+Antônio trabalhou como vendedor comissionista da empresa Comercial Auto
+Premium Ltda., durante 5 anos, até ser dispensado sem justa causa. No curso do contrato
+de trabalho, recebia salário fixo acrescido de comissões, calculadas com base nas vendas
+de veículos realizadas por ele, incluindo vendas à vista e parceladas.
+Percebeu que os valores pagos a título de comissões estavam constantemente
+inferiores ao que estimava receber, considerando os veículos vendidos. Ele chegou a
+solicitar esclarecimentos à empresa, mas nunca recebeu relatórios, planilhas ou
+documentos que permitissem verificar como as comissões estavam sendo apuradas.
+A maioria das vendas realizadas por Antônio era feita de forma parcelada. Ele sabe
+que, nos termos do § 1º do art. 466 da CLT, as comissões são devidas proporcionalmente
+à liquidação das parcelas. No entanto, o empregador não lhe fornecia controle sobre o
+P á g i n a 520 | 551
+@aryannalinhares @professoraaryannalinhares
+que já havia sido pago e o que faltava pagar. Em seus próprios cálculos, Antônio verificava
+que vinha recebendo valores muito inferiores àqueles que teria efetivamente direito.
+Além disso, Antônio suspeita de duas irregularidades na conduta do empregador:
+1. Que a empresa tenha deixado de pagar comissões relativas a vendas
+posteriormente canceladas pelos clientes, mesmo após as vendas já estarem concluídas
+e a comissão ser devida. Essa conduta contraria o art. 2º da Lei nº 3.207/57 e o art. 466,
+“caput”, da CLT, os quais estabelecem que o empregado vendedor tem direito à comissão
+avençada sobre as vendas que realizar e sobre o valor em que for ultimada a transação.
+Logo, o cancelamento posterior da venda é risco do negócio do empregador, não sendo
+razoável transferi-lo ao empregado.
+2. Que o empregador tenha deixado de considerar os juros e encargos
+financeiros nas vendas a prazo, utilizando como base de cálculo apenas o valor líquido
+das parcelas. Essa prática contraria a tese fixada no Tema 57 do TST, segundo a qual,
+salvo pactuação expressa em sentido contrário, as comissões devidas ao vendedor
+devem incidir sobre o valor total da operação, incluindo juros e encargos financeiros.
+Sendo os pagamentos feitos unilateralmente pela empresa, sem qualquer
+prestação formal de contas, essa conduta violava o dever de transparência e impedia
+Antônio de verificar a correção dos valores pagos.
+Diante da ausência de prestação de contas e da consequente impossibilidade de
+identificar o montante efetivamente devido, Antônio o procura como advogado com um
+pedido bastante específico: que seja elaborada a medida cabível para que o ex-
+empregador apresente um relatório com as vendas realizadas e os pagamentos
+efetuados, bem como pague eventuais diferenças.
+LEGISLAÇÃO SOBRE AS COMISSÕES
+Art 2º, Lei nº 3.207/57 O empregado vendedor terá direito à comissão
+avençada sôbre as vendas que realizar. No caso de lhe ter sido
+reservada expressamente, com exclusividade, uma zona de trabalho,
+P á g i n a 521 | 551
+@aryannalinhares @professoraaryannalinhares
+terá êsse direito sôbre as vendas ali realizadas diretamente pela
+emprêsa ou por um preposto desta.
+Art 5º, Lei nº 3.207/57 Nas transações em que a emprêsa se obrigar por
+prestações sucessivas, o pagamento das comissões e percentagens
+será exigível de acôrdo com a ordem de recebimento das mesmas.
+Art. 457 - Compreendem-se na remuneração do empregado, para todos
+os efeitos legais, além do salário devido e pago diretamente pelo
+empregador, como contraprestação do serviço, as gorjetas que receber.
+§ 1º Integram o salário a importância fixa estipulada, as gratificações
+legais e as comissões pagas pelo empregador.
+Art. 466, CLT. O pagamento de comissões e percentagens só é exigível
+depois de ultimada a transação a que se referem.
+§ 1º - Nas transações realizadas por prestações sucessivas, é exigível o
+pagamento das percentagens e comissões que lhes disserem respeito
+proporcionalmente à respectiva liquidação.
+§ 2º - A cessação das relações de trabalho não prejudica a percepção
+das comissões e percentagens devidas na forma estabelecida por este
+artigo.
+P á g i n a 522 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTOR JUIZ DO TRABALHO DA ... VARA DO TRABALHO DE
+...
+ANTÔNIO, qualificação e endereço completos, vem, respeitosamente, à
+presença de Vossa Excelência, por intermédio de seu advogado adiante
+assinado (procuração anexa), com fulcro no art. 550 do CPC e art. 769
+da CLT, propor
+AÇÃO DE EXIGIR CONTAS
+em face de COMERCIAL AUTO PREMIUM LTDA., qualificação e
+endereço completos, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+O Reclamante laborou para a Reclamada na função de vendedor
+comissionista por cinco anos, tendo sido dispensado sem justa causa.
+Durante a relação contratual, recebia salário fixo acrescido de
+comissões sobre as vendas de veículos realizadas, conforme previsão
+contratual e nos termos do art. 2º da Lei nº 3.207/57, art. 457, §1º, da
+CLT.
+Contudo, verificou ao longo do tempo que os valores pagos a título
+de comissão estavam sistematicamente aquém do que lhe seria devido,
+considerando as vendas efetivadas. Antônio jamais recebeu relatórios
+detalhados, planilhas ou qualquer prestação de contas que permitisse
+aferir a base de cálculo utilizada para o pagamento das comissões.
+A maior parte das vendas era realizada de forma parcelada, sendo
+que, de acordo com o art. 466, § 1º, da CLT, as comissões são exigíveis
+proporcionalmente à liquidação das parcelas. Todavia, a Reclamada não
+fornecia qualquer controle sobre as parcelas pagas pelos clientes, o que
+impossibilitava o reclamante de identificar o que lhe era efetivamente
+P á g i n a 523 | 551
+@aryannalinhares @professoraaryannalinhares
+devido.
+Além disso, o reclamante suspeita de duas práticas irregulares
+cometidas pela Reclamada:
+1. O não pagamento de comissões sobre vendas canceladas após a
+conclusão da transação, contrariando o art. 2º da Lei nº 3.207/57. Essa
+conduta contraria o art. 2º da Lei nº 3.207/57 e o art. 466, “caput”, da CLT,
+os quais estabelecem que o empregado vendedor tem direito à comissão
+avençada sobre as vendas que realizar e sobre o valor em que for
+ultimada a transação. Logo, o cancelamento posterior da venda é risco
+do negócio do empregador, não sendo razoável transferi-lo ao
+empregado.
+2. A exclusão de juros e encargos financeiros da base de cálculo das
+comissões sobre vendas a prazo, o que viola a tese fixada no Tema 57
+do TST, que determina a inclusão desses valores, salvo pactuação
+expressa em sentido contrário, a qual não existia no caso em tela.
+II – DOS REQUISITOS ESPECÍFICOS (ART. 550, “CAPUT” E §1º, DO
+CPC)
+1. Do Cabimento
+Nos termos do art. 550, “caput” e §1º, do CPC, caberá ação de exigir
+contas àquele que se afirmar titular do direito de exigi-las, como ocorre
+no presente caso.
+O reclamante tinha direito a receber comissões sobre vendas
+realizadas e liquidadas, conforme previsão legal e contratual, mas não
+recebeu qualquer prestação de contas, tampouco teve acesso aos
+documentos que permitissem aferir a correção dos pagamentos
+efetuados pela reclamada.
+A presente ação visa, portanto:
+•Na primeira fase, a condenação da reclamada a prestar contas
+P á g i n a 524 | 551
+@aryannalinhares @professoraaryannalinhares
+relativas às comissões geradas pelas vendas realizadas pelo reclamante
+durante o pacto laboral;
+•Na segunda fase, a condenação ao pagamento de eventual saldo
+apurado em favor do reclamante, nos termos do art. 552 do CPC.
+III – DO MÉRITO
+01. Da exibição das contas
+Durante a vigência do contrato de trabalho, o reclamante, vendedor
+comissionista, passou a constatar divergências entre as comissões que
+estimava receber e os valores efetivamente pagos pela reclamada.
+Apesar de reiteradas solicitações, nunca lhe foram fornecidos relatórios,
+planilhas ou qualquer meio de controle referente às comissões recebidas,
+especialmente nas vendas realizadas de forma parcelada. Tal conduta
+violou o dever de transparência da empresa e impediu o reclamante de
+acompanhar a apuração e a liquidação proporcional das comissões,
+conforme previsto no art. 466, § 1º, da Consolidação das Leis do Trabalho
+(CLT).
+Além disso, a reclamada adota práticas que contrariam frontalmente
+a legislação vigente.
+Primeiramente, ao deixar de considerar os juros e encargos
+financeiros nas vendas a prazo, compromete o correto cálculo das
+comissões, violando o disposto no art. 2º da Lei nº 3.207/1957, que
+assegura ao empregado o direito à comissão sobre as vendas realizadas,
+bem como o disposto no art. 457, § 1º, da CLT, que inclui as comissões
+na remuneração do empregado.
+Em segundo lugar, há fortes indícios de que comissões foram
+suprimidas em razão do cancelamento posterior de vendas já concluídas,
+o que não é admitido pela legislação trabalhista, considerando que,
+conforme o art. 466, “caput”, da CLT, a comissão se torna exigível com a
+P á g i n a 525 | 551
+@aryannalinhares @professoraaryannalinhares
+conclusão da transação, sendo o cancelamento posterior risco do
+empregador.
+Diante disso, requer-se a citação da reclamada para, no prazo legal,
+prestar contas detalhadas das vendas realizadas pelo reclamante, com
+indicação das operações concluídas, valores totais, pagamentos já
+efetuados, incidência de juros e encargos, bem como os critérios
+utilizados para o cálculo das comissões (art. 550, §5º, CPC). Caso
+reconhecido saldo devedor, requer-se sua condenação ao pagamento da
+quantia apurada, com juros e correção monetária.
+IV – DOS REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+1. A citação da Reclamada, para que preste contas no prazo de 15
+dias ou, querendo, apresente contestação, sob pena de revelia e
+confissão quanto à matéria de fato (arts. 550, “caput”, e § 4º, e 355, II, do
+CPC);
+2. A produção de todas as provas em direito admitidas,
+especialmente a prova documental, testemunhal, de depoimento pessoal
+do representante legal da Reclamada e pericial contábil, se necessário;
+3. Caso a reclamada não apresente as contas no prazo de 15 dias
+contados da citação, que seja condenada a prestá-las sob pena de não
+poder impugnar as que forem apresentadas pelo reclamante, nos termos
+do art. 550, § 5º, do CPC;
+4. Na segunda fase da ação, apurado o saldo devedor, que a
+Reclamada seja condenada ao pagamento do valor apurado, conforme
+art. 552 do CPC, com juros e correção monetária, bem como aos
+honorários advocatícios sucumbenciais de 15%, conforme art. 791-A da
+CLT e custas processuais;
+Atribui-se a causa o valor de R$ ... .
+P á g i n a 526 | 551
+@aryannalinhares @professoraaryannalinhares
+Nestes termos,
+Pede deferimento.
+Local e data
+Advogado
+OAB nº
+
+//EXERCÍCIO
+João Sem Tostão, empregado da empresa Bonnie de Souza & Clyde Pereira Ltda.,
+trabalhou como operador de máquinas por 10 anos, quando foi dispensado sem justa
+causa e sem receber suas verbas rescisórias no valor de R$ 32.000,00, conforme TRCT.
+Ao procurar colegas de trabalho, verificou que muitos deles também não receberam
+seus créditos trabalhistas. Além disso, circularam notícias de que os sócios da empresa
+passaram a transferir veículos para parentes e a alienar imóveis situados em Belo
+Horizonte/MG, de forma a reduzir significativamente o patrimônio da pessoa jurídica.
+Temendo ficar “a ver navios” e não receber seu crédito trabalhista, João Sem Tostão
+procura você, advogado, antes mesmo de ajuizar a reclamação trabalhista, e traz consigo:
+• cópia de sua CTPS;
+• termo de rescisão do contrato de trabalho sem pagamento de verbas;
+P á g i n a 536 | 551
+@aryannalinhares @professoraaryannalinhares
+• fotos de caminhões, máquinas e equipamentos sendo retirados da sede da
+empresa, bens da empresa anunciados em sites de venda (OLX e Webmotors) e
+conversas de Whatsapp e e-mails, em que colegas falam sobre a venda de patrimônio e
+fechamento da empresa.
+Considerando a urgência do caso e a iminência de esvaziamento patrimonial da
+empresa, como advogado de João sem Tostão elabore a peça processual cabível para
+resguardar os direitos de João, sabendo que, no futuro, pretende ajuizar uma reclamação
+trabalhista.
+P á g i n a 537 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA VARA DO TRABALHO DE
+JOÃO SEM TOSTÃO, qualificação e endereço completos, vem
+respeitosamente, por intermédio de seu advogado adiante assinado, com
+fulcro nos arts. 300, 301 e 305 do CPC e art. 769 da CLT
+AÇÃO DE TUTELA CAUTELAR DE ARRESTO DE BENS EM
+CARÁTER ANTECEDENTE
+em face de BONNIE DE SOUZA & CLYDE PEREIRA LTDA.,
+qualificação e endereço completos, pelas razões de fato e de direito a
+seguir exposto:
+I – DOS FATOS
+O requerente laborou para a empresa requerida por 10 anos, sendo
+dispensado sem justa causa e sem o pagamento das verbas rescisórias.
+Paralelamente, os sócios da empresa vêm transferindo veículos e
+alienando imóveis, conforme comprovam os documentos anexos,
+reduzindo substancialmente o patrimônio da empresa. Tais condutas
+evidenciam a intenção de esvaziamento patrimonial para inviabilizar o
+pagamento de créditos trabalhistas.
+II – DO MÉRITO
+O autor foi dispensado sem receber as verbas rescisórias no valor de R$
+32.000,00, conforme TRCT não quitado. Soma-se a isso a constatação
+de que os sócios estão dilapidando o patrimônio, o que ameaça
+diretamente uma futura execução.
+Nos termos do art. 300 do CPC, a tutela de urgência cautelar deve ser
+concedida quando houver elementos que evidenciem a probabilidade do
+direito e o risco ao resultado útil do processo, sendo o arresto medida
+P á g i n a 538 | 551
+@aryannalinhares @professoraaryannalinhares
+idônea para assegurar o direito na presente situação, nos termos do art.
+301 do CPC.
+No caso, a probabilidade do direito decorre da dispensa sem quitação
+das verbas rescisórias, comprovada pelo TRCT. O perigo ao resultado
+útil do processo está caracterizado pelo iminente esvaziamento
+patrimonial, o que fica claro com os documentos anexos: fotos de
+caminhões, máquinas e equipamentos sendo retirados da sede da
+empresa, bens da empresa anunciados em sites de venda (OLX e
+Webmotors) e conversas de WhatsApp e e-mails, em que colegas falam
+sobre a venda de patrimônio e fechamento da empresa.
+Diante do exposto, requer o deferimento do arresto cautelar em caráter
+antecedente de bens suficientes para assegurar a utilidade da futura
+reclamação trabalhista a ser ajuizada pelo Requerente, evitando que o
+direito reconhecido reste sem efetividade.
+III – LIMINAR
+Nos termos do art. 300, §2º, do CPC, requer-se o deferimento liminar do
+arresto, sem prévia oitiva da parte contrária, diante da urgência e do risco
+de dilapidação patrimonial, determinando-se a imediata constrição de
+veículos, imóveis e ativos financeiros em nome da empresa.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) O deferimento liminar da medida cautelar de arresto, para constrição
+de bens da empresa e de seus sócios, nos termos do art. 301 do CPC;
+b) A citação da requerida para, querendo, apresentar defesa;
+c) Ao final, a conversão da presente ação cautelar em ação principal, com
+fundamento no art. 308 do CPC, apresentando o pedido definitivo de
+verbas trabalhistas.
+Dá-se à causa o valor de R$ _______.
+P á g i n a 539 | 551
+@aryannalinhares @professoraaryannalinhares
+Nestes termos,
+Pede deferimento.
+Local e data
+Advogado
+OAB nº
+
+//EXERCÍCIO DA CORREIÇÃO PARCIAL (RECLAMAÇÃO CORREICIONAL) E
+ESTRUTURA DA PEÇA
+P á g i n a 542 | 551
+@aryannalinhares @professoraaryannalinhares
+João e Pedro ajuizaram reclamação trabalhista conjunta contra a empresa Galpão
+Agroindustrial S.A., alegando que eram dirigentes sindicais e que foram dispensados
+injustamente por justa causa, sob a acusação de terem revelado segredo empresarial.
+Pleitearam a nulidade da dispensa, com a consequente reintegração ao emprego ou,
+alternativamente, indenização substitutiva.
+Ambos exerciam a mesma função, foram dispensados no mesmo dia e, segundo
+narram, os motivos e as circunstâncias da dispensa foram idênticos. Requereram, de
+forma expressa, o prosseguimento da ação em litisconsórcio ativo, com fundamento no
+art. 842 da CLT.
+O juízo da 7ª Vara do Trabalho de Macaé/RJ, ao receber a petição inicial,
+determinou o desmembramento da ação, separando os processos sob a justificativa de
+que “cada contrato de trabalho tem natureza individual e autônoma”.
+A decisão foi proferida pelo juiz, sem ter sido aberta vista para manifestação das
+partes. O desmembramento já foi realizado, com numeração própria para cada processo.
+Como advogado(a) de João e Pedro, você foi intimado(a) eletronicamente da
+decisão e advertiu aos clientes que a separação dos feitos resultaria em duas instruções
+distintas, com as mesmas testemunhas, provas documentais idênticas, porém com o risco
+de sentenças contraditórias.
+Considerando que o ato judicial não admite recurso próprio e que já se passaram
+mais de 120 dias desde sua ciência, redija a peça processual adequada para impugnar
+esse ato, a ser dirigida ao Corregedor Regional do Tribunal, com o objetivo de corrigir o
+desmembramento injustificado que compromete a boa ordem processual.
+P á g i n a 543 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR DESEMBARGADOR CORREGEDOR
+REGIONAL DO TRIBUNAL REGIONAL DO TRABALHO DA ___ª
+REGIÃO
+JOÃO DA SILVA, qualificação e endereço completo, e PEDRO
+ALMEIDA, qualificação e endereço completo, vêm, por seu advogado
+infra-assinado (procuração anexa), propor
+CORREIÇÃO PARCIAL
+em face do ato praticado pelo MM. Juiz da 7ª Vara do Trabalho
+de Macaé/RJ, nos autos da reclamação trabalhista nº ..., em que figura
+no polo passivo Galpão Agroindustrial S.A., qualificação e endereço
+completo, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+João e Pedro ajuizaram reclamação trabalhista conjunta contra a
+empresa Galpão Agroindustrial S.A., alegando que eram dirigentes
+sindicais e que foram dispensados injustamente por justa causa, sob a
+acusação de terem revelado segredo empresarial. Pleitearam a nulidade
+da dispensa, com a consequente reintegração ao emprego ou,
+alternativamente, indenização substitutiva.
+Ambos exerciam a mesma função, foram dispensados no mesmo
+dia e, segundo narram, os motivos e as circunstâncias da dispensa foram
+idênticos. Requereram, de forma expressa, o prosseguimento da ação
+em litisconsórcio ativo, com fundamento no art. 842 da CLT.
+Contudo, ao despachar a inicial, o MM. Juiz da7ª Vara do Trabalho
+de Macaé/RJ determinou o desmembramento da ação, criando
+processos autônomos e fundamentando a decisão na alegada
+individualidade dos contratos de trabalho.
+II – DOS REQUISITOS ESPECÍFICOS
+P á g i n a 544 | 551
+@aryannalinhares @professoraaryannalinhares
+1. Inexistência de recurso próprio
+A decisão que determinou o desmembramento das ações é
+interlocutória e, portanto, irrecorrível de imediato no Processo do
+Trabalho, nos termos do art. 893, § 1º, da CLT, logo passível de correição
+parcial.
+III – DO MÉRITO
+1. Da ilegalidade do ato do juiz
+Como referido, o Juiz da 7ª Vara do Trabalho de Macaé/RJ
+determinou o desmembramento dos autos, sem prévia oitiva das partes.
+O art. 842 da CLT autoriza expressamente o litisconsórcio ativo
+quando os empregados pertencem à mesma empresa e houver
+identidade de matéria. O ato do juiz revela-se contrário à boa ordem
+processual. Além disso, tal fracionamento processual tem o potencial de
+gerar decisões contraditórias sobre os mesmos fatos e aumentar
+desnecessariamente os custos e o tempo do processo.
+Diante disso, requer-se o reconhecimento da ilegalidade do ato
+judicial que determinou o desmembramento dos autos, com a
+consequente determinação de reautuação dos processos e
+prosseguimento conjunto da ação originária, nos moldes inicialmente
+propostos, com manutenção do litisconsórcio ativo.
+IV – DOS REQUERIMENTOS FINAIS
+Diante de todo o exposto, requer-se:
+1.O recebimento e processamento da presente correição parcial;
+2.A notificação do MM. Juiz da 7ª Vara do Trabalho de Macaé/RJ, para
+prestar informações.
+3.A intimação de Galpão Agroindustrial S.A. para manifestação.
+4.A produção de todas as provas em direito admitidas, especialmente a
+prova documental;
+P á g i n a 545 | 551
+@aryannalinhares @professoraaryannalinhares
+5.Ao final, o acolhimento do pedido com procedência da presente
+correição, para o fim de determinar ao juiz a prosseguimento unificado
+da ação, com base no art. 842 da CLT.
+Nestes termos,
+Pede Deferimento.
+Local e Data
+Advogado
+OAB nº
+
+//EXERCÍCIO
+Durante audiência inicial em reclamação trabalhista ajuizada por João da
+Silva em face da empresa Comercial Britânica Ltda., pelo rito ordinário, a
+reclamada apresentou contestação escrita e juntou, com a defesa, cartões de
+ponto com marcações uniformes e invariáveis.
+O advogado do reclamante compareceu à audiência e, ao final do ato, foi
+intimado pelo juízo a se manifestar sobre os cartões de ponto apresentados, no
+prazo de 15 dias.
+Na condição de advogado do reclamante, elabore a manifestação escrita
+sobre os cartões de ponto apresentados, observando os fundamentos legais
+aplicáveis à sua impugnação no processo do trabalho.
+P á g i n a 549 | 551
+@aryannalinhares @professoraaryannalinhares
+RESOLUÇÃO
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ....
+Processo nº
+Reclamante: João da Silva
+Reclamada: Comercial Britânica Ltda.
+JOÃO DA SILVA, já qualificado nos autos em epígrafe, em que
+contente com COMERCIAL BRITÂNICA LTDA., também qualificado, vem,
+por intermédio de seu advogado infra-assinado, com fulcro no art. 437 do
+CPC, apresentar
+RÉPLICA
+Pelas razões de fato e de direito a seguir expostas:
+Durante a audiência inaugural realizada na presente reclamação
+trabalhista, a reclamada, COMERCIAL BRITÂNICA LTDA., apresentou
+junto à contestação cartões de ponto com marcações uniformes e
+invariáveis.
+Nos termos da Súmula 338, III, do TST, são inválidos como prova o
+cartão de ponto que apresenta marcações uniformes.
+Diante do exposto, requer que os cartões de ponto juntados pela
+reclamada sejam considerados inválidos como meio de prova, por serem
+inverossímeis e sem valor técnico como meio de prova. Requer-se, ainda,
+que seja acolhida a jornada declinada na petição inicial, salvo prova em
+contrário, e, neste caso, que seja oportunizada a produção da prova
+testemunhal, com vistas à fiel apuração da realidade laboral do reclamante.
+Nestes termos,
+P á g i n a 550 | 551
+@aryannalinhares @professoraaryannalinhares
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//
+
+
+
 
 
 
