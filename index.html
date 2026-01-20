@@ -6,17 +6,12 @@
     <title>SISTEMA JOAQUIM - MENTORIA V4.5</title>
     <style>
         :root { 
-            --primary: #0f172a; 
-            --accent: #3b82f6; 
-            --bg: #f1f5f9; 
-            --sidebar-bg: #1e293b; 
-            --law-green: #059669; 
-            --tst-blue: #2563eb; 
-            --cf-purple: #9333ea;
-            --paper: #ffffff;
+            --primary: #0f172a; --accent: #3b82f6; --bg: #f1f5f9; 
+            --sidebar-bg: #1e293b; --law-green: #059669; --tst-blue: #2563eb; 
+            --cf-purple: #9333ea; --paper: #ffffff;
         }
         
-        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: #1e293b; overflow-x: hidden; }
         
         header { 
             background: var(--primary); color: white; padding: 10px 20px; 
@@ -32,7 +27,8 @@
         @media (min-width: 768px) { .main-layout { flex-direction: row; } .sidebar { width: 260px; height: 100vh; position: sticky; top: 50px; } }
         
         .sidebar { background: var(--sidebar-bg); color: white; padding: 15px; overflow-y: auto; }
-        .nav-btn { width: 100%; text-align: left; padding: 12px; margin-bottom: 6px; border: none; background: rgba(255,255,255,0.05); color: #cbd5e1; cursor: pointer; border-radius: 8px; font-size: 0.8rem; }
+        .nav-btn { width: 100%; text-align: left; padding: 12px; margin-bottom: 6px; border: none; background: rgba(255,255,255,0.05); color: #cbd5e1; cursor: pointer; border-radius: 8px; font-size: 0.8rem; transition: 0.2s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); }
         .nav-btn.active { background: var(--accent); color: white; font-weight: bold; }
 
         .content-area { padding: 20px; flex-grow: 1; max-width: 1000px; margin: 0 auto; width: 100%; box-sizing: border-box; }
@@ -43,14 +39,12 @@
             border: 1px solid #e2e8f0; 
         }
 
-        /* PAINEL DE GABARITO SEM ROLAGEM */
         .gabarito-panel { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; margin-bottom: 25px; }
         .gab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .gab-btn { background: #64748b; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         
         .guia-btn { width: 100%; background: var(--law-green); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         
-        /* ESTILO JURÍDICO COM RECUO DE PARÁGRAFO */
         .gab-content, #texto-final { 
             margin-top: 20px; padding: 30px; 
             background: #fff; border: 1px solid #e2e8f0; border-radius: 4px;
@@ -59,11 +53,7 @@
             white-space: pre-wrap;
         }
 
-        .gab-paragraph, .user-paragraph {
-            text-indent: 3em; 
-            margin-bottom: 0.6em;
-            display: block;
-        }
+        .gab-paragraph { text-indent: 3em; margin-bottom: 0.6em; display: block; }
 
         .guia-content { 
             display: none; margin-top: 15px; padding: 20px; 
@@ -71,18 +61,17 @@
             max-height: 400px; overflow-y: auto;
         }
         
-        .planalto-tools { margin-top: 15px; padding: 12px; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1; }
-        .btn-planalto { color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; margin: 3px; font-weight: 600; }
+        .planalto-tools { margin-top: 15px; padding: 12px; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1; min-height: 40px; }
+        .btn-planalto { color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; margin: 3px; font-weight: 600; display: inline-block; }
         
         #texto-final { outline: none; min-height: 600px; border-top: 4px solid var(--accent); }
-        .stats-bar { display: flex; gap: 20px; font-size: 0.8rem; color: #64748b; margin-top: 10px; font-weight: 600; }
-        .copy-btn { width: 100%; margin-bottom: 20px; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .copy-btn { width: 100%; margin-bottom: 20px; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <button onclick="liberar()" style="padding:20px 50px; cursor:pointer; font-weight:bold; border-radius:50px; border:none; background:var(--accent); color:white; font-size: 1.3rem;">INICIAR SIMULADO</button>
+    <button onclick="liberar()" style="padding:20px 50px; cursor:pointer; font-weight:bold; border-radius:50px; border:none; background:var(--accent); color:white; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">INICIAR SIMULADO</button>
 </div>
 
 <div id="main-app">
@@ -93,3 +82,137 @@
     
     <div class="main-layout">
         <nav class="sidebar" id="menuLateral"></nav>
+        <main class="content-area">
+            <div id="joaquim"></div>
+        </main>
+    </div>
+</div>
+
+<script>
+    // TRAVA DE SEGURANÇA 1: Dados internos caso o gabaritos.js falhe
+    const fallbackDB = {
+        ro: {
+            guia: "### FUNDAMENTOS JOSÉ JAIME\n- Art. 130, I, CLT (Férias)\n- Art. 244, § 3º, CLT (Prontidão)\n- Súmula 293 TST (Insalubridade)\n- Art. 487, § 1º, CLT e OJ 82 SDI-1 (CTPS)\n- Art. 322, § 1º, CPC (Juros)",
+            1: "AO DOUTO JUÍZO DA VARA DO TRABALHO DE NOVA IGUAÇU...\n\nRAZÕES DE RECURSO ORDINÁRIO\n\nI - MÉRITO\n\n1. DAS FÉRIAS\nO autor não ultrapassou 5 faltas, logo faz jus a 30 dias..."
+        }
+    };
+
+    const nomesPecas = { rt: "01. Reclamação Trabalhista", cont: "04. Contestação", ro: "07. Recurso Ordinário" };
+    let pecaAtiva = 'ro';
+    let segundos = 0;
+
+    function liberar() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        montarMenu(); 
+        loadPeca('ro');
+        startTimer();
+    }
+
+    function startTimer() {
+        setInterval(() => {
+            segundos++;
+            const h = Math.floor(segundos / 3600).toString().padStart(2, '0');
+            const m = Math.floor((segundos % 3600) / 60).toString().padStart(2, '0');
+            const s = (segundos % 60).toString().padStart(2, '0');
+            document.getElementById('cronometro').innerText = `${h}:${m}:${s}`;
+        }, 1000);
+    }
+
+    function montarMenu() {
+        document.getElementById('menuLateral').innerHTML = Object.keys(nomesPecas).map(k => 
+            `<button class="nav-btn" id="btn_${k}" onclick="loadPeca('${k}')">${nomesPecas[k]}</button>`
+        ).join('');
+    }
+
+    function linkDirecionado(termo) {
+        const t = termo.trim().toUpperCase();
+        let query = (t.includes("SÚMULA") || t.includes("OJ")) ? `site:tst.jus.br jurisprudencia ${termo}` : `site:planalto.gov.br "Decreto-Lei 5452" ${termo}`;
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    }
+
+    function formatarParagrafos(texto, classe) {
+        if (!texto) return "";
+        return texto.split('\n').map(linha => {
+            if (linha.trim().length === 0) return '<br>';
+            if (linha.length < 65 && !linha.includes('.')) return `<div><strong>${linha}</strong></div>`;
+            return `<div class="${classe}">${linha}</div>`;
+        }).join('');
+    }
+
+    function rastrearFundamentos() {
+        try {
+            const txtUser = document.getElementById('texto-final')?.innerText || "";
+            const txtGuia = document.getElementById('view_guia_text')?.innerText || "";
+            const total = txtUser + " " + txtGuia;
+            const regex = /(Art\.?|Súmula|Sumula|OJ|CF|CPC)\s?\d+([-]?[A-Z0-9])?/gi;
+            const matches = [...new Set(total.match(regex) || [])];
+            const container = document.getElementById('container-rastreio');
+            if (container) {
+                container.innerHTML = matches.map(m => {
+                    let cor = 'var(--law-green)';
+                    if (/Súmula|Sumula|OJ/i.test(m)) cor = 'var(--tst-blue)';
+                    if (/CF/i.test(m)) cor = 'var(--cf-purple)';
+                    return `<button class="btn-planalto" style="background:${cor}" onclick="linkDirecionado('${m}')">🔎 ${m}</button>`;
+                }).join('') || '<span style="color:#94a3b8; font-size:0.7rem;">Aguardando fundamentos...</span>';
+            }
+        } catch (e) { console.error("Erro no rastreio"); }
+    }
+
+    function loadPeca(key) {
+        try {
+            pecaAtiva = key;
+            // TRAVA DE SEGURANÇA 2: Prioriza o banco externo, mas usa o interno se falhar
+            const db = (window.dbGabaritosExternos && window.dbGabaritosExternos[key]) ? window.dbGabaritosExternos[key] : fallbackDB[key] || {};
+            
+            let botoesGab = '';
+            Object.keys(db).forEach(n => { 
+                if(!isNaN(n)) botoesGab += `<button class="gab-btn" onclick="toggleVis('gab_${n}')">📖 Gabarito ${n}</button>`; 
+            });
+
+            document.getElementById('joaquim').innerHTML = `
+                <button class="copy-btn" onclick="copyText()">FINALIZAR E COPIAR PEÇA</button>
+                <div class="gabarito-panel">
+                    <div class="gab-grid">${botoesGab}</div>
+                    <button class="guia-btn" onclick="toggleVis('guia_box')">💡 FUNDAMENTAÇÃO E GUIA</button>
+                    <div id="guia_box" class="guia-content">
+                        <div id="view_guia_text" style="white-space:pre-wrap;">${db.guia || "Nenhum guia disponível."}</div>
+                        <div class="planalto-tools"><div id="container-rastreio"></div></div>
+                    </div>
+                    ${Object.keys(db).filter(n => !isNaN(n)).map(n => 
+                        `<div id="gab_${n}" class="gab-content" style="display:none">${formatarParagrafos(db[n], 'gab-paragraph')}</div>`
+                    ).join('')}
+                </div>
+                <div id="texto-final" contenteditable="true" oninput="rastrearFundamentos()" spellcheck="false">ID: 936045\n\nEXMO. SR. DR. JUIZ...</div>
+            `;
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn_' + key)?.classList.add('active');
+            rastrearFundamentos();
+        } catch (e) {
+            alert("Erro ao carregar peça. Verifique o arquivo gabaritos.js");
+            console.error(e);
+        }
+    }
+
+    function toggleVis(id) {
+        const el = document.getElementById(id);
+        const isVis = el.style.display === 'block';
+        document.querySelectorAll('.gab-content, .guia-content').forEach(d => d.style.display = 'none');
+        if (el) el.style.display = isVis ? 'none' : 'block';
+        rastrearFundamentos();
+    }
+
+    function copyText() {
+        const el = document.getElementById('texto-final');
+        const range = document.createRange(); range.selectNode(el);
+        window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+        document.execCommand('copy'); 
+        alert("Peça copiada! Pronto para colar no Word ou Sistema da OAB.");
+    }
+</script>
+
+<script src="gabaritos.js" onerror="console.warn('Arquivo gabaritos.js não encontrado. Usando dados internos.')"></script>
+
+</body>
+</html>
