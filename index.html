@@ -5,38 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabaritos Mentoria OAB</title>
     <style>
-        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; background: #e9ecef; }
+        :root { --primary: #2c3e50; --bg: #e9ecef; }
+        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; background: var(--bg); }
         
-        /* Barra Lateral */
+        /* Sidebar */
         #sidebar { 
-            width: 280px; background: #2c3e50; color: white; 
-            overflow-y: auto; padding: 20px 0; flex-shrink: 0;
+            width: 300px; background: var(--primary); color: white; 
+            overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a252f;
         }
+        .sidebar-header { padding: 20px; text-align: center; background: #1a252f; font-weight: bold; }
         .btn-peca {
-            width: 100%; padding: 12px 20px; border: none; background: none;
+            width: 100%; padding: 15px 20px; border: none; background: none;
             color: #bdc3c7; text-align: left; cursor: pointer; border-bottom: 1px solid #34495e;
+            font-size: 13px; transition: 0.2s;
         }
         .btn-peca:hover { background: #34495e; color: white; }
-        .active { background: #1a252f !important; color: white; border-left: 4px solid #3498db; }
+        .active { background: #3498db !important; color: white; border-left: 5px solid #fff; }
 
-        /* Área do Gabarito (O Papel) */
-        #main { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; }
-        
+        /* Área da Peça (Papel) */
+        #viewport { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; }
         #container-gabarito {
-            background: white; width: 100%; max-width: 800px; min-height: 1000px;
-            padding: 60px 80px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            font-family: "Times New Roman", Times, serif; font-size: 13pt; line-height: 1.6;
-            color: #333; text-align: justify;
+            background: white; width: 100%; max-width: 800px; min-height: 1100px;
+            padding: 80px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            font-family: "Times New Roman", Times, serif; font-size: 13pt; line-height: 1.7;
+            color: #222; text-align: justify; border-radius: 2px;
         }
 
-        .titulo-juridico { font-weight: bold; text-transform: uppercase; display: block; margin: 20px 0 10px 0; }
-        #container-gabarito p { text-indent: 2.5cm; margin-bottom: 15px; }
+        /* Estilos internos da peça */
+        .titulo-juridico { font-weight: bold; text-transform: uppercase; display: block; margin: 25px 0 10px 0; text-indent: 0 !important; }
+        #container-gabarito p { text-indent: 2.5cm; margin-bottom: 15px; margin-top: 0; }
     </style>
 </head>
 <body>
 
 <nav id="sidebar">
-    <h3 style="text-align:center">PEÇAS</h3>
+    <div class="sidebar-header">PEÇAS PRÁTICAS</div>
     <button class="btn-peca" onclick="carregar('rt', this)">Reclamação Trabalhista</button>
     <button class="btn-peca" onclick="carregar('consigna', this)">Consignação em Pagamento</button>
     <button class="btn-peca" onclick="carregar('cont', this)">Contestação</button>
@@ -58,22 +61,19 @@
     <button class="btn-peca" onclick="carregar('recurso_adesivo', this)">Recurso Adesivo</button>
 </nav>
 
-<main id="main">
+<main id="viewport">
     <div id="container-gabarito">
-        <div style="text-align:center; color:#999; margin-top:200px; font-family:sans-serif;">
-            Selecione uma peça ao lado.
-        </div>
+        <p style="text-align:center; text-indent: 0; color: #999; margin-top: 200px;">
+            Selecione uma peça na lateral para carregar o gabarito oficial.
+        </p>
     </div>
 </main>
 
 <script src="gabarito.js"></script>
 <script>
     function carregar(id, el) {
-        // Marca o botão como ativo
         document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
-        
-        // Chama o gerenciador do gabarito.js
         if (typeof GabaritoManager !== 'undefined') {
             GabaritoManager.renderizarNoSite(id, 1);
         }
