@@ -3487,7 +3487,348 @@ Pede Deferimento.
 Local e Data
 Advogado
 
+Atribui-se à causa o valor de R$ ... .
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado
+OAB nº
 
+//
+27.7. Exercício de Ação de Cumprimento
+Gumercindo Carijó trabalha como soldador industrial há mais de cinco anos
+na empresa Ferro Bruto Indústria Metalúrgica S.A., situada em Colombo,
+Paraná, e com atuação no ramo de estruturas metálicas de grande porte.
+Ele é representado pelo Sindicato dos Trabalhadores na Indústria
+Metalúrgica, Mecânica e de Material Elétrico de Curitiba e Região Metropolitana
+– SINDIMEC.
+Diante da ausência de convenção coletiva, o SINDIMEC ajuizou dissídio
+coletivo de natureza econômica perante o Tribunal Regional do Trabalho da 9ª
+Região, requerendo, entre outros pontos, o reajuste salarial da categoria
+profissional.
+O TRT da 9ª Região proferiu sentença normativa determinando o reajuste
+de 10% nos salários dos trabalhadores representados, com efeitos retroativos a
+partir de 1º de maio.
+Ocorre que, apesar da sentença normativa, a empresa Ferro Bruto S.A. não
+aplicou o reajuste salarial previsto na decisão judicial e continuou a pagar o
+salário-base anterior, sem qualquer complementação ou pagamento retroativo.
+O Sindicato patronal da categoria econômica, representando as empresas
+metalúrgicas da região, interpôs recurso ordinário ao Tribunal Superior do
+        Trabalho contra a sentença normativa. O recurso ainda não foi julgado até a
+presente data.
+Gumercindo Carijó procurou sua assessoria jurídica e informou que não
+recebeu o reajuste salarial deferido. Na ocasião, ele entregou cópias da sentença
+normativa, da certidão de julgamento do dissídio coletivo e de seus
+contracheques, que demonstram o descumprimento da cláusula.
+Como advogado regularmente constituído por Gumercindo Carijó, elabore
+a peça processual adequada para pleitear o cumprimento da cláusula da
+sentença normativa que determinou o reajuste salarial de 10%, esclarecendo
+seus fundamentos e requisitos, bem como formulando os pedidos cabíveis.
+        
+
+        RESOLUÇÃO DO EXERCÍCIO
+AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE
+COLOMBO/PR
+GUMERCINDO CARIJÓ, qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com fulcro no art.
+872, parágrafo único, da CLT, propor:
+AÇÃO DE CUMPRIMENTO
+em face de FERRO BRUTO INDÚSTRIA METALÚRGICA S.A.,
+qualificação e endereço completos, pelas razões de fato e de direito
+a seguir expostas.
+I – FATOS
+O reclamante trabalha como soldador industrial há mais de cinco
+anos na empresa reclamada, situada em Colombo, Paraná, e atuante
+no ramo de estruturas metálicas de grande porte.
+Diante da ausência de convenção coletiva, o Sindicato dos
+Trabalhadores na Indústria Metalúrgica, Mecânica e de Material
+Elétrico de Curitiba e Região Metropolitana – SINDIMEC ajuizou
+dissídio coletivo de natureza econômica perante o Tribunal Regional
+do Trabalho da 9ª Região, requerendo, entre outros pontos, o reajuste
+salarial da categoria profissional.
+O TRT da 9ª Região proferiu sentença normativa determinando o
+reajuste de 10% nos salários dos trabalhadores representados, com
+efeitos retroativos a partir de 1º de maio.
+
+
+Apesar disso, a empresa reclamada não aplicou o reajuste salarial
+previsto na sentença normativa e continua pagando o salário-base
+anterior, sem qualquer complementação ou pagamento retroativo.
+Ressalta-se que o sindicato patronal da categoria econômica,
+representando as empresas metalúrgicas da região, interpôs recurso
+ordinário ao Tribunal Superior do Trabalho, o qual não foi julgado até
+a presente data.
+II – REQUISITOS ESPECÍFICOS
+1. Legitimidade
+O Reclamante é parte legítima para propor a presente ação de
+cumprimento, nos termos do art. 872, parágrafo único, da CLT, pois é
+integrante da categoria beneficiada pela sentença normativa proferida
+em dissídio coletivo e pleiteia, em nome próprio, o cumprimento de
+cláusula que lhe é favorável.
+2. Cabimento
+Ainda que o recurso ordinário interposto pelo sindicato patronal não
+tenha sido julgado, é cabível a presente ação, conforme a Súmula 246
+do TST, que estabelece ser dispensável o trânsito em julgado da
+sentença normativa para sua propositura.
+3. Documentos obrigatórios
+Segue anexa à presente ação de cumprimento: cópia da decisão
+normativa proferida no dissídio coletivo, certidão de julgamento do
+dissídio coletivo e os contracheques que demonstram o
+descumprimento da sentença normativa.
+III – MÉRITO
+01. Reajuste salarial
+A empresa reclamada descumpriu expressamente a cláusula da
+sentença normativa proferida pelo Tribunal Regional do Trabalho da
+9ª Região, que determinou o reajuste de 10% nos salários da
+categoria profissional representada pelo SINDIMEC, com efeitos
+retroativos a 1º de maio. Mesmo após a publicação da decisão, a
+reclamada continuou a pagar o salário-base anterior, sem qualquer
+complementação ou quitação das diferenças devidas, em flagrante
+violação à norma coletiva judicialmente fixada.
+Nos termos do artigo 872 da CLT e da jurisprudência consolidada
+do TST, especialmente a Súmula 246, é dispensável o trânsito em
+julgado da sentença normativa para a propositura da ação de
+cumprimento. Ainda que tenha sido interposto recurso ordinário ao
+TST pelo sindicato patronal, tal medida não suspende os efeitos da
+decisão normativa, que permanece vigente e eficaz até eventual
+reforma.
+Dessa forma, requer-se que a reclamada seja compelida a cumprir
+imediatamente a cláusula da sentença normativa, com a aplicação do
+reajuste de 10% ao salário do reclamante e o pagamento das
+diferenças salariais retroativas a 1º de maio, acrescidas dos reflexos
+legais nas demais verbas trabalhistas, como 13º salário, férias + 1/3,
+FGTS e demais parcelas devidas.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer:
+a) a notificação da empresa reclamada para apresentar resposta, se
+quiser;
+b) a produção de prova documental;
+c) o julgamento procedente da ação de cumprimento, a fim de
+compelir a empresa a cumprir com a cláusula da sentença normativa
+referente ao reajuste de 10%, bem como a condenação da reclamada
+ao pagamento de custas e honorários advocatícios de 15%, nos
+termos do art. 791-A da CLT.
+Atribui-se à causa o valor de R$ ...
+Nestes termos,
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+
+// 29.7 Exercício AÇÃO ANULATÓRIA DE AUTO DE INFRAÇÃO
+A empresa Transportes Rápido Oeste Ltda., do setor de logística e
+transporte de cargas, contratou motoristas profissionais por meio da empresa
+terceirizada Via Certa Serviços Ltda., regularmente constituída.
+Durante fiscalização, o Auditor-Fiscal do Trabalho lavrou auto de infração,
+com base no art. 41 da CLT, sob o fundamento de que a empresa tomadora estava
+irregularmente terceirizando sua atividade-fim, contrariando, segundo ele, os
+limites legais.
+O auto de infração afirma que os motoristas, embora devidamente
+registrados pela empresa terceirizada, deveriam ter sido contratados diretamente
+pela tomadora, reconhecendo, por consequência, vínculo de emprego direto com
+a empresa contratante.
+A empresa apresentou defesa administrativa, que foi indeferida pela
+autoridade competente.
+Já se passaram mais de 120 dias desde a ciência da decisão administrativa
+e nenhuma medida judicial foi adotada até o momento.
+Como advogado contratado pela empresa, elabore a medida processual
+cabível para questionar judicialmente a validade do auto de infração lavrado por
+auditor-fiscal do trabalho.
+
+RESOLUÇÃO
+AO DOUTO JUÍZO DA VARA DO TRABALHO DE ...
+Autor: Transportes Rápido Oeste Ltda.
+Réu: União
+TRANSPORTES RÁPIDO OESTE LTDA., qualificação e endereço
+completos, vem por seu advogado adiante assinado, com fundamento
+no art. 114, VII, da CF, propor a presente:
+AÇÃO ANULATÓRIA DE AUTO DE INFRAÇÃO com pedido de tutela
+provisória de urgência
+em face da UNIÃO, pessoa jurídica de direito público, representada
+judicialmente pela Advocacia-Geral da União, com endereço completo,
+pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+A empresa Transportes Rápido Oeste Ltda. atua regularmente no ramo
+de logística e transporte de cargas, utilizando-se, entre outros, de
+contratação de serviços terceirizados para atendimento à sua demanda
+operacional.
+Para o serviço de entrega de mercadorias, sua atividade-fim, firmou
+contrato com empresa terceirizada, regularmente constituída, que
+forneceu motoristas profissionais devidamente registrados por essa
+prestadora de serviços.
+No entanto, após fiscalização, o Auditor-Fiscal do Trabalho lavrou Auto
+de Infração com base no art. 41 da CLT, alegando que os motoristas
+terceirizados deveriam ser registrados diretamente pela tomadora,
+reconhecendo vínculo de emprego com a Transportes Rápido Oeste
+Ltda.
+A empresa apresentou defesa administrativa, que foi indeferida pela
+autoridade competente.
+Já se passaram mais de 120 dias da ciência da decisão administrativa,
+e nenhuma medida judicial foi adotada até o momento.
+Diante da iminência de inscrição em dívida ativa e no CADIN, e da clara
+ilegalidade do auto de infração, busca-se nesta ação o reconhecimento
+da nulidade do auto.
+II – DOS REQUISITOS ESPECÍFICOS
+1. Da Competência da Justiça do Trabalho
+Nos termos do art. 114, VII, da Constituição Federal, é competência da
+Justiça do Trabalho o julgamento de “ações relativas às penalidades
+administrativas impostas aos empregadores pelos órgãos de fiscalização
+das relações de trabalho.”
+Ademais, conforme a OJ-SDI-2 nº 129 do TST, a competência territorial
+será do mesmo juízo onde praticado o ato administrativo impugnado, ou
+seja, o local da lavratura do auto de infração.
+III – DO MÉRITO
+1. Da Nulidade do Auto de Infração
+Como referido, o Auditor-Fiscal do Trabalho lavrou auto de infração com
+fundamento no art. 41 da CLT, sob a alegação de que motoristas
+contratados por empresa terceirizada, para atuar na entrega de
+mercadorias (atividade-fim da Transportes Rápido Oeste Ltda.),
+deveriam ter sido registrados diretamente pela tomadora de serviços. No
+entanto, os referidos motoristas eram regularmente contratados por
+empresa prestadora e devidamente registrados, atuando sob a
+subordinação e gestão da contratada, conforme contrato celebrado entre
+as empresas.
+Assim, embora o art. 41 da CLT permita ao Auditor-Fiscal do Trabalho
+reconhecer a existência de vínculo de emprego nos casos em que há
+contratação irregular de trabalhadores, essa prerrogativa não se aplica
+ao presente caso. A terceirização adotada pela empresa foi lícita e
+regularmente formalizada, conforme autoriza expressamente os arts. 4º-
+A e 5º-A da Lei 6.019/74, inclusive para atividades-fim. Diante disso, o
+auto de infração é ilegal e indevido, devendo ser anulado, pois partiu de
+uma interpretação equivocada da norma, que desconsiderou a
+regularidade da contratação e a ausência de subordinação direta dos
+trabalhadores à tomadora de serviços.
+Diante do exposto, requer-se a declaração de nulidade do Auto de
+Infração, por manifesta ilegalidade, com a consequente suspensão de
+todos os seus efeitos, inclusive eventual inscrição em dívida ativa ou
+cadastros de inadimplência, e anulação das penalidades aplicadas.
+IV – DA TUTELA PROVISÓRIA DE URGÊNCIA
+Encontram-se presentes os requisitos autorizadores da concessão da
+tutela provisória de urgência previstos no art. 300 do CPC, quais sejam:
+probabilidade do direito e perigo de dano.
+A probabilidade do direito decorre da violação ao direito da autora à
+terceirização lícita mesmo em sua atividade fim, conforme arts. 4º-A e 5º-
+A da Lei 6.019/74. E o perigo de dano irreparável está na iminência da
+inscrição da multa em dívida ativa e, posterior execução fiscal e
+restrições de crédito decorrentes da inscrição.
+Diante do exposto requer a concessão da liminar para que seja
+imediatamente suspensa a eficácia do Auto de Infração lavrado e seja
+determinada a suspensão da inscrição da multa em dívida ativa e em
+cadastros de inadimplentes (CADIN).
+V – DOS REQUERIMENTOS FINAIS
+Diante do exposto, requer-se:
+1.A concessão da tutela provisória de urgência (liminar) nos termos
+acima.
+2.A citação da União, para, querendo, apresentar contestação;
+3.A produção de todos os meios de prova em direito admitidos, em
+especial o documental.
+4.A procedência dos pedidos, com a declaração de nulidade do Auto de
+Infração lavrado pelo Auditor-Fiscal do Trabalho, bem como a
+condenação da União em honorários advocatícios de 15%, na forma do
+art. 791-A, § 1º, da CLT.
+Dá-se à causa o valor de R$ ... .
+Nestes termos,
+Pede deferimento.
+Local e data.
+Advogado
+OAB nº
+
+//31.5. EXERCÍCIO RECLAMACAO CONSTITUCIONAL
+
+João dos Santos, auxiliar de serviços gerais e não filiado ao sindicato da
+categoria, ajuizou reclamação trabalhista contra a empresa Delta Limpeza Urbana
+Ltda., pleiteando a cessação da cobrança da contribuição sindical, bem como, a
+devolução dos descontos indevidos.
+Durante a instrução, a empresa apresentou convenção coletiva de trabalho
+vigente, a qual previa o desconto obrigatório de contribuição confederativa de
+
+todos os empregados da categoria, independentemente de filiação sindical.
+O juiz da 3ª Vara do Trabalho de Porto Alegre, mesmo diante da
+manifestação expressa de oposição do autor e da ausência de filiação ao
+sindicato, determinou o desconto da contribuição confederativa em folha, com
+fundamento na norma coletiva apresentada.
+A parte autora interpôs recurso ordinário, que ainda não foi julgado. Contudo,
+o advogado entende que a decisão viola frontalmente a Súmula Vinculante do
+STF.
+Diante disso, o advogado pretende propor medida processual autônoma,
+diretamente ao Supremo Tribunal Federal, a fim de garantir a observância da
+súmula vinculante.
+
+RESOLUÇÃO
+EXCELENTÍSSIMO SENHOR MINISTRO PRESIDENTE DO
+SUPREMO TRIBUNAL FEDERAL
+JOÃO DOS SANTOS, qualificação e endereço completos, vem, por
+seu advogado infra-assinado (procuração anexa), com fundamento no
+art. 102, I, “l”, da Constituição Federal e no art. 988, III, do CPC, propor:
+RECLAMAÇÃO CONSTITUCIONAL
+em face de ato praticado pelo Juízo da 3ª Vara do Trabalho de Porto
+Alegre/RS, proferido nos autos de reclamação trabalhista nº ..., em que
+figura no polo passivo Delta Limpeza Urbana Ltda., qualificação e endereço
+completos, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+O Reclamante ajuizou reclamação trabalhista em face da empresa
+Delta Limpeza Urbana Ltda., pleiteando a cessação da cobrança da
+contribuição sindical, bem como, a devolução dos descontos indevidos.
+Durante a instrução, a empresa apresentou convenção coletiva que
+previa o desconto obrigatório da contribuição confederativa a todos os
+empregados, independentemente de filiação sindical.
+Mesmo diante da manifestação expressa de oposição do reclamante e
+da sua não filiação ao sindicato da categoria, o Juízo da 3ª Vara do
+Trabalho determinou o desconto da contribuição confederativa em folha de
+pagamento, com base exclusivamente na norma coletiva.
+A decisão judicial afronta diretamente a Súmula Vinculante nº 40 do
+STF, motivo pelo qual a presente medida se revela necessária para
+preservar a autoridade das decisões desta Suprema Corte.
+
+II – DOS REQUISITOS ESPECÍFICOS
+01. Inexistência de Trânsito em Julgado
+A decisão reclamada ainda não transitou em julgado, estando pendente
+de julgamento o recurso ordinário interposto pela parte ora reclamante.
+Assim, não incide a causa de inadmissibilidade prevista no art. 988, §5º, I,
+do CPC.
+III – DO MÉRITO
+01. Garantia da Observância da Súmula Vinculante 40 do STF
+A decisão impugnada determina o desconto obrigatório da contribuição
+confederativa de trabalhador não filiado ao sindicato, mesmo havendo
+manifestação expressa de oposição à cobrança. Tal determinação,
+baseada exclusivamente em norma coletiva, contraria de forma clara e
+direta o entendimento vinculante firmado por este Supremo Tribunal
+Federal.
+Nos termos da Súmula Vinculante nº 40, “A contribuição confederativa
+de que trata o art. 8º, IV, da Constituição Federal, só é exigível dos filiados
+ao sindicato respectivo”. O ato judicial impugnado, ao impor tal desconto,
+afronta diretamente a súmula vinculante e viola a autoridade da decisão da
+Corte, o que atrai o cabimento da presente reclamação, conforme dispõe o
+art. 988, III, do CPC.
+Diante disso, requer-se que esta Corte conceda provimento à presente
+reclamação constitucional, para cassar a decisão proferida pelo Juízo da 3ª
+Vara do Trabalho de Porto Alegre/RS no que tange à autorização de
+desconto da contribuição confederativa do salário do reclamante,
+determinando que seja garantida a observância da Súmula Vinculante nº
+40.
+IV – DOS REQUERIMENTOS FINAIS
+
+Diante do exposto, requer:
+1. A suspensão dos efeitos da decisão reclamada, para evitar dano
+irreparável (Art. 989, II, do CPC);
+2. A requisição de informações à autoridade reclamada, no prazo legal
+(Art. 989, I, do CPC);
+3. A citação da parte beneficiária do ato impugnado, para apresentar
+contestação no prazo de 15 dias úteis (Art. 989, III, do CPC);
+4. A produção de todos os meios de prova em direito admitidos,
+especialmente a prova documental já acostada aos autos;
+5. A procedência da presente reclamação, ao final, cassando-se a
+decisão reclamada ou determinando-se medida adequada para assegurar
+o respeito à Súmula Vinculante nº 40 do STF (Art. 992 do CPC);
+6. A determinação do imediato cumprimento da decisão por esta Corte,
+com posterior lavratura do acórdão (Art. 993 do CPC).
+Nestes termos,
+Pede deferimento.
+Local, data.
+Advogado
+OAB nº
 
 
 
