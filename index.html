@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador OAB 2ª Fase</title>
+    <title>Simulador OAB 2ª Fase - Modo PDF</title>
     
-    <!-- CSS Incorporado (Mantido como você enviou) -->
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -21,17 +23,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 60px;
         }
 
         #timer {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #ffeb3b; /* Amarelo para destaque */
+            color: #ffeb3b;
         }
 
         main {
             display: flex;
+            flex: 1;
             margin: 1rem;
+            gap: 1rem;
+            overflow: hidden;
         }
 
         .sidebar {
@@ -40,73 +46,70 @@
             padding: 1rem;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            min-width: 240px;
-            max-height: 80vh; 
+            min-width: 260px;
+            max-width: 300px;
             overflow-y: auto; 
         }
 
         .sidebar h2 {
             margin-top: 0;
+            font-size: 1.2rem;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
         }
 
         .sidebar button {
             display: block;
             width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
+            padding: 0.6rem;
+            margin-bottom: 0.4rem;
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             cursor: pointer;
             text-align: left;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
         .sidebar button:hover {
-            background-color: #0056b3;
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
         }
 
         .content {
             flex: 4;
-            margin-left: 1rem;
             background-color: white;
             padding: 1rem;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
 
-        #gabarito-output {
-            margin-top: 1rem;
-            padding: 2rem; 
-            background-color: #fff;
-            font-family: "Times New Roman", Times, serif; 
-            line-height: 1.5; 
-            font-size: 12pt;
-        }
-        
-        /* Estilo para parágrafos: Recuo de primeira linha */
-        #gabarito-output p {
-            text-indent: 1.25cm; 
+        .content h2 {
             margin-top: 0;
-            margin-bottom: 1em;
-            text-align: justify;
         }
 
-        /* Títulos centrados */
-        #gabarito-output .center {
+        #gabarito-viewer {
+            flex: 1;
+            width: 100%;
+            border: 2px solid #eee;
+            border-radius: 4px;
+            background-color: #525659; /* Cor padrão de fundo de visualizadores de PDF */
+        }
+
+        .welcome-msg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #888;
             text-align: center;
-            text-indent: 0; /* Remove o recuo dos títulos */
-            font-weight: bold;
-            margin-bottom: 1em;
-        }
-        
-        /* Itens de lista (pedidos) */
-        #gabarito-output ul {
-            list-style-type: lower-alpha;
-            padding-left: 1.25cm;
-        }
-        #gabarito-output li {
-            margin-bottom: 0.5em;
-            text-indent: 0; /* Remove recuo dos itens da lista */
+            font-style: italic;
         }
     </style>
 </head>
@@ -119,110 +122,112 @@
 
     <main>
         <nav class="sidebar">
-            <h2>Tipos de Peça</h2>
+            <h2>Peças Disponíveis</h2>
             
-            <!-- LISTA COMPLETA DE BOTÕES (Mantida como você enviou) -->
-            <button onclick="loadGabarito('rt', 1)">Reclamação Trabalhista (RT) 1</button>
-            <button onclick="loadGabarito('consigna', 1)">Consignação em Pagamento 1</button>
-            <!-- Adicionei um exemplo de gabarito para a Consignação em Pagamento 2, para demonstrar -->
-            <button onclick="loadGabarito('consigna', 2)">Consignação em Pagamento 2</button>
-            <!-- ... outros botões ... -->
-            <button onclick="loadGabarito('inquerito', 1)">Inquérito (Falta Grave) 1</button>
-            <button onclick="loadGabarito('cont', 1)">Contestação 1</button>
-            <button onclick="loadGabarito('ed', 1)">Embargos de Declaração (ED) 1</button>
-            <button onclick="loadGabarito('ro', 1)">Recurso Ordinário (RO) 1</button>
-            <button onclick="loadGabarito('ms', 1)">Mandado de Segurança (MS) 1</button>
-        </nav>
+            <button onclick="loadPDF('rt', 1)">Reclamação Trabalhista 1</button>
+            <button onclick="loadPDF('consigna', 1)">Consignação em Pagamento 1</button>
+            <button onclick="loadPDF('consigna', 2)">Consignação em Pagamento 2</button>
+            <button onclick="loadPDF('inquerito', 1)">Inquérito (Falta Grave) 1</button>
+            <button onclick="loadPDF('cont', 1)">Contestação 1</button>
+            <button onclick="loadPDF('ed', 1)">Embargos de Declaração 1</button>
+            <button onclick="loadPDF('ro', 1)">Recurso Ordinário 1</button>
+            <button onclick="loadPDF('ms', 1)">Mandado de Segurança 1</button>
+            <button onclick="loadPDF('ar', 1)">Ação Rescisória 1</button>
+            </nav>
 
         <section class="content">
-            <h2>Conteúdo do Gabarito</h2>
-            <div id="gabarito-output">
-                Selecione um gabarito no menu ao lado para visualizar o conteúdo.
+            <h2 id="titulo-peca">Gabarito da Peça</h2>
+            <div id="gabarito-container" style="flex: 1;">
+                <div id="placeholder" class="welcome-msg">
+                    Selecione uma peça ao lado para abrir o PDF do gabarito correspondente.
+                </div>
+                <iframe id="gabarito-viewer" src="" style="display: none;"></iframe>
             </div>
         </section>
     </main>
 
-    <!-- JavaScript para a funcionalidade -->
     <script>
-        // 1. Definição dos Gabaritos em uma estrutura de dados (Objeto JS)
-        const gabaritosData = {
-            // Exemplo de Reclamação Trabalhista
-            'rt_1': `
-              <p>1.2. EXERC&Iacute;CIO I DE RECLAMA&Ccedil;&Atilde;O TRABALHISTA<br>Jos&eacute; Fininho foi contratado pela empresa Heart Attack Grill Ltda., para<br>trabalhar na cidade de Florian&oacute;polis/SC, como gar&ccedil;om, mediante sal&aacute;rio de<br>R$ 2.000,00.<br>O empregado afirma que uma das especialidades da Lanchonete era o<br>sandu&iacute;che denominado quadruple bypass com 4 hamb&uacute;rgueres: 1 quilo de carne<br>e 8.000 calorias.<br>Relata que foi contratado no mesmo dia em que Juan para exercer a mesma<br>fun&ccedil;&atilde;o, na mesma filial. O trabalho se dava com a mesma perfei&ccedil;&atilde;o t&eacute;cnica e<br>produtividade, por&eacute;m Juan recebia sal&aacute;rio fixo de R$ 2.500,00 por m&ecirc;s.<br>O senhor Fininho conta que, em janeiro do ano da extin&ccedil;&atilde;o do contrato, faltou<br>ao trabalho por um dia para comparecer em ju&iacute;zo como parte no processo em que<br>litigava contra seu ex-empregador. Embora tenha apresentado a certid&atilde;o da<br>Justi&ccedil;a do Trabalho confirmando suas alega&ccedil;&otilde;es, o dia foi descontado do seu<br>sal&aacute;rio.<br>O empregado comenta tamb&eacute;m que trabalhava 8 horas di&aacute;rias de segunda<br>a sexta-feira e usufru&iacute;a de apenas 30 minutos de intervalo intrajornada.<br>No curso do contrato, o empregador depositava apenas 4% do valor da<br>remunera&ccedil;&atilde;o a t&iacute;tulo de FGTS, pois havia acordo coletivo de trabalho autorizando<br>o recolhimento de apenas metade do valor.<br>Na qualidade de advogado(a) do reclamante, apresente a medida<br>processual cab&iacute;vel para a defesa de seus direitos.<br>Nos casos em que a lei exigir liquida&ccedil;&atilde;o de valores, n&atilde;o se faz necess&aacute;ria<br>sua apresenta&ccedil;&atilde;o pelo Examinando, pois admite-se que o escrit&oacute;rio possui setor<br>pr&oacute;prio ou contratado especificamente para tal fim. (Valor: 5,00)<br><br>RESOLU&Ccedil;&Atilde;O<br>AO DOUTO JU&Iacute;ZO DA ... VARA DO TRABALHO DE<br>FLORIAN&Oacute;POLIS/SC<br>JOS&Eacute; FININHO, gar&ccedil;om, qualifica&ccedil;&atilde;o e endere&ccedil;o completos, vem,<br>respeitosamente, perante Vossa Excel&ecirc;ncia, por interm&eacute;dio de seu<br>advogado adiante assinado (procura&ccedil;&atilde;o anexa), com escrit&oacute;rio<br>profissional no endere&ccedil;o completo, onde recebe intima&ccedil;&otilde;es ou<br>notifica&ccedil;&otilde;es, com fulcro no art. 840, caput e &sect; 1&ordm;, da CLT, PROPOR:<br>RECLAMA&Ccedil;&Atilde;O TRABALHISTA, pelo rito (...)<br>em face de HEART ATTACK GRILL LTDA., qualifica&ccedil;&atilde;o e endere&ccedil;o<br>completos, e SINDICATO DOS EMPREGADOS ..., qualifica&ccedil;&atilde;o e endere&ccedil;o completos, pelas raz&otilde;es de fato e de direito a seguir expostas.<br>I &ndash; M&Eacute;RITO<br>1. Equipara&ccedil;&atilde;o salarial<br>O reclamante foi contratado pela reclamada no mesmo dia em que Juan<br>para exercer a mesma fun&ccedil;&atilde;o, na mesma filial, com a mesma<br>produtividade e perfei&ccedil;&atilde;o t&eacute;cnica, por&eacute;m, enquanto recebia R$ 2.000,00,<br>o seu colega recebia sal&aacute;rio fixo de R$ 2.500,00 por m&ecirc;s.<br>Nos termos do art. 461, caput e &sect; 1&ordm;, da CLT, &eacute; devido o mesmo sal&aacute;rio<br>aos empregados do mesmo empregador que exer&ccedil;am a mesma fun&ccedil;&atilde;o,<br>no mesmo estabelecimento comercial, com a mesma produtividade e<br>perfei&ccedil;&atilde;o t&eacute;cnica e cuja diferen&ccedil;a de tempo de servi&ccedil;o para o mesmo<br>empregador n&atilde;o seja superior a quatro anos e de tempo na fun&ccedil;&atilde;o n&atilde;o<br>seja superior a dois anos.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada ao pagamento<br>das diferen&ccedil;as salariais, bem como de seus reflexos nas verbas<br>contratuais e rescis&oacute;rias (aviso pr&eacute;vio, d&eacute;cimo terceiro, f&eacute;rias acrescidas<br>de 1/3 e FGTS - dep&oacute;sitos e multa de 40%).<br>Por fim, requer a retifica&ccedil;&atilde;o da CTPS do empregado para constar o seu<br>real sal&aacute;rio, no valor e R$ 2.500,00, nos termos do art. 29, &sect; 1&ordm;, da CLT.<br>R$<br>2. Devolu&ccedil;&atilde;o do desconto<br>A reclamada descontou do sal&aacute;rio do reclamante um dia de trabalho no<br>m&ecirc;s de janeiro do ano da extin&ccedil;&atilde;o do contrato, em raz&atilde;o de o reclamante<br>ter faltado ao trabalho para comparecer em ju&iacute;zo como parte no processo<br>em que litigava contra seu antigo empregador, muito embora tivesse<br>apresentado certid&atilde;o da Justi&ccedil;a do Trabalho confirmando suas<br>alega&ccedil;&otilde;es.<br>Com base no art. 473, VIII, da CLT e s&uacute;mula 155, TST, o empregado<br>poder&aacute; deixar de comparecer ao servi&ccedil;o para comparecimento como<br>parte na Justi&ccedil;a do Trabalho.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada &agrave; devolu&ccedil;&atilde;o do<br>dia de trabalho descontado de seu sal&aacute;rio. R$<br>3. Intervalo intrajornada<br>O reclamante trabalhava 8 horas di&aacute;rias de segunda a sexta-feira e<br>usufru&iacute;a de apenas 30 minutos de intervalo intrajornada.<br>Nos termos do art. 71, caput, da CLT, aqueles que laboram mais de 6<br>horas di&aacute;rias fazem jus a um intervalo intrajornada de, no m&iacute;nimo, 1 hora,<br>o qual n&atilde;o era observado.<br>Diante do exposto, requer a condena&ccedil;&atilde;o da reclamada ao pagamento do<br>per&iacute;odo suprimido, ou seja, de 30 minutos di&aacute;rios, acrescidos de 50%, &agrave;<br>luz do art. 71, &sect; 4&ordm;, da CLT. R$<br>4. Diferen&ccedil;as de FGTS<br>No curso do contrato, o empregador depositava apenas 4% do valor da<br>remunera&ccedil;&atilde;o do reclamante a t&iacute;tulo de FGTS, pois havia acordo coletivo<br>de trabalho autorizando o recolhimento de apenas metade do valor.<br>Nos termos do art. 611-B, III, da CLT, &eacute; il&iacute;cita e, portanto, nula a cl&aacute;usula<br>de acordo coletivo de trabalho que implique redu&ccedil;&atilde;o do valor dos<br>dep&oacute;sitos mensais do FGTS. Ressalte-se que, o art. 15 da Lei n&ordm;<br>8.036/90 determina que os dep&oacute;sitos do FGTS devem ser de 8% da<br>remunera&ccedil;&atilde;o paga ou devida ao trabalhador no m&ecirc;s anterior.<br>Diante do exposto, requer a declara&ccedil;&atilde;o de nulidade da cl&aacute;usula do<br>acordo coletivo de trabalho que estabelece a redu&ccedil;&atilde;o dos dep&oacute;sitos do<br>FGTS e a condena&ccedil;&atilde;o da reclamada ao pagamento das diferen&ccedil;as<br>salariais. R$<br>5. Honor&aacute;rios advocat&iacute;cios<br>Requer a condena&ccedil;&atilde;o da reclamada ao pagamento de honor&aacute;rios<br>advocat&iacute;cios, no importe de 15%, sobre o valor que resultar da liquida&ccedil;&atilde;o,<br>&agrave; luz do art. 791-A da CLT. R$<br>II &ndash; PEDIDOS<br>Diante do exposto, requer:<br>a) a condena&ccedil;&atilde;o da reclamada ao pagamento das diferen&ccedil;as salariais,<br>bem como de seus reflexos nas verbas contratuais e rescis&oacute;rias<br>R$ ............................................................................. ;<br>b) a condena&ccedil;&atilde;o da reclamada &agrave; devolu&ccedil;&atilde;o do dia de trabalho<br>descontado de seu sal&aacute;rio ................................. R$ .... ;<br>c) a condena&ccedil;&atilde;o da reclamada ao pagamento do per&iacute;odo suprimido, ou<br>seja, de 30 minutos di&aacute;rios, acrescidos de 50%, nos termos do art.<br>71, &sect; 4&ordm;, da CLT ............................................. R$.... ;<br>d) a declara&ccedil;&atilde;o de nulidade da cl&aacute;usula do acordo coletivo de trabalho<br>que institui a redu&ccedil;&atilde;o dos dep&oacute;sitos do FGTS e a condena&ccedil;&atilde;o da<br>reclamada ao pagamento das diferen&ccedil;as salariais;<br>e) a condena&ccedil;&atilde;o da reclamada ao pagamento de honor&aacute;rios<br>advocat&iacute;cios, no importe de 15% sobre o valor que resultar da<br>liquida&ccedil;&atilde;o, &agrave; luz do art. 791-A da CLT.<br>III &ndash; REQUERIMENTOS FINAIS<br>Diante do exposto, requer:<br>a) a notifica&ccedil;&atilde;o da Reclamada e do Sindicato dos Empregados em...,<br>para oferecer resposta &agrave; reclama&ccedil;&atilde;o trabalhista, sob pena de revelia<br>e confiss&atilde;o quanto &agrave; mat&eacute;ria de fato;<br>b) a produ&ccedil;&atilde;o de todos os meios de prova em direito admitidos, em<br>especial a prova documental, o depoimento pessoal e a oitiva de testemunhas; e<br>c) por fim, a proced&ecirc;ncia dos pedidos com a condena&ccedil;&atilde;o da<br>reclamada ao pagamento das verbas pleiteadas, acrescidas de<br>juros e corre&ccedil;&atilde;o monet&aacute;ria.<br>Atribui-se &agrave; causa o valor de R$... .<br>Nestes termos,<br>pede deferimento.<br>Local e data.<br>Advogado(a)<br>OAB n&ordm;</p>
-            `,
-            // Exemplo de Consignação em Pagamento 1
-            'consigna_1': `
-                <div class="center">EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DA __ VARA DO TRABALHO DE [CIDADE/ESTADO].</div>
-                <p><strong>[Pular 10 linhas]</strong></p>
-                <div class="center"><strong>EMPRESA CONSIGNANTE LTDA.</strong>, pessoa jurídica... (qualificação completa), vem, por intermédio de seu advogado... ajuizar a presente:</p>
-                <div class="center"><strong>AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO</strong></div>
-                <p>em face de <strong>CICRANO DE TAL</strong>, brasileiro, casado... (qualificação completa), pelos fatos e fundamentos a seguir:</p>
-                
-                <div class="center"><strong>I. DOS FATOS E FUNDAMENTOS</strong></div>
-                <p>A Consignante pretende rescindir o contrato de trabalho do Consignatário, mas este se recusa a receber as verbas rescisórias e a dar quitação, criando óbice injustificado. Nos termos do art. 335, II, do Código Civil, aplicado subsidiariamente ao processo do trabalho, e do art. 539 e seguintes do CPC, a empresa consigna o valor total devido.</p>
-                
-                <div class="center"><strong>II. DOS PEDIDOS</strong></div>
-                <ul>
-                    <li>O depósito judicial do valor de R$ X.XXX,XX referente às verbas rescisórias;</li>
-                    <li>A citação do Consignatário para, querendo, receber o valor ou oferecer defesa;</li>
-                    <li>A procedência da ação para declarar extinta a obrigação de pagar as verbas consignadas.</li>
-                </ul>
-                <p>Dá-se à causa o valor de R$ X.XXX,XX.</p>
-                <p>Pede deferimento.</p>
-                <p>Local, Data.</p>
-                <p>Advogado(a) OAB nº XXXXX</p>
-            `,
-            // Exemplo de Consignação em Pagamento 2 (para testar o segundo botão)
-            'consigna_2': `
-                <div class="center">Gabarito da Consignação em Pagamento 2</div>
-                <p>Este é um gabarito alternativo para o segundo botão de consignação, mostrando como carregar conteúdos diferentes.</p>
-            `
-            // Adicione mais gabaritos aqui, seguindo o padrão 'tipo_numero': `HTML_CONTENT`
+        /**
+         * MAPEAMENTO DOS ARQUIVOS PDF
+         * Altere os nomes entre aspas simples para o nome real dos seus arquivos.
+         */
+        const pdfDatabase = {
+            'rt': {
+                1: 'rt_exercicio_1.pdf'
+            },
+            'consigna': {
+                1: 'consignacao_1.pdf',
+                2: 'consignacao_2.pdf'
+            },
+            'inquerito': {
+                1: 'inquerito_1.pdf'
+            },
+            'cont': {
+                1: 'contestacao_1.pdf'
+            },
+            'ed': {
+                1: 'embargos_1.pdf'
+            },
+            'ro': {
+                1: 'recurso_ordinario_1.pdf'
+            },
+            'ms': {
+                1: 'mandado_seguranca_1.pdf'
+            },
+            'ar': {
+                1: 'acao_rescisoria_1.pdf'
+            }
         };
 
-        // 2. Função JavaScript para carregar o gabarito
-        function loadGabarito(type, number) {
-            const key = `${type}_${number}`;
-            const outputElement = document.getElementById('gabarito-output');
+        // Função para carregar o arquivo PDF no visualizador
+        function loadPDF(type, number) {
+            const viewer = document.getElementById('gabarito-viewer');
+            const placeholder = document.getElementById('placeholder');
+            const titulo = document.getElementById('titulo-peca');
             
-            if (gabaritosData[key]) {
-                outputElement.innerHTML = gabaritosData[key];
-                // Rola suavemente para o topo do conteúdo quando um novo gabarito é carregado
-                outputElement.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                outputElement.innerHTML = `<p>Gabarito para ${key} não encontrado.</p>`;
+            try {
+                const fileName = pdfDatabase[type][number];
+
+                if (fileName) {
+                    // Esconde o texto inicial e mostra o iframe
+                    placeholder.style.display = 'none';
+                    viewer.style.display = 'block';
+                    
+                    // Define o caminho do arquivo (PDF deve estar na mesma pasta do HTML)
+                    viewer.src = fileName;
+                    
+                    // Atualiza o título
+                    titulo.innerText = `Gabarito: ${type.toUpperCase()} - Modelo ${number}`;
+                } else {
+                    alert('Arquivo PDF não configurado para esta peça.');
+                }
+            } catch (e) {
+                alert('Erro ao localizar o arquivo PDF.');
             }
         }
 
-        // 3. Função JavaScript para o Cronômetro de 5 horas
+        // Cronômetro de 5 horas
         function startTimer(duration, display) {
-            let timer = duration, minutes, seconds;
+            let timer = duration, hours, minutes, seconds;
             setInterval(function () {
-                // Horas são calculadas com base na duração total em segundos
-                const hours = parseInt(timer / 3600, 10); 
-                // Minutos restantes após deduzir as horas
+                hours = parseInt(timer / 3600, 10);
                 minutes = parseInt((timer % 3600) / 60, 10);
-                // Segundos restantes
                 seconds = parseInt(timer % 60, 10);
 
-                // Formatação para garantir dois dígitos (ex: 01, 05)
+                hours = hours < 10 ? "0" + hours : hours;
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                // Atualiza o elemento HTML
                 display.textContent = hours + ":" + minutes + ":" + seconds;
 
                 if (--timer < 0) {
                     timer = 0;
                     display.textContent = "TEMPO ESGOTADO!";
-                    alert("Seu tempo de prova acabou!");
                 }
             }, 1000);
         }
 
-        // 4. Inicializa o cronômetro quando a página carrega
         window.onload = function () {
-            // 5 horas * 60 minutos * 60 segundos = 18000 segundos
             const fiveHours = 18000; 
             const display = document.querySelector('#timer');
             startTimer(fiveHours, display);
@@ -231,4 +236,3 @@
 
 </body>
 </html>
-
