@@ -1,9 +1,9 @@
 /**
- * gabarito.js - Versão Final 2026 (REVISADA E FORMATADA)
- * Banco de dados de gabaritos com limpeza automática e formatação de parágrafos.
+ * gabarito.js - Versão Profissional Otimizada 2026
+ * Banco de dados de gabaritos com limpeza automática de rodapés e formatação de petição.
  */
 
-// 1. BANCO DE DADOS
+// 1. BANCO DE DADOS (DATABASE)
 window.dbGabaritosExternos = {
     'rt': {
         1: `1.2.EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTA
@@ -91,73 +91,78 @@ IV – REQUERIMENTOS FINAIS: Notificação da embargada e procedência dos pedid
         'guia': `💡 DICAS DE MENTORIA - EMBARGOS:\n\n1. BEM DE FAMÍLIA: Proteção absoluta para moradia única.\n2. MULTA 523 CPC: Inaplicável ao Processo do Trabalho.\n3. PRAZO: 5 dias após a garantia do juízo.`
     },
 
-    'ro': { 1: "" },
-    'ed': { 1: "" },
-    'ap': { 1: "" },
-    'ai': { 1: "" },
-    'rr': { 1: "" },
-    'epe': { 1: "" },
-    'ms': { 1: "" }
+    'ro': { 1: "" }, 'ed': { 1: "" }, 'ap': { 1: "" }, 'ai': { 1: "" }, 'rr': { 1: "" }, 'epe': { 1: "" }, 'ms': { 1: "" }
 };
 
-// 2. LÓGICA DE GERENCIAMENTO E FORMATAÇÃO (REVISADA)
+// 2. LÓGICA DE GERENCIAMENTO E FORMATAÇÃO
 const GabaritoManager = {
     config: {
-        // Regex para capturar "Página X | Y" e os nomes de usuário, ignorando quebras de linha entre eles
+        // Regex para remover rodapés (Página X | Y) e redes sociais
         sujeiraRodape: /(P\s?á\s?gi\s?na\s*\d+\s*\|\s*\d+)|(@professoraaryannalinhares)|(@aryannalinhares)/gi,
     },
 
+    /**
+     * Limpa o texto e transforma em HTML de petição jurídica
+     */
     formatarTexto: function(textoBruto) {
         if (!textoBruto) return "";
 
-        // 1. Limpeza inicial de rodapés e redes sociais
+        // 1. Limpeza de rodapés e redes sociais
         let textoLimpo = textoBruto.replace(this.config.sujeiraRodape, "");
 
-        // 2. Dividir em linhas para processar
+        // 2. Processamento de blocos e parágrafos
         const linhas = textoLimpo.split('\n');
         let htmlFinal = "";
-        let paragrafoAtual = "";
+        let paragrafoAcumulado = "";
 
         linhas.forEach(linha => {
             const limpa = linha.trim();
             
-            // Se a linha for vazia, fecha o parágrafo anterior
             if (limpa === "") {
-                if (paragrafoAtual !== "") {
-                    htmlFinal += `<p style="margin-bottom: 16px; line-height: 1.6; text-align: justify;">${paragrafoAtual}</p>`;
-                    paragrafoAtual = "";
+                if (paragrafoAcumulado !== "") {
+                    htmlFinal += `<p style="margin-bottom: 1.5em; text-indent: 2.5cm; text-align: justify;">${paragrafoAcumulado}</p>`;
+                    paragrafoAcumulado = "";
                 }
             } else {
-                // Se for um título ou tópico (Ex: I -, 1., AO DOUTO), força um novo parágrafo
-                if (/^(I+|[0-9]+\.|AO DOUTO|RECLAMAÇÃO|Atribui-se|Nestes)/i.test(limpa)) {
-                    if (paragrafoAtual !== "") {
-                        htmlFinal += `<p style="margin-bottom: 16px; line-height: 1.6; text-align: justify;">${paragrafoAtual}</p>`;
+                // Identifica Títulos e Seções da Peça
+                const ehTitulo = /^(I+|[0-9]+\.|AO DOUTO|RECLAMAÇÃO|Atribui-se|Nestes|RESOLUÇÃO|II –|III –)/i.test(limpa);
+                
+                if (ehTitulo) {
+                    if (paragrafoAcumulado !== "") {
+                        htmlFinal += `<p style="margin-bottom: 1.5em; text-indent: 2.5cm; text-align: justify;">${paragrafoAcumulado}</p>`;
                     }
-                    htmlFinal += `<p style="margin-bottom: 16px; line-height: 1.6; text-align: justify;"><b>${limpa}</b></p>`;
-                    paragrafoAtual = "";
+                    // Títulos com estilo de destaque jurídico (Negrito e Sem recuo)
+                    htmlFinal += `<div style="font-weight: bold; text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; text-align: left; display: block;">${limpa}</div>`;
+                    paragrafoAcumulado = "";
                 } else {
-                    // Se for continuação de texto, junta com um espaço
-                    paragrafoAtual += (paragrafoAtual === "" ? "" : " ") + limpa;
+                    // Acumula linhas para formar um parágrafo contínuo (corrige quebras do PDF)
+                    paragrafoAcumulado += (paragrafoAcumulado === "" ? "" : " ") + limpa;
                 }
             }
         });
 
-        // Adiciona o último parágrafo se sobrar algo
-        if (paragrafoAtual !== "") {
-            htmlFinal += `<p style="margin-bottom: 16px; line-height: 1.6; text-align: justify;">${paragrafoAtual}</p>`;
+        // Adiciona o último parágrafo caso exista
+        if (paragrafoAcumulado !== "") {
+            htmlFinal += `<p style="margin-bottom: 1.5em; text-indent: 2.5cm; text-align: justify;">${paragrafoAcumulado}</p>`;
         }
 
         return htmlFinal;
     },
 
+    /**
+     * Exibe o gabarito no container do site
+     */
     renderizarNoSite: function(categoria, questao) {
         const container = document.getElementById('container-gabarito');
+        if (!container) return;
+
         if (window.dbGabaritosExternos && window.dbGabaritosExternos[categoria]) {
             const texto = window.dbGabaritosExternos[categoria][questao];
-            if (texto && texto.length > 10) {
+            if (texto && texto.length > 5) {
+                // Aplica a formatação e injeta no HTML
                 container.innerHTML = this.formatarTexto(texto);
             } else {
-                container.innerHTML = "<p style='color: gray;'>Gabarito ainda não disponível para esta peça.</p>";
+                container.innerHTML = "<p style='text-align:center; padding: 50px; color: #999;'>Gabarito ainda não disponível para esta questão.</p>";
             }
         }
     }
