@@ -1,232 +1,948 @@
 <!DOCTYPE html>
+
+
 <html lang="pt-br">
+
+
 <head>
+
+
     <meta charset="UTF-8">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Prática OAB 2026 - Trabalho</title>
+
+
+    <title>SISTEMA JOAQUIM - MENTORIA PRO</title>
+
+
     <style>
-        :root {
-            --primary: #3b82f6;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --bg: #111827;
-            --card: #1f2937;
+
+
+        :root { 
+
+
+            --primary: #0f172a; 
+
+
+            --accent: #3b82f6; 
+
+
+            --bg: #f8fafc; 
+
+
+            --sidebar-bg: #1e293b; 
+
+
+            --postit-yellow: #fef9c3; 
+
+
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: white;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-        }
-
-        /* TIMER */
-        .timer-box {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #374151;
-            margin-bottom: 20px;
-        }
-
-        #timer-display {
-            font-size: 3.5rem;
-            font-weight: bold;
-            font-family: monospace;
-            margin: 10px 0;
-        }
-
-        /* NAVEGAÇÃO */
-        .nav-menu {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        button {
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-main { background: var(--primary); color: white; }
-        .btn-main:hover { opacity: 0.8; }
-        .btn-main.active { outline: 3px solid white; }
         
-        .btn-action { background: var(--success); color: white; }
-        
-        /* ÁREA DE PRÁTICA */
-        .gab-content, .guia-content {
-            display: none;
-            background: #000;
-            padding: 15px;
-            border-left: 4px solid var(--primary);
-            margin: 10px 0;
-            white-space: pre-wrap;
-            font-size: 0.9rem;
-            line-height: 1.5;
+
+
+        body { 
+
+
+            font-family: 'Segoe UI', sans-serif; 
+
+
+            margin: 0; 
+
+
+            background: var(--bg); 
+
+
+            color: #334155; 
+
+
         }
 
-        .guia-content { border-left-color: var(--warning); color: #fcd34d; }
 
-        #texto-final {
-            width: 100%;
-            min-height: 500px;
-            background: white;
-            color: black;
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 20px;
-            outline: none;
-            box-sizing: border-box;
-            font-family: 'Times New Roman', serif;
-            font-size: 12pt;
-            line-height: 1.5;
+
+
+
+        /* LOGIN */
+
+
+        #login-screen { 
+
+
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+
+
+            background: var(--primary); display: flex; align-items: center; 
+
+
+            justify-content: center; z-index: 9999; 
+
+
         }
+
+
+
+
+
+        #main-app { display: none; }
+
+
+
+
+
+        /* HEADER */
+
+
+        header { 
+
+
+            background: var(--primary); color: white; padding: 15px; 
+
+
+            text-align: center; font-weight: 800; border-bottom: 4px solid var(--accent); 
+
+
+            position: sticky; top: 0; z-index: 100;
+
+
+            display: flex; justify-content: center; align-items: center; gap: 20px;
+
+
+        }
+
+
+
+
+
+        .timer-display { background: #ef4444; padding: 5px 12px; border-radius: 4px; font-family: monospace; font-size: 1.1rem; }
+
+
+
+
+
+        .main-layout { display: flex; min-height: 100vh; }
+
+
+
+
+
+        /* SIDEBAR */
+
+
+        .sidebar { 
+
+
+            width: 200px; background: var(--sidebar-bg); padding: 15px; 
+
+
+            flex-shrink: 0; color: white; 
+
+
+            height: calc(100vh - 60px); 
+
+
+            overflow-y: auto; 
+
+
+            position: sticky; top: 60px;
+
+
+        }
+
+
+
+
+
+        .nav-btn { 
+
+
+            width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; 
+
+
+            border: none; background: rgba(255,255,255,0.08); color: #f8fafc; 
+
+
+            cursor: pointer; border-radius: 6px; font-size: 0.75rem; 
+
+
+        }
+
+
+
+
+
+        .nav-btn.active { background: var(--accent); font-weight: bold; }
+
+
+
+
+
+        /* ÁREA DE CONTEÚDO */
+
+
+        .content-area { padding: 20px; flex-grow: 1; max-width: 900px; margin: 0 auto; width: 100%; }
+
+
+
+
+
+        #joaquim { 
+
+
+            background: white; padding: 30px; border-radius: 12px; 
+
+
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); min-height: 80vh; 
+
+
+            position: relative;
+
+
+        }
+
+
+
+
+
+        /* GABARITOS */
+
+
+        .gabarito-panel { 
+
+
+            background: #f1f5f9; border: 2px solid var(--accent); 
+
+
+            padding: 15px; border-radius: 10px; margin-bottom: 25px; 
+
+
+        }
+
+
+
+
+
+        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+
+        .guia-btn { background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+
+
+
+
+        .gab-content, .guia-content { 
+
+
+            display: none; margin-top: 15px; padding: 15px; background: white; 
+
+
+            border-radius: 8px; border: 1px solid #cbd5e1; white-space: pre-wrap; 
+
+
+            font-family: 'Times New Roman', serif; line-height: 1.6;
+
+
+            max-height: 300px; overflow-y: auto;
+
+
+        }
+
+
+
+
+
+        /* EDITOR */
+
+
+        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+
+        .status-save { font-size: 0.7rem; color: #64748b; font-style: italic; }
+
+
+
+
+
+        #texto-final { 
+
+
+            outline: none; min-height: 600px; font-family: 'Times New Roman', serif; 
+
+
+            font-size: 1.2rem; line-height: 1.5; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;
+
+
+        }
+
+
+
+
+
+        /* POST-IT */
+
+
+        .postit-fixed { 
+
+
+            position: fixed; bottom: 0; right: 20px; width: 300px; 
+
+
+            background: var(--postit-yellow); border: 1px solid #eab308; 
+
+
+            border-radius: 8px 8px 0 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+
+
+            z-index: 1000; transition: transform 0.3s; transform: translateY(260px); 
+
+
+        }
+
+
+        .postit-fixed.open { transform: translateY(0); }
+
+
+        .postit-header { background: #facc15; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; color: #854d0e; }
+
+
+        #aula-notes { width: 100%; height: 200px; padding: 10px; border: none; background: transparent; resize: none; font-family: cursive; outline: none; box-sizing: border-box; }
+
+
+
+
+
+        .legal-search { padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid #eab308; }
+
+
+        .legal-search input { flex: 1; padding: 5px; border: 1px solid #ca8a04; border-radius: 4px; }
+
+
+        .legal-search button { background: #854d0e; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; }
+
+
+
+
+
     </style>
+
+
 </head>
+
+
 <body>
 
-    <div class="container">
-        <!-- Cronômetro -->
-        <div class="timer-box">
-            <div id="timer-display">05:00:00</div>
-            <button id="startStopBtn" class="btn-main" onclick="toggleTimer()">INICIAR</button>
-            <button onclick="resetTimer()" style="background: #4b5563; color: white;">REINICIAR</button>
-        </div>
 
-        <!-- Menu de Peças -->
-        <div class="nav-menu">
-            <button id="btn_rt" class="btn-main" onclick="carregarPeca('rt')">Reclamação</button>
-            <button id="btn_consigna" class="btn-main" onclick="carregarPeca('consigna')">Consignação</button>
-            <button id="btn_cont" class="btn-main" onclick="carregarPeca('cont')">Contestação</button>
-            <button class="btn-action" onclick="copyText()">COPIAR TEXTO</button>
-        </div>
 
-        <!-- Área Dinâmica -->
-        <div id="area-trabalho">
-            <div style="text-align: center; color: #9ca3af; margin-top: 50px;">
-                Selecione uma peça acima para iniciar o simulado.
+
+
+<div id="login-screen">
+
+
+    <button onclick="entrar()" style="padding: 15px 40px; font-size: 1.2rem; cursor: pointer; border-radius: 8px; border: none; background: var(--accent); color: white; font-weight: bold;">ACESSO MENTORIA</button>
+
+
+</div>
+
+
+
+
+
+<div id="main-app">
+
+
+    <header>
+
+
+        SISTEMA JOAQUIM - MENTORIA
+
+
+        <div class="timer-display" id="timer">05:00:00</div>
+
+
+        <button onclick="toggleTimer()" id="btnTimer" style="background: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.7rem; font-weight: bold;">INICIAR SIMULADO</button>
+
+
+    </header>
+
+
+    
+
+
+    <div class="main-layout">
+
+
+        <nav class="sidebar" id="menuLateral"></nav>
+
+
+        <main class="content-area">
+
+
+            <div id="joaquim">
+
+
+                <h2 style="text-align: center; color: #94a3b8; margin-top: 50px;">Selecione uma peça ao lado para começar</h2>
+
+
             </div>
-        </div>
+
+
+        </main>
+
+
     </div>
 
+
+
+
+
+    <div class="postit-fixed" id="meuPostit">
+
+
+        <div class="postit-header" onclick="togglePostit()">
+
+
+            <span>📌 CONSULTA & NOTAS</span>
+
+
+            <span id="seta">▲</span>
+
+
+        </div>
+
+
+        <div class="legal-search">
+
+
+            <input type="text" id="queryLei" placeholder="Artigo ou Súmula...">
+
+
+            <button onclick="buscarLei()">BUSCAR</button>
+
+
+        </div>
+
+
+        <textarea id="aula-notes" placeholder="Suas anotações aqui..."></textarea>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<script src="gabaritos.js"></script>
+
+
 <script>
-    // --- LÓGICA DO TIMER ---
-    let timeLeft = 5 * 60 * 60; 
-    let timerInterval = null;
 
-    function updateTimerDisplay() {
-        const hours = Math.floor(timeLeft / 3600);
-        const minutes = Math.floor((timeLeft % 3600) / 60);
-        const seconds = timeLeft % 60;
-        
-        const display = document.getElementById('timer-display');
-        display.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        
-        if (timeLeft <= 1800) { 
-            display.style.color = '#ef4444';
-        } else {
-            display.style.color = '#fff';
-        }
+
+    let currentPecaId = null;
+
+
+    let timerInterval;
+
+
+    let secondsLeft = 5 * 60 * 60; // 5 Horas
+
+
+
+
+
+    function entrar() {
+
+
+        document.getElementById('login-screen').style.display = 'none';
+
+
+        document.getElementById('main-app').style.display = 'block';
+
+
+        renderizarMenu();
+
+
+        const notas = localStorage.getItem('joaquim_anotacoes');
+
+
+        if(notas) document.getElementById('aula-notes').value = notas;
+
+
+<style>
+
+
+    /* Fundo do site para destacar a folha */
+
+
+    .bg-gabarito {
+
+
+        background-color: #f0f2f5;
+
+
+        padding: 40px 10px;
+
+
+        display: flex;
+
+
+        justify-content: center;
+
     }
 
-    function toggleTimer() {
-        const btn = document.getElementById('startStopBtn');
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            btn.innerText = 'INICIAR';
-        } else {
-            btn.innerText = 'PAUSAR';
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateTimerDisplay();
-                } else {
-                    clearInterval(timerInterval);
-                    alert("TEMPO ESGOTADO! Finalize sua peça.");
-                }
-            }, 1000);
-        }
+
+
+
+    function renderizarMenu() {
+
+
+        const pecas = {
+
+
+            'rt': '1. Rec. Trabalhista', 'cont': '2. Contestação', 'consigna': '3. Consignação',
+
+
+            'emb_exec': '4. Embargos Exec.', 'ro': '5. Recurso Ordinário', 'ed': '6. Emb. Declaração',
+
+
+            'ap': '7. Agravo de Petição', 'ai': '8. Agravo Instrumento', 'rr': '9. Recurso Revista',
+
+
+            'epe': '10. Exceção Pré-Exec.', 'ms': '11. Mandado Seg.', 'rescisoria': '12. Ação Rescisória',
+
+
+            'inquerito': '13. Inquérito Falta Grave', 'replica': '14. Réplica', 'contrarrazoes': '15. Contrarrazões',
+
+
+            'idpj': '16. IDPJ', 'cautelar': '17. Medida Cautelar', 'cumprimento': '18. Cumprimento Sent.', 'manifestacao': '19. Manifestação'
+
+
+        };
+
+
+        const menu = document.getElementById('menuLateral');
+
+
+        menu.innerHTML = Object.entries(pecas).map(([id, nome]) => 
+
+
+            `<button class="nav-btn" onclick="carregarPeca('${id}')" id="btn-${id}">${nome}</button>`
+
+
+        ).join('');
+
+
+    /* A "Folha de Papel" */
+
+
+    #container-gabarito {
+
+
+        background-color: #ffffff;
+
+
+        width: 100%;
+
+
+        max-width: 800px; /* Largura proporcional ao A4 */
+
+
+        min-height: 1000px;
+
+
+        padding: 70px 80px; /* Margens clássicas de petição */
+
+
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+
+        border: 1px solid #ddd;
+
+
+        font-family: "Times New Roman", Times, serif; /* Fonte Jurídica */
+
+
+        color: #333;
+
+
+        line-height: 1.8;
+
+
+        text-align: justify;
+
+
+        position: relative;
+
     }
 
-    function resetTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        timeLeft = 5 * 60 * 60;
-        document.getElementById('startStopBtn').innerText = 'INICIAR';
-        updateTimerDisplay();
-    }
 
-    // --- BANCO DE GABARITOS ---
-    const dbGabaritos = {
-        'rt': { 
-            texto: `EXCELENTÍSSIMO SENHOR DOUTO JUIZ DA ... VARA DO TRABALHO...\n\nRECLAMAÇÃO TRABALHISTA\n\nI - MÉRITO: Equiparação Salarial (Art. 461 CLT), Diferenças de FGTS (Art. 611-B, III CLT), Intervalo Intrajornada (Art. 71 CLT).`, 
-            guia: `DICA: Fundamente a Equiparação no Art. 461 e o FGTS no Art. 611-B.` 
-        },
-        'consigna': { 
-            texto: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nOBJETO: Depósito de verbas rescisórias e pertences (Art. 539 CPC).`, 
-            guia: `DICA: Use para evitar a multa do Art. 477, § 8º da CLT.` 
-        },
-        'cont': { 
-            texto: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nCONTESTAÇÃO COM RECONVENÇÃO\n\nI - PRELIMINARES: Inépcia e Incompetência.\nII - PREJUDICIAL: Prescrição Quinquenal (Art. 7, XXIX CF).`, 
-            guia: `DICA: A Reconvenção serve para cobrar prejuízos causados pelo empregado.` 
-        }
-    };
 
-    // --- LÓGICA DE INTERFACE ---
-    function carregarPeca(key) {
-        const dados = dbGabaritos[key];
-        const area = document.getElementById('area-trabalho');
-        
-        area.innerHTML = `
-            <div style="margin-bottom: 15px;">
-                <button class="btn-main" style="background:#4b5563" onclick="toggleElement('gab_content')">📖 Ver Gabarito Completo</button>
-                <button class="btn-main" style="background:#f59e0b" onclick="toggleElement('guia_content')">💡 DICAS DE MENTORIA</button>
-                
-                <div id="gab_content" class="gab-content">${dados.texto}</div>
-                <div id="guia_content" class="guia-content">${dados.guia}</div>
+
+    function carregarPeca(id) {
+
+
+        currentPecaId = id;
+
+
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+
+        document.getElementById(`btn-${id}`).classList.add('active');
+
+
+
+
+
+        const gabaritoPeca = window.dbGabaritosExternos[id] || {};
+
+
+        const salvo = localStorage.getItem('joaquim_peca_' + id);
+
+
+        const textoPadrao = salvo || "ID: 936045\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ...";
+
+
+
+
+
+        document.getElementById('joaquim').innerHTML = `
+
+
+            <div class="editor-header">
+
+
+                <button class="gab-btn" onclick="toggleVisivel('gab-box')">📖 GABARITO</button>
+
+
+                <button class="guia-btn" onclick="toggleVisivel('guia-box')">💡 DICAS</button>
+
+
+                <span class="status-save" id="save-status">Salvo automaticamente</span>
+
+
+                <button onclick="copiarTudo()" style="padding: 5px 10px; cursor: pointer;">COPIAR</button>
+
+
             </div>
-            <div id="texto-final" contenteditable="true">f5071219\n\n(Escreva sua peça aqui...)</div>
+
+
+            <div class="gabarito-panel" style="padding:0; border:none; margin-bottom:10px;">
+
+
+                <div id="gab-box" class="gab-content">${gabaritoPeca[1] || 'Sem gabarito.'}</div>
+
+
+                <div id="guia-box" class="guia-content">${gabaritoPeca.guia || ''}</div>
+
+
+            </div>
+
+
+            <div id="texto-final" contenteditable="true" oninput="salvarTexto()">${textoPadrao}</div>
+
+
+            <div id="counter" style="text-align:right; font-size:0.8rem; color:#94a3b8; margin-top:5px;">Caracteres: 0</div>
+
+
         `;
 
-        // Marcar botão ativo
-        document.querySelectorAll('.nav-menu .btn-main').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn_' + key).classList.add('active');
+
+        atualizarContador();
+
+
+    /* Títulos da Peça (Ex: I - MÉRITO) */
+
+
+    .titulo-juridico {
+
+
+        display: block;
+
+
+        font-weight: bold;
+
+
+        text-transform: uppercase;
+
+
+        margin-top: 30px;
+
+
+        margin-bottom: 10px;
+
+
+        font-size: 1.1em;
+
+
+        color: #000;
+
     }
 
-    function toggleElement(id) {
-        const el = document.getElementById(id);
-        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+
+
+
+    function salvarTexto() {
+
+
+        if(!currentPecaId) return;
+
+
+        const texto = document.getElementById('texto-final').innerText;
+
+
+        localStorage.setItem('joaquim_peca_' + currentPecaId, texto);
+
+
+        document.getElementById('save-status').innerText = "Guardando...";
+
+
+        setTimeout(() => { document.getElementById('save-status').innerText = "Salvo!"; }, 500);
+
+
+        atualizarContador();
+
+
+    /* Parágrafos com recuo na primeira linha */
+
+
+    #container-gabarito p {
+
+
+        margin-bottom: 15px;
+
+
+        text-indent: 2.5cm; /* Recuo padrão de parágrafo em petições */
+
     }
 
-    function copyText() {
-        const campo = document.getElementById('texto-final');
-        if (!campo) {
-            alert("Selecione uma peça primeiro!");
-            return;
+
+
+
+    function atualizarContador() {
+
+
+        const txt = document.getElementById('texto-final').innerText;
+
+
+        document.getElementById('counter').innerText = "Caracteres: " + txt.length;
+
+
+    /* Ajuste para o endereço/qualificação inicial que não deve ter recuo */
+
+
+    .sem-recuo {
+
+
+        text-indent: 0 !important;
+
+
+        font-weight: bold;
+
+    }
+
+
+
+
+    function toggleTimer() {
+
+
+        if(timerInterval) {
+
+
+            clearInterval(timerInterval);
+
+
+            timerInterval = null;
+
+
+            document.getElementById('btnTimer').innerText = "REOMAR SIMULADO";
+
+
+        } else {
+
+
+            document.getElementById('btnTimer').innerText = "PAUSAR";
+
+
+            timerInterval = setInterval(() => {
+
+
+                secondsLeft--;
+
+
+                const h = Math.floor(secondsLeft / 3600);
+
+
+                const m = Math.floor((secondsLeft % 3600) / 60);
+
+
+                const s = secondsLeft % 60;
+
+
+                document.getElementById('timer').innerText = 
+
+
+                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+
+                if(secondsLeft <= 0) clearInterval(timerInterval);
+
+
+            }, 1000);
+
+
         }
-        navigator.clipboard.writeText(campo.innerText).then(() => {
-            alert("Texto copiado para a área de transferência!");
-        });
+
+
+    /* Marca d'água ou rodapé discreto do seu site */
+
+
+    .paper-footer {
+
+
+        margin-top: 50px;
+
+
+        border-top: 1px solid #eee;
+
+
+        padding-top: 10px;
+
+
+        font-size: 0.8em;
+
+
+        color: #aaa;
+
+
+        text-align: center;
+
+
+        font-family: sans-serif;
+
     }
+
+
+</style>
+
+
+
+
+    function toggleVisivel(elementId) {
+
+
+        const el = document.getElementById(elementId);
+
+
+        const atual = el.style.display;
+
+
+        document.getElementById('gab-box').style.display = 'none';
+
+
+        document.getElementById('guia-box').style.display = 'none';
+
+
+        el.style.display = atual === 'block' ? 'none' : 'block';
+
+
+    }
+
+
+
+
+
+    function togglePostit() {
+
+
+        const p = document.getElementById('meuPostit');
+
+
+        p.classList.toggle('open');
+
+
+        document.getElementById('seta').innerText = p.classList.contains('open') ? '▼' : '▲';
+
+
+    }
+
+
+
+
+
+    function copiarTudo() {
+
+
+        const texto = document.getElementById('texto-final').innerText;
+
+
+        navigator.clipboard.writeText(texto);
+
+
+        alert("Petição copiada!");
+
+
+    }
+
+
+
+
+
+    function buscarLei() {
+
+
+        const termo = document.getElementById('queryLei').value.toLowerCase();
+
+
+        let link = "https://www.google.com/search?q=CLT+planalto+" + termo;
+
+
+        window.open(link, '_blank');
+
+
+    }
+
+
+
+
+
+    document.getElementById('aula-notes').addEventListener('input', (e) => {
+
+
+        localStorage.setItem('joaquim_anotacoes', e.target.value);
+
+
+    });
+
+
 </script>
+
+
 </body>
+
+
 </html>
+
+
+<div class="bg-gabarito">
+
+
+    <div id="container-gabarito">
+
+
+        <p style="text-align: center; color: #ccc; text-indent: 0; margin-top: 200px;">
+
+
+            Selecione uma peça para visualizar o gabarito formatado...
+
+
+        </p>
+
+
+    </div>
+
+
