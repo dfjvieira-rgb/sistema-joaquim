@@ -2373,6 +2373,117 @@ Local e data.
 Advogado
 OAB nº
 
+16.2. ESTRUTURA E EXERCÍCIO DA EXCEÇÃO DE SUSPEIÇÃO
+Segue o exercício de exceção de suspeição para estudo de sua estrutura.
+Patrícia ajuizou reclamação trabalhista em face da empresa Alfa Ltda.
+pleiteando verbas rescisórias provenientes de um contrato de trabalho que
+perdurou durante quatro anos. A ação foi distribuída para a 1ª Vara do Trabalho
+de Curitiba, cujo juiz titular, Dr. José Fulano, é amigo íntimo da reclamante, sendo
+o magistrado padrinho do filho da autora. Na qualidade de advogado(a) da
+empresa Alfa Ltda., elabore a medida legal cabível.
+        Resolução:
+AO DOUTO JUÍZO DA 1ª VARA DO TRABALHO DE CURITIBA/PR
+Processo nº
+EMPRESA ALFA LTDA., qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe notificações e
+intimações, com fulcro nos arts. 799 e 802 da CLT e 146 do CPC c/c o art.
+769 da CLT, OFERECER:
+EXCEÇÃO DE SUSPEIÇÃO
+na reclamação trabalhista que lhe move PATRÍCIA, já qualificada nos
+autos em epígrafe, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+A autora ajuizou reclamação trabalhista em face da excipiente pleiteando
+verbas rescisórias provenientes de um contrato de trabalho que perdurou
+durante quatro anos. A ação foi distribuída para a 1a Vara do Trabalho de
+Curitiba, cujo juiz titular, Dr. José Fulano, é amigo íntimo da reclamante,
+sendo o magistrado padrinho do filho da autora.
+II – DOS REQUISITOS ESPECÍFICOS
+Esta exceção está sendo apresentada no prazo de 15 dias úteis contados
+do conhecimento do fato de que o juiz, Dr. José Fulano, é amigo íntimo
+da reclamante, sendo o magistrado padrinho do filho da autora, nos
+termos do art. 146 do CPC.
+III – MÉRITO
+O art. 801, “b”, da CLT afirma que o juiz é obrigado a dar-se por suspeito
+quando tiver amizade íntima com qualquer uma das partes. Nesse mesmo
+sentido, assevera o art. 145, I, do CPC, segundo o qual se reputa fundada
+a suspeição de parcialidade do juiz, quando for amigo íntimo de qualquer
+das partes.
+Pelo exposto, não há que se negar a amizade íntima entre o magistrado
+e a autora, motivo pelo qual requer que este Juízo, de plano, se dê por
+suspeito para julgar a demanda.
+Caso contrário, requer que o TRT reconheça a suspensão do juiz e
+determine a remessa dos autos ao seu substituto.
+IV – REQUERIMENTOS FINAIS
+Diante do exposto, requer a excipiente que este Juízo se dê por suspeito
+para julgar a demanda, remetendo os autos ao juiz substituto para que
+processe e julgue o feito, ou, sucessivamente, caso não seja esse seu
+entendimento, que reúna suas razões, documentos em que se fundar a
+alegação e rol de testemunhas e encaminhe ao TRT, no prazo de 15 dias
+úteis, nos moldes do art. 146, §1º, do CPC.
+Protesta pela produção de todos os meios de prova em direito admitidos,
+em especial a prova testemunhal e documental.
+Por fim, requer que seja julgada procedente a presente exceção de
+suspeição, instituindo-se a remessa dos autos a outro juiz.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado(a)
+OAB nº
+
+//16.3. ESTRUTURA E EXERCÍCIO DA EXCEÇÃO DE IMPEDIMENTO
+Segue o exercício de exceção de impedimento para estudo de sua estrutura.
+Patrícia Maria ajuizou reclamação trabalhista em face da empresa Beta Ltda.
+com pedido de rescisão indireta, sob o argumento de que não recebia seu salário
+há 3 meses. A reclamação foi autuada e distribuída para a 3a Vara do Trabalho
+de Curitiba, cujo juiz titular, Dr. José Fulano, é marido da reclamante. Na qualidade
+de advogado(a) da empresa Beta Ltda., elabore a medida legal cabível.
+
+Resolução:
+AO DOUTO JUÍZO DA 3ª VARA DO TRABALHO DE CURITIBA/PR
+Processo nº
+EMPRESA BETA LTDA., qualificação e endereço completos, vem,
+respeitosamente, perante Vossa Excelência, por intermédio de seu
+advogado adiante assinado (procuração anexa), com escritório
+profissional no endereço completo, onde recebe notificações/intimações
+com fulcro nos arts. 799 e 802 da CLT e 146 do CPC c/c o art. 769 da
+CLT, OFERECER:
+EXCEÇÃO DE IMPEDIMENTO
+na reclamação trabalhista que lhe move PATRÍCIA MARIA, já qualificada
+nos autos em epígrafe, pelas razões de fato e de direito a seguir expostas.
+I – DOS FATOS
+A autora ajuizou reclamação trabalhista em face da Empresa Beta Ltda.
+com pedido de rescisão indireta, sob o argumento de que não percebia
+seu salário há 3 meses. A reclamação foi autuada e distribuída para a 3ª
+Vara do Trabalho de Curitiba/PR, cujo juiz titular, Dr. José Fulano, é
+marido da reclamante.
+II – MÉRITO
+O art. 144, IV, do CPC assevera que é defeso ao juiz exercer suas funções
+no processo contencioso ou voluntário, quando for cônjuge de alguma das
+partes.
+Pelo exposto, não há que se negar o impedimento do respeitável Juízo
+para processar e julgar a demanda, motivo pelo qual requer que este
+Juízo, de plano, dê-se por impedido para continuar no feito.
+
+III – REQUERIMENTOS FINAIS
+Diante do exposto, requer a excipiente que este Juízo se dê por suspeito
+para julgar a demanda, remetendo os autos ao juiz substituto para que
+processe e julgue o feito, ou, sucessivamente, caso não seja esse seu
+entendimento, que reúna suas razões, documentos em que se fundar a
+alegação e rol de testemunhas e encaminhe ao TRT, no prazo de 15 dias
+úteis, com base no art. 146, § 1º, do CPC.
+Protesta pela produção de todos os meios de prova em direito admitidos,
+em especial a prova testemunhal e documental.
+Por fim, requer que seja julgada procedente a presente exceção de
+impedimento, determinando a remessa dos autos ao juízo substituto.
+Nestes termos,
+pede deferimento.
+Local e data.
+Advogado(a)
+OAB nº
+
+
 
 
 
