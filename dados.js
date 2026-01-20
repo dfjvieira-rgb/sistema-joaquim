@@ -1,3 +1,174 @@
+O que você precisa fazer:
+
+    Salvar os arquivos PDF: Salve todos os seus gabaritos em arquivos .pdf separados (por exemplo: enunciado_rt_1.pdf, gabarito_rt_1.pdf, etc.) na mesma pasta onde você salvou seu arquivo .html principal.
+    Alterar o código HTML/JavaScript: Substituiremos o texto HTML que estava no JavaScript por referências aos caminhos dos arquivos PDF.
+
+Aqui está o código completo do seu simulador adaptado para carregar PDFs:
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador OAB 2ª Fase</title>
+    
+    <!-- CSS Incorporado (Mantido o layout geral) -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffeb3b;
+        }
+
+        main {
+            display: flex;
+            margin: 1rem;
+            height: 85vh; /* Ajusta a altura da área principal para melhor visualização do PDF */
+        }
+
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 240px;
+            max-height: 100%; /* Ocupa toda a altura da main */
+            overflow-y: auto; 
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .sidebar button:hover {
+            background-color: #0056b3;
+        }
+
+        .content {
+            flex: 4;
+            margin-left: 1rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Estilo para o visualizador de PDF (iframe ou embed) */
+        #pdf-viewer {
+            width: 100%;
+            height: 100%; /* Faz o visualizador preencher todo o espaço disponível */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Simulador OAB 2ª Fase</h1>
+        <div id="timer">05:00:00</div>
+    </header>
+
+    <main>
+        <nav class="sidebar">
+            <h2>Tipos de Peça</h2>
+            
+            <!-- Botões agora chamam a função com o NOME DO ARQUIVO PDF -->
+            <button onclick="loadPdf('enunciado_rt_1.pdf')">Enunciado RT 1</button>
+            <button onclick="loadPdf('gabarito_rt_1.pdf')">Gabarito RT 1</button>
+            <button onclick="loadPdf('consignacao_1.pdf')">Consignação em Pagamento 1</button>
+            <!-- Você precisará criar os PDFs com esses nomes e colocá-los na mesma pasta -->
+            <button onclick="loadPdf('consignacao_2.pdf')">Consignação em Pagamento 2</button>
+            
+        </nav>
+
+        <section class="content">
+            <h2>Conteúdo do Gabarito (PDF Viewer)</h2>
+            <!-- Elemento que exibirá o PDF -->
+            <iframe id="pdf-viewer" src="" title="Visualizador de PDF">
+                Seu navegador não suporta iframes. Você pode [baixar o PDF aqui](enunciado_rt_1.pdf).
+            </iframe>
+        </section>
+    </main>
+
+    <!-- JavaScript para a funcionalidade -->
+    <script>
+        // Função JavaScript para carregar o PDF
+        function loadPdf(filename) {
+            const viewer = document.getElementById('pdf-viewer');
+            // Define o atributo 'src' do iframe para o caminho do arquivo PDF
+            viewer.src = filename; 
+        }
+
+        // Função JavaScript para o Cronômetro de 5 horas (mantida do código anterior)
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            setInterval(function () {
+                const hours = parseInt(timer / 3600, 10); 
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = 0;
+                    display.textContent = "TEMPO ESGOTADO!";
+                    // Opcional: alert("Seu tempo de prova acabou!");
+                }
+            }, 1000);
+        }
+
+        // Inicializa o cronômetro e um PDF padrão quando a página carrega
+        window.onload = function () {
+            const fiveHours = 18000; 
+            const display = document.querySelector('#timer');
+            startTimer(fiveHours, display);
+            
+            // Carrega o enunciado inicial automaticamente ao abrir a página
+            loadPdf('enunciado_rt_1.pdf'); 
+        };
+    </script>
+
+</body>
+</html>
+
+
+finaliza aqui o codigo que le pdfs
+
+
 // Use VAR para permitir que o arquivo principal acesse os dados
 var dbGabaritosExternos = {
         // 1. RECLAMAÇÃO TRABALHISTA
@@ -4980,6 +5151,7 @@ Advogado
 OAB nº
 
 //
+
 
 
 
