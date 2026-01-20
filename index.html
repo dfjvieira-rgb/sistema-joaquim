@@ -127,11 +127,6 @@
             text-align: center;
             padding: 20px;
         }
-
-        .welcome-msg i {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
@@ -147,17 +142,10 @@
     <main>
         <nav class="sidebar">
             <h2>Peças Processuais</h2>
-            
             <button onclick="loadPDF('ro', 1)">Recurso Ordinário (Exame XXXV)</button>
-            
             <button onclick="loadPDF('rt', 1)">Reclamação Trabalhista (RT) 1</button>
             <button onclick="loadPDF('consigna', 1)">Consignação em Pagamento 1</button>
-            <button onclick="loadPDF('inquerito', 1)">Inquérito (Falta Grave) 1</button>
-            <button onclick="loadPDF('cont', 1)">Contestação 1</button>
-            <button onclick="loadPDF('ed', 1)">Embargos de Declaração 1</button>
-            <button onclick="loadPDF('ms', 1)">Mandado de Segurança 1</button>
-            <button onclick="loadPDF('ar', 1)">Ação Rescisória 1</button>
-        </nav>
+            </nav>
 
         <section class="content">
             <h2 id="titulo-peca">Área do Gabarito</h2>
@@ -171,34 +159,15 @@
     </main>
 
     <script>
-        /**
-         * MAPEAMENTO DOS ARQUIVOS PDF
-         * O nome do arquivo deve ser EXATAMENTE igual ao nome do arquivo na pasta.
-         */
         const pdfDatabase = {
             'ro': {
-                1: 'Exame Trabalho - SEGUNDA FASE XXXV - RO.pdf' // Nome solicitado vinculado
+                1: 'Exame Trabalho - SEGUNDA FASE XXXV - RO.pdf'
             },
             'rt': {
                 1: 'reclamacao_1.pdf'
             },
             'consigna': {
                 1: 'consignacao_1.pdf'
-            },
-            'inquerito': {
-                1: 'inquerito_1.pdf'
-            },
-            'cont': {
-                1: 'contestacao_1.pdf'
-            },
-            'ed': {
-                1: 'embargos_1.pdf'
-            },
-            'ms': {
-                1: 'mandado_seguranca_1.pdf'
-            },
-            'ar': {
-                1: 'acao_rescisoria_1.pdf'
             }
         };
 
@@ -207,53 +176,41 @@
             const placeholder = document.getElementById('placeholder');
             const titulo = document.getElementById('titulo-peca');
             
-            try {
-                const fileName = pdfDatabase[type][number];
+            const rawFileName = pdfDatabase[type][number];
 
-                if (fileName) {
-                    placeholder.style.display = 'none';
-                    viewer.style.display = 'block';
-                    
-                    // Carrega o arquivo
-                    viewer.src = fileName;
-                    
-                    // Atualiza o título na interface
-                    titulo.innerText = `Gabarito Selecionado: ${fileName.replace('.pdf', '')}`;
-                } else {
-                    alert('Arquivo PDF ainda não configurado para esta peça no banco de dados.');
-                }
-            } catch (e) {
-                alert('Erro ao tentar carregar o gabarito.');
+            if (rawFileName) {
+                placeholder.style.display = 'none';
+                viewer.style.display = 'block';
+                
+                // Definimos o SRC sem codificação extra para ver se o navegador resolve o espaço
+                // Importante: O arquivo deve estar no mesmo nível (mesma pasta) do index.html
+                viewer.src = rawFileName;
+                
+                titulo.innerText = `Gabarito Selecionado: ${rawFileName.replace('.pdf', '')}`;
+            } else {
+                alert('Arquivo não encontrado no banco de dados.');
             }
         }
 
-        // Cronômetro (5 horas)
+        // Cronômetro
         function startTimer(duration, display) {
             let timer = duration, hours, minutes, seconds;
             setInterval(function () {
                 hours = parseInt(timer / 3600, 10);
                 minutes = parseInt((timer % 3600) / 60, 10);
                 seconds = parseInt(timer % 60, 10);
-
                 hours = hours < 10 ? "0" + hours : hours;
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
-
                 display.textContent = hours + ":" + minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    timer = 0;
-                    display.textContent = "TEMPO ESGOTADO!";
-                }
+                if (--timer < 0) timer = 0;
             }, 1000);
         }
 
         window.onload = function () {
-            const fiveHours = 18000; 
             const display = document.querySelector('#timer');
-            startTimer(fiveHours, display);
+            startTimer(18000, display);
         };
     </script>
-
 </body>
 </html>
