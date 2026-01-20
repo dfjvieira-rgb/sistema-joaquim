@@ -17,135 +17,181 @@
             font-family: 'Segoe UI', sans-serif;
             margin: 0; background: var(--bg);
             height: 100vh; display: flex; flex-direction: column;
+            overflow: hidden;
         }
 
         header {
             background: var(--primary); color: white;
-            padding: 8px 15px; display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        #timer { font-size: 1.1rem; color: var(--warning); font-weight: bold; }
+        #timer { font-size: 1.2rem; color: var(--warning); font-weight: bold; }
 
-        /* Navegação por Abas (Exclusivo Mobile) */
-        .tabs {
-            display: flex; background: #ddd; gap: 2px;
+        /* BARRA DE ALTERNAR (ABAS) - BEM VISÍVEL */
+        .tabs-container {
+            display: flex;
+            background: #dfe6e9;
+            padding: 8px;
+            gap: 8px;
+            border-bottom: 2px solid #b2bec3;
         }
 
         .tab-btn {
-            flex: 1; padding: 12px; border: none; background: #eee;
-            cursor: pointer; font-weight: bold; color: #666; font-size: 0.8rem;
+            flex: 1;
+            padding: 15px 5px;
+            border: none;
+            background: #bdc3c7;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #95a5a6;
         }
 
         .tab-btn.active {
-            background: white; color: var(--accent); border-bottom: 3px solid var(--accent);
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 3px 0 #2980b9;
+            transform: translateY(1px);
         }
 
-        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        main { flex: 1; position: relative; overflow: hidden; }
 
         .content-section {
-            display: none; flex-direction: column; height: 100%; padding: 10px; box-sizing: border-box;
+            display: none;
+            height: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
 
-        .content-section.active { display: flex; }
+        .content-section.active { display: flex; flex-direction: column; }
 
-        /* Ajustes específicos das seções */
-        .sidebar-list { list-style: none; padding: 0; }
-        .btn-peca {
-            width: 100%; padding: 15px; margin-bottom: 10px;
-            background: white; border: 1px solid #ddd; border-radius: 8px;
-            text-align: left; font-size: 1rem;
-        }
-
+        /* Editor de Texto Otimizado para Mobile */
         textarea {
-            flex: 1; width: 100%; padding: 12px; border: 2px solid #ddd;
-            border-radius: 8px; font-size: 16px; /* Evita zoom automático no iOS */
-            resize: none; font-family: monospace;
+            flex: 1; width: 100%; padding: 15px; border: 2px solid #ddd;
+            border-radius: 10px; font-size: 16px; /* 16px evita zoom no iPhone */
+            resize: none; font-family: 'Courier New', monospace;
+            background: #fff; line-height: 1.5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .pdf-frame { flex: 1; border: none; width: 100%; border-radius: 8px; background: white; }
+        /* Botões do Menu */
+        .btn-peca {
+            width: 100%; padding: 20px; margin-bottom: 12px;
+            background: white; border: 2px solid #eee; border-radius: 12px;
+            text-align: left; font-size: 1rem; font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Área de PDFs */
+        .pdf-wrapper { flex: 1; display: flex; flex-direction: column; gap: 12px; height: 100%; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #95a5a6; border-radius: 10px; overflow: hidden; border: 1px solid #7f8c8d; }
+        .pdf-tag { background: #34495e; color: white; padding: 6px; text-align: center; font-size: 0.75rem; font-weight: bold; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
         .btn-save {
             background: var(--success); color: white; border: none;
-            padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px;
+            padding: 15px; border-radius: 10px; font-weight: bold; margin-bottom: 15px;
+            width: 100%; font-size: 1rem; box-shadow: 0 3px 0 #219150;
         }
 
-        /* Desktop: Mantém as 3 colunas se a tela for grande */
+        /* Layout para PC (Desktop) */
         @media (min-width: 900px) {
-            .tabs { display: none; }
-            main { flex-direction: row; }
+            .tabs-container { display: none; }
+            main { display: flex; flex-direction: row; }
             .content-section { display: flex !important; flex: 1; border-right: 1px solid #ddd; }
-            .content-section:last-child { border-right: none; }
-            .sidebar-section { flex: 0 0 200px; }
+            .sidebar-section { flex: 0 0 220px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-size: 0.9rem;">⚖️ <strong>JOAQUIM</strong></div>
+    <div>⚖️ <strong>JOAQUIM</strong></div>
     <div id="timer">05:00:00</div>
 </header>
 
-<div class="tabs" id="tabBar">
-    <button class="tab-btn active" onclick="switchTab('menu')">MENU</button>
-    <button class="tab-btn" onclick="switchTab('escrita')">RASCUNHO</button>
-    <button class="tab-btn" onclick="switchTab('pdfs')">PDFs</button>
-</div>
+<nav class="tabs-container">
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">1. PEÇAS</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">2. ESCREVER</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">3. GABARITO</button>
+</nav>
 
 <main>
     <section id="menu" class="content-section active sidebar-section">
-        <h3 style="margin-top:0;">Exames</h3>
-        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV (RO)</button>
-        <p style="color: #888; font-size: 0.8rem;">Clique no exame e depois mude para a aba RASCUNHO ou PDFs.</p>
+        <h3 style="margin-top:0; color:var(--primary);">Selecionar Exame:</h3>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV (RO)</button>
+        <p style="color: #7f8c8d; font-size: 0.85rem; padding: 10px; background: #eee; border-radius: 8px;">
+            <b>Como usar:</b><br>
+            1. Clique no Exame acima.<br>
+            2. Clique em <b>ESCREVER</b> para treinar.<br>
+            3. Clique em <b>GABARITO</b> para conferir.
+        </p>
     </section>
 
     <section id="escrita" class="content-section">
-        <button class="btn-save" onclick="salvar()">💾 SALVAR NO CELULAR</button>
-        <textarea id="texto" placeholder="Digite sua peça aqui..."></textarea>
+        <button class="btn-save" onclick="salvar()">💾 SALVAR TREINO NO CELULAR</button>
+        <textarea id="texto-rascunho" placeholder="Sua folha de respostas..."></textarea>
     </section>
 
     <section id="pdfs" class="content-section">
-        <div style="display:flex; flex-direction:column; height: 100%; gap: 10px;">
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <span style="font-size:0.7rem; font-weight:bold; background:#34495e; color:white; padding:3px; text-align:center;">ENUNCIADO</span>
-                <iframe id="view-enunciado" class="pdf-frame" src="about:blank"></iframe>
+        <div class="pdf-wrapper">
+            <div class="pdf-box">
+                <div class="pdf-tag">📄 ENUNCIADO</div>
+                <iframe id="view-enunciado" src="about:blank"></iframe>
             </div>
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <span style="font-size:0.7rem; font-weight:bold; background:#34495e; color:white; padding:3px; text-align:center;">GABARITO</span>
-                <iframe id="view-gabarito" class="pdf-frame" src="about:blank"></iframe>
+            <div class="pdf-box">
+                <div class="pdf-tag">✅ GABARITO</div>
+                <iframe id="view-gabarito" src="about:blank"></iframe>
             </div>
         </div>
     </section>
 </main>
 
 <script>
-    function switchTab(id) {
-        // Remove active de tudo
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // Função para alternar entre as abas no mobile
+    function switchTab(tabId) {
+        // Esconde todas as abas
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.remove('active');
+        });
         
-        // Ativa a correta
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
+        // Remove cor azul de todos os botões
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Mostra a aba escolhida e deixa o botão azul
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('btn-' + tabId).classList.add('active');
     }
 
-    function carregarExame(enunciado, gabarito) {
+    function carregarExame(enunciado, gabarito, nome) {
         document.getElementById('view-enunciado').src = "./" + enunciado;
         document.getElementById('view-gabarito').src = "./" + gabarito;
-        // Pula para a aba de rascunho automaticamente ao escolher
-        if (window.innerWidth < 900) switchTab('escrita');
+        
+        // No celular, pula direto para a escrita ao escolher a peça
+        if (window.innerWidth < 900) {
+            switchTab('escrita');
+        }
     }
 
     function salvar() {
-        const t = document.getElementById('texto').value;
-        if(!t) return alert("Escreva algo!");
-        const blob = new Blob([t], {type: 'text/plain'});
+        const texto = document.getElementById('texto-rascunho').value;
+        if (!texto) { alert("Escreva algo primeiro!"); return; }
+        
+        const blob = new Blob([texto], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Estudo_Joaquim.txt';
+        a.download = 'Revisao_Joaquim.txt';
         a.click();
     }
 
+    // Timer
     let tempo = 18000;
     setInterval(() => {
         let h = Math.floor(tempo / 3600);
