@@ -2,129 +2,110 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM V4.5 - ESTÁVEL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOAQUIM V4.5 - MODO FOCO</title>
     <style>
-        :root { 
-            --primary: #0f172a; --accent: #3b82f6; --bg: #f1f5f9; 
-            --sidebar-bg: #1e293b; --law-green: #059669; --tst-blue: #2563eb; 
-            --cf-purple: #9333ea; --paper: #ffffff;
-        }
-        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: #1e293b; }
-        header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); }
-        .timer-box { background: #334155; padding: 5px 15px; border-radius: 20px; font-family: monospace; font-size: 1.1rem; color: #fbbf24; }
+        :root { --primary: #0f172a; --accent: #3b82f6; --law: #059669; --paper: #ffffff; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: #e2e8f0; color: #1e293b; }
+        header { background: var(--primary); color: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--accent); }
+        .sidebar { width: 260px; background: #1e293b; color: white; padding: 20px; height: 100vh; position: sticky; top: 0; }
+        .nav-btn { width: 100%; text-align: left; padding: 14px; margin-bottom: 8px; border: none; background: rgba(255,255,255,0.05); color: #cbd5e1; cursor: pointer; border-radius: 8px; font-size: 0.8rem; font-weight: 500; transition: 0.2s; }
+        .nav-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
         
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        #main-app { display: none; }
-        
-        .main-layout { display: flex; flex-direction: column; min-height: 100vh; }
-        @media (min-width: 768px) { .main-layout { flex-direction: row; } .sidebar { width: 260px; height: 100vh; position: sticky; top: 50px; } }
-        
-        .sidebar { background: var(--sidebar-bg); color: white; padding: 15px; overflow-y: auto; }
-        .nav-btn { width: 100%; text-align: left; padding: 12px; margin-bottom: 6px; border: none; background: rgba(255,255,255,0.05); color: #cbd5e1; cursor: pointer; border-radius: 8px; font-size: 0.75rem; transition: 0.3s; }
-        .nav-btn.active { background: var(--accent); color: white; font-weight: bold; border-left: 4px solid #fff; }
+        .main-layout { display: flex; }
+        .content-area { padding: 30px; flex-grow: 1; max-width: 1100px; margin: 0 auto; }
 
-        .content-area { padding: 20px; flex-grow: 1; max-width: 1000px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        #joaquim { background: var(--paper); padding: 40px; border-radius: 4px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); min-height: 80vh; border: 1px solid #e2e8f0; }
-        
-        .gabarito-panel { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; margin-bottom: 25px; }
-        .gab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .gab-btn { background: #64748b; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
-        .guia-btn { width: 100%; background: var(--law-green); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-        
-        /* FORMATAÇÃO PALAVRA A PALAVRA */
-        .gab-content, #texto-final { 
-            margin-top: 20px; padding: 30px; background: #fff; border: 1px solid #e2e8f0; 
-            border-radius: 4px; font-family: 'Times New Roman', serif; font-size: 1.25rem; 
-            line-height: 1.8; color: #000; text-align: justify; white-space: pre-wrap; 
+        /* FORMATAÇÃO ESTILO PETIÇÃO OAB */
+        .oab-container { 
+            background: var(--paper); padding: 60px; border-radius: 2px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2); min-height: 1000px; 
+            font-family: 'Times New Roman', Times, serif; font-size: 1.3rem; 
+            line-height: 1.8; color: #000; text-align: justify; outline: none;
         }
-        .paragrafo-juridico { text-indent: 3em; margin-bottom: 0.8em; display: block; }
-        .titulo-juridico { font-weight: bold; text-align: center; margin: 1.5em 0 1em 0; text-transform: uppercase; display: block; }
+        .oab-para { text-indent: 3em; margin-bottom: 1em; display: block; }
+        .oab-head { font-weight: bold; text-align: center; display: block; text-transform: uppercase; margin: 1.5em 0; }
 
-        .guia-content { display: none; margin-top: 15px; padding: 20px; background: #f0fdf4; border-radius: 8px; border-left: 5px solid var(--law-green); max-height: 400px; overflow-y: auto; }
-        .planalto-tools { margin-top: 15px; padding: 12px; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1; display: flex; flex-wrap: wrap; gap: 5px; }
-        .btn-planalto { color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
-        
-        #texto-final { outline: none; min-height: 600px; border-top: 4px solid var(--accent); }
-        .copy-btn { width: 100%; margin-bottom: 20px; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .panel { background: #f8fafc; border: 1px solid #cbd5e1; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
+        .guia-box { display: none; margin-top: 15px; padding: 20px; background: #f0fdf4; border-left: 5px solid var(--law); border-radius: 4px; }
+        .btn-acao { background: var(--law); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .gab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .btn-gab { background: #475569; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <button onclick="liberar()" style="padding:20px 50px; cursor:pointer; font-weight:bold; border-radius:50px; border:none; background:var(--accent); color:white; font-size: 1.3rem;">ACESSAR SIMULADOS</button>
-</div>
+<header>
+    <div style="font-weight: 900; letter-spacing: 1px;">JOAQUIM <span style="font-weight: 300;">V4.5</span></div>
+    <div id="cronometro" style="font-family: monospace; font-size: 1.2rem; color: #fbbf24;">00:00:00</div>
+</header>
 
-<div id="main-app">
-    <header>
-        <div>JOAQUIM <span style="font-weight:200; opacity:0.7;">| SISTEMA DE MENTORIA</span></div>
-        <div class="timer-box" id="cronometro">00:00:00</div>
-    </header>
-    <div class="main-layout">
-        <nav class="sidebar" id="menuLateral"></nav>
-        <main class="content-area">
-            <div id="joaquim"></div>
-        </main>
+<div class="main-layout">
+    <div class="sidebar" id="menuLateral"></div>
+    <div class="content-area">
+        <div class="panel">
+            <div class="gab-grid" id="gabGrid"></div>
+            <button class="btn-acao" onclick="toggleGuia()">💡 VER FUNDAMENTAÇÃO E GUIA</button>
+            <div id="guiaBox" class="guia-box"></div>
+        </div>
+        <div class="oab-container" id="editor" contenteditable="true" spellcheck="false">
+            Selecione uma peça ao lado para começar...
+        </div>
     </div>
 </div>
 
 <script src="gabaritos.js"></script>
-
 <script>
-    const nomesPecas = { 
-        rt: "01. Reclamação Trabalhista", cont: "04. Contestação", ro: "07. Recurso Ordinário",
-        ap: "15. Agravo de Petição", ms: "17. Mandado de Segurança" 
-    };
-    
-    let pecaAtiva = 'ro';
-    let segundos = 0;
+    const lista = { rt: "Reclamação Trabalhista", cont: "Contestação", ro: "Recurso Ordinário", consigna: "Consignação" };
+    let ativa = 'rt';
+    let tempo = 0;
 
-    function liberar() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-        montarMenu();
-        loadPeca('ro');
-        setInterval(() => { segundos++; atualizarCronometro(); }, 1000);
-    }
-
-    function atualizarCronometro() {
-        const h = Math.floor(segundos / 3600).toString().padStart(2, '0');
-        const m = Math.floor((segundos % 3600) / 60).toString().padStart(2, '0');
-        const s = (segundos % 60).toString().padStart(2, '0');
-        document.getElementById('cronometro').innerText = `${h}:${m}:${s}`;
-    }
-
-    function montarMenu() {
-        const menu = document.getElementById('menuLateral');
-        menu.innerHTML = Object.keys(nomesPecas).map(k => 
-            `<button class="nav-btn ${k === pecaAtiva ? 'active' : ''}" id="btn_${k}" onclick="loadPeca('${k}')">${nomesPecas[k]}</button>`
+    function montar() {
+        document.getElementById('menuLateral').innerHTML = Object.keys(lista).map(k => 
+            `<button class="nav-btn ${k===ativa?'active':''}" onclick="carregar('${k}')">${lista[k]}</button>`
         ).join('');
+        setInterval(() => {
+            tempo++;
+            const h = Math.floor(tempo/3600).toString().padStart(2,'0');
+            const m = Math.floor((tempo%3600)/60).toString().padStart(2,'0');
+            const s = (tempo%60).toString().padStart(2,'0');
+            document.getElementById('cronometro').innerText = `${h}:${m}:${s}`;
+        }, 1000);
     }
 
-    // MOTOR DE FORMATAÇÃO PALAVRA A PALAVRA
-    function formatarTextoOAB(texto) {
-        if(!texto) return "Texto não encontrado no gabaritos.js";
-        return texto.split('\n').map(linha => {
-            const l = linha.trim();
-            if (l === "") return '<br>';
-            // Identifica se é título (curto, sem ponto final, ou caixa alta)
-            if ((l.length < 60 && !l.includes('.')) || l === l.toUpperCase() && l.length > 3) {
-                return `<span class="titulo-juridico">${l}</span>`;
-            }
-            return `<div class="paragrafo-juridico">${l}</div>`;
-        }).join('');
-    }
-
-    function loadPeca(key) {
-        pecaAtiva = key;
-        const db = (window.dbGabaritosExternos && window.dbGabaritosExternos[key]) ? window.dbGabaritosExternos[key] : {};
+    function carregar(key) {
+        ativa = key;
+        const db = window.dbGabaritosExternos[key] || { guia: "Vazio", 1: "Vazio" };
+        document.getElementById('guiaBox').innerHTML = `<div style="white-space:pre-wrap; line-height:1.6;">${db.guia}</div>`;
         
-        let botoesGab = '';
-        Object.keys(db).forEach(n => {
-            if(!isNaN(n)) botoesGab += `<button class="gab-btn" onclick="toggleVis('gab_${n}')">📖 Ver Gabarito ${n}</button>`;
-        });
+        let b = '';
+        Object.keys(db).forEach(n => { if(!isNaN(n)) b += `<button class="btn-gab" onclick="verGab('${key}','${n}')">LER GABARITO ${n}</button>`; });
+        document.getElementById('gabGrid').innerHTML = b;
+        document.getElementById('editor').innerText = "AO DOUTO JUÍZO...";
+        montar();
+    }
 
-        document.getElementById('joaquim').innerHTML = `
-            <button class="copy-btn" onclick="copyText()">COPIAR MINHA PEÇA</button>
-            <div class="gabarito-panel">
-                <div class="
+    function verGab(p, n) {
+        const txt = window.dbGabaritosExternos[p][n];
+        const html = txt.split('\n').map(l => {
+            const linha = l.trim();
+            if(!linha) return '<br>';
+            if(linha === linha.toUpperCase() && linha.length > 5) return `<div class="oab-head">${linha}</div>`;
+            return `<div class="oab-para">${linha}</div>`;
+        }).join('');
+        const v = window.open("", "_blank", "width=800,height=900");
+        v.document.write(`<html><head><style>
+            body { font-family: 'Times New Roman'; padding: 50px; line-height: 2; font-size: 1.3rem; text-align: justify; }
+            .oab-para { text-indent: 3em; margin-bottom: 1em; }
+            .oab-head { font-weight: bold; text-align: center; margin: 1.5em 0; }
+        </style></head><body>${html}</body></html>`);
+    }
+
+    function toggleGuia() {
+        const box = document.getElementById('guiaBox');
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    window.onload = montar;
+</script>
+</body>
+</html>
