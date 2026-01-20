@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Mobile Ultra</title>
+    <title>SISTEMA JOAQUIM - Foco Dinâmico</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -23,13 +23,14 @@
         header {
             background: var(--primary); color: white;
             padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s;
+            flex-shrink: 0;
         }
 
-        #timer { font-size: 1.1rem; color: var(--warning); font-weight: bold; }
+        #timer { font-size: 1.2rem; color: var(--warning); font-weight: bold; }
 
+        /* ABAS MOBILE */
         .tabs-container {
-            display: flex; background: #dfe6e9; padding: 5px; gap: 5px; border-bottom: 2px solid #b2bec3;
+            display: none; background: #dfe6e9; padding: 5px; gap: 5px; border-bottom: 2px solid #b2bec3;
         }
 
         .tab-btn {
@@ -39,85 +40,99 @@
 
         .tab-btn.active { background: var(--accent); color: white; }
 
-        main { display: flex; flex: 1; overflow: hidden; padding: 10px; gap: 10px; }
+        main { flex: 1; display: flex; overflow: hidden; padding: 10px; gap: 10px; }
 
-        .content-section { display: none; flex-direction: column; height: 100%; width: 100%; }
+        .content-section { display: none; flex-direction: column; height: 100%; }
         .content-section.active { display: flex; }
 
         /* EDITOR */
-        .editor-section { background: white; border-radius: 8px; padding: 10px; }
-        textarea { flex: 1; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; }
+        .editor-section { background: white; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: none; font-family: monospace; }
 
-        /* PDF SECTION COM RECURSO MINIMIZAR */
-        .pdf-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        /* PDF SECTION - FOCO DINÂMICO */
+        .pdf-section { flex: 2; display: flex; flex-direction: column; gap: 10px; transition: all 0.4s ease; }
+        
         .pdf-box { 
             flex: 1; display: flex; flex-direction: column; 
             background: white; border-radius: 8px; overflow: hidden; 
-            border: 1px solid #7f8c8d; transition: 0.3s;
+            border: 1px solid #7f8c8d; transition: all 0.4s ease;
         }
-        .pdf-box.minimized { flex: 0 0 35px; } /* Altura mínima quando escondido */
+
+        /* Classe de expansão */
+        .pdf-box.expanded { flex: 4 !important; }
+        .pdf-box.collapsed { flex: 0.1 !important; min-height: 40px !important; }
 
         .pdf-header { 
-            background: #34495e; color: white; padding: 5px 10px; 
+            background: #34495e; color: white; padding: 6px 12px; 
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.7rem; font-weight: bold;
+            font-size: 0.75rem; font-weight: bold;
         }
         
-        .toggle-btn { 
+        .focus-btn { 
             background: var(--accent); color: white; border: none; 
-            border-radius: 3px; cursor: pointer; padding: 2px 8px; 
+            border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.65rem;
         }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        /* DESKTOP SETUP */
-        @media (min-width: 900px) {
+        .btn-peca { width: 100%; padding: 15px; margin-bottom: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
+
+        /* AJUSTES MOBILE */
+        @media (max-width: 900px) {
+            .tabs-container { display: flex; }
+            main { padding: 5px; }
+            .content-section { display: none; width: 100% !important; }
+            .content-section.active { display: flex; }
+            .pdf-box { min-height: 400px; flex: none; }
+            .pdf-section { overflow-y: auto; }
+        }
+
+        /* AJUSTE LANDSCAPE MOBILE */
+        @media (max-height: 500px) and (orientation: landscape) {
+            header { display: none; }
+            .pdf-box { min-height: 100%; }
+        }
+
+        /* DESKTOP ESPECÍFICO */
+        @media (min-width: 901px) {
             .tabs-container { display: none; }
             main { flex-direction: row; }
-            .content-section { display: flex !important; flex: 1; }
+            .content-section { display: flex !important; }
             .sidebar-section { flex: 0 0 180px; }
-            .pdf-section { flex: 2; }
-        }
-
-        /* MOBILE LANDSCAPE (TELA DEITADA) */
-        @media (max-height: 500px) and (orientation: landscape) {
-            header { display: none; } /* Esconde topo para ganhar espaço */
-            .tabs-container { padding: 2px; }
-            .tab-btn { padding: 5px; font-size: 0.6rem; }
-            .pdf-section { flex-direction: row !important; }
-            .pdf-box.minimized { flex: 0 0 30px; width: 30px; }
+            .editor-section { flex: 1.5; }
         }
     </style>
 </head>
 <body>
 
-<header id="mainHeader">
+<header>
     <div>⚖️ <strong>JOAQUIM</strong></div>
     <div id="timer">05:00:00</div>
 </header>
 
 <nav class="tabs-container">
-    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">MENU</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">ESCRITA</button>
-    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">GABARITOS</button>
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">1. PEÇAS</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">2. ESCREVER</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">3. GABARITOS</button>
 </nav>
 
 <main>
     <section id="menu" class="content-section sidebar-section active">
-        <button style="width:100%; padding:15px; border-radius:8px; border:1px solid #ddd; font-weight:bold;" 
-                onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 EXAME XXXV (RO)</button>
+        <h3 style="margin:0 0 10px 0; font-size: 1rem;">Exames</h3>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 Exame XXXV (RO)</button>
     </section>
 
-    <section id="escrita" class="content-section editor-section">
-        <button style="background:var(--success); color:white; padding:10px; border:none; border-radius:5px; font-weight:bold; margin-bottom:5px;" onclick="salvar()">💾 SALVAR</button>
-        <textarea id="texto-rascunho" placeholder="Sua folha de resposta..."></textarea>
+    <section id="escrita" class="content-section editor-section active">
+        <button class="btn-save" onclick="salvar()">💾 SALVAR REVISÃO</button>
+        <textarea id="texto-rascunho" placeholder="Sua folha de respostas..."></textarea>
     </section>
 
-    <section id="pdfs" class="content-section pdf-section">
+    <section id="pdfs" class="content-section pdf-section active">
         <div class="pdf-box" id="box-enunciado">
             <div class="pdf-header">
                 <span>📄 ENUNCIADO</span>
-                <button class="toggle-btn" onclick="togglePdf('enunciado')">➖/➕</button>
+                <button class="focus-btn" onclick="focarPdf('enunciado')">FOCO / RESET</button>
             </div>
             <iframe id="view-enunciado" src="about:blank"></iframe>
         </div>
@@ -125,7 +140,7 @@
         <div class="pdf-box" id="box-gabarito">
             <div class="pdf-header">
                 <span>✅ GABARITO</span>
-                <button class="toggle-btn" onclick="togglePdf('gabarito')">➖/➕</button>
+                <button class="focus-btn" onclick="focarPdf('gabarito')">FOCO / RESET</button>
             </div>
             <iframe id="view-gabarito" src="about:blank"></iframe>
         </div>
@@ -140,9 +155,32 @@
         document.getElementById('btn-' + tabId).classList.add('active');
     }
 
-    function togglePdf(tipo) {
-        const box = document.getElementById('box-' + tipo);
-        box.classList.toggle('minimized');
+    // NOVA FUNÇÃO DE FOCO PARA COMPUTADOR E MOBILE
+    function focarPdf(tipo) {
+        const boxEnunciado = document.getElementById('box-enunciado');
+        const boxGabarito = document.getElementById('box-gabarito');
+
+        if (tipo === 'enunciado') {
+            if (boxEnunciado.classList.contains('expanded')) {
+                boxEnunciado.classList.remove('expanded');
+                boxGabarito.classList.remove('collapsed');
+            } else {
+                boxEnunciado.classList.add('expanded');
+                boxEnunciado.classList.remove('collapsed');
+                boxGabarito.classList.add('collapsed');
+                boxGabarito.classList.remove('expanded');
+            }
+        } else {
+            if (boxGabarito.classList.contains('expanded')) {
+                boxGabarito.classList.remove('expanded');
+                boxEnunciado.classList.remove('collapsed');
+            } else {
+                boxGabarito.classList.add('expanded');
+                boxGabarito.classList.remove('collapsed');
+                boxEnunciado.classList.add('collapsed');
+                boxEnunciado.classList.remove('expanded');
+            }
+        }
     }
 
     function carregarExame(enunciado, gabarito) {
@@ -153,14 +191,14 @@
 
     function salvar() {
         const t = document.getElementById('texto-rascunho').value;
+        if(!t) return alert("Vazio!");
         const blob = new Blob([t], {type:'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Revisao.txt';
+        a.download = 'Treino_Joaquim.txt';
         a.click();
     }
 
-    // Timer e ajuste de visualização
     let tempo = 18000;
     setInterval(() => {
         let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
@@ -168,9 +206,12 @@
         if (tempo > 0) tempo--;
     }, 1000);
 
-    if (window.innerWidth >= 900) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.add('active'));
-    }
+    // Garante visualização correta no PC ao iniciar
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 900) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('active'));
+        }
+    });
 </script>
 
 </body>
