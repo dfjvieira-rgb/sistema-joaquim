@@ -3,232 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador OAB 2ª Fase</title>
-    
-    <!-- CSS Incorporado -->
+    <title>Dashboard OAB 2ª Fase - Trabalho</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #e74c3c;
+            --text-light: #ecf0f1;
+            --bg: #f5f6fa;
         }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg);
+            flex-direction: column;
+        }
+
+        /* Top Bar & Timer */
         header {
-            background-color: #333;
+            background-color: var(--primary);
             color: white;
-            padding: 1rem;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
         }
 
         #timer {
+            font-family: 'Courier New', Courier, monospace;
             font-size: 1.5rem;
+            color: #f1c40f;
             font-weight: bold;
-            color: #ffeb3b; /* Amarelo para destaque */
         }
 
-        main {
+        /* Container Principal */
+        .wrapper {
             display: flex;
-            margin: 1rem;
-        }
-
-        .sidebar {
             flex: 1;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            min-width: 240px;
+            overflow: hidden;
         }
 
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            background-color: #007bff;
+        /* Sidebar Responsiva */
+        nav {
+            width: 260px;
+            background-color: var(--secondary);
             color: white;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        nav h3 {
+            padding: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #456789;
+        }
+
+        nav button {
+            width: 100%;
+            padding: 12px 15px;
+            background: none;
             border: none;
-            cursor: pointer;
+            color: white;
             text-align: left;
+            cursor: pointer;
+            border-bottom: 1px solid #2c3e50;
         }
 
-        .sidebar button:hover {
-            background-color: #0056b3;
+        nav button:hover { background: #456789; }
+
+        /* Área de Conteúdo */
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
-        .content {
-            flex: 4;
-            margin-left: 1rem;
-            background-color: white;
-            padding: 1rem;
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Abas Internas */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: #ddd;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-content { display: none; padding: 15px 0; }
+        .tab-content.active { display: block; }
+
+        /* Estilo Texto Jurídico */
+        .peca-text {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        /* Campos de Edição */
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #ccc;
+            resize: vertical;
         }
 
-        #gabarito-output {
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #f9f9f9;
-            white-space: pre-wrap;
-            font-family: monospace;
+        .grid-correcoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .box-correcao {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fff9e6;
+            border-radius: 5px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .wrapper { flex-direction: column; }
+            nav { width: 100%; height: 200px; }
+            header h1 { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Simulador OAB 2ª Fase</h1>
-        <div id="timer">05:00:00</div>
-    </header>
+<header>
+    <h1>OAB Trabalho 2026</h1>
+    <div id="timer">05:00:00</div>
+</header>
 
-    <main>
-        <nav class="sidebar">
-            <h2>Tipos de Peça</h2>
-            
-            <!-- LISTA COMPLETA DE BOTÕES -->
-            <button onclick="loadGabarito('rt', 1)">Reclamação Trabalhista (RT) 1</button>
-            <button onclick="loadGabarito('consigna', 1)">Consignação em Pagamento 1</button>
-            <button onclick="loadGabarito('consigna', 2)">Consignação em Pagamento 2</button>
-            <button onclick="loadGabarito('inquerito', 1)">Inquérito (Falta Grave) 1</button>
-            <button onclick="loadGabarito('inquerito', 2)">Inquérito (Falta Grave) 2</button>
-            <button onclick="loadGabarito('inquerito', 3)">Inquérito (Falta Grave) 3</button>
-            <button onclick="loadGabarito('cont', 1)">Contestação 1</button>
-            <button onclick="loadGabarito('ed', 1)">Embargos de Declaração (ED) 1</button>
-            <button onclick="loadGabarito('replica', 1)">Réplica à Contestação 1</button>
-            <button onclick="loadGabarito('ro', 1)">Recurso Ordinário (RO) 1</button>
-            <button onclick="loadGabarito('rade', 1)">Recurso Adesivo (RAde) 1</button>
-            <button onclick="loadGabarito('ai', 1)">Agravo de Instrumento (AI) 1</button>
-            <button onclick="loadGabarito('rr', 1)">Recurso de Revista (RR) 1</button>
-            <button onclick="loadGabarito('emb_tst', 1)">Embargos ao TST 1</button>
-            <button onclick="loadGabarito('re_stf', 1)">Recurso Extraordinário (RE STF) 1</button>
-            <button onclick="loadGabarito('emb_exec', 1)">Embargos à Execução 1</button>
-            <button onclick="loadGabarito('epe', 1)">Exceção de Pré-Executividade 1</button>
-            <button onclick="loadGabarito('ap', 1)">Agravo de Petição (AP) 1</button>
-            <button onclick="loadGabarito('emb_terc', 1)">Embargos de Terceiro 1</button>
-            <button onclick="loadGabarito('ms', 1)">Mandado de Segurança (MS) 1</button>
-            <button onclick="loadGabarito('ar', 1)">Ação Rescisória (AR) 1</button>
-            
-        </nav>
+<div class="wrapper">
+    <nav>
+        <h3>Peças Processuais</h3>
+        <button onclick="selecionarPeca('rt1')">Reclamação Trabalhista 01</button>
+        <button onclick="selecionarPeca('consigna1')">Consignação em Pagamento</button>
+        <button onclick="selecionarPeca('cont1')">Contestação</button>
+        <button onclick="selecionarPeca('ro1')">Recurso Ordinário</button>
+        
+        <h3>Minha Legislação</h3>
+        <button onclick="abrirLegislacao()">📝 Editar Súmulas/Artigos</button>
+    </nav>
 
-        <section class="content">
-            <h2>Conteúdo do Gabarito</h2>
-            <div id="gabarito-output">
-                Selecione um gabarito no menu ao lado para visualizar o conteúdo.
+    <main id="main-content">
+        <div class="card" id="welcome-msg">
+            <h2>Bem-vindo ao seu Dashboard de Estudos</h2>
+            <p>Selecione uma peça no menu lateral para começar o simulado ou revisar correções.</p>
+        </div>
+
+        <div id="peca-container" style="display:none;">
+            <h2 id="peca-titulo">Título da Peça</h2>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab(event, 'gabarito')">Gabarito</button>
+                <button class="tab-btn" onclick="showTab(event, 'fundamentacao')">Fundamentação</button>
+                <button class="tab-btn" onclick="showTab(event, 'correcoes')">Caderno de Erros (10)</button>
             </div>
-        </section>
+
+            <!-- Gabarito -->
+            <div id="gabarito" class="tab-content active peca-text">
+                Conteúdo do Gabarito...
+            </div>
+
+            <!-- Fundamentação -->
+            <div id="fundamentacao" class="tab-content">
+                <h3>Artigos, OJs e Súmulas</h3>
+                <div id="fundamentos-view" style="background:#e8f4fd; padding:15px; border-radius:8px;">
+                    <!-- Lista automática de fundamentos -->
+                </div>
+            </div>
+
+            <!-- Caderno de Erros -->
+            <div id="correcoes" class="tab-content">
+                <h3>Minhas 10 Correções & Dicas da Professora</h3>
+                <div class="grid-correcoes">
+                    <!-- Gerado por JS -->
+                    <div class="box-correcao"><strong>1ª Correção:</strong> <textarea placeholder="O que errei?"></textarea></div>
+                    <div class="box-correcao"><strong>Dica Professora:</strong> <textarea placeholder="Anotações da aula..."></textarea></div>
+                    <!-- Repetir até 10 via JS ou manualmente -->
+                </div>
+            </div>
+        </div>
     </main>
+</div>
 
-    <!-- Script para carregar o conteúdo dos gabaritos (Seus dados JS originais) -->
-    <script>
-        // SEUS DADOS DE GABARITO ESTÃO AGORA AQUI DENTRO DO HTML
-        window.dbGabaritosExternos = {
-            'rt': {
-                1: `1.2.EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTAJosé Fininho foi contratado pela empresa Heart Attack Grill Ltda., paratrabalhar na cidade de Florianópolis/SC, como garçom, mediante salário deR$ 2.000,00.O empregado afirma que uma das especialidades da Lanchonete era osanduíche denominado quadruple bypass com 4 hambúrgueres: 1 quilo de carnee 8.000 calorias.Relata que foi contratado no mesmo dia em que Juan para exercer a mesmafunção, na mesma filial. O trabalho se dava com a mesma perfeição técnica eprodutividade, porém Juan recebia salário fixo de R$ 2.500,00 por mês.O senhor Fininho conta que, em janeiro do ano da extinção do contrato, faltouao trabalho por um dia para comparecer em juízo como parte no processo em quelitigava contra seu ex-empregador. Embora tenha apresentado a certidão daJustiça do Trabalho confirmando suas alegações, o dia foi descontado do seusalário.O empregado comenta também que trabalhava 8 horas diárias de segundaa sexta-feira e usufruía de apenas 30 minutos de intervalo intrajornada.No curso do contrato, o empregador depositava apenas 4% do valor daremuneração a título de FGTS, pois havia acordo coletivo de trabalho autorizandoo recolhimento de apenas metade do valor.Na qualidade de advogado(a) do reclamante, apresente a medidaprocessual cabível para a defesa de seus direitos.Nos casos em que a lei exigir liquidação de valores, não se faz necessáriasua apresentação pelo Examinando, pois admite-se que o escritório possui setorpróprio ou contratado especificamente para tal fim. (Valor: 5,00)RESOLUÇÃOAO DOUTO JUÍZO DA ... VARA DO TRABALHO DEFLORIANÓPOLIS/SCAO DOUTO JUÍZO DA ... VARA DO TRABALHO DE FLORIANÓPOLIS/SCJOSÉ FININHO, garçom, qualificação e endereço completos, vem,respeitosamente, perante Vossa Excelência, por intermédio de seuadvogado adiante assinado (procuração anexa), com escritórioprofissional no endereço completo, onde recebe intimações ounotificações, com fulcro no art. 840, caput e § 1o, da CLT, PROPOR:RECLAMAÇÃO TRABALHISTA, pelo rito (...)em face de HEART ATTACK GRILL LTDA., qualificação e endereçocompletos, e SINDICATO DOS EMPREGADOS ..., qualificação eendereço completos, pelas razões de fato e de direito a seguir expostas.I – MÉRITO1. Equiparação salarialO reclamante foi contratado pela reclamada no mesmo dia em que Juanpara exercer a mesma função, na mesma filial, com a mesmaprodutividade e perfeição técnica, porém, enquanto recebia R$ 2.000,00,o seu colega recebia salário fixo de R$ 2.500,00 por mês.Nos termos do art. 461, caput e § 1o, da CLT, é devido o mesmo salárioaos empregados do mesmo empregador que exerçam a mesma função,no mesmo estabelecimento comercial, com a mesma produtividade eperfeição técnica e cuja diferença de tempo de serviço para o mesmoempregador não seja superior a quatro anos e de tempo na função nãoseja superior a dois anos.Diante do exposto, requer a condenação da reclamada ao pagamentodas diferenças salariais, bem como de seus reflexos nas verbascontratuais e rescisórias (aviso prévio, décimo terceiro, férias acrescidasde 1/3 e FGTS - depósitos e multa de 40%).Por fim, requer a retificação da CTPS do empregado para constar o seureal salário, no valor e R$ 2.500,00, nos termos do art. 29, § 1o, da CLT.R$2. Devolução do descontoA reclamada descontou do salário do reclamante um dia de trabalho nomês de janeiro do ano da extinção do contrato, em razão de o reclamanteter faltado ao trabalho para comparecer em juízo como parte no processoem que litigava contra seu antigo empregador, muito embora tivesseapresentado certidão da Justiça do Trabalho confirmando suasalegações.Com base no art. 473, VIII, da CLT e súmula 155, TST, o empregadopoderá deixar de comparecer ao serviço para comparecimento comoparte na Justiça do Trabalho.Diante do exposto, requer a condenação da reclamada à devolução dodia de trabalho descontado de seu salário. R$3. Intervalo intrajornadaO reclamante trabalhava 8 horas diárias de segunda a sexta-feira eusufruía de apenas 30 minutos de intervalo intrajornada.Nos termos do art. 71, caput, da CLT, aqueles que laboram mais de 6horas diárias fazem jus a um intervalo intrajornada de, no mínimo, 1 hora,o qual não era observado.Diante do exposto, requer a condenação da reclamada ao pagamento doperíodo suprimido, ou seja, de 30 minutos diários, acrescidos de 50%, àluz do art. 71, § 4o, da CLT. R$4. Diferenças de FGTSNo curso do contrato, o empregador depositava apenas 4% do valor daremuneração do reclamante a título de FGTS, pois havia acordo coletivode trabalho autorizandoo recolhimento de apenas metade do valor.Nos termos do art. 611-B, III, da CLT, é ilícita e, portanto, nula a cláusulade acordo coletivo de trabalho que implique redução do valor dosdepósitos mensais do FGTS. Ressalte-se que, o art. 15 da Lei no8.036/90 determina que os depósitos do FGTS devem ser de 8% daremuneração paga ou devida ao trabalhador no mês anterior.Diante do exposto, requer a declaração de nulidade da cláusula doacordo coletivo de trabalho que estabelece a redução dos depósitos doFGTS e a condenação da reclamada ao pagamento das diferençassalariais. R$5. Honorários advocatíciosRequer a condenação da reclamada ao pagamento de honoráriosadvocatícios, no importe de 15%, sobre o valor que resultar da liquidação,à luz do art. 791-A da CLT. R$II – PEDIDOSDiante do exposto, requer:a) a condenação da reclamada ao pagamento das diferenças salariais,bem como de seus reflexos nas verbas contratuais e rescisóriasR$ ............................................................................. ;b) a condenação da reclamada à devolução do dia de trabalhodescontado de seu salário ................................. R$ ....;c) a condenação da reclamada ao pagamento do período suprimido, ouseja, de 30 minutos diários, acrescidos de 50%, nos termos do art.71, § 4o, da CLT ............................................. R$....;d) a declaração de nulidade da cláusula do acordo coletivo de trabalhoque institui a redução dos depósitos do FGTS e a condenação dareclamada ao pagamento das diferençassalariais;e) a condenação da reclamada ao pagamento de honoráriosadvocatícios, no importe de 15% sobre o valor que resultar daliquidação, à luz do art. 791-A da CLT.III – REQUERIMENTOS FINAISDiante do exposto, requer:a) a notificação da Reclamada e do Sindicato dos Empregados em...,para oferecer resposta à reclamação trabalhista, sob pena de reveliae confissão quanto à matéria de fato;b) a produção de todos os meios de prova em direito admitidos, emespecial a prova documental, o depoimento pessoal e a oitiva detestemunhas; ec) por fim, a procedência dos pedidos com a condenação dareclamada ao pagamento das verbas pleiteadas, acrescidas dejuros e correção monetária.Atribui-se à causa o valor de R$... .Nestes termos,pede deferimento.Local e data.RECLAMAÇÃO TRABALHISTA, pelo rito (...) em face de HEART ATTACK GRILL LTDA....Advogado(a)OAB no`
-            },
-            'consigna': {
-                1: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE MACEIÓ/AL.ZENGA MODAS LTDA., pessoa jurídica de direito privado, inscrita noCNPJ sob o no 1.1.0001/00, com sede na Rua Lopes Quintas, 10,Maceió/AL, vem, respeitosamente, perante Vossa Excelência, porintermédio de seu advogado adiante assinado (procuração anexa), comescritório profissional no endereço completo, onde recebe intimações enotificações, com fulcro no art. 539 do CPC c/c art. 769 da CLT,PROPOR:AÇÃO DE CONSIGNAÇÃO EM PAGAMENTOem face de JOANA FIRMINO, brasileira, casada, costureira, residente naRua Lopes Andrade, 20, Maceió/AL, CEP: 10.0001-00, pelas razões defato e de direito a seguir expostas.I – FATOSA consignatária foi contratada por Zenga Modas Ltda., em 12.09.2008,para exercer a função de costureira, na unidade de Maceió/AL, sendodispensada sem justa causa em 11.10.2012, mediante aviso-prévioindenizado. Em seu armário, foi encontrado um telefone celular de suapropriedade. Joana foi cientificada de que, no dia 15.10.2012, às 10h,deveria comparecer na empresa para receber suas verbas rescisórias.Contudo, na data e hora designadas, a empregada não compareceu.A consignante tem o intuito de pagar as verbas devidas à consignatária,razão pela qual propôs a presente medida processual.II – MÉRITOEm razão da extinção do contrato de trabalho sem justa causa, sãodevidas à consignatária as seguintes verbas, no importe de R$ ..., asquais a consignante pretende depositar com o objetivo de que sejaP á g i n a 112 | 551@aryannalinhares @professoraaryannalinharesdeclarada extinta a obrigação:a) Saldo de salário (11 dias)...............................R$.............b) Aviso-prévio (42 dias) ....................................R$.............c) 13º salário proporcional (11/12)......................R$.............d) Férias em dobro – 2010/2011 + 1/3 ...............R$.............e) Férias + 1/3 (2011/2012)................................R$.............f) Férias proporcionais (2/12) + 1/3 ....................R$.............g) Multa de 40% do FGTS..................................R$.............Total devido .......................................................R$.............Requer, ainda, a devolução do aparelho celular e a entrega da CTPS,nos moldes do art. 542, I, do CPC.Postula a consignante o depósito das verbas, do celular e da CTPS,visando à extinção da obrigação, nos termos do art. 546 do CPC.Postula também o depósito dos documentos que comprovam acomunicação da extinção do contrato de trabalho aos órgãoscompetentes para acesso da consignatária ao seguro-desemprego e aoFGTS.Ressalte-se que, por não haver atraso no pagamento das verbasrescisórias, é indevida a multa prevista no art. 477, § 8º, da CLT.III – REQUERIMENTOS FINAISDiante do exposto, requer:a) o deferimento do depósito dos valores referidos, do aparelho celular eda CTPS (art. 542, I, do CPC);b) a citação da consignatária para levantar os valores, o aparelho celulare a CTPS depositados com efeito de quitação ou oferecer resposta, sobpena de revelia e declaração da extinção da obrigação (art. 542, II, doCPC);P á g i n a 113 | 551@aryannalinhares @professoraaryannalinharesc) a produção de todos os meios de prova em direito admitidos, emespecial a prova documental;d) a procedência do pedido com a declaração de extinção da obrigaçãoe condenação da consignatária ao pagamento de custas e honoráriosadvocatícios no importe 15%, com base no art. 791-A da CLT.... (texto completo da consignação que você enviou) ...Atribui-se à causa o valor de R$....Nestes termos,pede deferimento.Nestes termos, pede deferimento.Local e data.AdvogadoOAB no`,
-                2: `Cole aqui o texto da Consignação em Pagamento - Gabarito 2...`
-            },
-            'inquerito': {
-                1: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 1...`,
-                2: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 2...`,
-                3: `Cole aqui o texto do Inquérito para Apuração de Falta Grave - Gab 3...`
-            },
-            'cont': {
-                1: `Cole aqui o texto da Contestação...`
-            },
-            'ed': {
-                1: `Cole aqui o texto dos Embargos de Declaração...`
-            },
-            'replica': {
-                1: `Cole aqui o texto da Réplica à Contestação...`
-            },
-            'ro': {
-                1: `Cole aqui o texto do Recurso Ordinário...`
-            },
-            'rade': {
-                1: `Cole aqui o texto do Recurso Adesivo...`
-            },
-            'ai': {
-                1: `Cole aqui o texto do Agravo de Instrumento...`
-            },
-            'rr': {
-                1: `Cole aqui o texto do Recurso de Revista...`
-            },
-            'emb_tst': {
-                1: `Cole aqui o texto dos Embargos ao TST...`
-            },
-            're_stf': {
-                1: `Cole aqui o texto do Recurso Extraordinário...`
-            },
-            'emb_exec': {
-                1: `Cole aqui o texto dos Embargos à Execução...`
-            },
-            'epe': {
-                1: `Cole aqui o texto da Exceção de Pré-Executividade...`
-            },
-            'ap': {
-                1: `Cole aqui o texto do Agravo de Petição...`
-            },
-            'emb_terc': {
-                1: `Cole aqui o texto dos Embargos de Terceiro...`
-            },
-            'ms': {
-                1: `Cole aqui o texto do Mandado de Segurança...`
-            },
-            'ar': {
-                1: `Cole aqui o texto da Ação Rescisória...`
-            }
-        };
-
-        // --- Lógica do Visualizador de Gabaritos ---
-        function loadGabarito(tipo, numero) {
-            const outputDiv = document.getElementById('gabarito-output');
-            
-            if (window.dbGabaritosExternos && 
-                window.dbGabaritosExternos[tipo] && 
-                window.dbGabaritosExternos[tipo][numero]) {
-                
-                const gabaritoText = window.dbGabaritosExternos[tipo][numero];
-                outputDiv.innerHTML = gabaritoText; 
-                
-            } else {
-                outputDiv.innerHTML = `<p style="color: red;">Gabarito ${tipo.toUpperCase()} ${numero} não encontrado no arquivo de dados.</p>`;
-            }
+<script>
+    // Banco de Dados das Peças
+    const dbPecas = {
+        'rt1': {
+            titulo: "Reclamação Trabalhista - José Fininho",
+            texto: "<p>AO DOUTO JUÍZO DA... [Gabarito formatado aqui]</p>",
+            fundamentos: "Art. 840, §1º CLT; Súmula 155 TST; Art. 461 CLT (Equiparação); Art. 71 CLT (Intervalo)."
+        },
+        'consigna1': {
+            titulo: "Ação de Consignação em Pagamento - Zenga Modas",
+            texto: "<p>AO DOUTO JUÍZO DA... [Texto da Consignação]</p>",
+            fundamentos: "Art. 539 CPC; Art. 769 CLT; Art. 477 CLT."
         }
+    };
 
-        // --- Lógica do Cronômetro (5 horas para OAB 2ª fase) ---
-        // Tempo total em segundos (5 horas * 60 minutos/hora * 60 segundos/minuto)
-        let timeLeft = 5 * 60 * 60; 
-        const timerElement = document.getElementById('timer');
+    function selecionarPeca(id) {
+        const peca = dbPecas[id];
+        document.getElementById('welcome-msg').style.display = 'none';
+        document.getElementById('peca-container').style.display = 'block';
+        document.getElementById('peca-titulo').innerText = peca.titulo;
+        document.getElementById('gabarito').innerHTML = peca.texto;
+        document.getElementById('fundamentos-view').innerText = peca.fundamentos;
+    }
 
-        function updateTimer() {
-            const hours = Math.floor(timeLeft / 3600);
-            const minutes = Math.floor((timeLeft % 3600) / 60);
-            const seconds = timeLeft % 60;
+    function showTab(evt, tabName) {
+        let contents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+        
+        let btns = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+        
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
 
-            // Formata para sempre ter dois dígitos (ex: 05:00:00)
-            const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timerElement.textContent = display;
+    function abrirLegislacao() {
+        alert("Recurso de edição: Use os textareas para salvar seus artigos preferidos da CLT e CC!");
+    }
 
-            if (timeLeft <= 0) {
-                // Para o cronômetro e alerta o usuário
-                clearInterval(timerInterval);
-                timerElement.textContent = "TEMPO ESGOTADO!";
-                timerElement.style.color = "#dc3545"; // Vermelho
-                alert("Tempo da prova esgotado!");
-            } else {
-                timeLeft--;
-            }
-        }
+    // Cronômetro 5 horas
+    let timeLeft = 5 * 60 * 60;
+    const timerDisplay = document.getElementById('timer');
 
-        // Inicia o cronômetro automaticamente quando a página carrega
-        const timerInterval = setInterval(updateTimer, 1000);
-
-    </script>
-
+    setInterval(() => {
+        let h = Math.floor(timeLeft / 3600);
+        let m = Math.floor((timeLeft % 3600) / 60);
+        let s = timeLeft % 60;
+        timerDisplay.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if(timeLeft > 0) timeLeft--;
+    }, 1000);
+</script>
 </body>
 </html>
