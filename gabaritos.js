@@ -1,3 +1,9 @@
+/**
+ * gabarito.js - Versão Otimizada 2026
+ * Implementa limpeza automática de rodapés/redes sociais e formatação de parágrafos.
+ */
+
+// 1. BANCO DE DADOS (PARTE 1)
 window.dbGabaritosExternos = {
     'rt': {
         1: `1.2.EXERCÍCIO I DE RECLAMAÇÃO TRABALHISTA
@@ -85,7 +91,6 @@ IV – REQUERIMENTOS FINAIS: Notificação da embargada e procedência dos pedid
         'guia': `💡 DICAS DE MENTORIA - EMBARGOS:\n\n1. BEM DE FAMÍLIA: Proteção absoluta para moradia única.\n2. MULTA 523 CPC: Inaplicável ao Processo do Trabalho.\n3. PRAZO: 5 dias após a garantia do juízo.`
     },
 
-    // Espaço para as outras peças
     'ro': { 1: `(Texto de Recurso Ordinário será inserido aqui)` },
     'ed': { 1: `(Texto de Embargos de Declaração será inserido aqui)` },
     'ap': { 1: `(Texto de Agravo de Petição será inserido aqui)` },
@@ -93,4 +98,47 @@ IV – REQUERIMENTOS FINAIS: Notificação da embargada e procedência dos pedid
     'rr': { 1: `(Texto de Recurso de Revista será inserido aqui)` },
     'epe': { 1: `(Texto de Exceção de Pré-Executividade será inserido aqui)` },
     'ms': { 1: `(Texto de Mandado de Segurança será inserido aqui)` }
+};
+
+// 2. LÓGICA DE GERENCIAMENTO E LIMPEZA
+const GabaritoManager = {
+    config: {
+        removerRodapes: /P\s?á\s?gi\s?na\s\d+\s\|\s\d+/gi, 
+        removerSociais: /@aryannalinhares|@professoraaryannalinhares/gi,
+        espacosExtras: /\n{3,}/g, 
+    },
+
+    formatarTexto: function(texto) {
+        if (!texto) return "";
+        let textoLimpo = texto;
+
+        // Limpeza de rodapés e redes sociais
+        textoLimpo = textoLimpo.replace(this.config.removerRodapes, "");
+        textoLimpo = textoLimpo.replace(this.config.removerSociais, "");
+        textoLimpo = textoLimpo.replace(this.config.espacosExtras, "\n\n");
+        
+        // Transformação em parágrafos HTML para visibilidade
+        const blocos = textoLimpo.split(/\n/);
+        return blocos
+            .map(linha => {
+                const conteudo = linha.trim();
+                if (conteudo.length > 0) {
+                    return `<p style="margin-bottom: 12px; line-height: 1.6; text-align: justify;">${conteudo}</p>`;
+                }
+                return "";
+            })
+            .join("");
+    },
+
+    renderizarNoSite: function(categoria, questao) {
+        const container = document.getElementById('container-gabarito');
+        if (window.dbGabaritosExternos && window.dbGabaritosExternos[categoria]) {
+            const textoBruto = window.dbGabaritosExternos[categoria][questao];
+            if (textoBruto) {
+                container.innerHTML = this.formatarTexto(textoBruto);
+            } else {
+                container.innerHTML = "<p>Gabarito não encontrado.</p>";
+            }
+        }
+    }
 };
