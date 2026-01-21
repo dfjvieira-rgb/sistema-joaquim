@@ -42,14 +42,252 @@
         .exame-btn { background: white; border: 1px solid #ddd; padding: 10px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.75rem; font-weight: bold; }
         .exame-btn.active { background: var(--accent); color: white; }
         
-        /* ÁREAS DIVIDIDAS */
+        /* EDITOR */
         .work-section { width: 40%; display: flex; flex-direction: column; background: white; flex-shrink: 0; min-width: 200px; }
         
-        /* DIVISOR (RESIZER) */
-        #resizer { width: 10px; background: #cbd5e0; cursor: col-resize; transition: background 0.2s; z-index: 10; border-left: 1px solid #a0aec0; border-right: 1px solid #a0aec0; }
+        /* DIVISOR MANUAL */
+        #resizer { width: 10px; background: #cbd5e0; cursor: col-resize; z-index: 10; border-left: 1px solid #a0aec0; border-right: 1px solid #a0aec0; }
         #resizer:hover { background: var(--accent); }
 
         .pdf-section { flex: 1; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; min-width: 200px; }
         
         .editor-header { padding: 10px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
-        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100
+        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
+
+        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        .pdf-header { padding: 8px 12px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; font-weight: bold; background: #2c3e50; }
+        .pdf-frame { width: 100%; height: 85vh; border: none; background: white; }
+
+        .btn-action { border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
+        #btn-reopen { position: fixed; left: 0; top: 100px; background: var(--primary); color: white; border: none; padding: 10px 8px; border-radius: 0 5px 5px 0; cursor: pointer; display: none; z-index: 900; }
+
+        /* MOBILE */
+        @media (max-width: 1024px) {
+            #resizer { display: none; }
+            .work-section { width: 100% !important; }
+            .sidebar { position: fixed; left: 0; top: 0; height: 100%; width: 100% !important; z-index: 2000; display: none; }
+            .sidebar.show-mobile { display: flex; }
+            main { flex-direction: column; overflow-y: auto; }
+            .pdf-section { width: 100% !important; }
+            .pdf-frame { height: 450px; }
+            #btn-reopen { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <button id="mobile-toggle" style="background:#34495e; color:white; border:none; padding:8px; border-radius:4px; display:none;" onclick="toggleSidebarMobile()">☰</button>
+        <div id="timer">05:00:00</div>
+    </div>
+    <div class="nav-group">
+        <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-postit">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-dicas">👩‍🏫 Dicas</button><div class="dropdown-content" id="list-db_dicas"></div></div>
+    </div>
+</header>
+
+<button id="btn-reopen" onclick="toggleSidebarPC()">ABRIR MENU »</button>
+
+<main id="main-container">
+    <aside class="sidebar" id="sidebar-main">
+        <div class="sidebar-header"><b>PAINEL</b><button onclick="toggleSidebarPC()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#c0392b">« RECOLHER</button></div>
+        <div class="sidebar-content">
+            <h4>💾 BACKUP</h4>
+            <div style="display:flex; gap:5px;">
+                <button class="btn-action" style="background:#27ae60; flex:1" onclick="fazerBackup()">EXPORTAR</button>
+                <button class="btn-action" style="background:#2980b9; flex:1" onclick="document.getElementById('input-file').click()">IMPORTAR</button>
+            </div>
+            <input type="file" id="input-file" style="display:none" onchange="importarBackup(this)">
+            <h4>📂 SELECIONAR EXAME</h4>
+            <div id="lista-exames" style="display:flex; flex-direction:column; gap:4px"></div>
+            <h4>📌 MURAL</h4>
+            <div id="mural-content"></div>
+        </div>
+    </aside>
+
+    <section class="work-section" id="editor-area">
+        <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
+            ⚠️ EDITANDO: <span id="nome-item-editando"></span> 
+            <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
+            <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
+        </div>
+        <div class="editor-header">
+            <span id="label-exame" style="font-weight: bold; font-size: 0.7rem; color:var(--primary)">📍 Aguardando Exame...</span>
+            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR TXT</button>
+        </div>
+        <textarea id="area-peca" placeholder="Comece sua peça aqui..."></textarea>
+    </section>
+
+    <div id="resizer"></div>
+
+    <section class="pdf-section" id="section-pdfs">
+        <div class="pdf-box">
+            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
+            <iframe class="pdf-frame" id="v-enu"></iframe>
+        </div>
+        <div class="pdf-box">
+            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
+            <iframe class="pdf-frame" id="v-gab"></iframe>
+        </div>
+    </section>
+</main>
+
+<div id="janela-consulta" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:5000; display:none; flex-direction:column;">
+    <div id="header-consulta" style="padding:15px; display:flex; justify-content:space-between; align-items: center; color:white; font-weight:bold;">
+        <span id="titulo-consulta"></span><button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button>
+    </div>
+    <div id="corpo-consulta" style="flex:1; padding:30px; overflow-y:auto; white-space:pre-wrap; font-family:monospace; font-size:1.1rem;"></div>
+    <div style="padding: 15px; background: #f8f9fa;"><button class="btn-action" style="background:var(--accent); width:100%; height: 50px;" onclick="inserirNoEditor()">COPIAR PARA PEÇA</button></div>
+</div>
+
+<script>
+    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
+    const cores = { db_estruturas: '#3498db', db_correcoes: '#f39c12', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
+    let modoEdicao = false, ctx = { banco: '', id: '' }, cachePeca = "", textoConsultado = "";
+
+    // LÓGICA DO ARRASTO MANUAL
+    const resizer = document.getElementById('resizer');
+    const editorArea = document.getElementById('editor-area');
+    const mainContainer = document.getElementById('main-container');
+
+    resizer.addEventListener('mousedown', (e) => {
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+        mainContainer.style.userSelect = 'none';
+    });
+
+    function resize(e) {
+        const sidebar = document.getElementById('sidebar-main');
+        const sidebarW = sidebar.classList.contains('collapsed') ? 0 : 250;
+        let newWidth = ((e.clientX - sidebarW) / (window.innerWidth - sidebarW)) * 100;
+        if (newWidth > 10 && newWidth < 90) editorArea.style.width = newWidth + '%';
+    }
+    function stopResize() { document.removeEventListener('mousemove', resize); mainContainer.style.userSelect = 'auto'; }
+
+    // FUNÇÕES DE INTERFACE
+    function toggleSidebarPC() {
+        const side = document.getElementById('sidebar-main');
+        const btn = document.getElementById('btn-reopen');
+        side.classList.toggle('collapsed');
+        btn.style.display = side.classList.contains('collapsed') ? 'block' : 'none';
+    }
+    function toggleSidebarMobile() { document.getElementById('sidebar-main').classList.toggle('show-mobile'); }
+
+    function montarExames() {
+        const container = document.getElementById('lista-exames');
+        for (let i = 35; i <= 44; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'exame-btn ex-btn-' + i;
+            btn.innerText = `OAB EXAME XXX${i}`;
+            btn.onclick = () => carregarExame(i);
+            container.appendChild(btn);
+        }
+    }
+
+    function carregarExame(num) {
+        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.ex-btn-' + num).classList.add('active');
+        document.getElementById('v-enu').src = `./ro${num}.pdf`;
+        document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf`;
+        document.getElementById('label-exame').innerText = `📍 EXAME OAB XXX${num}`;
+    }
+
+    function renderizarTudo() {
+        bancos.forEach(banco => {
+            const db = JSON.parse(localStorage.getItem(banco)) || {};
+            const container = document.getElementById('list-' + banco);
+            container.innerHTML = Object.keys(db).map(id => `
+                <div class="menu-item">
+                    <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
+                    <span onclick="event.stopPropagation(); entrarModoEdicao('${banco}', '${id}')">✏️</span>
+                    <span onclick="event.stopPropagation(); excluirItem('${banco}', '${id}')" style="margin-left:8px">🗑️</span>
+                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="entrarModoEdicao('${banco}', 'novo')">+ NOVO</button>`;
+        });
+        const mural = document.getElementById('mural-content');
+        mural.innerHTML = "";
+        ['db_postits', 'db_dicas'].forEach(b => {
+            const db = JSON.parse(localStorage.getItem(b)) || {};
+            Object.values(db).forEach(item => {
+                mural.innerHTML += `<div style="padding:8px; border-radius:4px; font-size:0.7rem; border-left:4px solid ${cores[b]}; background:white; margin-bottom:5px; box-shadow:1px 1px 3px rgba(0,0,0,0.1)"><b>${item.nome}</b></div>`;
+            });
+        });
+    }
+
+    // BACKUP E EXPORTAÇÃO
+    function fazerBackup() {
+        const dados = {};
+        bancos.forEach(b => dados[b] = JSON.parse(localStorage.getItem(b)));
+        const blob = new Blob([JSON.stringify(dados)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `backup_sistema_joaquim.json`;
+        a.click();
+    }
+    function importarBackup(input) {
+        const leitor = new FileReader();
+        leitor.onload = (e) => {
+            const dados = JSON.parse(e.target.result);
+            Object.keys(dados).forEach(k => localStorage.setItem(k, JSON.stringify(dados[k])));
+            alert("Sincronizado!"); location.reload();
+        };
+        leitor.readAsText(input.files[0]);
+    }
+    function exportarTXT() { 
+        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'}); 
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click(); 
+    }
+
+    // CONSULTA E EDIÇÃO
+    function abrirConsulta(banco, id) {
+        const db = JSON.parse(localStorage.getItem(banco));
+        textoConsultado = db[id].texto;
+        document.getElementById('titulo-consulta').innerText = db[id].nome;
+        document.getElementById('corpo-consulta').innerText = db[id].texto;
+        document.getElementById('header-consulta').style.backgroundColor = cores[banco];
+        document.getElementById('janela-consulta').style.display = 'flex';
+    }
+    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
+    function inserirNoEditor() { if(!modoEdicao) document.getElementById('area-peca').value += "\n" + textoConsultado; fecharConsulta(); }
+
+    function entrarModoEdicao(banco, id) {
+        if(modoEdicao) return;
+        const db = JSON.parse(localStorage.getItem(banco)) || {};
+        cachePeca = document.getElementById('area-peca').value;
+        ctx = { banco, id };
+        modoEdicao = true;
+        const item = id === 'novo' ? { nome: "TÍTULO", texto: "CONTEÚDO" } : db[id];
+        document.getElementById('area-peca').value = `${item.nome}\n---\n${item.texto}`;
+        document.getElementById('nome-item-editando').innerText = item.nome;
+        document.getElementById('aviso-edicao').style.display = "block";
+    }
+    function salvarAlteracoes() {
+        let db = JSON.parse(localStorage.getItem(ctx.banco)) || {};
+        const conteudo = document.getElementById('area-peca').value.split('\n---\n');
+        const id = ctx.id === 'novo' ? 'ID'+Date.now() : ctx.id;
+        db[id] = { nome: conteudo[0].trim(), texto: conteudo[1] || "" };
+        localStorage.setItem(ctx.banco, JSON.stringify(db));
+        cancelarEdicao();
+    }
+    function cancelarEdicao() {
+        modoEdicao = false; document.getElementById('area-peca').value = cachePeca;
+        document.getElementById('aviso-edicao').style.display = "none"; renderizarTudo();
+    }
+    function excluirItem(banco, id) { if(confirm("Excluir permanentemente?")) { let db = JSON.parse(localStorage.getItem(banco)); delete db[id]; localStorage.setItem(banco, JSON.stringify(db)); renderizarTudo(); } }
+    function expandir(id) { const el = document.getElementById(id); if (el.requestFullscreen) el.requestFullscreen(); else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }
+
+    window.onload = () => {
+        montarExames(); renderizarTudo();
+        if(window.innerWidth < 1024) document.getElementById('mobile-toggle').style.display = 'block';
+        let s = 18000; setInterval(() => {
+            let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
+            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
+            if(s > 0) s--;
+        }, 1000);
+    };
+</script>
+</body>
+</html>
