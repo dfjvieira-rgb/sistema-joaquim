@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace Custom</title>
+    <title>SISTEMA JOAQUIM - Inteligência OAB</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -20,17 +20,20 @@
         main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
         
+        /* Sidebar lateral */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
         .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: #fff; border: 2px solid #edf2f7; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; }
+        .btn-peca:hover { border-color: var(--accent); }
 
-        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 100px; position: relative; display: flex; flex-direction: column; }
+        /* Área do Editor */
+        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 150px; position: relative; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
         .btn-save { background: var(--success); }
         .btn-pdf { background: #607d8b; }
         textarea#area-peca { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
 
-        /* PAINEL DE FUNDAMENTAÇÃO EDITÁVEL */
+        /* Painel Fundamentação com Inteligência */
         #panel-fundamentos { 
             position: absolute; right: -305px; top: 0; width: 300px; height: 100%; 
             background: #fffdf5; border-left: 5px solid var(--warning); z-index: 2000;
@@ -43,13 +46,14 @@
             background: var(--warning); color: #2c3e50; border: none; border-radius: 8px 0 0 8px;
             writing-mode: vertical-rl; font-weight: bold; font-size: 0.75rem; cursor: pointer;
         }
-        #lista-fundamentos textarea { width: 100%; height: 75%; border: 1px solid #e6dbb3; border-radius: 8px; padding: 10px; font-size: 0.85rem; background: #fff; resize: none; }
-        .btn-save-fund { background: var(--success); color: white; border: none; padding: 8px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        #lista-fundamentos textarea { width: 100%; height: 75%; border: 1px solid #e6dbb3; border-radius: 8px; padding: 10px; font-size: 0.85rem; background: #fff; resize: none; font-family: monospace; }
+        .btn-save-fund { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* RESIZER */
+        /* RESIZER (BARRA DE ARRASTAR) */
         .resizer { width: 14px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b2bec3; }
         .resizer:hover { background: var(--accent); color: white; }
 
+        /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; display: flex; flex-direction: column; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
         .pdf-box.expanded { flex: 50 !important; }
@@ -72,7 +76,7 @@
 </head>
 <body id="bodyTag">
 
-<header>
+<header id="mainHeader">
     <div>⚖️ <strong>SISTEMA JOAQUIM</strong></div>
     <div id="timer" style="color: var(--warning); font-weight: 800;">05:00:00</div>
 </header>
@@ -85,25 +89,26 @@
 
 <main>
     <aside id="menu" class="content-section sidebar-section active-mobile">
-        <h4 style="margin: 10px 0">EXAMES:</h4>
-        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV</button>
-        <button class="btn-peca" onclick="carregarExame('ro34.pdf', 'ro34-gabarito.pdf', 'XXXIV')">📂 Exame XXXIV</button>
+        <h4 style="margin: 10px 0">EXAMES DISPONÍVEIS:</h4>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV (RO)</button>
+        <button class="btn-peca" onclick="carregarExame('ro34.pdf', 'ro34-gabarito.pdf', 'XXXIV')">📂 Exame XXXIV (RO)</button>
     </aside>
 
     <section id="escrita" class="content-section editor-section">
         <div id="panel-fundamentos">
             <button class="btn-toggle-fund" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
-            <h3 style="font-size: 1rem; margin: 0 0 10px 0; color: #d35400;">EDITAR TESES</h3>
-            <div id="lista-fundamentos" style="flex:1">
-                <textarea id="edit-teses" placeholder="Digite as teses aqui (ex: Art. 5 CF)..."></textarea>
-                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR ALTERAÇÕES</button>
+            <h3 style="font-size: 0.9rem; margin: 0 0 10px 0; color: #d35400;">TESES E ARTIGOS (MAPEADOS)</h3>
+            <div id="lista-fundamentos" style="flex:1; display:flex; flex-direction:column;">
+                <textarea id="edit-teses" placeholder="Selecione um exame para carregar o mapeamento..."></textarea>
+                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR AJUSTE MANUAL</button>
             </div>
         </div>
+
         <div class="actions-row">
             <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR TXT</button>
             <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
         </div>
-        <textarea id="area-peca" placeholder="Comece o treino..."></textarea>
+        <textarea id="area-peca" placeholder="Desenvolva sua peça aqui..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe">⋮</div>
@@ -136,25 +141,30 @@
     let exameAtivo = "";
     let urls = { enu: "", gab: "" };
 
-    // Carregar exames e fundamentos do armazenamento local
+    // BANCO DE DADOS DA INTELIGÊNCIA (Mapeamento Pré-definido)
+    const inteligenciaMapeamento = {
+        "XXXV": "MAPEAMENTO EXAME XXXV (RO):\n\n1. PRELIMINAR: Cerceamento de Defesa (Art. 5, LV, CF/88)\n2. EQUIPARAÇÃO: Indevida - Locais distintos (Art. 461, CLT)\n3. INSALUBRIDADE: Alteração de Grau (Súmula 248, TST)\n4. ESTABILIDADE: Dirigente de Associação (Art. 543, §3º, CLT)\n5. INTERVALO: Art. 66 CLT - Natureza Indenizatória (Art. 71, §4º, CLT)",
+        "XXXIV": "MAPEAMENTO EXAME XXXIV (RO):\n\n1. ESTABILIDADE: Gestante em contrato por tempo determinado (Súmula 244, III, TST / Art. 10, II, b, ADCT)\n2. HONORÁRIOS: Sucumbência (Art. 791-A, CLT)\n3. ADICIONAL: Periculosidade e Prova Técnica (Art. 193, CLT)\n4. MULTA: Art. 477 CLT (Prazo de Pagamento)"
+    };
+
     function carregarExame(enu, gab, nome) {
         exameAtivo = nome;
         urls.enu = enu; urls.gab = gab;
         document.getElementById('v-enu').src = enu;
         document.getElementById('v-gab').src = gab;
         
-        // Busca tese personalizada ou usa padrão
-        const salva = localStorage.getItem('tese_' + nome);
-        document.getElementById('edit-teses').value = salva || "Tese Padrão:\n1. Art. ...\n2. Súmula ...";
+        // Aplica a Inteligência de Mapeamento ou busca o que você salvou manualmente
+        const manual = localStorage.getItem('tese_' + nome);
+        document.getElementById('edit-teses').value = manual || inteligenciaMapeamento[nome] || "Aguardando mapeamento para este exame...";
         
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
     function salvarTesesManuais() {
-        if(!exameAtivo) return alert("Selecione um exame primeiro!");
+        if(!exameAtivo) return alert("Selecione um exame!");
         const texto = document.getElementById('edit-teses').value;
         localStorage.setItem('tese_' + exameAtivo, texto);
-        alert("Teses do Exame " + exameAtivo + " salvas com sucesso!");
+        alert("Ajuste manual salvo para o Exame " + exameAtivo);
     }
 
     function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
@@ -164,7 +174,9 @@
         if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
         else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
     }
+    
     function toggleZen() { document.body.classList.toggle('zen-mode'); }
+    
     function switchTab(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -172,20 +184,25 @@
         document.getElementById('btn-' + id).classList.add('active');
     }
 
-    // RESIZER FUNCIONAL (Mouse e Toque)
+    // LÓGICA DO ARRASTAR (RESIZER) - TOTALMENTE REVISADA
     const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
-    resizer.addEventListener('mousedown', (e) => {
-        document.addEventListener('mousemove', resize);
-        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
+    resizer.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        document.addEventListener('mousemove', moverBarra);
+        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', moverBarra));
     });
-    function resize(e) {
-        let nW = e.clientX - leftSide.offsetLeft;
-        if(nW > 50 && nW < window.innerWidth - 50) { leftSide.style.width = nW + 'px'; leftSide.style.flex = 'none'; }
+
+    function moverBarra(e) {
+        let largura = e.clientX - leftSide.offsetLeft;
+        if(largura > 100 && largura < window.innerWidth - 100) {
+            leftSide.style.width = largura + 'px';
+            leftSide.style.flex = 'none';
+        }
     }
 
     function salvarTXT() {
         const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${exameAtivo}.txt`; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Peca_${exameAtivo}.txt`; a.click();
     }
 
     let t = 18000; setInterval(() => {
