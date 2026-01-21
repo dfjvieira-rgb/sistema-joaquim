@@ -3,64 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace OAB 2ª Fase</title>
+    <title>SISTEMA JOAQUIM - Workspace OAB ABNT</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --header-h: 70px; }
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --green: #27ae60; --header-h: 70px; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER COM CRONÔMETRO E LINHA DO TEMPO */
+        /* HEADER */
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
         #timer { font-size: 1.4rem; font-weight: bold; color: #f1c40f; }
         
-        .timeline-dropdown { position: relative; display: inline-block; }
+        /* MENU ESTRUTURA */
+        .dropdown { position: relative; display: inline-block; }
         .dropbtn { background-color: var(--accent); color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 220px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 1000; }
-        .dropdown-content a { color: #333; padding: 12px; text-decoration: none; display: block; border-bottom: 1px solid #eee; font-size: 0.8rem; }
-        .dropdown-content a:hover { background: #f1f1f1; }
-        .timeline-dropdown:hover .dropdown-content { display: block; }
-
-        /* NAVEGAÇÃO MOBILE */
-        .tabs-container { display: none; background: #34495e; padding: 5px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #2c3e50; color: white; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
-        .tab-btn.active { background: var(--accent); }
-
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-
-        /* SIDEBAR DE EXAMES */
-        .sidebar { width: 230px; background: white; padding: 1.2rem; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: white; border: 1px solid #dcdde1; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; }
-        .btn-peca.active-peca { border-left: 5px solid var(--accent); background: #eef7ff; font-weight: bold; }
-
-        /* WORK SECTION (EDITOR + TESES INTELIGENTES) */
-        .work-section { flex: 1; min-width: 320px; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; position: relative; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 280px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 1000; padding: 10px; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .struct-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; }
         
-        #panel-fundamentos { display: none; background: #fdf2e9; border-bottom: 3px solid var(--orange); padding: 15px; overflow-y: auto; max-height: 45%; }
-        #panel-fundamentos.open { display: flex; flex-direction: column; }
+        /* EDITOR FORMATO ABNT JURÍDICO */
+        .editor-container { flex: 1; padding: 20px; display: flex; flex-direction: column; background: #fff; }
+        #area-peca { 
+            flex: 1; 
+            padding: 40px; /* Margem padrão petição */
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 12pt; /* Tamanho padrão ABNT */
+            line-height: 1.5; /* Espaçamento ABNT */
+            color: #333;
+            resize: none; 
+            outline: none;
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px);
+            background-size: 100% 1.5em; /* Linhas guia */
+            text-align: justify;
+        }
+
+        /* MODAL */
+        #modal-struct { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; height: 85%; background: white; z-index: 2000; border-radius: 8px; padding: 20px; flex-direction: column; }
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
+
+        /* LAYOUT MAIN */
+        main { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 220px; background: white; padding: 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .pdf-section { flex: 1.2; background: #dfe4ea; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
+        .pdf-box { flex: 1; background: white; display: flex; flex-direction: column; transition: 0.3s; }
+        .pdf-box.focado { flex: 40; }
+        .pdf-box.encolhido { flex: 0; overflow: hidden; }
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         
-        .tese-item { background: white; border: 1px solid #e67e22; border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 5px; }
-        .tese-item textarea { width: 100%; border: 1px solid #eee; resize: vertical; font-size: 0.85rem; font-family: inherit; outline: none; }
-        .tese-tag { font-size: 0.65rem; font-weight: bold; color: var(--orange); text-transform: uppercase; }
-
-        .editor-container { flex: 1; padding: 12px; display: flex; flex-direction: column; }
-        #area-peca { flex: 1; padding: 20px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1.1rem; resize: none; outline: none; }
-
-        .resizer { width: 12px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #7f8c8d; }
-
-        /* PDF SECTION */
-        .pdf-section { flex: 1.2; background: #dcdde1; display: flex; flex-direction: column; gap: 4px; padding: 4px; overflow: hidden; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; transition: flex 0.3s ease; }
-        .pdf-box.focado { flex: 30 !important; }
-        .pdf-box.encolhido { flex: 0 !important; min-height: 0; overflow: hidden; }
-        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
-        iframe { width: 100%; height: 100%; border: none; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .resizer { width: 10px; background: #f1f1f1; cursor: col-resize; border: 1px solid #ddd; }
 
         @media (max-width: 900px) {
-            header { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
-            .tabs-container { display: flex; }
             .sidebar, .resizer, .pdf-section { display: none; }
-            .content-section { display: none; width: 100%; height: 100%; }
-            .active-mobile { display: flex !important; }
+            .tabs-container { display: flex; position: fixed; bottom: 0; width: 100%; height: 60px; background: #2c3e50; z-index: 100; }
+            .tab-btn { flex: 1; color: white; border: none; background: transparent; font-weight: bold; }
+            .active-mobile { display: flex !important; width: 100% !important; }
+            #area-peca { padding: 15px; font-size: 11pt; }
         }
     </style>
 </head>
@@ -68,161 +67,124 @@
 
 <header>
     <div style="display:flex; align-items:center; gap:15px;">
-        <h1 style="margin:0; font-size: 1.1rem; letter-spacing: 1px;">SISTEMA JOAQUIM</h1>
+        <h1 style="margin:0; font-size: 1.1rem;">SISTEMA JOAQUIM</h1>
         <div id="timer">05:00:00</div>
     </div>
     
-    <div class="timeline-dropdown">
-        <button class="dropbtn">⏳ LINHA DO TEMPO (ESQUELETOS)</button>
-        <div class="dropdown-content">
-            <a href="javascript:void(0)" onclick="abrirEsqueleto('RT')">1. Reclamação Trabalhista</a>
-            <a href="javascript:void(0)" onclick="abrirEsqueleto('CON')">2. Contestação</a>
-            <a href="javascript:void(0)" onclick="abrirEsqueleto('RO')">3. Recurso Ordinário</a>
-            <a href="javascript:void(0)" onclick="abrirEsqueleto('AP')">4. Agravo de Petição</a>
-        </div>
+    <div class="dropdown">
+        <button class="dropbtn">📑 ESTRUTURA DA PETIÇÃO</button>
+        <div class="dropdown-content" id="lista-estruturas"></div>
     </div>
 </header>
 
-<nav class="tabs-container">
-    <button class="tab-btn active" id="t-lista" onclick="switchTab('lista')">📂 PEÇAS</button>
-    <button class="tab-btn" id="t-work" onclick="switchTab('work')">✍️ TREINO</button>
-    <button class="tab-btn" id="t-docs" onclick="switchTab('docs')">📄 PDFS</button>
-</nav>
-
 <main>
-    <nav class="sidebar content-section active-mobile" id="lista">
-        <h2 style="font-size:0.8rem; color:#7f8c8d;">EXAMES DISPONÍVEIS</h2>
-        <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">Recurso Ordinário (Exame 35)</button>
-    </nav>
+    <section class="sidebar" id="lista">
+        <h3 style="font-size: 0.8rem; color: #7f8c8d;">EXAMES</h3>
+        <button class="action-btn" style="width:100%" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">Exame XXXV - RO</button>
+    </section>
 
-    <section class="work-section content-section" id="work">
-        <div id="panel-fundamentos">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <strong style="color:var(--orange)">TESES INTELIGENTES (ARTIGOS, OJs, SÚMULAS)</strong>
-                <button class="action-btn" onclick="adicionarTese()">+ NOVA TESE</button>
-            </div>
-            <div id="container-teses"></div>
-        </div>
-
+    <section class="work-section content-section active-mobile" id="work">
         <div class="editor-container">
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <button class="action-btn" style="background:var(--orange); flex:1" onclick="toggleTeses()">📚 VER TESES DO EXAME</button>
-                <button class="action-btn" style="background:#27ae60; flex:1" onclick="exportarTXT()">💾 SALVAR TXT</button>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="action-btn" style="background:var(--orange)" onclick="document.getElementById('panel-teses').classList.toggle('open')">TESES</button>
+                <button class="action-btn" style="background:var(--green)" onclick="exportarTXT()">SALVAR TXT</button>
             </div>
-            <textarea id="area-peca" placeholder="Desenvolva sua peça profissional aqui..."></textarea>
+            <textarea id="area-peca" placeholder="Inicie sua redação..."></textarea>
         </div>
     </section>
 
-    <div class="resizer" id="dragMe">⋮</div>
+    <div class="resizer" id="dragMe"></div>
 
     <section class="pdf-section content-section" id="docs">
         <div class="pdf-box" id="box-enu">
-            <div class="pdf-header"><strong>📝 ENUNCIADO</strong><button class="action-btn" onclick="foco('enu')">EXPANDIR</button></div>
+            <div class="pdf-header">ENUNCIADO <button onclick="foco('enu')" class="action-btn">FOCO</button></div>
             <iframe id="v-enu"></iframe>
         </div>
         <div class="pdf-box" id="box-gab">
-            <div class="pdf-header"><strong>✅ GABARITO</strong><button class="action-btn" onclick="foco('gab')">EXPANDIR</button></div>
+            <div class="pdf-header">GABARITO <button onclick="foco('gab')" class="action-btn">FOCO</button></div>
             <iframe id="v-gab"></iframe>
         </div>
     </section>
 </main>
 
-<script>
-    let arquivoAtivo = "ro35";
-    let links = { enu: "ro35.pdf", gab: "ro35-gabarito.pdf" };
+<div id="modal-overlay" onclick="fecharModal()"></div>
+<div id="modal-struct">
+    <h3 id="modal-titulo">Editar Estrutura</h3>
+    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; font-family: 'Courier New'; padding: 15px;"></textarea>
+    <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarEstrutura()">SALVAR ESTRUTURA</button>
+</div>
 
-    // BANCO DE DADOS INTELIGENTE (Captura automática simulada para o Exame 35)
-    const dbInteligente = {
-        "ro35": [
-            { tipo: "Lei", texto: "Art. 895, I, da CLT (Cabimento do Recurso Ordinário)" },
-            { tipo: "Súmula", texto: "Súmula 338, I, do TST (Ônus da prova das horas extras)" },
-            { tipo: "OJ", texto: "OJ 394 da SBDI-1 do TST (Repouso Semanal Remunerado)" },
-            { tipo: "Artigo", texto: "Art. 5º, LV, da CF/88 (Cerceamento de Defesa)" }
-        ]
+<script>
+    // Estruturas com normas de espaçamento jurídico (ABNT)
+    const estruturasPadrao = {
+        'RT': { 
+            nome: 'Reclamação Trabalhista', 
+            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\n\n\n\n\n\n\n\n\nRECLAMANTE (NOME), nacionalidade, estado civil, profissão, RG, CPF, CTPS, PIS, nome da mãe, residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., vem perante este juízo, com fulcro no Art. 840, § 1º da CLT, propor:\n\n    RECLAMAÇÃO TRABALHISTA\n\nem face de RECLAMADA (NOME), pessoa jurídica de direito privado, CNPJ..., endereço..., pelos fatos e fundamentos a seguir expostos:' 
+        },
+        'RO': { 
+            nome: 'Recurso Ordinário', 
+            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\nPROCESSO Nº: ______\n\n\n\n(RECLAMANTE/RECLAMADA), já qualificado nos autos, por seu advogado, vem perante este juízo, com fulcro no Art. 895, I da CLT, interpor:\n\n    RECURSO ORDINÁRIO\n\npara o Egrégio Tribunal Regional do Trabalho da ___ Região. Seguem anexas as razões do recurso e o comprovante de preparo.' 
+        }
     };
 
-    function renderizarTeses() {
-        const container = document.getElementById('container-teses');
-        const dados = JSON.parse(localStorage.getItem('teses_' + arquivoAtivo)) || dbInteligente[arquivoAtivo] || [];
-        container.innerHTML = dados.map((t, i) => `
-            <div class="tese-item">
-                <span class="tese-tag">${t.tipo}</span>
-                <textarea onchange="editarTese(${i}, this.value)">${t.texto}</textarea>
-                <button onclick="excluirTese(${i})" style="align-self:flex-end; border:none; background:none; color:red; cursor:pointer; font-size:0.7rem;">EXCLUIR</button>
+    function renderizarMenu() {
+        const container = document.getElementById('lista-estruturas');
+        const dados = JSON.parse(localStorage.getItem('minhas_estruturas')) || estruturasPadrao;
+        container.innerHTML = Object.keys(dados).map(id => `
+            <div class="struct-item">
+                <span onclick="colarEstrutura('${id}')" style="cursor:pointer; flex:1"><b>${dados[id].nome}</b></span>
+                <button onclick="abrirEditorModal('${id}')" style="border:none; background:none; cursor:pointer;">✏️</button>
             </div>
         `).join('');
     }
 
-    function editarTese(i, val) {
-        let d = JSON.parse(localStorage.getItem('teses_' + arquivoAtivo)) || dbInteligente[arquivoAtivo];
-        d[i].texto = val;
-        localStorage.setItem('teses_' + arquivoAtivo, JSON.stringify(d));
+    function colarEstrutura(id) {
+        const dados = JSON.parse(localStorage.getItem('minhas_estruturas')) || estruturasPadrao;
+        document.getElementById('area-peca').value = dados[id].texto;
     }
 
-    function excluirTese(i) {
-        let d = JSON.parse(localStorage.getItem('teses_' + arquivoAtivo)) || dbInteligente[arquivoAtivo];
-        d.splice(i, 1);
-        localStorage.setItem('teses_' + arquivoAtivo, JSON.stringify(d));
-        renderizarTeses();
+    // Modal e Salvamento (Mesma lógica anterior com persistência)
+    let idEdicao = "";
+    function abrirEditorModal(id) {
+        idEdicao = id;
+        const dados = JSON.parse(localStorage.getItem('minhas_estruturas')) || estruturasPadrao;
+        document.getElementById('modal-texto').value = dados[id].texto;
+        document.getElementById('modal-overlay').style.display = 'block';
+        document.getElementById('modal-struct').style.display = 'flex';
     }
 
-    function adicionarTese() {
-        let d = JSON.parse(localStorage.getItem('teses_' + arquivoAtivo)) || dbInteligente[arquivoAtivo] || [];
-        d.push({ tipo: "Nova", texto: "Digite a lei ou súmula..." });
-        localStorage.setItem('teses_' + arquivoAtivo, JSON.stringify(d));
-        renderizarTeses();
+    function salvarEstrutura() {
+        let dados = JSON.parse(localStorage.getItem('minhas_estruturas')) || estruturasPadrao;
+        dados[idEdicao].texto = document.getElementById('modal-texto').value;
+        localStorage.setItem('minhas_estruturas', JSON.stringify(dados));
+        fecharModal();
+        renderizarMenu();
     }
 
-    function carregarExame(enu, gab, id) {
-        arquivoAtivo = id; links.enu = enu; links.gab = gab;
-        document.getElementById('v-enu').src = enu;
-        document.getElementById('v-gab').src = gab;
-        renderizarTeses();
-        if (window.innerWidth < 900) switchTab('work');
+    function fecharModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+        document.getElementById('modal-struct').style.display = 'none';
     }
 
-    // INTERFACE E AUXILIARES
     function foco(t) {
         const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
         if(t==='enu') { e.classList.toggle('focado'); g.classList.toggle('encolhido'); }
         else { g.classList.toggle('focado'); e.classList.toggle('encolhido'); }
     }
 
-    function toggleTeses() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
-    
-    function abrirEsqueleto(tipo) {
-        const win = window.open("", "_blank", "width=500,height=600");
-        win.document.write(`<body style="font-family:monospace; padding:20px;"><h3>Esqueleto: ${tipo}</h3><hr>Petição Inicial... Art. 840 CLT...</body>`);
-    }
-
-    function switchTab(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active-mobile');
-        document.getElementById('t-' + id).classList.add('active');
-    }
-
-    // TIMER E RESIZER
-    function startTimer(sec, display) {
+    window.onload = () => {
+        renderizarMenu();
+        let sec = 18000;
         setInterval(() => {
-            let h = parseInt(sec/3600), m = parseInt((sec%3600)/60), s = parseInt(sec%60);
-            display.textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
-            if(--sec < 0) display.textContent = "FIM";
+            let h=parseInt(sec/3600), m=parseInt((sec%3600)/60), s=parseInt(sec%60);
+            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+            sec--;
         }, 1000);
-    }
-
-    const resizer = document.getElementById('dragMe'), work = document.getElementById('work');
-    resizer.addEventListener('mousedown', (e) => {
-        const move = (ev) => { let w = ev.clientX - work.getBoundingClientRect().left; if(w>250) work.style.flex = `0 0 ${w}px`; };
-        const stop = () => document.removeEventListener('mousemove', move);
-        document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop);
-    });
-
-    window.onload = () => { startTimer(18000, document.getElementById('timer')); renderizarTeses(); };
+    };
 
     function exportarTXT() {
         const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Peca_${arquivoAtivo}.txt`; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Peca_OAB.txt"; a.click();
     }
 </script>
 </body>
