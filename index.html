@@ -3,65 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Final Build</title>
+    <title>SISTEMA JOAQUIM - Workspace OAB</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --green: #27ae60; --header-h: 70px; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         /* HEADER */
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-shrink: 0; }
-        #timer { font-size: 1.2rem; font-weight: bold; color: #f1c40f; }
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-shrink: 0; }
+        #timer { font-size: 1.4rem; font-weight: bold; color: #f1c40f; }
         
-        .nav-group { display: flex; gap: 8px; }
-        .dropbtn { color: white; padding: 10px 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; }
+        .nav-group { display: flex; gap: 10px; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; min-width: 140px; }
         .btn-struct { background-color: var(--accent); }
         .btn-correc { background-color: var(--orange); }
-
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 250px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 1000; padding: 10px; }
+        
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 280px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 1000; padding: 10px; }
         .dropdown:hover .dropdown-content { display: block; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; cursor: pointer; }
+        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; cursor: pointer; }
 
         /* EDITOR ABNT */
-        .editor-container { flex: 1; padding: 15px; display: flex; flex-direction: column; background: #fff; position: relative; }
+        .editor-container { flex: 1; padding: 15px; display: flex; flex-direction: column; background: #fff; }
         #area-peca { 
-            flex: 1; width: 100%; padding: 30px; border: 1px solid #ddd; border-radius: 4px; 
-            font-family: 'Courier New', Courier, monospace; font-size: 16px; 
+            flex: 1; padding: 30px; border: 1px solid #ddd; border-radius: 4px; 
+            font-family: 'Courier New', Courier, monospace; font-size: 12pt; 
             line-height: 1.5; color: #333; resize: none; outline: none;
             background-image: linear-gradient(#f9f9f9 1px, transparent 1px); background-size: 100% 1.5em;
             text-align: justify;
         }
 
-        /* PAINEL DE CONSULTA (FLUTUANTE) */
-        #panel-consulta { 
-            display: none; position: absolute; top: 10px; right: 10px; width: 350px; height: 80%; 
-            background: white; border: 2px solid var(--orange); border-radius: 8px; z-index: 500;
-            flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
         /* LAYOUT MAIN */
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .content-section { flex: 1; display: flex; flex-direction: column; background: white; }
-        .sidebar { width: 200px; background: white; border-right: 1px solid #ddd; padding: 15px; overflow-y: auto; flex-shrink: 0; }
+        main { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 220px; background: white; padding: 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ddd; }
         .pdf-section { flex: 1.2; background: #dfe4ea; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
         iframe { width: 100%; height: 100%; border: none; background: #525659; }
-
-        /* NAVEGAÇÃO MOBILE */
-        .mobile-nav { display: none; background: var(--primary); height: 60px; flex-shrink: 0; }
-        .tab-btn { flex: 1; color: white; background: none; border: none; font-size: 0.8rem; font-weight: bold; cursor: pointer; opacity: 0.6; }
-        .tab-btn.active { opacity: 1; border-top: 3px solid var(--accent); }
+        
+        .action-btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
         /* MODAIS */
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; height: 80%; background: white; z-index: 2000; border-radius: 8px; padding: 20px; flex-direction: column; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1999; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; height: 85%; background: white; z-index: 2000; border-radius: 8px; padding: 20px; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
 
         @media (max-width: 900px) {
+            header { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
             .sidebar, .pdf-section { display: none; }
-            .mobile-nav { display: flex; }
-            #panel-consulta { width: 95%; right: 2.5%; height: 75%; }
-            .content-section { display: none; }
-            .content-section.active-tab { display: flex; }
+            #area-peca { padding: 15px; font-size: 16px; /* Evita zoom no mobile */ }
+            .nav-group { width: 100%; justify-content: space-between; }
+            .dropbtn { min-width: 48%; }
         }
     </style>
 </head>
@@ -82,54 +72,42 @@
 </header>
 
 <main>
-    <section class="sidebar content-section" id="sec-lista">
-        <h3 style="font-size: 0.7rem; color: #7f8c8d; text-transform: uppercase;">Exames Disponíveis</h3>
-        <button class="action-btn" style="width:100%" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf'); switchTab('sec-work')">Exame XXXV</button>
+    <section class="sidebar">
+        <h3 style="font-size: 0.7rem; color: #7f8c8d; text-transform: uppercase;">Exames</h3>
+        <button class="action-btn" style="width:100%" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">Exame XXXV</button>
     </section>
 
-    <section class="work-section content-section active-tab" id="sec-work">
-        <div id="panel-consulta">
-            <div style="background:var(--orange); color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
-                <strong id="titulo-consulta">Consulta</strong>
-                <button onclick="document.getElementById('panel-consulta').style.display='none'" style="color:white; border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-            </div>
-            <div id="corpo-consulta" style="padding:15px; overflow-y:auto; flex:1; white-space:pre-wrap; font-family: 'Courier New'; font-size: 14px;"></div>
-        </div>
-
+    <section class="work-section" id="work">
         <div class="editor-container">
-            <div style="margin-bottom: 8px; display: flex; gap: 8px;">
-                <button class="action-btn" style="background:var(--green); flex: 1" onclick="exportarTXT()">SALVAR TXT</button>
+            <div style="margin-bottom:10px;">
+                <button class="action-btn" style="background:var(--green)" onclick="exportarTXT()">SALVAR TRABALHO (TXT)</button>
             </div>
-            <textarea id="area-peca" placeholder="Escreva sua petição aqui..."></textarea>
+            <textarea id="area-peca" placeholder="Inicie sua redação..."></textarea>
         </div>
     </section>
 
-    <section class="pdf-section content-section" id="sec-docs">
+    <section class="pdf-section">
         <iframe id="v-enu"></iframe>
-        <iframe id="v-gab" style="border-top: 2px solid #333;"></iframe>
+        <iframe id="v-gab" style="border-top: 4px solid #ccc;"></iframe>
     </section>
 </main>
 
-<nav class="mobile-nav">
-    <button class="tab-btn" id="btn-tab-lista" onclick="switchTab('sec-lista')">📂 PEÇAS</button>
-    <button class="tab-btn active" id="btn-tab-work" onclick="switchTab('sec-work')">✍️ EDITOR</button>
-    <button class="tab-btn" id="btn-tab-docs" onclick="switchTab('sec-docs')">📄 PDFS</button>
-</nav>
-
 <div class="overlay" id="overlay" onclick="fecharModal()"></div>
 <div class="modal" id="modal-editor">
-    <h3 id="modal-titulo" style="margin-top:0">Editar</h3>
-    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; padding:15px; font-family: 'Courier New'; font-size: 1rem;"></textarea>
-    <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR ALTERAÇÕES</button>
+    <h3 id="modal-titulo" style="margin-top:0">Editar Item</h3>
+    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; padding: 15px; font-family: 'Courier New'; font-size: 1rem;"></textarea>
+    <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR NO BANCO DE DADOS</button>
 </div>
 
 <script>
     const padroes = {
-        estruturas: { 'RT': { nome: 'Reclamação Trabalhista', texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO...\n\n\n\n\n\nRECLAMANTE...' } },
-        correcoes: { 'C35': { nome: 'Gabarito XXXV', texto: 'CRITÉRIOS:\n- Endereçamento (0,10)\n- Art. 895, I CLT (0,10)' } }
+        estruturas: { 
+            'RT': { nome: 'Reclamação Trabalhista', texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\n\n\n\n\n\n\n\n\nRECLAMANTE..., por seu advogado infra-assinado...' } 
+        },
+        correcoes: { 
+            'C35': { nome: 'Gabarito XXXV', texto: 'CHECKLIST DE PONTOS:\n1. Endereçamento correto (0,10)\n2. Art. 895, I da CLT (0,10)\n3. Tese Horas Extras (0,50)' } 
+        }
     };
-
-    let ctx = { tipo: '', id: '' };
 
     function renderizarMenus() {
         const db_est = JSON.parse(localStorage.getItem('db_estruturas')) || padroes.estruturas;
@@ -137,56 +115,53 @@
 
         document.getElementById('lista-estruturas').innerHTML = Object.keys(db_est).map(id => `
             <div class="menu-item">
-                <span onclick="usarConteudo('estruturas', '${id}')" style="flex:1"><b>${db_est[id].nome}</b></span>
-                <button onclick="abrirEditor('estruturas', '${id}')" style="border:none;background:none;font-size:1.1rem;cursor:pointer;">✏️</button>
-            </div>`).join('') + `<button class="action-btn" style="width:100%;margin-top:5px" onclick="abrirEditor('estruturas', 'novo')">+ NOVA</button>`;
+                <span onclick="usarConteudo('db_estruturas', '${id}')" style="flex:1"><b>${db_est[id].nome}</b></span>
+                <button onclick="abrirEditor('db_estruturas', '${id}')" style="border:none;background:none;cursor:pointer;font-size:1.1rem">✏️</button>
+            </div>`).join('') + `<button class="action-btn" style="width:100%;margin-top:5px" onclick="abrirEditor('db_estruturas', 'novo')">+ NOVA</button>`;
 
         document.getElementById('lista-correcao').innerHTML = Object.keys(db_cor).map(id => `
             <div class="menu-item">
-                <span onclick="usarConteudo('correcoes', '${id}')" style="flex:1"><b>${db_cor[id].nome}</b></span>
-                <button onclick="abrirEditor('correcoes', '${id}')" style="border:none;background:none;font-size:1.1rem;cursor:pointer;">✏️</button>
-            </div>`).join('') + `<button class="action-btn" style="width:100%;margin-top:5px" onclick="abrirEditor('correcoes', 'novo')">+ NOVO</button>`;
+                <span onclick="usarConteudo('db_correcoes', '${id}')" style="flex:1"><b>${db_cor[id].nome}</b></span>
+                <button onclick="abrirEditor('db_correcoes', '${id}')" style="border:none;background:none;cursor:pointer;font-size:1.1rem">✏️</button>
+            </div>`).join('') + `<button class="action-btn" style="width:100%;margin-top:5px" onclick="abrirEditor('db_correcoes', 'novo')">+ NOVO CHECKLIST</button>`;
     }
 
-    function usarConteudo(tipo, id) {
-        const db = JSON.parse(localStorage.getItem('db_' + tipo)) || padroes[tipo];
-        if(tipo === 'estruturas') {
-            if(confirm("Deseja substituir o texto do editor pela estrutura selecionada?")) document.getElementById('area-peca').value = db[id].texto;
-        } else {
-            document.getElementById('titulo-consulta').innerText = db[id].nome;
-            document.getElementById('corpo-consulta').innerText = db[id].texto;
-            document.getElementById('panel-consulta').style.display = 'flex';
+    function usarConteudo(banco, id) {
+        const db = JSON.parse(localStorage.getItem(banco)) || padroes[banco.replace('db_', '')];
+        if(confirm("Deseja carregar este conteúdo no editor? (O texto atual será substituído)")) {
+            document.getElementById('area-peca').value = db[id].texto;
         }
     }
 
-    function switchTab(t) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-tab'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(t).classList.add('active-tab');
-        document.getElementById('btn-tab-' + t.replace('sec-', '')).classList.add('active');
-    }
-
-    function abrirEditor(tipo, id) {
-        ctx = { tipo, id };
-        const db = JSON.parse(localStorage.getItem('db_' + tipo)) || padroes[tipo];
-        document.getElementById('modal-texto').value = (id === 'novo') ? "" : db[id].texto;
+    let ctxEdicao = { banco: '', id: '' };
+    function abrirEditor(banco, id) {
+        ctxEdicao = { banco, id };
+        const db = JSON.parse(localStorage.getItem(banco)) || padroes[banco.replace('db_', '')];
+        document.getElementById('modal-texto').value = (id === 'novo') ? "NOME DO ITEM:\nTexto aqui..." : db[id].texto;
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('modal-editor').style.display = 'flex';
     }
 
     function salvarAlteracoes() {
-        let db = JSON.parse(localStorage.getItem('db_' + ctx.tipo)) || padroes[ctx.tipo];
+        let db = JSON.parse(localStorage.getItem(ctxEdicao.banco)) || padroes[ctxEdicao.banco.replace('db_', '')];
         const val = document.getElementById('modal-texto').value;
-        if(ctx.id === 'novo') {
-            const nid = 'ID'+Date.now();
-            db[nid] = { nome: val.split('\n')[0] || 'Novo Item', texto: val };
-        } else { db[ctx.id].texto = val; }
-        localStorage.setItem('db_' + ctx.tipo, JSON.stringify(db));
-        fecharModal(); renderizarMenus();
+        if(ctxEdicao.id === 'novo') {
+            const nid = 'ID' + Date.now();
+            const partes = val.split('\n');
+            db[nid] = { nome: partes[0], texto: partes.slice(1).join('\n') };
+        } else {
+            db[ctxEdicao.id].texto = val;
+        }
+        localStorage.setItem(ctxEdicao.banco, JSON.stringify(db));
+        fecharModal();
+        renderizarMenus();
     }
 
-    function fecharModal() { document.getElementById('overlay').style.display = 'none'; document.getElementById('modal-editor').style.display = 'none'; }
-    
+    function fecharModal() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('modal-editor').style.display = 'none';
+    }
+
     function carregarExame(e, g) {
         document.getElementById('v-enu').src = `./${e}`;
         document.getElementById('v-gab').src = `./${g}`;
@@ -203,7 +178,7 @@
 
     function exportarTXT() {
         const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Trabalho_OAB.txt"; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click();
     }
 </script>
 </body>
