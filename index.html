@@ -1,220 +1,178 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace OAB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAB 2ª Fase - Trabalho</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { background: var(--primary); color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 1000; }
-        .tabs-container { display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 1000; }
-        body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
-        
-        .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
-        .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
-        
-        main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
-        .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-        
-        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 10px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.85rem; }
-        .btn-peca:hover { border-color: var(--accent); background: #fff; }
-
-        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 150px; position: relative; display: flex; flex-direction: column; }
-        .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
-        .btn-save { background: var(--success); }
-        .btn-pdf { background: #607d8b; }
-        textarea#area-peca { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
-
-        #panel-fundamentos { 
-            position: absolute; right: -305px; top: 0; width: 300px; height: 100%; 
-            background: #fffdf5; border-left: 5px solid var(--warning); z-index: 2000;
-            transition: 0.3s; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; padding: 10px; box-sizing: border-box;
+        :root {
+            --primary-color: #1a5276;
+            --accent-color: #d35400;
+            --bg-color: #f2f4f4;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
         }
-        #panel-fundamentos.open { right: 0; }
-        .btn-toggle-fund { 
-            position: absolute; left: -40px; top: 80px; width: 40px; height: 150px; 
-            background: var(--warning); color: #2c3e50; border: none; border-radius: 8px 0 0 8px;
-            writing-mode: vertical-rl; font-weight: bold; font-size: 0.75rem; cursor: pointer;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            line-height: 1.5;
         }
-        #edit-teses { width: 100%; height: 70%; border: 1px solid #e6dbb3; border-radius: 8px; padding: 10px; font-size: 0.85rem; background: #fff; resize: none; }
-        .btn-save-fund { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        .resizer { width: 14px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b2bec3; }
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
 
-        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; display: flex; flex-direction: column; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #eeeeee; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; position: relative; }
-        .pdf-box.expanded { flex: 50 !important; }
-        .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
-        .pdf-header { background: #34495e; color: white; padding: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; z-index: 5; }
-        .header-btns { display: flex; gap: 4px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
-        
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-        @media (max-width: 900px) {
-            .tabs-container { display: flex !important; }
-            .resizer, .sidebar-section { display: none !important; }
-            main { flex-direction: column; width: 100vw; height: 100%; }
-            .content-section { display: none !important; width: 100% !important; flex: 1 !important; }
-            .content-section.active-mobile { display: flex !important; }
+        .article-card {
+            background: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .article-card h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        .resolution-box {
+            background: #fdfefe;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.85rem;
+            border: 1px solid #ced4da;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            color: #212529;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e5e8e8;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 5px; }
+            .article-card { padding: 10px; }
+            .resolution-box { font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div>⚖️ <strong>SISTEMA JOAQUIM</strong></div>
-    <div id="timer" style="color: var(--warning); font-weight: 800;">05:00:00</div>
-</header>
+<div class="container">
+    <header>
+        <h1>2ª FASE OAB - TRABALHO</h1>
+        <p>Esqueletos de Peças Processuais</p>
+    </header>
 
-<nav class="tabs-container">
-    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 ARQUIVOS</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
-    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">📄 PROVA</button>
-</nav>
+    <section id="conteudo">
+        
+        <div class="article-card">
+            <span class="tag">Peça Prático-Profissional</span>
+            <h2>1. Reclamação Trabalhista (Art. 840, §1º, CLT)</h2>
+            <p>Usada quando o empregado quer cobrar direitos. Foco nos pedidos e verbas.</p>
+            <div class="resolution-box">
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
 
-<main>
-    <aside id="menu" class="content-section sidebar-section active-mobile">
-        <h4 style="margin: 10px 0; color: #7f8c8d; font-size: 0.8rem;">MEUS ARQUIVOS:</h4>
-        <div id="lista-arquivos-reais"></div>
-    </aside>
+RECLAMANTE: (NOME), nacionalidade, estado civil...
+RECLAMADO: (NOME DA EMPRESA), pessoa jurídica...
 
-    <section id="escrita" class="content-section editor-section">
-        <div id="panel-fundamentos">
-            <button class="btn-toggle-fund" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
-            <h3 style="font-size: 0.9rem; margin: 0 0 10px 0; color: #d35400;">MAPEAMENTO DE TESES</h3>
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <textarea id="edit-teses" placeholder="Selecione um arquivo lateral..."></textarea>
-                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR ALTERAÇÃO</button>
+I - PRELIMINARES (Se houver)
+II - MÉRITO (Fato, Fundamento e Pedido)
+III - PEDIDOS (Liquidados)
+IV - REQUERIMENTOS FINAIS (Notificação, Provas)
+
+Valor da Causa: R$ ...
             </div>
         </div>
-        <div class="actions-row">
-            <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR TXT</button>
-            <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
+
+        <div class="article-card">
+            <span class="tag">Peça Prático-Profissional</span>
+            <h2>2. Contestação (Art. 847, CLT)</h2>
+            <p>Defesa da empresa. <span class="highlight">Dica:</span> Procure por prescrição bienal ou quinquenal primeiro.</p>
+            <div class="resolution-box">
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+Processo nº: ...
+
+I - PRELIMINARES (Art. 337, CPC)
+II - PREJUDICIAIS DE MÉRITO (Prescrição)
+III - MÉRITO (Impugnação específica)
+IV - REQUERIMENTOS FINAIS
+
+Pugna pela improcedência total.
+            </div>
         </div>
-        <textarea id="area-peca" placeholder="Desenvolva sua peça..."></textarea>
+
+        <div class="article-card">
+            <span class="tag">Peça Prático-Profissional</span>
+            <h2>3. Recurso Ordinário (Art. 895, I, CLT)</h2>
+            <p>Prazo: <span class="highlight">8 dias</span>. Exige Folha de Rosto + Razões.</p>
+            <div class="resolution-box">
+[FOLHA DE ROSTO]
+AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...
+(Preparo: Custas e Depósito Recursal)
+
+[RAZÕES RECURSAIS]
+AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO
+I - PRESSUPOSTOS DE ADMISSIBILIDADE
+II - MÉRITO (Reforma da sentença)
+            </div>
+        </div>
+
     </section>
 
-    <div class="resizer" id="dragMe">⋮</div>
+    <nav>
+        <a href="#" class="action-button" style="background-color: #27ae60;">Cronograma de Peças</a>
+        <a href="#" class="action-button">Lista de Súmulas TST</a>
+    </nav>
+</div>
 
-    <section id="pdfs" class="content-section pdf-section">
-        <div class="pdf-box" id="box-enu">
-            <div class="pdf-header"><span>📄 ENUNCIADO</span>
-                <div class="header-btns">
-                    <button class="action-btn" onclick="focar('enu')">FOCO</button>
-                    <button class="action-btn" onclick="abrir('enu')">ABRIR</button>
-                </div>
-            </div>
-            <iframe id="v-enu" title="Enunciado"></iframe>
-        </div>
-        <div class="pdf-box" id="box-gab">
-            <div class="pdf-header"><span>✅ GABARITO</span>
-                <div class="header-btns">
-                    <button class="action-btn" onclick="focar('gab')">FOCO</button>
-                    <button class="action-btn" onclick="abrir('gab')">ABRIR</button>
-                </div>
-            </div>
-            <iframe id="v-gab" title="Gabarito"></iframe>
-        </div>
-    </section>
-</main>
-
-<script>
-    let arquivoAtivo = "";
-    let urls = { enu: "", gab: "" };
-
-    const bancoTeses = {
-        "ro35.pdf": "MAPEAMENTO RO35:\n1. Cerceamento: Art. 5, LV, CF\n2. Equiparação: Art. 461 CLT\n3. Insalubridade: Súmula 248 TST"
-    };
-
-    const meusArquivos = [
-        { nome: "ro35.pdf", gabarito: "ro35-gabarito.pdf" }
-    ];
-
-    function renderizarLista() {
-        const container = document.getElementById('lista-arquivos-reais');
-        container.innerHTML = "";
-        meusArquivos.forEach(arq => {
-            const btn = document.createElement('button');
-            btn.className = "btn-peca";
-            btn.innerHTML = `📄 ${arq.nome}`;
-            btn.onclick = () => carregarArquivos(arq.nome, arq.gabarito);
-            container.appendChild(btn);
-        });
-    }
-
-    function carregarArquivos(enu, gab) {
-        arquivoAtivo = enu;
-        urls.enu = enu; urls.gab = gab;
-        
-        // Atualiza os iframes
-        document.getElementById('v-enu').src = enu;
-        document.getElementById('v-gab').src = gab;
-        
-        // Atualiza as teses
-        const manual = localStorage.getItem('tese_' + enu);
-        document.getElementById('edit-teses').value = manual || bancoTeses[enu] || "Nenhuma tese mapeada.";
-        
-        // No mobile, pula para a tela de escrita
-        if (window.innerWidth < 900) switchTab('escrita');
-    }
-
-    function salvarTesesManuais() {
-        if(!arquivoAtivo) return alert("Selecione um arquivo!");
-        localStorage.setItem('tese_' + arquivoAtivo, document.getElementById('edit-teses').value);
-        alert("Alteração salva localmente!");
-    }
-
-    function focar(t) {
-        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
-        if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
-        else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
-    }
-    
-    function abrir(t) { 
-        if(!urls[t]) return alert("Selecione o arquivo primeiro!");
-        window.open(urls[t], '_blank'); 
-    }
-    
-    function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
-    
-    function switchTab(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active-mobile');
-        document.getElementById('btn-' + id).classList.add('active');
-    }
-
-    // Lógica do Resizer (Arrastar)
-    const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
-    resizer.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        document.addEventListener('mousemove', mover);
-        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', mover));
-    });
-    function mover(e) {
-        let w = e.clientX - leftSide.offsetLeft;
-        if(w > 100 && w < window.innerWidth - 100) { leftSide.style.width = w + 'px'; leftSide.style.flex = 'none'; }
-    }
-
-    function salvarTXT() {
-        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Peca_${arquivoAtivo || 'Estudo'}.txt`; a.click();
-    }
-
-    renderizarLista();
-    let t = 18000; setInterval(() => {
-        let h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
-        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if(t>0) t--;
-    }, 1000);
-</script>
 </body>
 </html>
