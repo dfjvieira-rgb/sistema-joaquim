@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace Limpo</title>
+    <title>SISTEMA JOAQUIM - Workspace OAB</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -22,6 +22,7 @@
         
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
         .btn-peca { width: 100%; padding: 10px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.85rem; }
+        .btn-peca:hover { border-color: var(--accent); background: #fff; }
 
         .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 150px; position: relative; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -48,14 +49,14 @@
         .resizer { width: 14px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b2bec3; }
 
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; display: flex; flex-direction: column; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #eeeeee; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; position: relative; }
         .pdf-box.expanded { flex: 50 !important; }
         .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
-        .pdf-header { background: #34495e; color: white; padding: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+        .pdf-header { background: #34495e; color: white; padding: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; z-index: 5; }
         .header-btns { display: flex; gap: 4px; }
         .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
         
-        .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
@@ -90,7 +91,7 @@
             <button class="btn-toggle-fund" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
             <h3 style="font-size: 0.9rem; margin: 0 0 10px 0; color: #d35400;">MAPEAMENTO DE TESES</h3>
             <div style="flex:1; display:flex; flex-direction:column;">
-                <textarea id="edit-teses" placeholder="Selecione um arquivo..."></textarea>
+                <textarea id="edit-teses" placeholder="Selecione um arquivo lateral..."></textarea>
                 <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR ALTERAÇÃO</button>
             </div>
         </div>
@@ -98,7 +99,7 @@
             <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR TXT</button>
             <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
         </div>
-        <textarea id="area-peca" placeholder="Inicie sua redação..."></textarea>
+        <textarea id="area-peca" placeholder="Desenvolva sua peça..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe">⋮</div>
@@ -111,7 +112,7 @@
                     <button class="action-btn" onclick="abrir('enu')">ABRIR</button>
                 </div>
             </div>
-            <iframe id="v-enu"></iframe>
+            <iframe id="v-enu" title="Enunciado"></iframe>
         </div>
         <div class="pdf-box" id="box-gab">
             <div class="pdf-header"><span>✅ GABARITO</span>
@@ -120,12 +121,10 @@
                     <button class="action-btn" onclick="abrir('gab')">ABRIR</button>
                 </div>
             </div>
-            <iframe id="v-gab"></iframe>
+            <iframe id="v-gab" title="Gabarito"></iframe>
         </div>
     </section>
 </main>
-
-<button class="btn-zen" onclick="toggleZen()">↕ EXPANDIR TELA</button>
 
 <script>
     let arquivoAtivo = "";
@@ -154,17 +153,23 @@
     function carregarArquivos(enu, gab) {
         arquivoAtivo = enu;
         urls.enu = enu; urls.gab = gab;
+        
+        // Atualiza os iframes
         document.getElementById('v-enu').src = enu;
         document.getElementById('v-gab').src = gab;
+        
+        // Atualiza as teses
         const manual = localStorage.getItem('tese_' + enu);
         document.getElementById('edit-teses').value = manual || bancoTeses[enu] || "Nenhuma tese mapeada.";
+        
+        // No mobile, pula para a tela de escrita
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
     function salvarTesesManuais() {
         if(!arquivoAtivo) return alert("Selecione um arquivo!");
         localStorage.setItem('tese_' + arquivoAtivo, document.getElementById('edit-teses').value);
-        alert("Salvo!");
+        alert("Alteração salva localmente!");
     }
 
     function focar(t) {
@@ -172,9 +177,14 @@
         if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
         else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
     }
-    function abrir(t) { window.open(urls[t], '_blank'); }
+    
+    function abrir(t) { 
+        if(!urls[t]) return alert("Selecione o arquivo primeiro!");
+        window.open(urls[t], '_blank'); 
+    }
+    
     function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
-    function toggleZen() { document.body.classList.toggle('zen-mode'); }
+    
     function switchTab(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -182,6 +192,7 @@
         document.getElementById('btn-' + id).classList.add('active');
     }
 
+    // Lógica do Resizer (Arrastar)
     const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
     resizer.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -195,7 +206,7 @@
 
     function salvarTXT() {
         const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Estudo_${arquivoAtivo}.txt`; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Peca_${arquivoAtivo || 'Estudo'}.txt`; a.click();
     }
 
     renderizarLista();
