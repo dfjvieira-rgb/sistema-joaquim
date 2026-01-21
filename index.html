@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - Workspace Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title>SISTEMA JOAQUIM - Workspace</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -31,7 +36,7 @@
             display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 1000;
         }
 
-        /* MODO ZEN - ELIMINA FAIXAS BRANCAS */
+        /* MODO ZEN - LIMPEZA TOTAL NO ANDROID */
         body.zen-mode header, 
         body.zen-mode .tabs-container { display: none !important; }
 
@@ -44,16 +49,15 @@
         
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
-        /* BOTÃO EXPANDIR - POSIÇÃO ESTRATÉGICA */
+        /* BOTÃO EXPANDIR FLUTUANTE */
         .btn-zen {
             position: fixed; bottom: 20px; right: 20px; z-index: 9999;
             background: var(--primary); color: white; border: none;
             padding: 12px 18px; border-radius: 50px; font-weight: bold;
             font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;
         }
-        body.zen-mode .btn-zen { background: var(--danger); opacity: 0.8; }
+        body.zen-mode .btn-zen { background: var(--danger); opacity: 0.9; }
 
-        /* SIDEBAR (PC) */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
         .btn-peca { 
             width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; 
@@ -61,19 +65,16 @@
         }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; }
 
-        /* EDITOR */
         .editor-section { background: white; padding: 15px; box-sizing: border-box; flex: 1; min-width: 50px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; width: 100%; cursor: pointer; }
         textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; resize: none; font-family: 'Courier New', monospace; }
 
-        /* RESIZER (PC) */
         .resizer { width: 8px; background: #ddd; cursor: col-resize; flex-shrink: 0; }
 
-        /* ÁREA DE PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 50px; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: 0.3s; }
         
-        /* Classes de Foco */
+        /* FOCO */
         .pdf-box.expanded { flex: 50 !important; }
         .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
 
@@ -91,7 +92,6 @@
             .content-section { display: none !important; width: 100% !important; flex: 1 !important; }
             .content-section.active-mobile { display: flex !important; }
             
-            /* Ajuste para evitar a faixa branca no expandir */
             body.zen-mode main { height: 100vh; }
             body.zen-mode .pdf-section { padding: 0; gap: 0; }
             body.zen-mode .pdf-header { display: none; }
@@ -120,8 +120,8 @@
     </aside>
 
     <section id="escrita" class="content-section editor-section">
-        <button class="btn-save" onclick="salvar()">💾 SALVAR RASCUNHO EM DISCO</button>
-        <textarea id="texto-rascunho" placeholder="Comece sua peça processual aqui..."></textarea>
+        <button class="btn-save" onclick="salvar()">💾 SALVAR RASCUNHO</button>
+        <textarea id="texto-rascunho" placeholder="Comece sua peça aqui..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe"></div>
@@ -154,33 +154,31 @@
 <button class="btn-zen" id="btnZen" onclick="toggleZen()">↕ EXPANDIR</button>
 
 <script>
-    // 1. MODO ZEN (EXPANDIR)
+    // Registro para o Android entender que é um APP
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
     function toggleZen() {
         const body = document.getElementById('bodyTag');
         body.classList.toggle('zen-mode');
         const isZen = body.classList.contains('zen-mode');
         document.getElementById('btnZen').textContent = isZen ? "🔙 VOLTAR" : "↕ EXPANDIR";
-        // Garante que o iframe se ajuste ao novo tamanho da tela
         window.dispatchEvent(new Event('resize'));
     }
 
-    // 2. NAVEGAÇÃO MOBILE
     function switchTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
         const target = document.getElementById(tabId);
         if(target) target.classList.add('active-mobile');
-        
         const btn = document.getElementById('btn-' + tabId);
         if(btn) btn.classList.add('active');
     }
 
-    // 3. FOCO NO PDF (PC E MOBILE)
     function focarPdf(tipo) {
         const e = document.getElementById('box-enunciado');
         const g = document.getElementById('box-gabarito');
-        
         if (tipo === 'enunciado') {
             const isExp = e.classList.contains('expanded');
             e.classList.toggle('expanded', !isExp);
@@ -194,25 +192,20 @@
         }
     }
 
-    // 4. ABRIR PDF EXTERNO (SOLUÇÃO IPAD)
     function abrirExterno(id) {
         const url = document.getElementById(id).src;
         if (url && url !== 'about:blank') window.open(url, '_blank');
     }
 
-    // 5. CARREGAR EXAME
     function carregarExame(enu, gab, btnId) {
         document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('selected'));
         const btn = document.getElementById(btnId);
         if(btn) btn.classList.add('selected');
-        
         document.getElementById('view-enunciado').src = enu;
         document.getElementById('view-gabarito').src = gab;
-        
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
-    // 6. REDIMENSIONAMENTO (PC)
     const resizer = document.getElementById('dragMe');
     const leftSide = document.getElementById('escrita');
     if (resizer && window.innerWidth > 900) {
@@ -230,13 +223,12 @@
         }
     }
 
-    // 7. SALVAMENTO E CRONÔMETRO
     function salvar() {
         const t = document.getElementById('texto-rascunho').value;
         const blob = new Blob([t], {type:'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Peca_Processual_OAB.txt';
+        a.download = 'Peca_OAB.txt';
         a.click();
     }
 
@@ -248,7 +240,6 @@
         if (tempo > 0) tempo--;
     }, 1000);
 
-    // Inicialização Mobile
     if (window.innerWidth < 900) switchTab('menu');
 </script>
 </body>
