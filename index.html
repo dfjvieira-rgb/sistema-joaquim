@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace Total</title>
+    <title>SISTEMA JOAQUIM - Workspace Premium</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -25,7 +25,7 @@
         .btn-peca { width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; text-align: left; cursor: pointer; }
 
         /* Área do Editor */
-        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 50px; position: relative; display: flex; flex-direction: column; }
+        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 100px; position: relative; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
         .btn-save { background: var(--success); }
@@ -46,21 +46,23 @@
             writing-mode: vertical-rl; font-weight: bold; font-size: 0.7rem; cursor: pointer;
         }
 
-        /* Divisão Ajustável (RESIZER) */
-        .resizer { width: 10px; background: #ddd; cursor: col-resize; flex-shrink: 0; transition: background 0.2s; }
+        /* RESIZER CORRIGIDO */
+        .resizer { width: 12px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; transition: 0.2s; position: relative; z-index: 10; }
         .resizer:hover { background: var(--accent); }
+        .resizer::after { content: "||"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #b2bec3; font-weight: bold; }
 
-        /* Seção de PDFs e Foco */
-        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 50px; display: flex; flex-direction: column; }
+        /* Seção de PDFs e Botões FOCO/ABRIR */
+        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; display: flex; flex-direction: column; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
         .pdf-box.expanded { flex: 50 !important; }
         .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
         .pdf-header { background: #34495e; color: white; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .header-btns { display: flex; gap: 4px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.6rem; }
+        .btn-open-ext { background: #95a5a6; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Botão Zen Flutuante */
-        .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; }
 
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
@@ -92,12 +94,12 @@
         <button class="btn-peca" onclick="carregarExame('ro34.pdf', 'ro34-gabarito.pdf', 'XXXIV')">📂 Exame XXXIV (RO)</button>
     </aside>
 
-    <section id="escrita" class="content-section editor-section">
+    <section id="escrita" class="content-section editor-section" id="editorWrap">
         <div id="panel-fundamentos">
             <button class="btn-toggle-fund" onclick="togglePanel()">📚 VER FUNDAMENTAÇÃO</button>
             <h3 style="font-size: 1rem; margin-top: 0; color: #d35400;">TESES DO EXAME</h3>
             <div id="lista-fundamentos" style="overflow-y: auto; font-size: 0.9rem; line-height: 1.6;">
-                <i>Escolha um exame para carregar os artigos...</i>
+                <i>Selecione um exame...</i>
             </div>
         </div>
 
@@ -105,18 +107,30 @@
             <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR TXT</button>
             <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
         </div>
-        <textarea id="area-peca" placeholder="Comece a digitar aqui..."></textarea>
+        <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe"></div>
 
     <section id="pdfs" class="content-section pdf-section">
         <div class="pdf-box" id="box-enunciado">
-            <div class="pdf-header"><span>📄 ENUNCIADO</span><button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button></div>
+            <div class="pdf-header">
+                <span>📄 ENUNCIADO</span>
+                <div class="header-btns">
+                    <button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button>
+                    <button class="action-btn btn-open-ext" onclick="abrirExterno('enunciado')">ABRIR</button>
+                </div>
+            </div>
             <iframe id="view-enunciado"></iframe>
         </div>
         <div class="pdf-box" id="box-gabarito">
-            <div class="pdf-header"><span>✅ GABARITO</span><button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button></div>
+            <div class="pdf-header">
+                <span>✅ GABARITO</span>
+                <div class="header-btns">
+                    <button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button>
+                    <button class="action-btn btn-open-ext" onclick="abrirExterno('gabarito')">ABRIR</button>
+                </div>
+            </div>
             <iframe id="view-gabarito"></iframe>
         </div>
     </section>
@@ -126,17 +140,26 @@
 
 <script>
     let exameAtivo = "";
+    let linksAtuais = { enunciado: "", gabarito: "" };
     const bancoFundamentos = {
-        "XXXV": "<b>1. Cerceamento:</b> Art. 5º, LV, CF<br><b>2. Equiparação:</b> Art. 461 CLT<br><b>3. Insalubridade:</b> Súmula 248 TST<br><b>4. Estabilidade:</b> Art. 543, §3º CLT<br><b>5. Intervalo:</b> Art. 66 CLT (Indenização)",
-        "XXXIV": "<b>1. Gestante:</b> Art. 10, II, 'b' ADCT<br><b>2. Honorários:</b> Art. 791-A CLT<br><b>3. Periculosidade:</b> Art. 193 CLT"
+        "XXXV": "<b>1. Cerceamento:</b> Art. 5º, LV, CF<br><b>2. Equiparação:</b> Art. 461 CLT<br><b>3. Insalubridade:</b> Súmula 248 TST<br><b>4. Estabilidade:</b> Art. 543, §3º CLT<br><b>5. Intervalo:</b> Art. 66 CLT",
+        "XXXIV": "<b>1. Gestante:</b> Art. 10, II, 'b' ADCT<br><b>2. Honorários:</b> Art. 791-A CLT"
     };
 
     function carregarExame(enu, gab, nome) {
         exameAtivo = nome;
+        linksAtuais.enunciado = enu;
+        linksAtuais.gabarito = gab;
         document.getElementById('view-enunciado').src = enu;
         document.getElementById('view-gabarito').src = gab;
         document.getElementById('lista-fundamentos').innerHTML = bancoFundamentos[nome] || "Mapeando...";
         if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    function abrirExterno(tipo) {
+        const url = tipo === 'enunciado' ? linksAtuais.enunciado : linksAtuais.gabarito;
+        if (url) window.open(url, '_blank');
+        else alert("Selecione um exame primeiro!");
     }
 
     function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
@@ -164,22 +187,24 @@
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Estudo_${exameAtivo}.txt`; a.click();
     }
 
-    // Lógica do RESIZER (Arrastar telas)
-    const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
-    let x = 0, w = 0;
-    resizer.addEventListener('mousedown', (e) => {
-        x = e.clientX;
-        w = leftSide.getBoundingClientRect().width;
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
+    // ARRASTAR TELAS (RESIZER) - LÓGICA REFORÇADA
+    const resizer = document.getElementById('dragMe');
+    const leftSide = document.querySelector('.editor-section');
+    resizer.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
     });
-    function mouseMoveHandler(e) {
-        const dx = e.clientX - x;
-        leftSide.style.width = `${w + dx}px`;
+    function resize(e) {
+        let newWidth = e.clientX - leftSide.offsetLeft;
+        if (newWidth > 100 && newWidth < window.innerWidth - 100) {
+            leftSide.style.width = newWidth + 'px';
+            leftSide.style.flex = 'none';
+        }
     }
-    function mouseUpHandler() {
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
+    function stopResize() {
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', stopResize);
     }
 
     // Cronômetro
