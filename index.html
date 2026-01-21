@@ -9,15 +9,12 @@
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; }
         
-        /* Layout Base */
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         header { background: var(--primary); color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 1000; }
         .tabs-container { display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; z-index: 1000; }
         
-        /* Modo Zen */
         body.zen-mode header, body.zen-mode .tabs-container { display: none !important; }
         
-        /* Navegação */
         .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
         #timer { font-size: 1.1rem; color: var(--warning); font-weight: 800; }
@@ -25,36 +22,29 @@
         main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
         
-        /* Botão Zen Flutuante */
         .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-        /* Sidebar Peças */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
         .btn-peca { width: 100%; padding: 16px; margin-bottom: 12px; background: #fff; border: 2px solid #edf2f7; border-radius: 12px; font-weight: 600; text-align: left; cursor: pointer; }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; }
 
-        /* ÁREA DE ESCRITA - MELHORADA */
         .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 50px; }
         .sub-nav { display: flex; gap: 5px; margin-bottom: 10px; background: #eee; padding: 5px; border-radius: 8px; }
         .sub-nav button { flex: 1; padding: 8px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .sub-nav button.active { background: var(--primary); color: white; }
         
-        /* Botões de Ação */
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; }
         .btn-pdf { background: #607d8b; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; }
 
-        /* TEXTO MAIOR PARA ESTUDO */
         .textarea-container { flex: 1; display: flex; flex-direction: column; }
         textarea { 
             flex: 1; width: 100%; padding: 20px; border: 1px solid #ddd; border-radius: 12px; 
-            font-size: 18px; /* FONTE AUMENTADA */
-            line-height: 1.5; color: #2c3e50;
+            font-size: 18px; line-height: 1.5; color: #2c3e50;
             resize: none; font-family: 'Segoe UI', sans-serif; box-sizing: border-box; 
         }
         #area-fundamentacao { display: none; border-color: var(--accent); background: #fdfdfd; }
 
-        /* Layout PDFs */
         .resizer { width: 8px; background: #ddd; cursor: col-resize; flex-shrink: 0; }
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 50px; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; }
@@ -64,7 +54,6 @@
         .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; font-size: 0.65rem; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Responsividade Mobile */
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
             .resizer, .sidebar-section { display: none !important; }
@@ -76,11 +65,9 @@
             body.zen-mode .pdf-header { display: none; }
         }
 
-        /* CONFIGURAÇÃO PARA GERAR PDF LIMPO */
         @media print {
             body * { visibility: hidden; }
-            #area-peca, #area-fundamentacao, .print-content { visibility: visible; position: absolute; left: 0; top: 0; width: 100%; font-size: 14pt; }
-            textarea { border: none; overflow: visible; height: auto !important; }
+            textarea { visibility: visible; position: absolute; left: 0; top: 0; width: 100%; font-size: 14pt; border: none; overflow: visible; height: auto !important; }
         }
     </style>
 </head>
@@ -164,13 +151,41 @@
         document.body.removeChild(link);
     }
 
-    function gerarPDF() {
-        // Esta função usa a janela de impressão do sistema, que permite "Salvar como PDF"
-        window.print();
-    }
+    function gerarPDF() { window.print(); }
 
     function carregarExame(enu, gab, nomeSimples) {
         nomePecaAtual = nomeSimples;
         document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('selected'));
         document.getElementById('view-enunciado').src = enu;
-        document.getElementById('view-
+        document.getElementById('view-gabarito').src = gab;
+        if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    function toggleZen() {
+        document.getElementById('bodyTag').classList.toggle('zen-mode');
+        document.getElementById('btnZen').textContent = document.getElementById('bodyTag').classList.contains('zen-mode') ? "🔙 VOLTAR" : "↕ EXPANDIR";
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active-mobile');
+        document.getElementById('btn-' + tabId).classList.add('active');
+    }
+
+    function focarPdf(tipo) {
+        const e = document.getElementById('box-enunciado'); const g = document.getElementById('box-gabarito');
+        if (tipo === 'enunciado') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
+        else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
+    }
+
+    let tempo = 18000;
+    setInterval(() => {
+        let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
+        document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (tempo > 0) tempo--;
+    }, 1000);
+</script>
+</body>
+</html>
