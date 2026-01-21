@@ -5,36 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Inteligência OAB</title>
+    <title>SISTEMA JOAQUIM - Workspace</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
+        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; }
+        
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         header { background: var(--primary); color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        
         .tabs-container { display: none; background: #34495e; padding: 2px; gap: 2px; flex-shrink: 0; }
-        .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; }
+        .tab-btn { flex: 1; padding: 12px 2px; border: none; background: transparent; color: #bdc3c7; font-weight: bold; font-size: 0.75rem; cursor: pointer; }
         .tab-btn.active { background: var(--accent); color: white; border-radius: 4px; }
-        main { flex: 1; display: flex; overflow: hidden; position: relative; }
+        
+        main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        
+        /* Sidebar */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
-        .btn-peca { width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; text-align: left; cursor: pointer; }
+        .btn-peca { width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; text-align: left; cursor: pointer; font-size: 0.9rem; }
         .btn-peca.selected { border-color: var(--accent); background: #f0f7ff; }
-        .editor-section { background: white; padding: 10px; flex: 1; }
+
+        /* Editor */
+        .editor-section { background: white; padding: 10px; flex: 1; box-sizing: border-box; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-action { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.75rem; }
+        .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
+        .btn-hint { background: var(--warning); color: #2c3e50; }
         .btn-save { background: var(--success); }
         .btn-pdf { background: #607d8b; }
-        .btn-hint { background: var(--warning); color: #2c3e50; }
-        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
+        
+        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; font-family: inherit; }
+
+        /* NOVA CAIXA DE TESES (MODAL) */
+        #modal-teses { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 500px; background: white; z-index: 10000; 
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 20px;
+        }
+        #modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 9999; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-body { font-size: 1rem; line-height: 1.6; color: #333; max-height: 60vh; overflow-y: auto; }
+        .close-modal { background: var(--danger); color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; }
+
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
             .sidebar-section { display: none !important; }
-            main { flex-direction: column; }
-            .content-section { display: none !important; }
+            main { flex-direction: column; width: 100vw; }
+            .content-section { display: none !important; width: 100% !important; }
             .content-section.active-mobile { display: flex !important; }
         }
+        @media print { body * { visibility: hidden; } textarea { visibility: visible; position: absolute; left: 0; top: 0; width: 100%; border: none; } }
     </style>
 </head>
 <body id="bodyTag">
@@ -45,9 +68,9 @@
 </header>
 
 <nav class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('menu')">📂 PEÇAS</button>
-    <button class="tab-btn" onclick="switchTab('escrita')">✍️ TREINO</button>
-    <button class="tab-btn" onclick="switchTab('pdfs')">📄 PROVA</button>
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 PEÇAS</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
+    <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">📄 PROVA</button>
 </nav>
 
 <main>
@@ -59,9 +82,9 @@
 
     <section id="escrita" class="content-section editor-section">
         <div class="actions-row">
-            <button class="btn-action btn-hint" onclick="mostrarDica()">💡 VER TESES</button>
-            <button class="btn-action btn-save" onclick="salvarTXT()">💾 SALVAR</button>
-            <button class="btn-action btn-pdf" onclick="window.print()">📄 PDF</button>
+            <button class="btn-act btn-hint" onclick="abrirTeses()">💡 VER TESES</button>
+            <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR</button>
+            <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
         </div>
         <textarea id="area-peca" placeholder="Comece seu treino..."></textarea>
     </section>
@@ -72,10 +95,22 @@
     </section>
 </main>
 
+<div id="modal-overlay" onclick="fecharTeses()"></div>
+<div id="modal-teses">
+    <div class="modal-header">
+        <strong id="modal-titulo">Dicas de Estudo</strong>
+        <button class="close-modal" onclick="fecharTeses()">X</button>
+    </div>
+    <div class="modal-body" id="modal-conteudo">
+        Selecione um exame primeiro para ver as fundamentações.
+    </div>
+</div>
+
 <script>
     let exameAtivo = "";
-    const teses = {
-        "XXXV": "TESES EXAME XXXV (RO):\n1. Preliminar Cerceamento (Art. 5, LV CF)\n2. Equiparação (Art. 461 CLT - local diferente)\n3. Insalubridade (Súmula 248 TST - reclassificação)\n4. Dirigente Associação (Sem estabilidade - Art. 543 CLT)\n5. Intervalo Interjornada (Indenização Art. 66 CLT)"
+    const bancoTeses = {
+        "XXXV": "<b>ESTRUTURA DO EXAME XXXV (RO):</b><br><br>• <b>Preliminar:</b> Cerceamento de Defesa (Art. 5, LV, CF).<br>• <b>Equiparação:</b> Art. 461 CLT (Localidade diferente).<br>• <b>Insalubridade:</b> Súmula 248 TST (Reclassificação).<br>• <b>Estabilidade:</b> Dirigente de Associação (Art. 543 CLT - Negativa).<br>• <b>Intervalo:</b> Art. 66 CLT (Natureza indenizatória).",
+        "XXXIV": "<b>ESTRUTURA DO EXAME XXXIV (RO):</b><br><br>• Mapeamento em breve..."
     };
 
     function carregarExame(enu, gab, nome) {
@@ -85,19 +120,40 @@
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
-    function mostrarDica() {
-        if (!exameAtivo) alert("Selecione um exame primeiro!");
-        else alert(teses[exameAtivo] || "Teses ainda não mapeadas para este exame.");
+    function abrirTeses() {
+        const conteudo = document.getElementById('modal-conteudo');
+        const titulo = document.getElementById('modal-titulo');
+        
+        if (!exameAtivo) {
+            conteudo.innerHTML = "Por favor, selecione um exame na aba <b>PEÇAS</b> primeiro.";
+        } else {
+            titulo.innerText = "TESES - EXAME " + exameAtivo;
+            conteudo.innerHTML = bancoTeses[exameAtivo] || "Teses ainda não mapeadas.";
+        }
+        
+        document.getElementById('modal-teses').style.display = 'block';
+        document.getElementById('modal-overlay').style.display = 'block';
+    }
+
+    function fecharTeses() {
+        document.getElementById('modal-teses').style.display = 'none';
+        document.getElementById('modal-overlay').style.display = 'none';
     }
 
     function switchTab(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-mobile');
+        document.getElementById('btn-' + id).classList.add('active');
     }
 
     function salvarTXT() {
-        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${exameAtivo}.txt`; a.click();
+        const txt = document.getElementById('area-peca').value;
+        const blob = new Blob([txt], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Estudo_OAB_${exameAtivo}.txt`;
+        a.click();
     }
 
     let t = 18000; setInterval(() => {
