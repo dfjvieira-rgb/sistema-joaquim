@@ -3,170 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - OAB TOTAL</title>
+    <title>SISTEMA JOAQUIM - FULL MOBILE</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --green: #27ae60; --header-h: 70px; }
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --green: #27ae60; --purple: #9b59b6; --yellow: #f1c40f; --header-h: 120px; }
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-shrink: 0; }
-        #timer { font-size: 1.1rem; font-weight: bold; color: #f1c40f; }
+        /* HEADER */
+        header { background-color: var(--primary); color: white; padding: 10px; z-index: 1000; flex-shrink: 0; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        #timer { font-size: 1rem; font-weight: bold; color: var(--yellow); }
         
-        .nav-group { display: flex; gap: 8px; }
-        .dropdown { position: relative; display: inline-block; }
-        .dropbtn { color: white; padding: 10px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        .nav-group { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .dropdown { position: relative; width: 100%; }
+        .dropbtn { color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.65rem; text-transform: uppercase; width: 100%; }
+        
         .btn-struct { background-color: var(--accent); }
         .btn-correc { background-color: var(--orange); }
+        .btn-postit { background-color: var(--yellow); color: #333; }
+        .btn-dicas { background-color: var(--purple); }
         
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 240px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 1000; padding: 5px; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); right: 0; border-radius: 4px; z-index: 2000; padding: 5px; }
         .dropdown:hover .dropdown-content { display: block; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; cursor: pointer; }
+        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; font-size: 0.8rem; color: #333; }
 
+        /* MAIN LAYOUT */
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: 180px; background: white; padding: 10px; border-right: 1px solid #ddd; flex-shrink: 0; }
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; transition: all 0.3s ease; }
-        .pdf-section { flex: 1.2; background: #525659; display: flex; flex-direction: column; padding: 5px; overflow-y: auto; transition: all 0.3s ease; }
-        
-        /* EDITOR */
-        .editor-container { flex: 1; padding: 10px; display: flex; flex-direction: column; background: #fff; }
-        #area-peca { 
-            flex: 1; padding: 20px; border: 1px solid #ddd; border-radius: 4px; 
-            font-family: 'Courier New', Courier, monospace; font-size: 16px; 
-            line-height: 1.5; color: #333; resize: none; outline: none;
-            background-image: linear-gradient(#f9f9f9 1px, transparent 1px); background-size: 100% 1.5em;
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; z-index: 10; }
+        #area-peca { flex: 1; padding: 20px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.5; outline: none; background-image: linear-gradient(#f9f9f9 1px, transparent 1px); background-size: 100% 1.5em; }
+
+        /* PAINEL DE CONSULTA (POST-ITS / DICAS / GABARITOS) */
+        .consulta-full { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: white; z-index: 5000; display: none; flex-direction: column; 
         }
+        .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: bold; }
+        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.1rem; line-height: 1.4; color: #333; }
 
-        /* PDF BOX */
-        .pdf-box { display: flex; flex-direction: column; margin-bottom: 15px; position: relative; }
-        .pdf-header { background: #333; color: #fff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px 4px 0 0; }
-        .pdf-frame { width: 100%; height: 500px; border: none; background: #fff; border-radius: 0 0 4px 4px; }
+        /* PDF AREA */
+        .pdf-section { flex: 1.2; background: #525659; display: flex; flex-direction: column; padding: 5px; overflow-y: auto; }
+        .pdf-box { display: flex; flex-direction: column; margin-bottom: 10px; background: #333; border-radius: 4px; }
+        .pdf-frame { width: 100%; height: 450px; border: none; background: white; }
         
-        /* BOTÕES */
-        .action-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
-        .exp-btn { background: #555; font-size: 0.6rem; padding: 4px 8px; }
+        /* BOTÕES DE AÇÃO */
+        .action-btn { border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; color: white; }
+        .close-btn { background: rgba(0,0,0,0.2); font-size: 1.2rem; }
 
-        /* ESTADO EXPANDIDO */
-        .pdf-expanded { position: fixed; top: var(--header-h); left: 0; width: 100%; height: calc(100vh - var(--header-h)); z-index: 1000; padding: 0; margin: 0; }
-        .pdf-expanded .pdf-frame { height: 100%; border-radius: 0; }
-
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; height: 80%; background: white; z-index: 2000; border-radius: 8px; padding: 15px; flex-direction: column; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
+        /* MODAL EDITOR */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; height: 85%; background: white; z-index: 6000; border-radius: 8px; padding: 15px; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5999; }
 
         @media (max-width: 900px) {
             main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; }
-            .pdf-section { flex: none; min-height: 1100px; }
-            header { height: auto; padding: 10px; flex-direction: column; gap: 10px; }
-            .nav-group { width: 100%; justify-content: space-between; }
+            .pdf-section { flex: none; height: auto; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div id="timer">05:00:00</div>
+    <div class="top-bar">
+        <div id="timer">05:00:00</div>
+        <button class="action-btn" style="background:var(--green)" onclick="exportarTXT()">SALVAR TXT</button>
+    </div>
     <div class="nav-group">
         <div class="dropdown">
             <button class="dropbtn btn-struct">📑 ESTRUTURA</button>
-            <div class="dropdown-content" id="lista-estruturas"></div>
+            <div class="dropdown-content" id="lista-db_estruturas"></div>
         </div>
         <div class="dropdown">
             <button class="dropbtn btn-correc">⚖️ CORREÇÃO</button>
-            <div class="dropdown-content" id="lista-correcao"></div>
+            <div class="dropdown-content" id="lista-db_correcoes"></div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn btn-postit">📌 POST-ITS</button>
+            <div class="dropdown-content" id="lista-db_postits"></div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn btn-dicas">👩‍🏫 DICAS PROF</button>
+            <div class="dropdown-content" id="lista-db_dicas"></div>
         </div>
     </div>
 </header>
 
 <main>
-    <section class="sidebar">
-        <button class="action-btn" style="width:100%; background:var(--primary)" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">ABRIR 35</button>
-    </section>
-
     <section class="work-section">
-        <div class="editor-container">
-            <button class="action-btn" style="background:var(--green); margin-bottom: 8px;" onclick="exportarTXT()">SALVAR TXT</button>
-            <textarea id="area-peca" placeholder="Inicie sua peça..."></textarea>
-        </div>
+        <button class="action-btn" style="background:var(--primary); margin: 5px;" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">ABRIR EXAME 35</button>
+        <textarea id="area-peca" placeholder="Comece sua peça aqui..."></textarea>
     </section>
 
     <section class="pdf-section" id="pdf-area">
         <div class="pdf-box" id="box-enu">
-            <div class="pdf-header">
-                <span style="font-size: 0.7rem; font-weight: bold;">📝 ENUNCIADO</span>
-                <button class="action-btn exp-btn" onclick="toggleExpand('box-enu')">EXPANDIR / VOLTAR</button>
+            <div class="consulta-header" style="padding:5px 10px; font-size: 0.7rem;">
+                <span>PROVA</span>
+                <button class="action-btn" style="background:#555" onclick="expandirPDF('v-enu')">EXPANDIR</button>
             </div>
             <iframe class="pdf-frame" id="v-enu" src="about:blank"></iframe>
         </div>
-        
         <div class="pdf-box" id="box-gab">
-            <div class="pdf-header">
-                <span style="font-size: 0.7rem; font-weight: bold;">✅ GABARITO</span>
-                <button class="action-btn exp-btn" onclick="toggleExpand('box-gab')">EXPANDIR / VOLTAR</button>
+            <div class="consulta-header" style="padding:5px 10px; font-size: 0.7rem;">
+                <span>GABARITO</span>
+                <button class="action-btn" style="background:#555" onclick="expandirPDF('v-gab')">EXPANDIR</button>
             </div>
             <iframe class="pdf-frame" id="v-gab" src="about:blank"></iframe>
         </div>
     </section>
 </main>
 
+<div id="janela-consulta" class="consulta-full">
+    <div id="header-consulta" class="consulta-header">
+        <span id="titulo-consulta">Consulta</span>
+        <button class="close-btn" onclick="fecharConsulta()">VOLTAR ↩</button>
+    </div>
+    <div id="corpo-consulta" class="consulta-body"></div>
+</div>
+
 <div class="overlay" id="overlay" onclick="fecharModal()"></div>
 <div class="modal" id="modal-editor">
     <h3 style="margin-top:0">Editar</h3>
-    <textarea id="modal-texto" style="flex:1; margin-bottom:10px; padding: 10px; font-family: 'Courier New';"></textarea>
-    <button class="action-btn" style="background:var(--green); height: 45px;" onclick="salvarAlteracoes()">SALVAR NO BANCO</button>
+    <textarea id="modal-texto" style="flex:1; margin-bottom:10px; padding: 10px; font-family: 'Courier New'; font-size: 16px;"></textarea>
+    <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR NO BANCO</button>
 </div>
 
 <script>
-    const padroes = {
-        estruturas: { 'RO': { nome: 'Recurso Ordinário', texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO...\n\nPROCESSO Nº...' } },
-        correcoes: { 'C35': { nome: 'Checklist 35', texto: 'PONTOS:\n- Art. 895, I CLT (0,10)\n- Custas (0,20)' } }
-    };
-
-    function toggleExpand(id) {
-        const el = document.getElementById(id);
-        el.classList.toggle('pdf-expanded');
-    }
+    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
+    const cores = { db_estruturas: 'var(--accent)', db_correcoes: 'var(--orange)', db_postits: 'var(--yellow)', db_dicas: 'var(--purple)' };
 
     function renderizarMenus() {
-        const db_est = JSON.parse(localStorage.getItem('db_estruturas')) || padroes.estruturas;
-        const db_cor = JSON.parse(localStorage.getItem('db_correcoes')) || padroes.correcoes;
-
-        document.getElementById('lista-estruturas').innerHTML = Object.keys(db_est).map(id => `
-            <div class="menu-item">
-                <span onclick="usarConteudo('db_estruturas', '${id}')" style="flex:1"><b>${db_est[id].nome}</b></span>
-                <button onclick="abrirEditor('db_estruturas', '${id}')" style="border:none;background:none;cursor:pointer;">✏️</button>
-            </div>`).join('') + `<button class="action-btn" style="width:100%" onclick="abrirEditor('db_estruturas', 'novo')">+ NOVA</button>`;
-
-        document.getElementById('lista-correcao').innerHTML = Object.keys(db_cor).map(id => `
-            <div class="menu-item">
-                <span onclick="usarConteudo('db_correcoes', '${id}')" style="flex:1"><b>${db_cor[id].nome}</b></span>
-                <button onclick="abrirEditor('db_correcoes', '${id}')" style="border:none;background:none;cursor:pointer;">✏️</button>
-            </div>`).join('') + `<button class="action-btn" style="width:100%" onclick="abrirEditor('db_correcoes', 'novo')">+ NOVO</button>`;
+        bancos.forEach(banco => {
+            const db = JSON.parse(localStorage.getItem(banco)) || {};
+            const container = document.getElementById('lista-' + banco);
+            container.innerHTML = Object.keys(db).map(id => `
+                <div class="menu-item">
+                    <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
+                    <button onclick="abrirEditor('${banco}', '${id}')" style="border:none;background:none;font-size:1.2rem;">✏️</button>
+                </div>`).join('') + `<button class="action-btn" style="width:100%; background:#333" onclick="abrirEditor('${banco}', 'novo')">+ NOVO</button>`;
+        });
     }
 
-    function usarConteudo(banco, id) {
-        const db = JSON.parse(localStorage.getItem(banco)) || padroes[banco.replace('db_', '')];
-        if(confirm("Deseja carregar este texto no editor?")) document.getElementById('area-peca').value = db[id].texto;
+    function abrirConsulta(banco, id) {
+        const db = JSON.parse(localStorage.getItem(banco));
+        const item = db[id];
+        document.getElementById('titulo-consulta').innerText = item.nome;
+        document.getElementById('corpo-consulta').innerText = item.texto;
+        document.getElementById('header-consulta').style.backgroundColor = cores[banco];
+        if(banco === 'db_postits') document.getElementById('header-consulta').style.color = '#333';
+        else document.getElementById('header-consulta').style.color = 'white';
+        
+        document.getElementById('janela-consulta').style.display = 'flex';
     }
 
-    function carregarExame(e, g) {
-        document.getElementById('v-enu').src = `./${e}`;
-        document.getElementById('v-gab').src = `./${g}`;
-        if(window.innerWidth < 900) {
-            setTimeout(() => { document.getElementById('pdf-area').scrollIntoView({behavior: 'smooth'}); }, 300);
-        }
+    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
+
+    function expandirPDF(id) {
+        const frame = document.getElementById(id);
+        if (frame.requestFullscreen) frame.requestFullscreen();
+        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
     }
 
     let ctxEdicao = { banco: '', id: '' };
     function abrirEditor(banco, id) {
         ctxEdicao = { banco, id };
-        const db = JSON.parse(localStorage.getItem(banco)) || padroes[banco.replace('db_', '')];
+        const db = JSON.parse(localStorage.getItem(banco)) || {};
         document.getElementById('modal-texto').value = (id === 'novo') ? "NOME:\nTexto..." : db[id].texto;
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('modal-editor').style.display = 'flex';
     }
 
     function salvarAlteracoes() {
-        let db = JSON.parse(localStorage.getItem(ctxEdicao.banco)) || padroes[ctxEdicao.banco.replace('db_', '')];
+        let db = JSON.parse(localStorage.getItem(ctxEdicao.banco)) || {};
         const val = document.getElementById('modal-texto').value;
         if(ctxEdicao.id === 'novo') {
             const nid = 'ID'+Date.now();
@@ -177,7 +182,18 @@
     }
 
     function fecharModal() { document.getElementById('overlay').style.display = 'none'; document.getElementById('modal-editor').style.display = 'none'; }
-    
+
+    function carregarExame(e, g) {
+        document.getElementById('v-enu').src = `./${e}`;
+        document.getElementById('v-gab').src = `./${g}`;
+        if(window.innerWidth < 900) document.getElementById('pdf-area').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function exportarTXT() {
+        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click();
+    }
+
     window.onload = () => {
         renderizarMenus();
         let s = 18000; setInterval(() => {
@@ -186,11 +202,6 @@
             s--;
         }, 1000);
     };
-
-    function exportarTXT() {
-        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click();
-    }
 </script>
 </body>
 </html>
