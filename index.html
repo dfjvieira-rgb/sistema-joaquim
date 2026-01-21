@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - V4 FINAL</title>
+    <title>SISTEMA JOAQUIM - Gestão de Arquivos</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -20,11 +20,12 @@
         main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
         
-        /* Lateral Esquerda - Lista de Exames */
-        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
-        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: #fff; border: 2px solid #edf2f7; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; }
+        /* Lateral Esquerda - Lista de Arquivos Reais */
+        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .btn-peca { width: 100%; padding: 10px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .btn-peca:hover { background: #e9ecef; border-color: var(--accent); }
 
-        /* Área central de escrita */
+        /* Área do Editor */
         .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 150px; position: relative; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
@@ -32,7 +33,7 @@
         .btn-pdf { background: #607d8b; }
         textarea#area-peca { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
 
-        /* Painel de Teses Inteligente */
+        /* Painel de Teses */
         #panel-fundamentos { 
             position: absolute; right: -305px; top: 0; width: 300px; height: 100%; 
             background: #fffdf5; border-left: 5px solid var(--warning); z-index: 2000;
@@ -48,11 +49,10 @@
         #edit-teses { width: 100%; height: 70%; border: 1px solid #e6dbb3; border-radius: 8px; padding: 10px; font-size: 0.85rem; background: #fff; resize: none; }
         .btn-save-fund { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* RESIZER (Arraste de Tela) */
+        /* RESIZER */
         .resizer { width: 14px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b2bec3; }
-        .resizer:hover { background: var(--accent); color: white; }
 
-        /* Área de PDFs */
+        /* PDFs */
         .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; display: flex; flex-direction: column; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
         .pdf-box.expanded { flex: 50 !important; }
@@ -69,7 +69,6 @@
             main { flex-direction: column; width: 100vw; height: 100%; }
             .content-section { display: none !important; width: 100% !important; flex: 1 !important; }
             .content-section.active-mobile { display: flex !important; }
-            #panel-fundamentos { width: 90%; }
         }
     </style>
 </head>
@@ -81,24 +80,24 @@
 </header>
 
 <nav class="tabs-container">
-    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 PEÇAS</button>
+    <button class="tab-btn active" id="btn-menu" onclick="switchTab('menu')">📂 ARQUIVOS</button>
     <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
     <button class="tab-btn" id="btn-pdfs" onclick="switchTab('pdfs')">📄 PROVA</button>
 </nav>
 
 <main>
     <aside id="menu" class="content-section sidebar-section active-mobile">
-        <h4 style="margin: 10px 0">EXAMES:</h4>
-        <div id="lista-exames-container"></div>
+        <h4 style="margin: 10px 0; color: #7f8c8d; font-size: 0.8rem;">MEUS ARQUIVOS:</h4>
+        <div id="lista-arquivos-reais"></div>
     </aside>
 
     <section id="escrita" class="content-section editor-section">
         <div id="panel-fundamentos">
             <button class="btn-toggle-fund" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
-            <h3 style="font-size: 0.9rem; margin: 0 0 10px 0; color: #d35400;">MAPEAMENTO INTELIGENTE</h3>
+            <h3 style="font-size: 0.9rem; margin: 0 0 10px 0; color: #d35400;">MAPEAMENTO DE TESES</h3>
             <div style="flex:1; display:flex; flex-direction:column;">
-                <textarea id="edit-teses" placeholder="Selecione um exame..."></textarea>
-                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR AJUSTE MANUAL</button>
+                <textarea id="edit-teses" placeholder="Selecione um arquivo para ver as teses..."></textarea>
+                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR ALTERAÇÃO</button>
             </div>
         </div>
         <div class="actions-row">
@@ -135,53 +134,53 @@
 <button class="btn-zen" onclick="toggleZen()" id="btnZen">↕ EXPANDIR TELA</button>
 
 <script>
-    let exameAtivo = "";
+    let arquivoAtivo = "";
     let urls = { enu: "", gab: "" };
 
-    // BANCO DE DADOS DA INTELIGÊNCIA
-    const inteligenciaMapeamento = {
-        "XXXV": "MAPEAMENTO EXAME XXXV (RO):\n\n1. CERCEAMENTO: Art. 5, LV, CF\n2. EQUIPARAÇÃO: Art. 461, CLT\n3. INSALUBRIDADE: Súmula 248, TST\n4. ESTABILIDADE: Art. 543, §3º, CLT\n5. INTERVALO: Art. 66 CLT / 71 §4º CLT",
-        "XXXIV": "MAPEAMENTO EXAME XXXIV (RO):\n\n1. GESTANTE: Art. 10, II, b, ADCT\n2. HONORÁRIOS: Art. 791-A, CLT\n3. PERICULOSIDADE: Art. 193, CLT\n4. MULTA 477: Pagamento tempestivo"
+    // MAPEAMENTO DE TESES (Baseado no nome real do arquivo)
+    const bancoTeses = {
+        "ro35.pdf": "MAPEAMENTO RO35:\n1. Cerceamento: Art. 5, LV, CF\n2. Equiparação: Art. 461 CLT\n3. Insalubridade: Súmula 248 TST",
+        "ro34.pdf": "MAPEAMENTO RO34:\n1. Gestante: Art. 10, II, b, ADCT\n2. Honorários: Art. 791-A CLT"
     };
 
-    // SOLUÇÃO TEMPESTIVA PARA DUPLICAÇÃO: Renderizar a lista via JS limpando o container
-    function renderizarListaExames() {
-        const container = document.getElementById('lista-exames-container');
-        container.innerHTML = ""; // Limpa tudo antes de criar
-        
-        const exames = [
-            {id: 'XXXV', enu: 'ro35.pdf', gab: 'ro35-gabarito.pdf'},
-            {id: 'XXXIV', enu: 'ro34.pdf', gab: 'ro34-gabarito.pdf'}
-        ];
+    // LISTA DE ARQUIVOS (Exatamente como estão no seu Drive/GitHub)
+    const meusArquivos = [
+        { nome: "ro35.pdf", gabarito: "ro35-gabarito.pdf" },
+        { nome: "ro34.pdf", gabarito: "ro34-gabarito.pdf" }
+    ];
 
-        exames.forEach(ex => {
+    function renderizarLista() {
+        const container = document.getElementById('lista-arquivos-reais');
+        container.innerHTML = "";
+        meusArquivos.forEach(arq => {
             const btn = document.createElement('button');
             btn.className = "btn-peca";
-            btn.innerHTML = `📂 Exame ${ex.id}`;
-            btn.onclick = () => carregarExame(ex.enu, ex.gab, ex.id);
+            btn.innerHTML = `📄 ${arq.nome}`; // Exibe o nome real do arquivo
+            btn.onclick = () => carregarArquivos(arq.nome, arq.gabarito);
             container.appendChild(btn);
         });
     }
 
-    function carregarExame(enu, gab, nome) {
-        exameAtivo = nome;
+    function carregarArquivos(enu, gab) {
+        arquivoAtivo = enu;
         urls.enu = enu; urls.gab = gab;
         document.getElementById('v-enu').src = enu;
         document.getElementById('v-gab').src = gab;
         
-        const manual = localStorage.getItem('tese_' + nome);
-        document.getElementById('edit-teses').value = manual || inteligenciaMapeamento[nome] || "Sem mapeamento.";
+        // Carrega tese salva ou do banco
+        const manual = localStorage.getItem('tese_' + enu);
+        document.getElementById('edit-teses').value = manual || bancoTeses[enu] || "Nenhuma tese mapeada para este arquivo.";
         
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
     function salvarTesesManuais() {
-        if(!exameAtivo) return alert("Selecione um exame!");
-        localStorage.setItem('tese_' + exameAtivo, document.getElementById('edit-teses').value);
-        alert("Salvo!");
+        if(!arquivoAtivo) return alert("Selecione um arquivo!");
+        localStorage.setItem('tese_' + arquivoAtivo, document.getElementById('edit-teses').value);
+        alert("Teses atualizadas para " + arquivoAtivo);
     }
 
-    // FUNÇÕES DE CONTROLE RESTAURADAS
+    // CONTROLES DE TELA
     function focar(t) {
         const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
         if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
@@ -197,9 +196,9 @@
         document.getElementById('btn-' + id).classList.add('active');
     }
 
-    // RESIZER (ARRASTAR)
+    // RESIZER (Arraste)
     const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
-    resizer.addEventListener('mousedown', function(e) {
+    resizer.addEventListener('mousedown', (e) => {
         e.preventDefault();
         document.addEventListener('mousemove', mover);
         document.addEventListener('mouseup', () => document.removeEventListener('mousemove', mover));
@@ -211,11 +210,10 @@
 
     function salvarTXT() {
         const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Peca_${exameAtivo}.txt`; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Estudo_${arquivoAtivo}.txt`; a.click();
     }
 
-    // Inicialização
-    renderizarListaExames();
+    renderizarLista();
     let t = 18000; setInterval(() => {
         let h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
         document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
