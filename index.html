@@ -3,94 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace OAB</title>
+    <title>SISTEMA JOAQUIM - Workspace OAB 2ª Fase</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; --orange: #d35400; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #d35400; --header-h: 60px; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Mobile Tabs - Posicionadas estrategicamente para mobile */
-        .tabs-container { display: none; background: var(--primary); padding: 8px; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #34495e; color: white; border-radius: 6px; font-weight: bold; font-size: 0.8rem; }
-        .tab-btn.active { background: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        /* HEADER COM TIMER */
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
+        #timer { font-size: 1.4rem; font-weight: bold; color: #f1c40f; }
 
-        main { display: flex; flex: 1; overflow: hidden; }
+        /* NAVEGAÇÃO MOBILE */
+        .tabs-container { display: none; background: #34495e; padding: 5px; gap: 5px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: #2c3e50; color: white; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
+        .tab-btn.active { background: var(--accent); }
 
-        /* Lateral Exames */
-        .sidebar-section { width: 220px; background: white; padding: 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 14px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: left; cursor: pointer; font-size: 0.9rem; }
-        .btn-peca.active-peca { border-left: 6px solid var(--accent); background: #eef7ff; font-weight: bold; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* Seção de Trabalho */
-        .work-section { display: flex; flex-direction: column; flex: 1; min-width: 300px; background: white; border-right: 1px solid #ddd; position: relative; }
+        /* BARRA LATERAL (EXAMES) */
+        .sidebar { width: 250px; background: white; padding: 1.2rem; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .sidebar h2 { font-size: 0.9rem; color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 8px; text-transform: uppercase; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: white; border: 1px solid #dcdde1; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
+        .btn-peca:hover { transform: translateX(5px); background: #eef7ff; border-color: var(--accent); }
+        .btn-peca.active-peca { border-left: 5px solid var(--accent); background: #eef7ff; font-weight: bold; color: var(--accent); }
+
+        /* ÁREA DE TREINO (ESCRITA + FUNDAMENTOS) */
+        .work-section { flex: 1; min-width: 300px; display: flex; flex-direction: column; background: white; position: relative; }
         
-        #panel-fundamentos { display: none; background: #fff9f4; border-bottom: 3px solid var(--orange); padding: 15px; overflow-y: auto; max-height: 45%; }
+        #panel-fundamentos { display: none; background: #fff9f4; border-bottom: 3px solid var(--orange); padding: 15px; overflow-y: auto; max-height: 40%; }
         #panel-fundamentos.open { display: flex; flex-direction: column; }
-        
-        .fundamentos-grid { display: grid; gap: 8px; margin-top: 10px; }
-        .item-fundamento { display: flex; gap: 8px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; align-items: center; }
-        .item-fundamento textarea { flex: 1; border: none; resize: none; font-size: 0.9rem; outline: none; background: transparent; }
-        
-        .editor-container { flex: 1; padding: 12px; display: flex; flex-direction: column; }
-        #area-peca { flex: 1; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1.1rem; resize: none; outline: none; -webkit-appearance: none; }
+        .item-fundamento { display: flex; gap: 8px; background: white; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 5px; }
+        .item-fundamento textarea { flex: 1; border: none; resize: none; font-size: 0.85rem; outline: none; background: transparent; }
 
-        /* Resizer Desktop */
-        .resizer { width: 15px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #7f8c8d; font-weight: bold; }
+        .editor-container { flex: 1; padding: 15px; display: flex; flex-direction: column; }
+        #area-peca { flex: 1; padding: 20px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 1.5; resize: none; outline: none; }
 
-        /* Seção PDF Responsiva */
-        .pdf-section { background: #dcdde1; gap: 4px; padding: 4px; flex: 1.2; display: flex; flex-direction: column; overflow: hidden; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* Estados de Expansão */
-        .pdf-box.focado { flex: 50 !important; }
+        /* DIVISOR ARRASTÁVEL */
+        .resizer { width: 12px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #7f8c8d; font-weight: bold; }
+
+        /* ÁREA DOS PDFS */
+        .pdf-section { flex: 1.2; background: #dcdde1; display: flex; flex-direction: column; gap: 4px; padding: 4px; overflow: hidden; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #bdc3c7; transition: flex 0.3s ease; }
+        .pdf-box.focado { flex: 20 !important; }
         .pdf-box.encolhido { flex: 0 !important; min-height: 0; border: none; overflow: hidden; }
         
-        .pdf-header { background: #34495e; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .header-btns { display: flex; gap: 6px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-        
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
         iframe { width: 100%; height: 100%; border: none; background: #525659; }
 
-        /* MOBILE ADJUSTMENTS */
+        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 900px) {
+            header h1 { font-size: 0.9rem; }
+            #timer { font-size: 1.1rem; }
             .tabs-container { display: flex; }
-            .sidebar-section, .resizer, .pdf-section { display: none; }
+            .sidebar, .resizer, .pdf-section { display: none; }
             .content-section { display: none; width: 100%; height: 100%; }
             .active-mobile { display: flex !important; }
-            
-            /* Ajuste da área de PDF no mobile para ocupar tudo */
-            .pdf-section.active-mobile { padding: 0; gap: 0; }
-            .pdf-header { padding: 12px; }
-            .action-btn { padding: 8px 16px; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
+<header>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size: 1.2rem;">⚖️</span>
+        <h1 style="margin:0;">Sistema Joaquim - OAB</h1>
+    </div>
+    <div id="timer">05:00:00</div>
+</header>
+
+<nav class="tabs-container">
+    <button class="tab-btn active" id="t-lista" onclick="switchTab('lista')">📂 PEÇAS</button>
+    <button class="tab-btn" id="t-work" onclick="switchTab('work')">✍️ TREINO</button>
+    <button class="tab-btn" id="t-docs" onclick="switchTab('docs')">📄 PDFS</button>
+</nav>
+
 <main>
-    <section class="sidebar-section content-section active-mobile" id="lista">
-        <h3 style="margin-top:0; color:var(--primary)">MEUS EXAMES</h3>
+    <nav class="sidebar content-section active-mobile" id="lista">
+        <h2>Gabaritos Oficiais</h2>
         <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">
-            📂 EXAME 35 - RO
+            Recurso Ordinário (XXXV)
         </button>
-    </section>
+        <button class="btn-peca" style="opacity: 0.5; cursor: not-allowed;">Reclamação (Em breve)</button>
+    </nav>
 
     <section class="work-section content-section" id="work">
         <div id="panel-fundamentos">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:var(--orange)">FUNDAMENTOS</strong>
+                <strong style="color:var(--orange); font-size: 0.8rem;">FUNDAMENTAÇÃO JURÍDICA</strong>
                 <button class="action-btn" onclick="adicionarFundamento()">+ NOVO</button>
             </div>
-            <div class="fundamentos-grid" id="lista-fundamentos"></div>
+            <div id="lista-fundamentos"></div>
         </div>
 
         <div class="editor-container">
             <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <button class="action-btn" style="background:var(--orange); flex:1" onclick="toggleFundamentos()">📚 FUNDAMENTOS</button>
+                <button class="action-btn" style="background:var(--orange); flex:1" onclick="toggleFundamentos()">📚 VER TESES</button>
                 <button class="action-btn" style="background:#27ae60; flex:1" onclick="exportarTXT()">💾 SALVAR TXT</button>
             </div>
-            <textarea id="area-peca" placeholder="Escreva sua peça aqui..."></textarea>
+            <textarea id="area-peca" placeholder="Comece sua peça profissional aqui..."></textarea>
         </div>
     </section>
 
@@ -101,8 +111,8 @@
             <div class="pdf-header">
                 <strong>📝 ENUNCIADO</strong>
                 <div class="header-btns">
-                    <button class="action-btn" onclick="focoMobile('enu')">EXPANDIR/VOLTAR</button>
-                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('enu')">ABRIR PDF</button>
+                    <button class="action-btn" onclick="foco('enu')">EXPANDIR</button>
+                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('enu')">ABRIR</button>
                 </div>
             </div>
             <iframe id="v-enu"></iframe>
@@ -112,8 +122,8 @@
             <div class="pdf-header">
                 <strong>✅ GABARITO</strong>
                 <div class="header-btns">
-                    <button class="action-btn" onclick="focoMobile('gab')">EXPANDIR/VOLTAR</button>
-                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('gab')">ABRIR PDF</button>
+                    <button class="action-btn" onclick="foco('gab')">EXPANDIR</button>
+                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('gab')">ABRIR</button>
                 </div>
             </div>
             <iframe id="v-gab"></iframe>
@@ -121,67 +131,29 @@
     </section>
 </main>
 
-<nav class="tabs-container">
-    <button class="tab-btn active" id="t-lista" onclick="switchTab('lista')">📂 EXAMES</button>
-    <button class="tab-btn" id="t-work" onclick="switchTab('work')">✍️ TREINO</button>
-    <button class="tab-btn" id="t-docs" onclick="switchTab('docs')">📄 PDFS</button>
-</nav>
-
 <script>
     let arquivoAtivo = "ro35";
     let links = { enu: "ro35.pdf", gab: "ro35-gabarito.pdf" };
 
     const bancoFundamentos = {
-        "ro35": ["Cerceamento de Defesa - Art. 5, LV, CF", "Horas Extras - Art. 7, XIII, CF", "Insalubridade - Art. 192 CLT"]
+        "ro35": ["Preliminar: Cerceamento de Defesa", "Mérito: Horas Extras Art. 7 CF", "Pedido: Reforma da Sentença"]
     };
 
     function carregarExame(enu, gab, id) {
         arquivoAtivo = id; links.enu = enu; links.gab = gab;
-        document.getElementById('v-enu').src = enu;
-        document.getElementById('v-gab').src = gab;
+        document.getElementById('v-enu').src = enu + "?v=" + new Date().getTime();
+        document.getElementById('v-gab').src = gab + "?v=" + new Date().getTime();
         renderizarFundamentos();
-        switchTab('work');
+        if (window.innerWidth < 900) switchTab('work');
     }
 
-    // Lógica Elástica para Mobile e Desktop
-    function focoMobile(tipo) {
-        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
-        if (tipo === 'enu') {
-            if (e.classList.contains('focado')) {
-                e.classList.remove('focado'); g.classList.remove('encolhido');
-            } else {
-                e.classList.add('focado'); g.classList.add('encolhido');
-                e.classList.remove('encolhido'); g.classList.remove('focado');
-            }
-        } else {
-            if (g.classList.contains('focado')) {
-                g.classList.remove('focado'); e.classList.remove('encolhido');
-            } else {
-                g.classList.add('focado'); e.classList.add('encolhido');
-                g.classList.remove('encolhido'); e.classList.remove('focado');
-            }
-        }
-    }
-
-    function abrirNativo(tipo) {
-        window.open(links[tipo], '_blank');
-    }
-
-    function switchTab(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active-mobile');
-        document.getElementById('t-' + id).classList.add('active');
-    }
-
-    // Inteligência de Fundamentos
     function renderizarFundamentos() {
         const container = document.getElementById('lista-fundamentos');
         const dados = JSON.parse(localStorage.getItem('db_' + arquivoAtivo)) || bancoFundamentos[arquivoAtivo] || [];
         container.innerHTML = dados.map((f, i) => `
             <div class="item-fundamento">
                 <textarea onchange="editar(${i}, this.value)">${f}</textarea>
-                <button onclick="excluir(${i})" style="border:none; background:none; color:red; font-weight:bold; padding:5px;">✖</button>
+                <button onclick="excluir(${i})" style="border:none; background:none; color:red; cursor:pointer;">✖</button>
             </div>
         `).join('');
     }
@@ -203,26 +175,57 @@
         renderizarFundamentos();
     }
 
-    function toggleFundamentos() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
-    
-    function exportarTXT() {
-        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${arquivoAtivo}.txt`; a.click();
+    function foco(t) {
+        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
+        if(t==='enu') { e.classList.toggle('focado'); g.classList.toggle('encolhido'); }
+        else { g.classList.toggle('focado'); e.classList.toggle('encolhido'); }
     }
 
-    // Resizer Desktop
+    function toggleFundamentos() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
+    function abrirNativo(t) { window.open(links[t], '_blank'); }
+    
+    function switchTab(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active-mobile');
+        document.getElementById('t-' + id).classList.add('active');
+    }
+
+    // TIMER PROGRESSIVO (Regressivo de 5h)
+    function startTimer(duration, display) {
+        let timer = duration, hours, minutes, seconds;
+        setInterval(function () {
+            hours = parseInt(timer / 3600, 10);
+            minutes = parseInt((timer % 3600) / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            display.textContent = (hours < 10 ? "0" + hours : hours) + ":" + 
+                                  (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                                  (seconds < 10 ? "0" + seconds : seconds);
+            if (--timer < 0) display.textContent = "TEMPO ESGOTADO!";
+        }, 1000);
+    }
+
+    // RESIZER
     const resizer = document.getElementById('dragMe'), work = document.getElementById('work');
     resizer.addEventListener('mousedown', (e) => {
         const onMove = (ev) => { 
             let width = ev.clientX - work.getBoundingClientRect().left;
-            if(width > 200) work.style.flex = `0 0 ${width}px`; 
+            if(width > 250) work.style.flex = `0 0 ${width}px`; 
         };
-        const onUp = () => { document.removeEventListener('mousemove', onMove); };
+        const onUp = () => document.removeEventListener('mousemove', onMove);
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onUp);
     });
 
-    renderizarFundamentos();
+    window.onload = () => {
+        startTimer(18000, document.querySelector('#timer'));
+        renderizarFundamentos();
+    };
+
+    function exportarTXT() {
+        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Peca_${arquivoAtivo}.txt`; a.click();
+    }
 </script>
 </body>
 </html>
