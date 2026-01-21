@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - OAB MOBILE</title>
+    <title>SISTEMA JOAQUIM - OAB TOTAL</title>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f2f5; --orange: #e67e22; --green: #27ae60; --header-h: 70px; }
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER */
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-shrink: 0; }
         #timer { font-size: 1.1rem; font-weight: bold; color: #f1c40f; }
         
@@ -23,6 +22,11 @@
         .dropdown:hover .dropdown-content { display: block; }
         .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; cursor: pointer; }
 
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+        .sidebar { width: 180px; background: white; padding: 10px; border-right: 1px solid #ddd; flex-shrink: 0; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; transition: all 0.3s ease; }
+        .pdf-section { flex: 1.2; background: #525659; display: flex; flex-direction: column; padding: 5px; overflow-y: auto; transition: all 0.3s ease; }
+        
         /* EDITOR */
         .editor-container { flex: 1; padding: 10px; display: flex; flex-direction: column; background: #fff; }
         #area-peca { 
@@ -32,27 +36,28 @@
             background-image: linear-gradient(#f9f9f9 1px, transparent 1px); background-size: 100% 1.5em;
         }
 
-        /* LAYOUT MAIN */
-        main { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
-        .sidebar { width: 180px; background: white; padding: 10px; border-right: 1px solid #ddd; flex-shrink: 0; }
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; }
-        .pdf-section { flex: 1.2; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; }
+        /* PDF BOX */
+        .pdf-box { display: flex; flex-direction: column; margin-bottom: 15px; position: relative; }
+        .pdf-header { background: #333; color: #fff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px 4px 0 0; }
+        .pdf-frame { width: 100%; height: 500px; border: none; background: #fff; border-radius: 0 0 4px 4px; }
         
-        iframe { width: 100%; height: 50%; min-height: 400px; border: none; background: #fff; border-radius: 4px; }
+        /* BOTÕES */
         .action-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .exp-btn { background: #555; font-size: 0.6rem; padding: 4px 8px; }
 
-        /* MODAIS */
+        /* ESTADO EXPANDIDO */
+        .pdf-expanded { position: fixed; top: var(--header-h); left: 0; width: 100%; height: calc(100vh - var(--header-h)); z-index: 1000; padding: 0; margin: 0; }
+        .pdf-expanded .pdf-frame { height: 100%; border-radius: 0; }
+
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; height: 80%; background: white; z-index: 2000; border-radius: 8px; padding: 15px; flex-direction: column; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
 
-        /* MOBILE OPTIMIZATION */
         @media (max-width: 900px) {
             main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; }
-            .pdf-section { flex: none; height: 600px; } /* Garante que os PDFs apareçam no mobile */
+            .sidebar { width: 100%; }
+            .pdf-section { flex: none; min-height: 1100px; }
             header { height: auto; padding: 10px; flex-direction: column; gap: 10px; }
             .nav-group { width: 100%; justify-content: space-between; }
-            .dropbtn { flex: 1; }
         }
     </style>
 </head>
@@ -74,34 +79,52 @@
 
 <main>
     <section class="sidebar">
-        <button class="action-btn" style="width:100%; background:var(--primary)" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">CARREGAR EXAME 35</button>
+        <button class="action-btn" style="width:100%; background:var(--primary)" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">ABRIR 35</button>
     </section>
 
     <section class="work-section">
         <div class="editor-container">
             <button class="action-btn" style="background:var(--green); margin-bottom: 8px;" onclick="exportarTXT()">SALVAR TXT</button>
-            <textarea id="area-peca" placeholder="Inicie sua petição aqui..."></textarea>
+            <textarea id="area-peca" placeholder="Inicie sua peça..."></textarea>
         </div>
     </section>
 
-    <section class="pdf-section" id="mobile-pdf-area">
-        <iframe id="v-enu" src="about:blank" title="Enunciado"></iframe>
-        <iframe id="v-gab" src="about:blank" title="Gabarito"></iframe>
+    <section class="pdf-section" id="pdf-area">
+        <div class="pdf-box" id="box-enu">
+            <div class="pdf-header">
+                <span style="font-size: 0.7rem; font-weight: bold;">📝 ENUNCIADO</span>
+                <button class="action-btn exp-btn" onclick="toggleExpand('box-enu')">EXPANDIR / VOLTAR</button>
+            </div>
+            <iframe class="pdf-frame" id="v-enu" src="about:blank"></iframe>
+        </div>
+        
+        <div class="pdf-box" id="box-gab">
+            <div class="pdf-header">
+                <span style="font-size: 0.7rem; font-weight: bold;">✅ GABARITO</span>
+                <button class="action-btn exp-btn" onclick="toggleExpand('box-gab')">EXPANDIR / VOLTAR</button>
+            </div>
+            <iframe class="pdf-frame" id="v-gab" src="about:blank"></iframe>
+        </div>
     </section>
 </main>
 
 <div class="overlay" id="overlay" onclick="fecharModal()"></div>
 <div class="modal" id="modal-editor">
-    <h3 style="margin-top:0">Editar Item</h3>
-    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; padding: 10px; font-family: 'Courier New';"></textarea>
-    <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR NO BANCO</button>
+    <h3 style="margin-top:0">Editar</h3>
+    <textarea id="modal-texto" style="flex:1; margin-bottom:10px; padding: 10px; font-family: 'Courier New';"></textarea>
+    <button class="action-btn" style="background:var(--green); height: 45px;" onclick="salvarAlteracoes()">SALVAR NO BANCO</button>
 </div>
 
 <script>
     const padroes = {
         estruturas: { 'RO': { nome: 'Recurso Ordinário', texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO...\n\nPROCESSO Nº...' } },
-        correcoes: { 'C35': { nome: 'Gabarito 35', texto: 'PONTUAÇÃO:\n- Art. 895, I CLT (0,10)\n- Custas (0,20)' } }
+        correcoes: { 'C35': { nome: 'Checklist 35', texto: 'PONTOS:\n- Art. 895, I CLT (0,10)\n- Custas (0,20)' } }
     };
+
+    function toggleExpand(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('pdf-expanded');
+    }
 
     function renderizarMenus() {
         const db_est = JSON.parse(localStorage.getItem('db_estruturas')) || padroes.estruturas;
@@ -110,13 +133,13 @@
         document.getElementById('lista-estruturas').innerHTML = Object.keys(db_est).map(id => `
             <div class="menu-item">
                 <span onclick="usarConteudo('db_estruturas', '${id}')" style="flex:1"><b>${db_est[id].nome}</b></span>
-                <button onclick="abrirEditor('db_estruturas', '${id}')" style="border:none;background:none;font-size:1.1rem;cursor:pointer;">✏️</button>
+                <button onclick="abrirEditor('db_estruturas', '${id}')" style="border:none;background:none;cursor:pointer;">✏️</button>
             </div>`).join('') + `<button class="action-btn" style="width:100%" onclick="abrirEditor('db_estruturas', 'novo')">+ NOVA</button>`;
 
         document.getElementById('lista-correcao').innerHTML = Object.keys(db_cor).map(id => `
             <div class="menu-item">
                 <span onclick="usarConteudo('db_correcoes', '${id}')" style="flex:1"><b>${db_cor[id].nome}</b></span>
-                <button onclick="abrirEditor('db_correcoes', '${id}')" style="border:none;background:none;font-size:1.1rem;cursor:pointer;">✏️</button>
+                <button onclick="abrirEditor('db_correcoes', '${id}')" style="border:none;background:none;cursor:pointer;">✏️</button>
             </div>`).join('') + `<button class="action-btn" style="width:100%" onclick="abrirEditor('db_correcoes', 'novo')">+ NOVO</button>`;
     }
 
@@ -128,13 +151,14 @@
     function carregarExame(e, g) {
         document.getElementById('v-enu').src = `./${e}`;
         document.getElementById('v-gab').src = `./${g}`;
-        // Scroll automático para os PDFs no mobile para facilitar a vida
-        if(window.innerWidth < 900) document.getElementById('mobile-pdf-area').scrollIntoView({behavior: 'smooth'});
+        if(window.innerWidth < 900) {
+            setTimeout(() => { document.getElementById('pdf-area').scrollIntoView({behavior: 'smooth'}); }, 300);
+        }
     }
 
-    let ctx = { banco: '', id: '' };
+    let ctxEdicao = { banco: '', id: '' };
     function abrirEditor(banco, id) {
-        ctx = { banco, id };
+        ctxEdicao = { banco, id };
         const db = JSON.parse(localStorage.getItem(banco)) || padroes[banco.replace('db_', '')];
         document.getElementById('modal-texto').value = (id === 'novo') ? "NOME:\nTexto..." : db[id].texto;
         document.getElementById('overlay').style.display = 'block';
@@ -142,13 +166,13 @@
     }
 
     function salvarAlteracoes() {
-        let db = JSON.parse(localStorage.getItem(ctx.banco)) || padroes[ctx.banco.replace('db_', '')];
+        let db = JSON.parse(localStorage.getItem(ctxEdicao.banco)) || padroes[ctxEdicao.banco.replace('db_', '')];
         const val = document.getElementById('modal-texto').value;
-        if(ctx.id === 'novo') {
+        if(ctxEdicao.id === 'novo') {
             const nid = 'ID'+Date.now();
             db[nid] = { nome: val.split('\n')[0], texto: val.split('\n').slice(1).join('\n') };
-        } else { db[ctx.id].texto = val; }
-        localStorage.setItem(ctx.banco, JSON.stringify(db));
+        } else { db[ctxEdicao.id].texto = val; }
+        localStorage.setItem(ctxEdicao.banco, JSON.stringify(db));
         fecharModal(); renderizarMenus();
     }
 
