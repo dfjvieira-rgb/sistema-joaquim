@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - ADV 2.0</title>
+    <title>SISTEMA JOAQUIM - ADV 2.0 (MULTI-EXAMES)</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
@@ -22,16 +22,13 @@
         
         #timer { font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: bold; color: var(--yellow); letter-spacing: 1px; }
 
-        /* GRUPO DE BOTÕES COMPACTOS */
         .nav-group { display: flex; gap: 8px; align-items: center; }
         .dropdown { position: relative; }
         .dropbtn { 
-            color: white; padding: 8px 15px; border: none; border-radius: 4px; 
+            color: white; padding: 8px 12px; border: none; border-radius: 4px; 
             cursor: pointer; font-weight: 600; font-size: 0.75rem; 
-            transition: all 0.2s; display: flex; align-items: center; gap: 5px;
-            text-transform: uppercase; border-bottom: 2px solid rgba(0,0,0,0.2);
+            transition: 0.2s; text-transform: uppercase;
         }
-        .dropbtn:hover { transform: translateY(-1px); filter: brightness(1.1); }
         
         .btn-struct { background-color: var(--accent); }
         .btn-correc { background-color: var(--orange); }
@@ -50,50 +47,46 @@
             color: var(--text); cursor: pointer; border-radius: 4px;
         }
         .menu-item:hover { background: #f8f9fa; }
-        .edit-icon { font-size: 1.1rem; padding: 4px; opacity: 0.6; transition: 0.2s; }
-        .edit-icon:hover { opacity: 1; transform: scale(1.2); }
 
         /* ÁREA DE TRABALHO */
         main { display: flex; flex: 1; overflow: hidden; }
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         
-        /* EDITOR ESTILO PETIÇÃO */
-        .editor-header { padding: 10px 20px; border-bottom: 1px solid #eee; display: flex; gap: 10px; align-items: center; background: #fff; }
+        /* SIDEBAR DE EXAMES */
+        .sidebar { width: 180px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; padding: 10px; gap: 5px; overflow-y: auto; }
+        .sidebar h4 { font-size: 0.65rem; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
+        .exame-btn { background: #f8f9fa; border: 1px solid #eee; padding: 10px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.75rem; font-weight: bold; transition: 0.2s; }
+        .exame-btn:hover { background: var(--accent); color: white; }
+
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .editor-header { padding: 8px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #fff; }
         #area-peca { 
-            flex: 1; padding: 40px; border: none; font-family: 'Courier New', Courier, monospace; 
+            flex: 1; padding: 35px; border: none; font-family: 'Courier New', Courier, monospace; 
             font-size: 16px; line-height: 1.6; outline: none; resize: none;
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em;
-            color: #2c3e50; text-align: justify;
+            color: #2c3e50;
         }
 
         /* PDFs */
-        .pdf-section { width: 40%; background: #525659; display: flex; flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto; }
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto; }
         .pdf-box { background: #333; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
-        .pdf-header { padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 0.7rem; font-weight: bold; }
-        .pdf-frame { width: 100%; height: 45vh; border: none; background: white; }
+        .pdf-header { padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 0.65rem; font-weight: bold; }
+        .pdf-frame { width: 100%; height: 42vh; border: none; background: white; }
 
-        /* CONSULTA FULLSCREEN (MOBILE) */
-        .consulta-full { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: white; z-index: 5000; display: none; flex-direction: column; 
-        }
-        .consulta-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.1rem; font-weight: bold; }
-        .consulta-body { flex: 1; padding: 25px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.2rem; color: #333; }
+        /* CONSULTA FULLSCREEN */
+        .consulta-full { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; }
+        .consulta-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.1rem; }
+        .consulta-body { flex: 1; padding: 25px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.2rem; }
 
-        /* MODAIS */
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 600px; height: 80%; background: white; z-index: 6000; border-radius: 12px; padding: 20px; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5999; backdrop-filter: blur(3px); }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 600px; height: 80%; background: white; z-index: 6000; border-radius: 12px; padding: 20px; flex-direction: column; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5999; }
+        .btn-action { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.75rem; }
 
-        .btn-action { border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; }
-        
-        /* RESPONSIVIDADE (MOBILE) */
         @media (max-width: 1024px) {
-            header { height: auto; padding: 10px; flex-direction: column; gap: 10px; }
+            header { height: auto; }
             .nav-group { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
-            .dropbtn { min-width: 0; font-size: 0.7rem; justify-content: center; }
             main { flex-direction: column; overflow-y: auto; }
-            .pdf-section { width: 100%; height: auto; }
-            #area-peca { padding: 20px; }
+            .sidebar { width: 100%; flex-direction: row; overflow-x: auto; height: 60px; flex-shrink: 0; }
+            .pdf-section { width: 100%; }
         }
     </style>
 </head>
@@ -101,70 +94,68 @@
 
 <header>
     <div id="timer">05:00:00</div>
-    
     <div class="nav-group">
-        <div class="dropdown">
-            <button class="dropbtn btn-struct">📑 Estruturas</button>
-            <div class="dropdown-content" id="list-db_estruturas"></div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn btn-correc">⚖️ Correção</button>
-            <div class="dropdown-content" id="list-db_correcoes"></div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn btn-postit">📌 Post-its</button>
-            <div class="dropdown-content" id="list-db_postits"></div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn btn-dicas">👩‍🏫 Dicas Prof</button>
-            <div class="dropdown-content" id="list-db_dicas"></div>
-        </div>
+        <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-postit">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
+        <div class="dropdown"><button class="dropbtn btn-dicas">👩‍🏫 Dicas Prof</button><div class="dropdown-content" id="list-db_dicas"></div></div>
     </div>
 </header>
 
 <main>
+    <aside class="sidebar" id="sidebar-exames">
+        <h4>Simulados OAB</h4>
+        </aside>
+
     <section class="work-section">
         <div class="editor-header">
-            <button class="btn-action" style="background:var(--primary)" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf')">📂 CARREGAR EXAME 35</button>
-            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR TXT</button>
+            <span id="exame-atual" style="font-weight: bold; font-size: 0.8rem; color: var(--primary);">Nenhum exame carregado</span>
+            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR PEÇA TXT</button>
         </div>
-        <textarea id="area-peca" placeholder="Comece o endereçamento..."></textarea>
+        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
     </section>
 
     <section class="pdf-section" id="pdf-area">
         <div class="pdf-box" id="box-enu">
-            <div class="pdf-header"><span>📝 ENUNCIADO</span><button class="btn-action" style="background:#555; font-size:0.6rem; padding:2px 6px" onclick="expandirPDF('v-enu')">TELA CHEIA</button></div>
-            <iframe class="pdf-frame" id="v-enu" src="about:blank"></iframe>
+            <div class="pdf-header"><span>PROVA (ENUNCIADO)</span><button class="btn-action" style="background:#555; font-size:0.5rem; padding:2px 5px" onclick="expandirPDF('v-enu')">EXPANDIR</button></div>
+            <iframe class="pdf-frame" id="v-enu" src=""></iframe>
         </div>
         <div class="pdf-box" id="box-gab">
-            <div class="pdf-header"><span>✅ GABARITO</span><button class="btn-action" style="background:#555; font-size:0.6rem; padding:2px 6px" onclick="expandirPDF('v-gab')">TELA CHEIA</button></div>
-            <iframe class="pdf-frame" id="v-gab" src="about:blank"></iframe>
+            <div class="pdf-header"><span>GABARITO (PADRÃO)</span><button class="btn-action" style="background:#555; font-size:0.5rem; padding:2px 5px" onclick="expandirPDF('v-gab')">EXPANDIR</button></div>
+            <iframe class="pdf-frame" id="v-gab" src=""></iframe>
         </div>
     </section>
 </main>
 
 <div id="janela-consulta" class="consulta-full">
-    <div id="header-consulta" class="consulta-header">
-        <span id="titulo-consulta">Consulta</span>
-        <button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button>
-    </div>
+    <div id="header-consulta" class="consulta-header"><span id="titulo-consulta"></span><button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button></div>
     <div id="corpo-consulta" class="consulta-body"></div>
-    <div style="padding: 20px; background: #f8f9fa; border-top: 1px solid #ddd; display: flex; gap: 10px;">
-        <button class="btn-action" style="background:var(--accent); flex: 1; height: 50px;" id="btn-inserir" onclick="inserirNoEditor()">INSERIR NO EDITOR</button>
-    </div>
+    <div style="padding: 15px; background: #f8f9fa; border-top: 1px solid #ddd;"><button class="btn-action" style="background:var(--accent); width:100%; height: 50px;" onclick="inserirNoEditor()">INSERIR NO FINAL DA PEÇA</button></div>
 </div>
 
 <div class="overlay" id="overlay" onclick="fecharModal()"></div>
 <div class="modal" id="modal-editor">
-    <h3 id="modal-titulo" style="margin-bottom:15px">Editar Conteúdo</h3>
-    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; padding: 15px; font-family: 'Courier New'; font-size: 1rem; border: 1px solid #ddd; border-radius: 8px;"></textarea>
-    <button class="btn-action" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR NO BANCO DE DADOS</button>
+    <h3 id="modal-titulo">Editar Conteúdo</h3>
+    <textarea id="modal-texto" style="flex:1; margin:15px 0; padding: 10px; font-family: 'Courier New';"></textarea>
+    <button class="btn-action" style="background:var(--green); height: 50px;" onclick="salvarAlteracoes()">SALVAR ALTERAÇÕES</button>
 </div>
 
 <script>
     const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
     const cores = { db_estruturas: '#3498db', db_correcoes: '#f39c12', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
-    let textoAtualConsulta = "";
+    let textoConsultado = "";
+
+    // Geração da lista de exames 35 ao 44
+    function montarSidebar() {
+        const lateral = document.getElementById('sidebar-exames');
+        for (let i = 35; i <= 44; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'exame-btn';
+            btn.innerText = `EXAME XXX${i}`;
+            btn.onclick = () => carregarExame(`ro${i}.pdf`, `ro${i}-gabarito.pdf`, `EXAME XXX${i}`);
+            lateral.appendChild(btn);
+        }
+    }
 
     function renderizarMenus() {
         bancos.forEach(banco => {
@@ -173,30 +164,29 @@
             container.innerHTML = Object.keys(db).map(id => `
                 <div class="menu-item">
                     <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
-                    <span class="edit-icon" onclick="event.stopPropagation(); abrirEditor('${banco}', '${id}')">✏️</span>
-                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px; font-size:0.7rem" onclick="abrirEditor('${banco}', 'novo')">+ ADICIONAR NOVO</button>`;
+                    <span onclick="event.stopPropagation(); abrirEditor('${banco}', '${id}')">✏️</span>
+                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px; font-size:0.6rem" onclick="abrirEditor('${banco}', 'novo')">+ NOVO ITEM</button>`;
         });
     }
 
     function abrirConsulta(banco, id) {
         const db = JSON.parse(localStorage.getItem(banco));
-        const item = db[id];
-        textoAtualConsulta = item.texto;
-        document.getElementById('titulo-consulta').innerText = item.nome;
-        document.getElementById('corpo-consulta').innerText = item.texto;
+        textoConsultado = db[id].texto;
+        document.getElementById('titulo-consulta').innerText = db[id].nome;
+        document.getElementById('corpo-consulta').innerText = db[id].texto;
         document.getElementById('header-consulta').style.backgroundColor = cores[banco];
         document.getElementById('janela-consulta').style.display = 'flex';
     }
 
-    function inserirNoEditor() {
-        if(confirm("Deseja anexar este texto ao final do seu editor?")) {
-            const editor = document.getElementById('area-peca');
-            editor.value += "\n\n" + textoAtualConsulta;
-            fecharConsulta();
-        }
-    }
-
     function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
+    function inserirNoEditor() { document.getElementById('area-peca').value += "\n\n" + textoConsultado; fecharConsulta(); }
+
+    function carregarExame(e, g, nome) {
+        document.getElementById('v-enu').src = `./${e}`;
+        document.getElementById('v-gab').src = `./${g}`;
+        document.getElementById('exame-atual').innerText = "📍 " + nome;
+        if(window.innerWidth < 1024) document.getElementById('pdf-area').scrollIntoView({behavior: 'smooth'});
+    }
 
     function expandirPDF(id) {
         const f = document.getElementById(id);
@@ -208,42 +198,29 @@
     function abrirEditor(banco, id) {
         ctx = { banco, id };
         const db = JSON.parse(localStorage.getItem(banco)) || {};
-        document.getElementById('modal-texto').value = (id === 'novo') ? "NOME DO ITEM\n---\nConteúdo aqui..." : db[id].nome + "\n---\n" + db[id].texto;
+        document.getElementById('modal-texto').value = (id === 'novo') ? "NOME\n---\nTEXTO" : db[id].nome + "\n---\n" + db[id].texto;
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('modal-editor').style.display = 'flex';
     }
 
     function salvarAlteracoes() {
         let db = JSON.parse(localStorage.getItem(ctx.banco)) || {};
-        const val = document.getElementById('modal-texto').value;
-        const partes = val.split('\n---\n');
-        const nome = partes[0] || "Sem nome";
-        const texto = partes.slice(1).join('\n---\n') || "";
-        
-        if(ctx.id === 'novo') {
-            const nid = 'ID'+Date.now();
-            db[nid] = { nome: nome, texto: texto };
-        } else { 
-            db[ctx.id] = { nome: nome, texto: texto };
-        }
+        const val = document.getElementById('modal-texto').value.split('\n---\n');
+        const id = (ctx.id === 'novo') ? 'ID'+Date.now() : ctx.id;
+        db[id] = { nome: val[0], texto: val[1] || "" };
         localStorage.setItem(ctx.banco, JSON.stringify(db));
         fecharModal(); renderizarMenus();
     }
 
     function fecharModal() { document.getElementById('overlay').style.display = 'none'; document.getElementById('modal-editor').style.display = 'none'; }
-
-    function carregarExame(e, g) {
-        document.getElementById('v-enu').src = `./${e}`;
-        document.getElementById('v-gab').src = `./${g}`;
-        if(window.innerWidth < 1024) document.getElementById('pdf-area').scrollIntoView({behavior: 'smooth'});
-    }
-
+    
     function exportarTXT() {
         const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "MinhaPeca_OAB.txt"; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click();
     }
 
     window.onload = () => {
+        montarSidebar();
         renderizarMenus();
         let s = 18000;
         setInterval(() => {
