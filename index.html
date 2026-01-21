@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MURAL DE MEMORIZAÇÃO</title>
+    <title>SISTEMA JOAQUIM - EDIÇÃO INTEGRADA</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
@@ -11,7 +11,7 @@
             --yellow: #f1c40f; --text: #2c3e50; --header-h: 60px; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: var(--text); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         #timer { font-family: monospace; font-size: 1.3rem; color: var(--yellow); }
@@ -24,25 +24,36 @@
         .btn-postit { background-color: var(--yellow); color: #333; }
         .btn-dicas { background-color: var(--purple); }
 
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 260px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); right: 0; border-radius: 6px; padding: 8px; z-index: 2000; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); right: 0; border-radius: 6px; padding: 8px; z-index: 2000; }
         .dropdown:hover .dropdown-content { display: block; }
         .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.8rem; cursor: pointer; }
 
         main { display: flex; flex: 1; overflow: hidden; }
         
-        /* MURAL LATERAL DE FIXAÇÃO */
-        .mural-sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; gap: 10px; }
-        .mural-sidebar h4 { font-size: 0.7rem; color: #555; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-        .sticky-note { padding: 10px; border-radius: 4px; font-size: 0.75rem; line-height: 1.3; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); border-left: 5px solid; cursor: help; }
-        .note-yellow { background: #fef9c3; border-color: var(--yellow); }
-        .note-purple { background: #f3e8ff; border-color: var(--purple); color: #4a148c; }
-
+        /* MURAL LATERAL */
+        .mural-sidebar { width: 200px; background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; gap: 10px; }
+        .sticky-note { padding: 8px; border-radius: 4px; font-size: 0.7rem; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); border-left: 4px solid; background: white; }
+        
+        /* EDITOR CENTRAL */
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; }
-        .editor-header { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        #area-peca { flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; }
+        
+        /* AVISO DE EDIÇÃO */
+        #aviso-edicao { 
+            display: none; background: var(--yellow); padding: 10px; 
+            text-align: center; font-weight: bold; font-size: 0.8rem; 
+            border-bottom: 2px solid #d4ac0d; 
+        }
 
+        .editor-header { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        #area-peca { 
+            flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
+            font-size: 16px; line-height: 1.6; outline: none; 
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
+        }
+
+        /* PDFs */
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; }
-        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; }
+        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
         .pdf-frame { width: 100%; height: 42vh; border: none; background: white; }
 
         /* CONSULTA FULL (MOBILE) */
@@ -50,12 +61,10 @@
         .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; }
         .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.1rem; }
 
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; z-index: 6000; border-radius: 8px; padding: 20px; flex-direction: column; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5999; }
         .btn-action { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; }
 
         @media (max-width: 1024px) {
-            .mural-sidebar { display: none; } /* Esconde mural no mobile para priorizar PDF */
+            .mural-sidebar { display: none; }
             main { flex-direction: column; overflow-y: auto; }
             .pdf-section { width: 100%; }
         }
@@ -73,115 +82,19 @@
     </div>
 </header>
 
+<div id="aviso-edicao">
+    ⚠️ VOCÊ ESTÁ EDITANDO UM ITEM DO BANCO DE DADOS: <span id="nome-item-editando"></span> 
+    <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR E VOLTAR</button>
+    <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
+</div>
+
 <main>
     <aside class="mural-sidebar">
-        <h4>📌 Mural de Fixação</h4>
-        <div id="mural-content">
-            </div>
-        <button class="btn-action" style="background:#7f8c8d; margin-top:20px;" onclick="carregarExame35()">ABRIR EXAME 35</button>
+        <h4 style="font-size:0.6rem; color:#777; margin-bottom:10px">📌 MURAL RÁPIDO</h4>
+        <div id="mural-content"></div>
+        <button class="btn-action" style="background:var(--primary); margin-top:20px; width:100%" onclick="carregar35()">ABRIR 35</button>
     </aside>
 
     <section class="work-section">
         <div class="editor-header">
-            <span id="label-exame" style="font-weight: bold; font-size: 0.8rem;">Modo Estudo Ativo</span>
-            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR TXT</button>
-        </div>
-        <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
-    </section>
-
-    <section class="pdf-section" id="pdf-area">
-        <div class="pdf-box"><iframe class="pdf-frame" id="v-enu"></iframe></div>
-        <div class="pdf-box"><iframe class="pdf-frame" id="v-gab"></iframe></div>
-    </section>
-</main>
-
-<div id="janela-consulta" class="consulta-full">
-    <div id="header-consulta" class="consulta-header"><span id="titulo-consulta"></span><button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button></div>
-    <div id="corpo-consulta" class="consulta-body"></div>
-    <div style="padding: 15px; background: #f8f9fa;"><button class="btn-action" style="background:var(--accent); width:100%; height: 50px;" onclick="inserirNoEditor()">COPIAR PARA PEÇA</button></div>
-</div>
-
-<div class="overlay" id="overlay" onclick="fecharModal()"></div>
-<div class="modal" id="modal-editor">
-    <h3 id="modal-titulo">Editar Conteúdo</h3>
-    <textarea id="modal-texto" style="flex:1; margin:15px 0; padding: 10px; font-family: 'Courier New'; min-height: 200px;"></textarea>
-    <button class="btn-action" style="background:var(--green); height: 45px;" onclick="salvarAlteracoes()">SALVAR NO SISTEMA</button>
-</div>
-
-<script>
-    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
-    const cores = { db_estruturas: '#3498db', db_correcoes: '#f39c12', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
-    let textoConsultado = "";
-
-    function renderizarTudo() {
-        // Renderiza Menus Dropdown
-        bancos.forEach(banco => {
-            const db = JSON.parse(localStorage.getItem(banco)) || {};
-            const container = document.getElementById('list-' + banco);
-            container.innerHTML = Object.keys(db).map(id => `
-                <div class="menu-item">
-                    <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
-                    <span onclick="event.stopPropagation(); abrirEditor('${banco}', '${id}')">✏️</span>
-                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="abrirEditor('${banco}', 'novo')">+ ADICIONAR</button>`;
-        });
-
-        // Renderiza Mural de Fixação (Post-its e Dicas Prof)
-        const mural = document.getElementById('mural-content');
-        mural.innerHTML = "";
-        
-        const postits = JSON.parse(localStorage.getItem('db_postits')) || {};
-        Object.values(postits).forEach(item => {
-            mural.innerHTML += `<div class="sticky-note note-yellow"><b>📌 ${item.nome}</b><br>${item.texto.substring(0,60)}...</div>`;
-        });
-
-        const dicas = JSON.parse(localStorage.getItem('db_dicas')) || {};
-        Object.values(dicas).forEach(item => {
-            mural.innerHTML += `<div class="sticky-note note-purple"><b>👩‍🏫 ${item.nome}</b><br>${item.texto.substring(0,60)}...</div>`;
-        });
-    }
-
-    function abrirConsulta(banco, id) {
-        const db = JSON.parse(localStorage.getItem(banco));
-        textoConsultado = db[id].texto;
-        document.getElementById('titulo-consulta').innerText = db[id].nome;
-        document.getElementById('corpo-consulta').innerText = db[id].texto;
-        document.getElementById('header-consulta').style.backgroundColor = cores[banco];
-        document.getElementById('janela-consulta').style.display = 'flex';
-    }
-
-    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
-    function inserirNoEditor() { document.getElementById('area-peca').value += "\n" + textoConsultado; fecharConsulta(); }
-
-    let ctx = { banco: '', id: '' };
-    function abrirEditor(banco, id) {
-        ctx = { banco, id };
-        const db = JSON.parse(localStorage.getItem(banco)) || {};
-        document.getElementById('modal-texto').value = (id === 'novo') ? "NOME\n---\nTEXTO" : db[id].nome + "\n---\n" + db[id].texto;
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('modal-editor').style.display = 'flex';
-    }
-
-    function salvarAlteracoes() {
-        let db = JSON.parse(localStorage.getItem(ctx.banco)) || {};
-        const val = document.getElementById('modal-texto').value.split('\n---\n');
-        const id = (ctx.id === 'novo') ? 'ID'+Date.now() : ctx.id;
-        db[id] = { nome: val[0], texto: val[1] || "" };
-        localStorage.setItem(ctx.banco, JSON.stringify(db));
-        fecharModal(); renderizarTudo();
-    }
-
-    function fecharModal() { document.getElementById('overlay').style.display = 'none'; document.getElementById('modal-editor').style.display = 'none'; }
-    function carregarExame35() { document.getElementById('v-enu').src = './ro35.pdf'; document.getElementById('v-gab').src = './ro35-gabarito.pdf'; }
-    function exportarTXT() { const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca_OAB.txt"; a.click(); }
-
-    window.onload = () => {
-        renderizarTudo();
-        let s = 18000; setInterval(() => {
-            let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
-            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
-            s--;
-        }, 1000);
-    };
-</script>
-</body>
-</html>
+            <span id="label-modo" style="font-weight: bold; font-size: 0.8rem; color:var(--green)">🖋
