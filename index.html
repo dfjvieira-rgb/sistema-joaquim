@@ -10,23 +10,173 @@
         :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
+        /* Navegação Mobile (Abas) */
         .tabs-container { display: none; background: #2c3e50; padding: 5px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: #34495e; color: white; border-radius: 4px; font-size: 0.8rem; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #34495e; color: white; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
         .tab-btn.active { background: var(--accent); }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 10px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.85rem; }
+        /* Lateral de Seleção */
+        .sidebar-section { width: 250px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 10px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.9rem; }
         .btn-peca:hover { border-color: var(--accent); background: #fff; }
-        .btn-peca.active-peca { border-left: 4px solid var(--accent); background: #eef7ff; font-weight: bold; }
+        .btn-peca.active-peca { border-left: 5px solid var(--accent); background: #eef7ff; font-weight: bold; }
 
-        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 150px; position: relative; display: flex; flex-direction: column; z-index: 5; }
-        .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-act { flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
+        /* Editor de Peça */
+        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 200px; position: relative; display: flex; flex-direction: column; z-index: 5; }
+        .actions-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-act { flex: 1; padding: 10px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; }
         .btn-save { background: var(--success); }
         .btn-pdf { background: #e74c3c; }
 
-        #area-peca { flex: 1; width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 1rem; line-height: 1.5; resize: none; box-sizing: border-box; outline: none; }
+        #area-peca { flex: 1; width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 1.1rem; line-height: 1.6; resize: none; box-sizing: border-box; outline: none; background: #fff; }
 
-        #panel-fundamentos { position: absolute; top: 0; left: 0; width
+        /* Mapeamento de Teses (Slide-in) */
+        #panel-fundamentos { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; transform: translateX(-100%); transition: 0.3s ease; padding: 20px; box-sizing: border-box; border-right: 8px solid #d35400; display: flex; flex-direction: column; }
+        #panel-fundamentos.open { transform: translateX(0); }
+        #edit-teses { flex: 1; width: 100%; margin: 10px 0; padding: 15px; border: 1px solid #ddd; font-size: 1rem; background: #fff9f4; border-radius: 5px; }
+
+        /* Resizer (Arraste para dividir tela) */
+        .resizer { width: 16px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; color: #b2bec3; font-size: 1.2rem; }
+
+        /* Visualização de PDFs (Um abaixo do outro) */
+        .pdf-section { background: #dcdde1; gap: 8px; padding: 8px; flex: 1.2; display: flex; flex-direction: column; overflow: hidden; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
+        .pdf-box.expanded { flex: 10 !important; }
+        .pdf-box.collapsed { flex: 0.1 !important; min-height: 45px; }
+        
+        .pdf-header { background: #34495e; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; }
+        .header-btns { display: flex; gap: 5px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+
+        /* Ajustes Mobile (Android/iPad) */
+        @media (max-width: 900px) {
+            .tabs-container { display: flex !important; }
+            .sidebar-section, .resizer, .pdf-section { display: none; }
+            .content-section { display: none; width: 100%; }
+            .active-mobile { display: flex !important; }
+            #panel-fundamentos { width: 100%; z-index: 1000; }
+        }
+
+        .zen-mode .sidebar-section, .zen-mode .pdf-section, .zen-mode .resizer { display: none !important; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+    </style>
+</head>
+<body>
+
+<nav class="tabs-container">
+    <button class="tab-btn active" id="btn-lista" onclick="switchTab('lista')">📂 PEÇAS</button>
+    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
+    <button class="tab-btn" id="btn-docs" onclick="switchTab('docs')">📄 PDFS</button>
+</nav>
+
+<main>
+    <section class="sidebar-section content-section active-mobile" id="lista">
+        <h3 style="color: var(--primary); border-bottom: 2px solid var(--accent);">2ª FASE TRABALHO</h3>
+        <div id="lista-pecas">
+            <button class="btn-peca" id="btn-ro35" onclick="carregarArquivos('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">
+                📄 RO 35 - RECURSO
+            </button>
+            <button class="btn-peca" id="btn-rt" onclick="carregarArquivos('rt.pdf', 'rt-gabarito.pdf', 'rt')">
+                📄 RECLAMAÇÃO TRAB.
+            </button>
+        </div>
+    </section>
+
+    <section class="editor-section content-section" id="escrita">
+        <div id="panel-fundamentos">
+            <button class="action-btn" style="background:#d35400" onclick="togglePanel()">✖ FECHAR</button>
+            <h3>MAPA DE TESES</h3>
+            <textarea id="edit-teses"></textarea>
+            <button class="btn-act btn-save" onclick="salvarTeses()">💾 SALVAR TESES</button>
+        </div>
+        
+        <div class="actions-row">
+            <button class="btn-act" style="background:#d35400" onclick="togglePanel()">📚 TESES</button>
+            <button class="btn-act btn-save" onclick="exportarTXT()">💾 EXPORTAR TXT</button>
+            <button class="btn-act btn-pdf" onclick="window.print()">📄 IMPRIMIR</button>
+        </div>
+        <textarea id="area-peca" placeholder="Inicie o treino da sua peça aqui..."></textarea>
+    </section>
+
+    <div class="resizer" id="dragMe">⋮</div>
+
+    <section class="pdf-section content-section" id="docs">
+        <div class="pdf-box" id="box-enu">
+            <div class="pdf-header"><span>📝 ENUNCIADO</span>
+                <div class="header-btns">
+                    <button class="action-btn" onclick="focar('enu')">FOCO</button>
+                    <button class="action-btn" onclick="abrirExterno('enu')">ABRIR</button>
+                </div>
+            </div>
+            <iframe id="v-enu"></iframe>
+        </div>
+        <div class="pdf-box" id="box-gab">
+            <div class="pdf-header"><span>✅ GABARITO</span>
+                <div class="header-btns">
+                    <button class="action-btn" onclick="focar('gab')">FOCO</button>
+                    <button class="action-btn" onclick="abrirExterno('gab')">ABRIR</button>
+                </div>
+            </div>
+            <iframe id="v-gab"></iframe>
+        </div>
+    </section>
+</main>
+
+<script>
+    let arquivoAtivo = "";
+    let urls = { enu: "", gab: "" };
+
+    function carregarArquivos(enu, gab, id) {
+        arquivoAtivo = id;
+        urls.enu = enu; urls.gab = gab;
+        document.getElementById('v-enu').src = enu;
+        document.getElementById('v-gab').src = gab;
+        
+        document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active-peca'));
+        document.getElementById('btn-' + id).classList.add('active-peca');
+
+        const salvo = localStorage.getItem('tese_' + id);
+        document.getElementById('edit-teses').value = salvo || "Mapeie as teses aqui...";
+        
+        if (window.innerWidth < 900) switchTab('escrita');
+    }
+
+    function focar(t) {
+        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
+        if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
+        else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
+    }
+
+    function abrirExterno(t) { window.open(urls[t], '_blank'); }
+    function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
+    function switchTab(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active-mobile');
+        document.getElementById('btn-' + id).classList.add('active');
+    }
+
+    function salvarTeses() {
+        localStorage.setItem('tese_' + arquivoAtivo, document.getElementById('edit-teses').value);
+        alert("Teses salvas!");
+    }
+
+    function exportarTXT() {
+        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${arquivoAtivo}.txt`; a.click();
+    }
+
+    // Lógica de Arrastar (Resizer)
+    const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
+    resizer.addEventListener('mousedown', (e) => {
+        const startX = e.clientX, startWidth = leftSide.getBoundingClientRect().width;
+        const onMouseMove = (ev) => { leftSide.style.width = (startWidth + ev.clientX - startX) + 'px'; };
+        const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); };
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+</script>
+</body>
+</html>
