@@ -5,159 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace OAB Trabalho</title>
+    <title>SISTEMA JOAQUIM - Workspace OAB</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; --orange: #d35400; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .tabs-container { display: none; background: #2c3e50; padding: 5px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #34495e; color: white; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-        .tab-btn.active { background: var(--accent); }
+        /* Mobile Tabs - Posicionadas estrategicamente para mobile */
+        .tabs-container { display: none; background: var(--primary); padding: 8px; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #34495e; color: white; border-radius: 6px; font-weight: bold; font-size: 0.8rem; }
+        .tab-btn.active { background: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+        main { display: flex; flex: 1; overflow: hidden; }
 
-        .sidebar-section { width: 250px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 12px; margin-bottom: 10px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 500; text-align: left; cursor: pointer; font-size: 0.9rem; }
-        .btn-peca:hover { border-color: var(--accent); background: #fff; }
-        .btn-peca.active-peca { border-left: 5px solid var(--accent); background: #eef7ff; font-weight: bold; }
+        /* Lateral Exames */
+        .sidebar-section { width: 220px; background: white; padding: 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
+        .btn-peca { width: 100%; padding: 14px; margin-bottom: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: left; cursor: pointer; font-size: 0.9rem; }
+        .btn-peca.active-peca { border-left: 6px solid var(--accent); background: #eef7ff; font-weight: bold; }
 
-        .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 200px; position: relative; display: flex; flex-direction: column; z-index: 5; }
-        .actions-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-act { flex: 1; padding: 10px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; }
-        .btn-save { background: var(--success); }
-        .btn-pdf { background: #e74c3c; }
-
-        #area-peca { flex: 1; width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 1.1rem; line-height: 1.6; resize: none; box-sizing: border-box; outline: none; }
-
-        #panel-fundamentos { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; transform: translateX(-100%); transition: 0.3s ease; padding: 20px; box-sizing: border-box; border-right: 8px solid #d35400; display: flex; flex-direction: column; }
-        #panel-fundamentos.open { transform: translateX(0); }
-        #edit-teses { flex: 1; width: 100%; margin: 10px 0; padding: 15px; border: 1px solid #ddd; font-size: 1rem; background: #fff9f4; border-radius: 5px; }
-
-        .resizer { width: 16px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; color: #b2bec3; font-size: 1.2rem; }
-
-        /* PDF UNIFICADO - Respeitando sua estrutura anterior */
-        .pdf-section { background: #dcdde1; padding: 8px; flex: 1.5; display: flex; flex-direction: column; overflow: hidden; }
-        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #7f8c8d; overflow: hidden; position: relative; }
+        /* Seção de Trabalho */
+        .work-section { display: flex; flex-direction: column; flex: 1; min-width: 300px; background: white; border-right: 1px solid #ddd; position: relative; }
         
-        .pdf-header { background: #34495e; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: bold; }
-        .header-btns { display: flex; gap: 5px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+        #panel-fundamentos { display: none; background: #fff9f4; border-bottom: 3px solid var(--orange); padding: 15px; overflow-y: auto; max-height: 45%; }
+        #panel-fundamentos.open { display: flex; flex-direction: column; }
+        
+        .fundamentos-grid { display: grid; gap: 8px; margin-top: 10px; }
+        .item-fundamento { display: flex; gap: 8px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; align-items: center; }
+        .item-fundamento textarea { flex: 1; border: none; resize: none; font-size: 0.9rem; outline: none; background: transparent; }
+        
+        .editor-container { flex: 1; padding: 12px; display: flex; flex-direction: column; }
+        #area-peca { flex: 1; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1.1rem; resize: none; outline: none; -webkit-appearance: none; }
 
+        /* Resizer Desktop */
+        .resizer { width: 15px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #7f8c8d; font-weight: bold; }
+
+        /* Seção PDF Responsiva */
+        .pdf-section { background: #dcdde1; gap: 4px; padding: 4px; flex: 1.2; display: flex; flex-direction: column; overflow: hidden; }
+        .pdf-box { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Estados de Expansão */
+        .pdf-box.focado { flex: 50 !important; }
+        .pdf-box.encolhido { flex: 0 !important; min-height: 0; border: none; overflow: hidden; }
+        
+        .pdf-header { background: #34495e; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .header-btns { display: flex; gap: 6px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        
+        iframe { width: 100%; height: 100%; border: none; background: #525659; }
+
+        /* MOBILE ADJUSTMENTS */
         @media (max-width: 900px) {
-            .tabs-container { display: flex !important; }
+            .tabs-container { display: flex; }
             .sidebar-section, .resizer, .pdf-section { display: none; }
-            .content-section { display: none; width: 100%; }
+            .content-section { display: none; width: 100%; height: 100%; }
             .active-mobile { display: flex !important; }
+            
+            /* Ajuste da área de PDF no mobile para ocupar tudo */
+            .pdf-section.active-mobile { padding: 0; gap: 0; }
+            .pdf-header { padding: 12px; }
+            .action-btn { padding: 8px 16px; font-size: 0.8rem; }
         }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
     </style>
 </head>
 <body>
 
-<nav class="tabs-container">
-    <button class="tab-btn active" id="btn-lista" onclick="switchTab('lista')">📂 PEÇAS</button>
-    <button class="tab-btn" id="btn-escrita" onclick="switchTab('escrita')">✍️ TREINO</button>
-    <button class="tab-btn" id="btn-docs" onclick="switchTab('docs')">📄 PDF</button>
-</nav>
-
 <main>
     <section class="sidebar-section content-section active-mobile" id="lista">
-        <h3 style="color: var(--primary); border-bottom: 2px solid var(--accent);">PROJETO OAB</h3>
-        <div id="lista-pecas">
-            <button class="btn-peca" id="btn-ro35" onclick="carregarUnificado('ro35.pdf', 'ro35')">
-                📄 RO 35 - COMPLETO
-            </button>
-        </div>
+        <h3 style="margin-top:0; color:var(--primary)">MEUS EXAMES</h3>
+        <button class="btn-peca" id="btn-ro35" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">
+            📂 EXAME 35 - RO
+        </button>
     </section>
 
-    <section class="editor-section content-section" id="escrita">
+    <section class="work-section content-section" id="work">
         <div id="panel-fundamentos">
-            <button class="action-btn" style="background:#d35400" onclick="togglePanel()">✖ FECHAR</button>
-            <h3>MAPEAMENTO DE TESES</h3>
-            <textarea id="edit-teses"></textarea>
-            <button class="btn-act btn-save" onclick="salvarTeses()">💾 SALVAR</button>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:var(--orange)">FUNDAMENTOS</strong>
+                <button class="action-btn" onclick="adicionarFundamento()">+ NOVO</button>
+            </div>
+            <div class="fundamentos-grid" id="lista-fundamentos"></div>
         </div>
-        
-        <div class="actions-row">
-            <button class="btn-act" style="background:#d35400" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
-            <button class="btn-act btn-save" onclick="exportarTXT()">💾 SALVAR TXT</button>
-            <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
+
+        <div class="editor-container">
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <button class="action-btn" style="background:var(--orange); flex:1" onclick="toggleFundamentos()">📚 FUNDAMENTOS</button>
+                <button class="action-btn" style="background:#27ae60; flex:1" onclick="exportarTXT()">💾 SALVAR TXT</button>
+            </div>
+            <textarea id="area-peca" placeholder="Escreva sua peça aqui..."></textarea>
         </div>
-        <textarea id="area-peca" placeholder="Espaço para treino da peça..."></textarea>
     </section>
 
     <div class="resizer" id="dragMe">⋮</div>
 
     <section class="pdf-section content-section" id="docs">
-        <div class="pdf-box">
+        <div class="pdf-box" id="box-enu">
             <div class="pdf-header">
-                <span>📄 DOCUMENTO UNIFICADO</span>
+                <strong>📝 ENUNCIADO</strong>
                 <div class="header-btns">
-                    <button class="action-btn" onclick="toggleExpand()">EXPANDIR</button>
-                    <button class="action-btn" onclick="abrirExterno()">ABRIR</button>
+                    <button class="action-btn" onclick="focoMobile('enu')">EXPANDIR/VOLTAR</button>
+                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('enu')">ABRIR PDF</button>
                 </div>
             </div>
-            <iframe id="v-unificado" src="ro35.pdf"></iframe>
+            <iframe id="v-enu"></iframe>
+        </div>
+
+        <div class="pdf-box" id="box-gab">
+            <div class="pdf-header">
+                <strong>✅ GABARITO</strong>
+                <div class="header-btns">
+                    <button class="action-btn" onclick="focoMobile('gab')">EXPANDIR/VOLTAR</button>
+                    <button class="action-btn" style="background:#8e44ad" onclick="abrirNativo('gab')">ABRIR PDF</button>
+                </div>
+            </div>
+            <iframe id="v-gab"></iframe>
         </div>
     </section>
 </main>
 
+<nav class="tabs-container">
+    <button class="tab-btn active" id="t-lista" onclick="switchTab('lista')">📂 EXAMES</button>
+    <button class="tab-btn" id="t-work" onclick="switchTab('work')">✍️ TREINO</button>
+    <button class="tab-btn" id="t-docs" onclick="switchTab('docs')">📄 PDFS</button>
+</nav>
+
 <script>
     let arquivoAtivo = "ro35";
-    let urlUnificada = "ro35.pdf";
+    let links = { enu: "ro35.pdf", gab: "ro35-gabarito.pdf" };
 
-    function carregarUnificado(url, id) {
-        arquivoAtivo = id;
-        urlUnificada = url;
-        document.getElementById('v-unificado').src = url;
-        
-        document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active-peca'));
-        document.getElementById('btn-' + id).classList.add('active-peca');
+    const bancoFundamentos = {
+        "ro35": ["Cerceamento de Defesa - Art. 5, LV, CF", "Horas Extras - Art. 7, XIII, CF", "Insalubridade - Art. 192 CLT"]
+    };
 
-        const salvo = localStorage.getItem('tese_' + id);
-        document.getElementById('edit-teses').value = salvo || "";
-        if (window.innerWidth < 900) switchTab('escrita');
+    function carregarExame(enu, gab, id) {
+        arquivoAtivo = id; links.enu = enu; links.gab = gab;
+        document.getElementById('v-enu').src = enu;
+        document.getElementById('v-gab').src = gab;
+        renderizarFundamentos();
+        switchTab('work');
     }
 
-    function toggleExpand() {
-        const resizer = document.getElementById('dragMe');
-        const editor = document.querySelector('.editor-section');
-        if (editor.style.display === "none") {
-            editor.style.display = "flex";
-            resizer.style.display = "flex";
+    // Lógica Elástica para Mobile e Desktop
+    function focoMobile(tipo) {
+        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
+        if (tipo === 'enu') {
+            if (e.classList.contains('focado')) {
+                e.classList.remove('focado'); g.classList.remove('encolhido');
+            } else {
+                e.classList.add('focado'); g.classList.add('encolhido');
+                e.classList.remove('encolhido'); g.classList.remove('focado');
+            }
         } else {
-            editor.style.display = "none";
-            resizer.style.display = "none";
+            if (g.classList.contains('focado')) {
+                g.classList.remove('focado'); e.classList.remove('encolhido');
+            } else {
+                g.classList.add('focado'); e.classList.add('encolhido');
+                g.classList.remove('encolhido'); e.classList.remove('focado');
+            }
         }
     }
 
-    function abrirExterno() { window.open(urlUnificada, '_blank'); }
-    function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
+    function abrirNativo(tipo) {
+        window.open(links[tipo], '_blank');
+    }
+
     function switchTab(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-mobile');
-        document.getElementById('btn-' + id).classList.add('active');
+        document.getElementById('t-' + id).classList.add('active');
     }
 
-    function salvarTeses() {
-        localStorage.setItem('tese_' + arquivoAtivo, document.getElementById('edit-teses').value);
-        alert("Salvo!");
+    // Inteligência de Fundamentos
+    function renderizarFundamentos() {
+        const container = document.getElementById('lista-fundamentos');
+        const dados = JSON.parse(localStorage.getItem('db_' + arquivoAtivo)) || bancoFundamentos[arquivoAtivo] || [];
+        container.innerHTML = dados.map((f, i) => `
+            <div class="item-fundamento">
+                <textarea onchange="editar(${i}, this.value)">${f}</textarea>
+                <button onclick="excluir(${i})" style="border:none; background:none; color:red; font-weight:bold; padding:5px;">✖</button>
+            </div>
+        `).join('');
     }
 
+    function editar(i, txt) {
+        let d = JSON.parse(localStorage.getItem('db_'+arquivoAtivo)) || bancoFundamentos[arquivoAtivo];
+        d[i] = txt; localStorage.setItem('db_'+arquivoAtivo, JSON.stringify(d));
+    }
+
+    function excluir(i) {
+        let d = JSON.parse(localStorage.getItem('db_'+arquivoAtivo)) || bancoFundamentos[arquivoAtivo];
+        d.splice(i, 1); localStorage.setItem('db_'+arquivoAtivo, JSON.stringify(d));
+        renderizarFundamentos();
+    }
+
+    function adicionarFundamento() {
+        let d = JSON.parse(localStorage.getItem('db_'+arquivoAtivo)) || bancoFundamentos[arquivoAtivo];
+        d.push("Novo fundamento..."); localStorage.setItem('db_'+arquivoAtivo, JSON.stringify(d));
+        renderizarFundamentos();
+    }
+
+    function toggleFundamentos() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
+    
     function exportarTXT() {
         const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${arquivoAtivo}.txt`; a.click();
     }
 
-    const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
+    // Resizer Desktop
+    const resizer = document.getElementById('dragMe'), work = document.getElementById('work');
     resizer.addEventListener('mousedown', (e) => {
-        const startX = e.clientX, startWidth = leftSide.getBoundingClientRect().width;
-        const onMouseMove = (ev) => { leftSide.style.width = (startWidth + ev.clientX - startX) + 'px'; };
-        const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); };
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
+        const onMove = (ev) => { 
+            let width = ev.clientX - work.getBoundingClientRect().left;
+            if(width > 200) work.style.flex = `0 0 ${width}px`; 
+        };
+        const onUp = () => { document.removeEventListener('mousemove', onMove); };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
     });
+
+    renderizarFundamentos();
 </script>
 </body>
 </html>
