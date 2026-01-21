@@ -19,45 +19,46 @@
         .dropdown:hover .dropdown-content { display: block; }
         .struct-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #333; }
         
-        /* EDITOR FORMATO ABNT JURÍDICO */
-        .editor-container { flex: 1; padding: 20px; display: flex; flex-direction: column; background: #fff; }
+        /* EDITOR FORMATO ABNT */
+        .editor-container { flex: 1; padding: 15px; display: flex; flex-direction: column; background: #fff; overflow: hidden; }
         #area-peca { 
             flex: 1; 
-            padding: 40px; /* Margem padrão petição */
+            padding: 30px;
             border: 1px solid #ddd; 
             border-radius: 4px; 
             font-family: 'Courier New', Courier, monospace; 
-            font-size: 12pt; /* Tamanho padrão ABNT */
-            line-height: 1.5; /* Espaçamento ABNT */
+            font-size: 12pt; 
+            line-height: 1.5; 
             color: #333;
             resize: none; 
             outline: none;
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px);
-            background-size: 100% 1.5em; /* Linhas guia */
-            text-align: justify;
+            background-image: linear-gradient(#f9f9f9 1px, transparent 1px);
+            background-size: 100% 1.5em;
         }
-
-        /* MODAL */
-        #modal-struct { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; height: 85%; background: white; z-index: 2000; border-radius: 8px; padding: 20px; flex-direction: column; }
-        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
 
         /* LAYOUT MAIN */
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 220px; background: white; padding: 15px; border-right: 1px solid #ddd; flex-shrink: 0; overflow-y: auto; }
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ddd; }
         .pdf-section { flex: 1.2; background: #dfe4ea; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
-        .pdf-box { flex: 1; background: white; display: flex; flex-direction: column; transition: 0.3s; }
-        .pdf-box.focado { flex: 40; }
-        .pdf-box.encolhido { flex: 0; overflow: hidden; }
-        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         
+        .pdf-box { flex: 1; background: white; display: flex; flex-direction: column; transition: 0.3s; overflow: hidden; }
+        .pdf-box.focado { flex: 50; }
+        .pdf-box.encolhido { flex: 0; min-height: 0; }
+        
+        .pdf-header { background: #34495e; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         .action-btn { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .resizer { width: 10px; background: #f1f1f1; cursor: col-resize; border: 1px solid #ddd; }
+        
+        iframe { width: 100%; height: 100%; border: none; background: #525659; }
+        .resizer { width: 10px; background: #f1f1f1; cursor: col-resize; border-left: 1px solid #ddd; }
+
+        /* MODAL */
+        #modal-struct { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; height: 85%; background: white; z-index: 2000; border-radius: 8px; padding: 20px; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; }
 
         @media (max-width: 900px) {
+            header { flex-direction: column; height: auto; padding: 10px; }
             .sidebar, .resizer, .pdf-section { display: none; }
-            .tabs-container { display: flex; position: fixed; bottom: 0; width: 100%; height: 60px; background: #2c3e50; z-index: 100; }
-            .tab-btn { flex: 1; color: white; border: none; background: transparent; font-weight: bold; }
             .active-mobile { display: flex !important; width: 100% !important; }
             #area-peca { padding: 15px; font-size: 11pt; }
         }
@@ -79,30 +80,30 @@
 
 <main>
     <section class="sidebar" id="lista">
-        <h3 style="font-size: 0.8rem; color: #7f8c8d;">EXAMES</h3>
-        <button class="action-btn" style="width:100%" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">Exame XXXV - RO</button>
+        <h3 style="font-size: 0.8rem; color: #7f8c8d; text-transform: uppercase;">Peças e Exames</h3>
+        <button class="action-btn" style="width:100%; margin-bottom: 10px;" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'ro35')">Exame XXXV - RO</button>
     </section>
 
-    <section class="work-section content-section active-mobile" id="work">
+    <section class="work-section" id="work">
         <div class="editor-container">
             <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <button class="action-btn" style="background:var(--orange)" onclick="document.getElementById('panel-teses').classList.toggle('open')">TESES</button>
+                <button class="action-btn" style="background:var(--orange)" onclick="alert('Abra as Teses no painel lateral')">TESES</button>
                 <button class="action-btn" style="background:var(--green)" onclick="exportarTXT()">SALVAR TXT</button>
             </div>
-            <textarea id="area-peca" placeholder="Inicie sua redação..."></textarea>
+            <textarea id="area-peca" placeholder="Inicie sua petição conforme normas ABNT..."></textarea>
         </div>
     </section>
 
     <div class="resizer" id="dragMe"></div>
 
-    <section class="pdf-section content-section" id="docs">
+    <section class="pdf-section" id="docs">
         <div class="pdf-box" id="box-enu">
-            <div class="pdf-header">ENUNCIADO <button onclick="foco('enu')" class="action-btn">FOCO</button></div>
-            <iframe id="v-enu"></iframe>
+            <div class="pdf-header"><span>📝 ENUNCIADO</span> <button onclick="foco('enu')" class="action-btn" style="font-size: 10px;">EXPANDIR</button></div>
+            <iframe id="v-enu" src="about:blank"></iframe>
         </div>
         <div class="pdf-box" id="box-gab">
-            <div class="pdf-header">GABARITO <button onclick="foco('gab')" class="action-btn">FOCO</button></div>
-            <iframe id="v-gab"></iframe>
+            <div class="pdf-header"><span>✅ GABARITO</span> <button onclick="foco('gab')" class="action-btn" style="font-size: 10px;">EXPANDIR</button></div>
+            <iframe id="v-gab" src="about:blank"></iframe>
         </div>
     </section>
 </main>
@@ -110,20 +111,33 @@
 <div id="modal-overlay" onclick="fecharModal()"></div>
 <div id="modal-struct">
     <h3 id="modal-titulo">Editar Estrutura</h3>
-    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; font-family: 'Courier New'; padding: 15px;"></textarea>
+    <textarea id="modal-texto" style="flex:1; margin-bottom:15px; font-family: 'Courier New'; padding: 15px; font-size: 14px;"></textarea>
     <button class="action-btn" style="background:var(--green); height: 50px;" onclick="salvarEstrutura()">SALVAR ESTRUTURA</button>
 </div>
 
 <script>
-    // Estruturas com normas de espaçamento jurídico (ABNT)
+    // Correção das URLs de PDF
+    function carregarExame(enu, gab, id) {
+        const vEnu = document.getElementById('v-enu');
+        const vGab = document.getElementById('v-gab');
+        
+        // Adiciona carimbo de tempo para evitar cache e forçar reload do PDF
+        const timestamp = new Date().getTime();
+        vEnu.src = `./${enu}?v=${timestamp}`;
+        vGab.src = `./${gab}?v=${timestamp}`;
+        
+        console.log("Tentando carregar:", enu, gab);
+    }
+
+    // Estruturas ABNT
     const estruturasPadrao = {
         'RT': { 
             nome: 'Reclamação Trabalhista', 
-            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\n\n\n\n\n\n\n\n\nRECLAMANTE (NOME), nacionalidade, estado civil, profissão, RG, CPF, CTPS, PIS, nome da mãe, residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., vem perante este juízo, com fulcro no Art. 840, § 1º da CLT, propor:\n\n    RECLAMAÇÃO TRABALHISTA\n\nem face de RECLAMADA (NOME), pessoa jurídica de direito privado, CNPJ..., endereço..., pelos fatos e fundamentos a seguir expostos:' 
+            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\n\n\n\n\n\n\n\n\nRECLAMANTE..., qualificação completa...\n\n    RECLAMAÇÃO TRABALHISTA\n\nem face de RECLAMADA..., pelos motivos seguintes:' 
         },
         'RO': { 
             nome: 'Recurso Ordinário', 
-            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\nPROCESSO Nº: ______\n\n\n\n(RECLAMANTE/RECLAMADA), já qualificado nos autos, por seu advogado, vem perante este juízo, com fulcro no Art. 895, I da CLT, interpor:\n\n    RECURSO ORDINÁRIO\n\npara o Egrégio Tribunal Regional do Trabalho da ___ Região. Seguem anexas as razões do recurso e o comprovante de preparo.' 
+            texto: 'AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE _______\n\nPROCESSO Nº: ______\n\n\n\n(NOME), já qualificado, vem interpor RECURSO ORDINÁRIO...' 
         }
     };
 
@@ -143,7 +157,6 @@
         document.getElementById('area-peca').value = dados[id].texto;
     }
 
-    // Modal e Salvamento (Mesma lógica anterior com persistência)
     let idEdicao = "";
     function abrirEditorModal(id) {
         idEdicao = id;
@@ -172,6 +185,14 @@
         else { g.classList.toggle('focado'); e.classList.toggle('encolhido'); }
     }
 
+    // Resizer Manual
+    const resizer = document.getElementById('dragMe'), work = document.getElementById('work');
+    resizer.addEventListener('mousedown', (e) => {
+        const move = (ev) => { let w = ev.clientX - work.getBoundingClientRect().left; if(w>200) work.style.flex = `0 0 ${w}px`; };
+        const stop = () => document.removeEventListener('mousemove', move);
+        document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop);
+    });
+
     window.onload = () => {
         renderizarMenu();
         let sec = 18000;
@@ -184,7 +205,7 @@
 
     function exportarTXT() {
         const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Peca_OAB.txt"; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Peticao_OAB.txt"; a.click();
     }
 </script>
 </body>
