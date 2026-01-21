@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SISTEMA JOAQUIM - Workspace Premium</title>
+    <title>SISTEMA JOAQUIM - Workspace Custom</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --bg: #f4f7f6; }
+        :root { --primary: #2c3e50; --accent: #3498db; --warning: #f1c40f; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background: var(--primary); color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 1000; }
@@ -20,49 +20,45 @@
         main { flex: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
         .content-section { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
         
-        /* Sidebar lateral */
         .sidebar-section { width: 240px; background: white; padding: 20px 15px; border-right: 1px solid #ddd; flex-shrink: 0; }
-        .btn-peca { width: 100%; padding: 14px; margin-bottom: 10px; background: #fff; border: 2px solid #edf2f7; border-radius: 10px; font-weight: 600; text-align: left; cursor: pointer; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; background: #fff; border: 2px solid #edf2f7; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; }
 
-        /* Área do Editor */
         .editor-section { background: white; padding: 10px; box-sizing: border-box; flex: 1; min-width: 100px; position: relative; display: flex; flex-direction: column; }
         .actions-row { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
         .btn-save { background: var(--success); }
         .btn-pdf { background: #607d8b; }
-        textarea { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
+        textarea#area-peca { flex: 1; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; line-height: 1.5; resize: none; box-sizing: border-box; }
 
-        /* Painel Fundamentação */
+        /* PAINEL DE FUNDAMENTAÇÃO EDITÁVEL */
         #panel-fundamentos { 
-            position: absolute; right: -285px; top: 0; width: 280px; height: 100%; 
-            background: #fff9e6; border-left: 4px solid var(--warning); z-index: 2000;
+            position: absolute; right: -305px; top: 0; width: 300px; height: 100%; 
+            background: #fffdf5; border-left: 5px solid var(--warning); z-index: 2000;
             transition: 0.3s; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; padding: 15px; box-sizing: border-box;
+            display: flex; flex-direction: column; padding: 10px; box-sizing: border-box;
         }
         #panel-fundamentos.open { right: 0; }
         .btn-toggle-fund { 
-            position: absolute; left: -40px; top: 100px; width: 40px; height: 140px; 
+            position: absolute; left: -40px; top: 80px; width: 40px; height: 150px; 
             background: var(--warning); color: #2c3e50; border: none; border-radius: 8px 0 0 8px;
-            writing-mode: vertical-rl; font-weight: bold; font-size: 0.7rem; cursor: pointer;
+            writing-mode: vertical-rl; font-weight: bold; font-size: 0.75rem; cursor: pointer;
         }
+        #lista-fundamentos textarea { width: 100%; height: 75%; border: 1px solid #e6dbb3; border-radius: 8px; padding: 10px; font-size: 0.85rem; background: #fff; resize: none; }
+        .btn-save-fund { background: var(--success); color: white; border: none; padding: 8px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* RESIZER CORRIGIDO */
-        .resizer { width: 12px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; transition: 0.2s; position: relative; z-index: 10; }
-        .resizer:hover { background: var(--accent); }
-        .resizer::after { content: "||"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #b2bec3; font-weight: bold; }
+        /* RESIZER */
+        .resizer { width: 14px; background: #dfe6e9; cursor: col-resize; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b2bec3; }
+        .resizer:hover { background: var(--accent); color: white; }
 
-        /* Seção de PDFs e Botões FOCO/ABRIR */
-        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; min-width: 100px; display: flex; flex-direction: column; }
+        .pdf-section { background: #dcdde1; gap: 5px; padding: 5px; flex: 1.5; display: flex; flex-direction: column; }
         .pdf-box { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #7f8c8d; overflow: hidden; transition: flex 0.4s ease; }
         .pdf-box.expanded { flex: 50 !important; }
         .pdf-box.collapsed { flex: 0.001 !important; min-height: 40px; }
-        .pdf-header { background: #34495e; color: white; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+        .pdf-header { background: #34495e; color: white; padding: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         .header-btns { display: flex; gap: 4px; }
-        .action-btn { background: var(--accent); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.6rem; }
-        .btn-open-ext { background: #95a5a6; }
-        iframe { width: 100%; height: 100%; border: none; }
-
-        .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.65rem; }
+        
+        .btn-zen { position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 50px; font-weight: bold; font-size: 0.75rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 
         @media (max-width: 900px) {
             .tabs-container { display: flex !important; }
@@ -70,13 +66,13 @@
             main { flex-direction: column; width: 100vw; height: 100%; }
             .content-section { display: none !important; width: 100% !important; flex: 1 !important; }
             .content-section.active-mobile { display: flex !important; }
-            #panel-fundamentos { width: 85%; }
+            #panel-fundamentos { width: 90%; }
         }
     </style>
 </head>
 <body id="bodyTag">
 
-<header id="mainHeader">
+<header>
     <div>⚖️ <strong>SISTEMA JOAQUIM</strong></div>
     <div id="timer" style="color: var(--warning); font-weight: 800;">05:00:00</div>
 </header>
@@ -90,48 +86,46 @@
 <main>
     <aside id="menu" class="content-section sidebar-section active-mobile">
         <h4 style="margin: 10px 0">EXAMES:</h4>
-        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV (RO)</button>
-        <button class="btn-peca" onclick="carregarExame('ro34.pdf', 'ro34-gabarito.pdf', 'XXXIV')">📂 Exame XXXIV (RO)</button>
+        <button class="btn-peca" onclick="carregarExame('ro35.pdf', 'ro35-gabarito.pdf', 'XXXV')">📂 Exame XXXV</button>
+        <button class="btn-peca" onclick="carregarExame('ro34.pdf', 'ro34-gabarito.pdf', 'XXXIV')">📂 Exame XXXIV</button>
     </aside>
 
-    <section id="escrita" class="content-section editor-section" id="editorWrap">
+    <section id="escrita" class="content-section editor-section">
         <div id="panel-fundamentos">
-            <button class="btn-toggle-fund" onclick="togglePanel()">📚 VER FUNDAMENTAÇÃO</button>
-            <h3 style="font-size: 1rem; margin-top: 0; color: #d35400;">TESES DO EXAME</h3>
-            <div id="lista-fundamentos" style="overflow-y: auto; font-size: 0.9rem; line-height: 1.6;">
-                <i>Selecione um exame...</i>
+            <button class="btn-toggle-fund" onclick="togglePanel()">📚 FUNDAMENTAÇÃO</button>
+            <h3 style="font-size: 1rem; margin: 0 0 10px 0; color: #d35400;">EDITAR TESES</h3>
+            <div id="lista-fundamentos" style="flex:1">
+                <textarea id="edit-teses" placeholder="Digite as teses aqui (ex: Art. 5 CF)..."></textarea>
+                <button class="btn-save-fund" onclick="salvarTesesManuais()">💾 SALVAR ALTERAÇÕES</button>
             </div>
         </div>
-
         <div class="actions-row">
             <button class="btn-act btn-save" onclick="salvarTXT()">💾 SALVAR TXT</button>
             <button class="btn-act btn-pdf" onclick="window.print()">📄 PDF</button>
         </div>
-        <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
+        <textarea id="area-peca" placeholder="Comece o treino..."></textarea>
     </section>
 
-    <div class="resizer" id="dragMe"></div>
+    <div class="resizer" id="dragMe">⋮</div>
 
     <section id="pdfs" class="content-section pdf-section">
-        <div class="pdf-box" id="box-enunciado">
-            <div class="pdf-header">
-                <span>📄 ENUNCIADO</span>
+        <div class="pdf-box" id="box-enu">
+            <div class="pdf-header"><span>📄 ENUNCIADO</span>
                 <div class="header-btns">
-                    <button class="action-btn" onclick="focarPdf('enunciado')">FOCO</button>
-                    <button class="action-btn btn-open-ext" onclick="abrirExterno('enunciado')">ABRIR</button>
+                    <button class="action-btn" onclick="focar('enu')">FOCO</button>
+                    <button class="action-btn" onclick="abrir('enu')">ABRIR</button>
                 </div>
             </div>
-            <iframe id="view-enunciado"></iframe>
+            <iframe id="v-enu"></iframe>
         </div>
-        <div class="pdf-box" id="box-gabarito">
-            <div class="pdf-header">
-                <span>✅ GABARITO</span>
+        <div class="pdf-box" id="box-gab">
+            <div class="pdf-header"><span>✅ GABARITO</span>
                 <div class="header-btns">
-                    <button class="action-btn" onclick="focarPdf('gabarito')">FOCO</button>
-                    <button class="action-btn btn-open-ext" onclick="abrirExterno('gabarito')">ABRIR</button>
+                    <button class="action-btn" onclick="focar('gab')">FOCO</button>
+                    <button class="action-btn" onclick="abrir('gab')">ABRIR</button>
                 </div>
             </div>
-            <iframe id="view-gabarito"></iframe>
+            <iframe id="v-gab"></iframe>
         </div>
     </section>
 </main>
@@ -140,41 +134,37 @@
 
 <script>
     let exameAtivo = "";
-    let linksAtuais = { enunciado: "", gabarito: "" };
-    const bancoFundamentos = {
-        "XXXV": "<b>1. Cerceamento:</b> Art. 5º, LV, CF<br><b>2. Equiparação:</b> Art. 461 CLT<br><b>3. Insalubridade:</b> Súmula 248 TST<br><b>4. Estabilidade:</b> Art. 543, §3º CLT<br><b>5. Intervalo:</b> Art. 66 CLT",
-        "XXXIV": "<b>1. Gestante:</b> Art. 10, II, 'b' ADCT<br><b>2. Honorários:</b> Art. 791-A CLT"
-    };
+    let urls = { enu: "", gab: "" };
 
+    // Carregar exames e fundamentos do armazenamento local
     function carregarExame(enu, gab, nome) {
         exameAtivo = nome;
-        linksAtuais.enunciado = enu;
-        linksAtuais.gabarito = gab;
-        document.getElementById('view-enunciado').src = enu;
-        document.getElementById('view-gabarito').src = gab;
-        document.getElementById('lista-fundamentos').innerHTML = bancoFundamentos[nome] || "Mapeando...";
+        urls.enu = enu; urls.gab = gab;
+        document.getElementById('v-enu').src = enu;
+        document.getElementById('v-gab').src = gab;
+        
+        // Busca tese personalizada ou usa padrão
+        const salva = localStorage.getItem('tese_' + nome);
+        document.getElementById('edit-teses').value = salva || "Tese Padrão:\n1. Art. ...\n2. Súmula ...";
+        
         if (window.innerWidth < 900) switchTab('escrita');
     }
 
-    function abrirExterno(tipo) {
-        const url = tipo === 'enunciado' ? linksAtuais.enunciado : linksAtuais.gabarito;
-        if (url) window.open(url, '_blank');
-        else alert("Selecione um exame primeiro!");
+    function salvarTesesManuais() {
+        if(!exameAtivo) return alert("Selecione um exame primeiro!");
+        const texto = document.getElementById('edit-teses').value;
+        localStorage.setItem('tese_' + exameAtivo, texto);
+        alert("Teses do Exame " + exameAtivo + " salvas com sucesso!");
     }
 
     function togglePanel() { document.getElementById('panel-fundamentos').classList.toggle('open'); }
-
-    function focarPdf(tipo) {
-        const e = document.getElementById('box-enunciado'), g = document.getElementById('box-gabarito');
-        if (tipo === 'enunciado') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
+    function abrir(t) { window.open(urls[t], '_blank'); }
+    function focar(t) {
+        const e = document.getElementById('box-enu'), g = document.getElementById('box-gab');
+        if(t==='enu') { e.classList.toggle('expanded'); g.classList.toggle('collapsed'); e.classList.remove('collapsed'); g.classList.remove('expanded'); }
         else { g.classList.toggle('expanded'); e.classList.toggle('collapsed'); g.classList.remove('collapsed'); e.classList.remove('expanded'); }
     }
-
-    function toggleZen() {
-        document.body.classList.toggle('zen-mode');
-        document.getElementById('btnZen').textContent = document.body.classList.contains('zen-mode') ? "🔙 VOLTAR" : "↕ EXPANDIR TELA";
-    }
-
+    function toggleZen() { document.body.classList.toggle('zen-mode'); }
     function switchTab(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-mobile'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -182,37 +172,26 @@
         document.getElementById('btn-' + id).classList.add('active');
     }
 
-    function salvarTXT() {
-        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Estudo_${exameAtivo}.txt`; a.click();
-    }
-
-    // ARRASTAR TELAS (RESIZER) - LÓGICA REFORÇADA
-    const resizer = document.getElementById('dragMe');
-    const leftSide = document.querySelector('.editor-section');
-    resizer.addEventListener('mousedown', function(e) {
-        e.preventDefault();
+    // RESIZER FUNCIONAL (Mouse e Toque)
+    const resizer = document.getElementById('dragMe'), leftSide = document.querySelector('.editor-section');
+    resizer.addEventListener('mousedown', (e) => {
         document.addEventListener('mousemove', resize);
-        document.addEventListener('mouseup', stopResize);
+        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
     });
     function resize(e) {
-        let newWidth = e.clientX - leftSide.offsetLeft;
-        if (newWidth > 100 && newWidth < window.innerWidth - 100) {
-            leftSide.style.width = newWidth + 'px';
-            leftSide.style.flex = 'none';
-        }
-    }
-    function stopResize() {
-        document.removeEventListener('mousemove', resize);
-        document.removeEventListener('mouseup', stopResize);
+        let nW = e.clientX - leftSide.offsetLeft;
+        if(nW > 50 && nW < window.innerWidth - 50) { leftSide.style.width = nW + 'px'; leftSide.style.flex = 'none'; }
     }
 
-    // Cronômetro
-    let tempo = 18000;
-    setInterval(() => {
-        let h = Math.floor(tempo/3600), m = Math.floor((tempo%3600)/60), s = tempo%60;
+    function salvarTXT() {
+        const blob = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Treino_${exameAtivo}.txt`; a.click();
+    }
+
+    let t = 18000; setInterval(() => {
+        let h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
         document.getElementById('timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if(tempo > 0) tempo--;
+        if(t>0) t--;
     }, 1000);
 </script>
 </body>
