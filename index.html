@@ -3,174 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - FINAL 2026</title>
+    <title>SISTEMA JOAQUIM - BANK UI</title>
     <style>
         :root { 
-            --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --orange: #f39c12; --green: #27ae60; --purple: #8e44ad; 
-            --yellow: #f1c40f; --text: #2c3e50; --header-h: 60px; 
-            --sidebar-w: 260px;
+            --primary: #1a252f; --accent: #3498db; --bg: #f0f2f5; 
+            --green: #27ae60; --text: #2c3e50; --header-h: 60px;
+            --bottom-nav-h: 70px;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
-        #timer { font-family: monospace; font-size: 1.2rem; color: var(--yellow); font-weight: bold; }
-        
-        .nav-group { display: flex; gap: 5px; }
-        .dropbtn { color: white; padding: 8px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
-        .btn-postit { background-color: var(--yellow); color: #333; }
-        .btn-dicas { background-color: var(--purple); color: white; }
-        .btn-save { background-color: var(--green); color: white; }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* HEADER ESTILO APP */
+        header { 
+            background-color: var(--primary); color: white; height: var(--header-h); 
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center; 
+            z-index: 1000; flex-shrink: 0;
+        }
+        #timer { font-family: 'Courier New', monospace; color: #f1c40f; font-weight: bold; font-size: 1.1rem; }
+
+        /* AREA PRINCIPAL */
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        
-        /* SIDEBAR */
-        .sidebar { width: var(--sidebar-w); background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: transform 0.3s ease; }
-        .sidebar.collapsed { width: 0; overflow: hidden; border: none; }
-        .sidebar-content { padding: 12px; display: flex; flex-direction: column; gap: 15px; }
-        
-        h4 { font-size: 0.65rem; color: #666; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; }
-        .exame-btn { background: white; border: 1px solid #ddd; padding: 10px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; width: 100%; }
-        .exame-btn.active { background: var(--accent); color: white; }
 
-        /* ANOTAÇÕES ESTILO POST-IT */
-        .note-item { padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-        .type-postit { background: var(--yellow); color: #333; border-left: 5px solid #d4ac0d; }
-        .type-dicas { background: var(--purple); color: white; border-left: 5px solid #5b2c6f; }
-        .note-delete { position: absolute; right: 5px; top: 5px; background: none; border: none; color: red; cursor: pointer; font-weight: bold; }
-
-        /* EDITOR E PDFS */
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ccc; }
-        #area-peca { flex: 1; padding: 20px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; resize: none; }
-
-        .pdf-section { width: 40%; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
-        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .pdf-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; background: #2c3e50; }
-        .pdf-frame { width: 100%; height: 42vh; border: none; background: white; }
-
-        @media (max-width: 1024px) {
-            #mobile-menu-btn { display: block !important; }
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar { position: fixed; left: -260px; top: 60px; bottom: 0; z-index: 2000; background: #eaeff2; }
-            .sidebar.open { transform: translateX(260px); }
-            .work-section { width: 100%; height: 60vh; flex-shrink: 0; }
-            .pdf-section { width: 100%; height: auto; }
-            .pdf-frame { height: 70vh; }
+        /* SIDEBAR ESTILO DRAWER (MODERNO) */
+        .drawer { 
+            position: fixed; top: 0; left: -100%; width: 300px; height: 100%; 
+            background: white; z-index: 2000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1);
         }
+        .drawer.open { left: 0; }
+        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1500; }
+        .overlay.active { display:block; }
+
+        /* CARDS DE EXAME (ESTILO BANCO) */
+        .exame-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .exame-card { 
+            background: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 12px;
+            text-align: center; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: bold;
+        }
+        .exame-card:active { transform: scale(0.95); background: #eef2f7; }
+        .exame-card.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* SEÇÃO DE TRABALHO */
+        .work-area { flex: 1; display: flex; flex-direction: column; background: white; transition: 0.3s; }
+        .editor-info { padding: 10px 20px; background: #fafafa; border-bottom: 1px solid #eee; font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; }
+        
+        #area-peca { 
+            flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
+            font-size: 16px; line-height: 1.6; outline: none; resize: none;
+        }
+
+        /* PDFs - OCULTÁVEIS NO DESKTOP */
+        .pdf-panel { width: 40%; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; transition: 0.3s; }
+        .pdf-panel.hidden { width: 0; padding: 0; overflow: hidden; }
+        .pdf-box { background: #333; border-radius: 8px; overflow: hidden; flex: 1; }
+        .pdf-frame { width: 100%; height: 100%; border: none; background: white; }
+
+        /* BARRA DE NAVEGAÇÃO INFERIOR (MOBILE) */
+        .bottom-nav { 
+            display: none; height: var(--bottom-nav-h); background: white; 
+            border-top: 1px solid #ddd; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text); font-size: 0.65rem; font-weight: bold; text-decoration: none; cursor: pointer; }
+        .nav-icon { font-size: 1.5rem; margin-bottom: 4px; }
+
+        /* AJUSTES MOBILE */
+        @media (max-width: 1024px) {
+            .bottom-nav { display: flex; }
+            .pdf-panel { position: absolute; top: 0; right: -100%; width: 100%; height: 100%; z-index: 1200; }
+            .pdf-panel.active { right: 0; }
+            .work-area { width: 100%; }
+        }
+
+        /* BOTÕES DE AÇÃO NO DESKTOP */
+        .desktop-actions { display: flex; gap: 10px; }
+        @media (max-width: 1024px) { .desktop-actions { display: none; } }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+
 <header>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <button id="mobile-menu-btn" style="display:none; background:#34495e; color:white; border:none; padding:8px;" onclick="toggleMobileMenu()">☰ MENU</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <div style="background:var(--accent); width:35px; height:35px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:bold;">J</div>
         <div id="timer">05:00:00</div>
     </div>
-    <div class="nav-group">
-        <button class="dropbtn btn-postit" onclick="addNote('postit')">📌 +POST-IT</button>
-        <button class="dropbtn btn-dicas" onclick="addNote('dicas')">👩‍🏫 +DICA</button>
-        <button class="dropbtn btn-save" onclick="exportarTXT()">💾 SALVAR</button>
+    <div class="desktop-actions">
+        <button class="btn-nav" onclick="toggleDrawer()" style="background:#34495e; padding:8px 15px; border-radius:6px; color:white; border:none; cursor:pointer;">☰ EXAMES</button>
+        <button class="btn-nav" onclick="toggleFocus()" style="background:var(--accent); padding:8px 15px; border-radius:6px; color:white; border:none; cursor:pointer;">👁 FOCO</button>
+        <button class="btn-nav" onclick="exportarTXT()" style="background:var(--green); padding:8px 15px; border-radius:6px; color:white; border:none; cursor:pointer;">💾 SALVAR</button>
     </div>
 </header>
 
 <main>
-    <aside class="sidebar" id="sidebar-main">
-        <div class="sidebar-content">
-            <h4>📂 EXAMES (35-45)</h4>
-            <div id="lista-exames"></div>
-            
-            <h4 style="margin-top:15px">📌 MEUS POST-ITS</h4>
-            <div id="container-postit"></div>
-
-            <h4 style="margin-top:15px">👩‍🏫 DICAS DE ESTUDO</h4>
-            <div id="container-dicas"></div>
-        </div>
+    <aside class="drawer" id="drawer">
+        <h3 style="color:var(--primary); margin-bottom:10px;">Meus Projetos</h3>
+        <p style="font-size:0.7rem; color:#999;">SELECIONE O EXAME OAB</p>
+        <div class="exame-grid" id="lista-exames"></div>
+        <button onclick="toggleDrawer()" style="margin-top:30px; width:100%; padding:12px; border:none; background:#eee; border-radius:8px; font-weight:bold;">FECHAR</button>
     </aside>
 
-    <section class="work-section">
-        <div style="padding:10px; background:#eee; font-size:0.7rem; font-weight:bold; border-bottom:1px solid #ddd">
-            <span id="label-exame">📍 SELECIONE UM EXAME NO MENU</span>
+    <section class="work-area">
+        <div class="editor-info">
+            <span id="label-exame">📍 MODO LIVRE</span>
+            <span id="char-count">0 caracteres</span>
         </div>
-        <textarea id="area-peca" placeholder="Escreva sua peça aqui..."></textarea>
+        <textarea id="area-peca" oninput="updateCount()" placeholder="Toque aqui para começar a digitar..."></textarea>
     </section>
 
-    <section class="pdf-section">
+    <section class="pdf-panel" id="pdf-panel">
         <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')">⛶</button></div>
-            <iframe id="v-enu" class="pdf-frame" src="about:blank"></iframe>
+            <iframe id="v-enu" class="pdf-frame"></iframe>
         </div>
         <div class="pdf-box">
-            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')">⛶</button></div>
-            <iframe id="v-gab" class="pdf-frame" src="about:blank"></iframe>
+            <iframe id="v-gab" class="pdf-frame"></iframe>
         </div>
+        <button class="btn-nav" onclick="togglePDFs()" style="display:none; background:#e74c3c;" id="btn-close-pdf-mobile">FECHAR PDF</button>
     </section>
 </main>
 
-<script>
-    let anotações = JSON.parse(localStorage.getItem('joaquim_notes')) || [];
+<nav class="bottom-nav">
+    <div class="nav-item" onclick="toggleDrawer()">
+        <span class="nav-icon">📚</span>
+        <span>EXAMES</span>
+    </div>
+    <div class="nav-item" onclick="togglePDFs()">
+        <span class="nav-icon">📄</span>
+        <span>VER PDF</span>
+    </div>
+    <div class="nav-item" onclick="exportarTXT()">
+        <span class="nav-icon">💾</span>
+        <span>SALVAR</span>
+    </div>
+</nav>
 
+<script>
     function montarMenu() {
         const container = document.getElementById('lista-exames');
         let html = '';
         for (let i = 35; i <= 45; i++) {
-            html += `<button class="exame-btn" id="btn-exame-${i}" onclick="carregarExame('${i}')">OAB XXX${i}</button>`;
+            html += `<div class="exame-card" id="card-${i}" onclick="carregarExame('${i}')">OAB XXX${i}</div>`;
         }
         container.innerHTML = html;
-        renderNotes();
+    }
+
+    function toggleDrawer() {
+        document.getElementById('drawer').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function togglePDFs() {
+        if (window.innerWidth <= 1024) {
+            document.getElementById('pdf-panel').classList.toggle('active');
+            const isVisible = document.getElementById('pdf-panel').classList.contains('active');
+            document.getElementById('btn-close-pdf-mobile').style.display = isVisible ? 'block' : 'none';
+        } else {
+            document.getElementById('pdf-panel').classList.toggle('hidden');
+        }
+    }
+
+    function toggleFocus() {
+        document.getElementById('pdf-panel').classList.add('hidden');
     }
 
     function carregarExame(num) {
         const ts = new Date().getTime();
-        // Caminho relativo corrigido para GitHub
         document.getElementById('v-enu').src = `./ro${num}.pdf?v=${ts}`;
         document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf?v=${ts}`;
         document.getElementById('label-exame').innerText = `📍 EXAME OAB XXX${num}`;
         
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-exame-${num}`).classList.add('active');
-
-        if (window.innerWidth <= 1024) toggleMobileMenu();
+        document.querySelectorAll('.exame-card').forEach(c => c.classList.remove('active'));
+        document.getElementById(`card-${num}`).classList.add('active');
+        
+        toggleDrawer();
+        if(window.innerWidth > 1024) document.getElementById('pdf-panel').classList.remove('hidden');
     }
 
-    function addNote(type) {
-        const text = prompt("Digite sua anotação:");
-        if (text) {
-            anotações.push({ id: Date.now(), type, text });
-            saveAndRender();
-        }
-    }
-
-    function deleteNote(id) {
-        anotações = anotações.filter(n => n.id !== id);
-        saveAndRender();
-    }
-
-    function saveAndRender() {
-        localStorage.setItem('joaquim_notes', JSON.stringify(anotações));
-        renderNotes();
-    }
-
-    function renderNotes() {
-        const contPostit = document.getElementById('container-postit');
-        const contDicas = document.getElementById('container-dicas');
-        contPostit.innerHTML = '';
-        contDicas.innerHTML = '';
-
-        anotações.forEach(n => {
-            const div = document.createElement('div');
-            div.className = `note-item type-${n.type}`;
-            div.innerHTML = `
-                ${n.text}
-                <button class="note-delete" onclick="deleteNote(${n.id})">×</button>
-            `;
-            if (n.type === 'postit') contPostit.appendChild(div);
-            else contDicas.appendChild(div);
-        });
-    }
-
-    function toggleMobileMenu() {
-        document.getElementById('sidebar-main').classList.toggle('open');
+    function updateCount() {
+        const text = document.getElementById('area-peca').value;
+        document.getElementById('char-count').innerText = `${text.length} caracteres`;
     }
 
     function exportarTXT() {
@@ -178,25 +190,20 @@
         const blob = new Blob([texto], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Peca_Trabalhista.txt`;
+        a.download = `SISTEMA_JOAQUIM_2026.txt`;
         a.click();
-    }
-
-    function expandir(id) {
-        const el = document.getElementById(id);
-        if (el.requestFullscreen) el.requestFullscreen();
-        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
     }
 
     window.onload = () => {
         montarMenu();
         let time = 18000;
         setInterval(() => {
+            if(time < 0) return;
             let h = Math.floor(time / 3600);
             let m = Math.floor((time % 3600) / 60);
             let s = time % 60;
             document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if(time > 0) time--;
+            time--;
         }, 1000);
     };
 </script>
