@@ -17,12 +17,11 @@
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         /* Cronômetro #timer removido */
         
-        /* Ajuste para agrupar botões na esquerda */
         .header-left { display: flex; align-items: center; gap: 10px; }
-
+        
         .nav-group { display: flex; gap: 5px; }
         .dropbtn { color: white; padding: 8px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
-        /* Botões Estrutura e Correção mantidos ocultos pois não foram pedidos */
+        /* Botões Estrutura/Correcao removidos do menu superior */
         .btn-postit { background-color: var(--yellow); color: #333; }
         .btn-dicas { background-color: var(--purple); }
 
@@ -40,40 +39,24 @@
 
         .mural-item { padding: 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px; border-left: 5px solid; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
 
-        /* Nova área central, agora para anotações */
-        #main-annotation-area { 
-            flex: 1; 
-            display: flex; 
-            overflow: hidden; 
-            flex-direction: column;
-            background: var(--bg);
-        }
+        .work-section { width: 40%; display: flex; flex-direction: column; background: white; flex-shrink: 0; border-right: 1px solid #ccc; }
+        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
+        #resizer { width: 10px; background: #cbd5e0; cursor: col-resize; z-index: 10; border-left: 1px solid #a0aec0; }
 
-        /* Área do editor de texto principal (ficou menor) */
-        .work-section { height: 40%; display: flex; flex-direction: column; background: white; border-bottom: 1px solid #ccc; }
-        #area-peca { flex: 1; padding: 15px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
-        
-        /* Área que substitui os PDFs, agora para exibir Post-its e Dicas */
-        .annotations-display-section { 
-            flex: 1; 
-            display: flex; 
-            gap: 10px; 
-            padding: 10px; 
-            overflow-y: auto; 
-            background: #525659;
-        }
-        .annotation-box { background: #fff; border-radius: 4px; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
-        .annotation-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; background: #2c3e50; }
-        .annotation-content { padding: 10px; overflow-y: auto; flex: 1; }
-        
+        .pdf-section { flex: 1; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
+        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; }
+        .pdf-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; background: #2c3e50; }
+        .pdf-frame { width: 100%; height: 80vh; border: none; background: white; }
+
         .btn-action { border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
         #btn-reopen { position: fixed; left: 0; top: 80px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 0 5px 5px 0; cursor: pointer; display: none; z-index: 900; }
 
+        /* Estilos para a nova seção de anotações na Sidebar */
+        .annotation-section-sidebar { margin-top: 15px; }
         .note-item { padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; position: relative; }
         .note-delete { position: absolute; right: 5px; top: 5px; background: none; border: none; color: red; cursor: pointer; }
         .type-postit { background: var(--yellow); }
         .type-dicas { background: var(--green); color: white; }
-
 
         @media (max-width: 1024px) {
             #resizer { display: none; }
@@ -82,23 +65,20 @@
             .sidebar.show-mobile { transform: translateX(260px); }
             .work-section { width: 100% !important; height: 50vh; }
             #mobile-toggle { display: block !important; }
-            .annotations-display-section { flex-direction: column; }
-            .annotation-box { margin-bottom: 10px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <!-- Botões movidos para header-left e cronometro removido -->
     <div class="header-left">
         <button id="mobile-toggle" style="background:#34495e; color:white; border:none; padding:8px; border-radius:4px; display:none;" onclick="toggleSidebarMobile()">☰ MENU</button>
-        <!-- Mantidos apenas Post-its e Dicas aqui -->
-        <button class="dropbtn btn-postit" onclick="focusPanel('content-postit')">📌 Post-its</button>
-        <button class="dropbtn btn-dicas" onclick="focusPanel('content-dicas')">👩‍🏫 Dicas</button>
+        <!-- Botões do menu superior agora apenas rolam a sidebar para a seção correta -->
+        <button class="dropbtn btn-postit" onclick="focusPanel('annotations-postit')">📌 Post-its</button>
+        <button class="dropbtn btn-dicas" onclick="focusPanel('annotations-dicas')">👩‍🏫 Dicas</button>
     </div>
     <div class="nav-group">
-        <!-- Estruturas e Correção mantidos aqui mas sem dropdown-content preenchido -->
+        <!-- Mantidos aqui caso queira preencher com funcionalidades depois -->
         <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
         <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
     </div>
@@ -118,6 +98,24 @@
             <h4 style="margin-top:15px">💡 MURAL RÁPIDO</h4>
             <div id="mural-fixacao"></div>
 
+            <!-- Seção de Anotações movida para dentro da Sidebar -->
+            <div class="annotation-section-sidebar" id="annotations-postit">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <h4 style="border:none;">📌 POST-ITS</h4>
+                    <button onclick="addNewNotePrompt('postit')" class="btn-action" style="background: var(--yellow); color: black; padding: 4px 8px;">+ Add</button>
+                </div>
+                <div id="content-postit"></div>
+            </div>
+
+            <div class="annotation-section-sidebar" id="annotations-dicas">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <h4 style="border:none;">👩‍🏫 DICAS</h4>
+                    <button onclick="addNewNotePrompt('dicas')" class="btn-action" style="background: var(--purple); padding: 4px 8px;">+ Add</button>
+                </div>
+                 <div id="content-dicas"></div>
+            </div>
+            <!-- Fim Seção de Anotações na Sidebar -->
+
             <h4 style="margin-top:15px">💾 DADOS</h4>
             <button class="btn-action" style="background:#27ae60; width:100%" onclick="fazerBackup()">EXPORTAR</button>
             <button class="btn-action" style="background:#2980b9; width:100%; margin-top:5px" onclick="document.getElementById('input-file').click()">IMPORTAR</button>
@@ -125,59 +123,47 @@
         </div>
     </aside>
 
-    <!-- Usamos uma div wrapper para organizar a nova área central -->
-    <div id="main-annotation-area">
-        <section class="work-section" id="editor-area">
-            <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
-                EDITANDO: <span id="nome-item-editando"></span> 
-                <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
-                <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
-            </div>
-            <div class="editor-header" style="padding:10px; display:flex; justify-content:space-between; align-items:center; background:#eee;">
-                <span id="label-exame" style="font-size:0.7rem; font-weight:bold;">📍 ÁREA DE TRABALHO (TEXTO)</span>
-                <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">TXT</button>
-            </div>
-            <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
-        </section>
+    <section class="work-section" id="editor-area">
+        <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
+            EDITANDO: <span id="nome-item-editando"></span> 
+            <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
+            <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
+        </div>
+        <div class="editor-header" style="padding:10px; display:flex; justify-content:space-between; align-items:center; background:#eee;">
+            <span id="label-exame" style="font-size:0.7rem; font-weight:bold;">📍 ÁREA DE TRABALHO (TEXTO)</span>
+            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">TXT</button>
+        </div>
+        <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
+    </section>
 
-        <!-- AQUI FICAM AS ANOTAÇÕES DIRETAMENTE (Substitui a área de PDFs) -->
-        <section class="annotations-display-section" id="bottom-panel">
-            
-            <div class="annotation-box">
-                <div class="annotation-header" id="header-postit">
-                    <span>📌 POST-ITS (FOLHA DE CADERNO)</span>
-                    <div>
-                        <!-- Botões para abrir PDF em nova janela -->
-                        <button onclick="openPDFWindow('enunciado')" class="btn-action" style="background: var(--accent); padding: 4px 8px;">VER ENUNCIADO PDF</button>
-                        <button onclick="addNewNotePrompt('postit')" class="btn-action" style="background: var(--yellow); color: black; padding: 4px 8px;">+ Add</button>
-                    </div>
-                </div>
-                <div class="annotation-content" id="content-postit">
-                    <!-- Notas tipo Post-it serão renderizadas aqui -->
-                </div>
-            </div>
+    <div id="resizer"></div>
 
-            <div class="annotation-box">
-                <div class="annotation-header" id="header-dicas">
-                    <span>👩‍🏫 DICAS (PADRÃO RESPOSTA)</span>
-                    <div>
-                        <!-- Botões para abrir PDF em nova janela -->
-                        <button onclick="openPDFWindow('gabarito')" class="btn-action" style="background: var(--accent); padding: 4px 8px;">VER GABARITO PDF</button>
-                        <button onclick="addNewNotePrompt('dicas')" class="btn-action" style="background: var(--purple); padding: 4px 8px;">+ Add</button>
-                    </div>
-                </div>
-                <div class="annotation-content" id="content-dicas">
-                    <!-- Notas tipo Dicas serão renderizadas aqui -->
-                </div>
+    <!-- Seção de PDFs Restaurada -->
+    <section class="pdf-section">
+        <div class="pdf-box">
+            <div class="pdf-header">
+                <span>ENUNCIADO</span>
+                <button onclick="expandir('v-enu')" style="background:none; border:none; color:white;">🔄</button>
             </div>
-        </section>
-    </div> <!-- Fim main-annotation-area -->
-
-    <div id="resizer"></div> <!-- Resizer mantido, mas sua função visual é limitada com o layout atual -->
+            <iframe id="v-enu" class="pdf-frame" src="about:blank"></iframe>
+        </div>
+        <div class="pdf-box">
+            <div class="pdf-header">
+                <span>PADRÃO DE RESPOSTA</span>
+                <button onclick="expandir('v-pad')" style="background:none; border:none; color:white;">🔄</button>
+            </div>
+            <iframe id="v-pad" class="pdf-frame" src="about:blank"></iframe>
+        </div>
+    </section>
+    <!-- Fim Seção de PDFs Restaurada -->
 
 </main>
 
 <script>
+    // URLs de exemplo para os PDFs (Substitua pelas suas reais)
+    const URL_ENUNCIADO = 'https://example.com/seu-enunciado.pdf';
+    const URL_GABARITO = 'https://example.com/seu-gabarito.pdf';
+    
     // --- Funções Mock ---
     function toggleSidebarMobile() {}
     function toggleSidebarPC() {
@@ -195,40 +181,20 @@
     function salvarAlteracoes() { alert("Alterações Salvas (Mock)"); }
     function cancelarEdicao() { alert("Edição Cancelada (Mock)"); }
     function exportarTXT() { alert("Exportando para TXT (Mock)"); }
-    // A função expandir e v-enu/v-pad não são mais usadas diretamente aqui.
+    // Função expandir original (mock)
+    function expandir(id) { alert(`Expandindo PDF ${id} (Mock)`); }
 
     window.onload = () => {
        renderAnnotations('postit'); 
        renderAnnotations('dicas'); 
+       // Carrega os iframes com os PDFs ao carregar a página
+       document.getElementById('v-enu').src = URL_ENUNCIADO;
+       document.getElementById('v-pad').src = URL_GABARITO;
     }
     
     // ------------------------------------------------------------------
-    // JS: Funcionalidade de Anotações e Pop-up de PDF
+    // JS: Funcionalidade de Anotações na Sidebar
     // ------------------------------------------------------------------
-
-    /**
-     * Abre uma nova janela/pop-up para exibir um PDF.
-     * URLs de exemplo são usadas abaixo, você precisará substituir por URLs reais ou blobs de PDF.
-     * @param {string} type 'enunciado' ou 'gabarito'.
-     */
-    function openPDFWindow(type) {
-        let url = 'about:blank';
-        let title = '';
-
-        if (type === 'enunciado') {
-            // SUBSTITUA ESTA URL PELO CAMINHO DO SEU ARQUIVO DE ENUNCIADO
-            url = 'https://example.com/seu-enunciado.pdf'; 
-            title = 'Visualizar Enunciado';
-        } else if (type === 'gabarito') {
-            // SUBSTITUA ESTA URL PELO CAMINHO DO SEU ARQUIVO DE GABARITO
-            url = 'https://example.com/seu-gabarito.pdf';
-            title = 'Visualizar Gabarito';
-        }
-
-        // Abre em uma nova janela com dimensões específicas
-        window.open(url, title, 'width=800,height=600,menubar=no,status=no,toolbar=no,scrollbars=yes,resizable=yes');
-    }
-
 
     function addNewNotePrompt(type) {
         const text = prompt(`Digite sua nova anotação (${type}):`);
@@ -279,9 +245,13 @@
         renderAnnotations(type); 
     }
 
-    // Função para rolar até o painel quando o botão do menu é clicado
+    // Função para rolar até o painel na sidebar quando o botão do menu é clicado
     function focusPanel(panelId) {
         const panel = document.getElementById(panelId);
+        // Garante que a sidebar esteja aberta antes de rolar
+        if (document.getElementById('sidebar-main').classList.contains('collapsed')) {
+             toggleSidebarPC();
+        }
         panel.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
