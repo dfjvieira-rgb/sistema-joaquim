@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - FINAL 2026</title>
+    <title>SISTEMA JOAQUIM - ACORDO DE TRABALHO</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
@@ -15,19 +15,18 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        #timer { font-family: monospace; font-size: 1.2rem; color: var(--yellow); font-weight: bold; }
+        /* Cronômetro #timer removido */
         
+        /* Ajuste para agrupar botões na esquerda */
+        .header-left { display: flex; align-items: center; gap: 10px; }
+
         .nav-group { display: flex; gap: 5px; }
         .dropbtn { color: white; padding: 8px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
-        .btn-struct { background-color: var(--accent); }
-        .btn-correc { background-color: var(--orange); }
+        /* Botões Estrutura e Correção mantidos ocultos pois não foram pedidos */
         .btn-postit { background-color: var(--yellow); color: #333; }
         .btn-dicas { background-color: var(--purple); }
 
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); right: 0; border-radius: 6px; padding: 8px; z-index: 2000; border: 1px solid #ddd; }
-        .dropdown:hover .dropdown-content { display: block; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.8rem; color: #333; cursor: pointer; }
+        .dropdown-content { display: none; }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
@@ -41,17 +40,40 @@
 
         .mural-item { padding: 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px; border-left: 5px solid; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
 
-        .work-section { width: 40%; display: flex; flex-direction: column; background: white; flex-shrink: 0; border-right: 1px solid #ccc; }
-        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
-        #resizer { width: 10px; background: #cbd5e0; cursor: col-resize; z-index: 10; border-left: 1px solid #a0aec0; }
+        /* Nova área central, agora para anotações */
+        #main-annotation-area { 
+            flex: 1; 
+            display: flex; 
+            overflow: hidden; 
+            flex-direction: column;
+            background: var(--bg);
+        }
 
-        .pdf-section { flex: 1; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
-        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; }
-        .pdf-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; background: #2c3e50; }
-        .pdf-frame { width: 100%; height: 80vh; border: none; background: white; }
-
+        /* Área do editor de texto principal (ficou menor) */
+        .work-section { height: 40%; display: flex; flex-direction: column; background: white; border-bottom: 1px solid #ccc; }
+        #area-peca { flex: 1; padding: 15px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
+        
+        /* Área que substitui os PDFs, agora para exibir Post-its e Dicas */
+        .annotations-display-section { 
+            flex: 1; 
+            display: flex; 
+            gap: 10px; 
+            padding: 10px; 
+            overflow-y: auto; 
+            background: #525659;
+        }
+        .annotation-box { background: #fff; border-radius: 4px; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+        .annotation-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; background: #2c3e50; }
+        .annotation-content { padding: 10px; overflow-y: auto; flex: 1; }
+        
         .btn-action { border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
         #btn-reopen { position: fixed; left: 0; top: 80px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 0 5px 5px 0; cursor: pointer; display: none; z-index: 900; }
+
+        .note-item { padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; position: relative; }
+        .note-delete { position: absolute; right: 5px; top: 5px; background: none; border: none; color: red; cursor: pointer; }
+        .type-postit { background: var(--yellow); }
+        .type-dicas { background: var(--green); color: white; }
+
 
         @media (max-width: 1024px) {
             #resizer { display: none; }
@@ -60,21 +82,25 @@
             .sidebar.show-mobile { transform: translateX(260px); }
             .work-section { width: 100% !important; height: 50vh; }
             #mobile-toggle { display: block !important; }
+            .annotations-display-section { flex-direction: column; }
+            .annotation-box { margin-bottom: 10px; }
         }
     </style>
 </head>
 <body>
 
 <header>
+    <!-- Botões movidos para header-left e cronometro removido -->
     <div class="header-left">
         <button id="mobile-toggle" style="background:#34495e; color:white; border:none; padding:8px; border-radius:4px; display:none;" onclick="toggleSidebarMobile()">☰ MENU</button>
-        <div id="timer">05:00:00</div>
+        <!-- Mantidos apenas Post-its e Dicas aqui -->
+        <button class="dropbtn btn-postit" onclick="focusPanel('content-postit')">📌 Post-its</button>
+        <button class="dropbtn btn-dicas" onclick="focusPanel('content-dicas')">👩‍🏫 Dicas</button>
     </div>
     <div class="nav-group">
+        <!-- Estruturas e Correção mantidos aqui mas sem dropdown-content preenchido -->
         <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
         <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-postit">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-dicas">👩‍🏫 Dicas</button><div class="dropdown-content" id="list-db_dicas"></div></div>
     </div>
 </header>
 
@@ -84,7 +110,7 @@
     <aside class="sidebar" id="sidebar-main">
         <div class="sidebar-content">
             <div style="display:flex; justify-content:space-between; align-items:center">
-                <h4>📂 EXAMES OAB</h4>
+                <h4>📂 ACORDO DE TRABALHO</h4> <!-- Renomeado -->
                 <button onclick="toggleSidebarPC()" class="pc-only" style="border:none; background:none; cursor:pointer; color:red; font-size:0.6rem;">FECHAR</button>
             </div>
             <div id="lista-exames"></div>
@@ -99,165 +125,165 @@
         </div>
     </aside>
 
-    <section class="work-section" id="editor-area">
-        <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
-            EDITANDO: <span id="nome-item-editando"></span> 
-            <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
-            <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
-        </div>
-        <div class="editor-header" style="padding:10px; display:flex; justify-content:space-between; align-items:center; background:#eee;">
-            <span id="label-exame" style="font-size:0.7rem; font-weight:bold;">📍 SELECIONE UM EXAME</span>
-            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">TXT</button>
-        </div>
-        <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
-    </section>
+    <!-- Usamos uma div wrapper para organizar a nova área central -->
+    <div id="main-annotation-area">
+        <section class="work-section" id="editor-area">
+            <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
+                EDITANDO: <span id="nome-item-editando"></span> 
+                <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
+                <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
+            </div>
+            <div class="editor-header" style="padding:10px; display:flex; justify-content:space-between; align-items:center; background:#eee;">
+                <span id="label-exame" style="font-size:0.7rem; font-weight:bold;">📍 ÁREA DE TRABALHO (TEXTO)</span>
+                <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">TXT</button>
+            </div>
+            <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
+        </section>
 
-    <div id="resizer"></div>
+        <!-- AQUI FICAM AS ANOTAÇÕES DIRETAMENTE (Substitui a área de PDFs) -->
+        <section class="annotations-display-section" id="bottom-panel">
+            
+            <div class="annotation-box">
+                <div class="annotation-header" id="header-postit">
+                    <span>📌 POST-ITS (FOLHA DE CADERNO)</span>
+                    <div>
+                        <!-- Botões para abrir PDF em nova janela -->
+                        <button onclick="openPDFWindow('enunciado')" class="btn-action" style="background: var(--accent); padding: 4px 8px;">VER ENUNCIADO PDF</button>
+                        <button onclick="addNewNotePrompt('postit')" class="btn-action" style="background: var(--yellow); color: black; padding: 4px 8px;">+ Add</button>
+                    </div>
+                </div>
+                <div class="annotation-content" id="content-postit">
+                    <!-- Notas tipo Post-it serão renderizadas aqui -->
+                </div>
+            </div>
 
-    <section class="pdf-section">
-        <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white;">⛶</button></div>
-            <iframe class="pdf-frame" id="v-enu"></iframe>
-        </div>
-        <div class="pdf-box">
-            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white;">⛶</button></div>
-            <iframe class="pdf-frame" id="v-gab"></iframe>
-        </div>
-    </section>
+            <div class="annotation-box">
+                <div class="annotation-header" id="header-dicas">
+                    <span>👩‍🏫 DICAS (PADRÃO RESPOSTA)</span>
+                    <div>
+                        <!-- Botões para abrir PDF em nova janela -->
+                        <button onclick="openPDFWindow('gabarito')" class="btn-action" style="background: var(--accent); padding: 4px 8px;">VER GABARITO PDF</button>
+                        <button onclick="addNewNotePrompt('dicas')" class="btn-action" style="background: var(--purple); padding: 4px 8px;">+ Add</button>
+                    </div>
+                </div>
+                <div class="annotation-content" id="content-dicas">
+                    <!-- Notas tipo Dicas serão renderizadas aqui -->
+                </div>
+            </div>
+        </section>
+    </div> <!-- Fim main-annotation-area -->
+
+    <div id="resizer"></div> <!-- Resizer mantido, mas sua função visual é limitada com o layout atual -->
+
 </main>
 
-<div id="janela-consulta" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:5000; display:none; flex-direction:column;">
-    <div id="header-consulta" style="padding:15px; display:flex; justify-content:space-between; align-items: center; color:white; font-weight:bold;">
-        <span id="titulo-consulta"></span><button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button>
-    </div>
-    <div id="corpo-consulta" style="flex:1; padding:25px; overflow-y:auto; white-space:pre-wrap; font-family:monospace;"></div>
-    <div style="padding:15px;"><button class="btn-action" style="background:var(--accent); width:100%; height:50px;" onclick="inserirNoEditor()">USAR TEXTO</button></div>
-</div>
-
 <script>
-    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
-    const cores = { db_estruturas: '#3498db', db_correcoes: '#f39c12', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
-    let modoEdicao = false, ctx = { banco: '', id: '' }, cachePeca = "", textoConsultado = "";
-
-    // RESIZER
-    const resizer = document.getElementById('resizer');
-    const editorArea = document.getElementById('editor-area');
-    resizer.addEventListener('mousedown', (e) => {
-        document.addEventListener('mousemove', resize);
-        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', resize));
-    });
-    function resize(e) {
-        let sidebarW = document.getElementById('sidebar-main').classList.contains('collapsed') ? 0 : 260;
-        let newWidth = ((e.clientX - sidebarW) / (window.innerWidth - sidebarW)) * 100;
-        if (newWidth > 10 && newWidth < 90) editorArea.style.width = newWidth + '%';
-    }
-
+    // --- Funções Mock ---
+    function toggleSidebarMobile() {}
     function toggleSidebarPC() {
-        const side = document.getElementById('sidebar-main');
-        side.classList.toggle('collapsed');
-        document.getElementById('btn-reopen').style.display = side.classList.contains('collapsed') ? 'block' : 'none';
+        const sidebar = document.getElementById('sidebar-main');
+        const btnReopen = document.getElementById('btn-reopen');
+        sidebar.classList.toggle('collapsed');
+        if (sidebar.classList.contains('collapsed')) {
+            btnReopen.style.display = 'block';
+        } else {
+            btnReopen.style.display = 'none';
+        }
     }
-    function toggleSidebarMobile() { document.getElementById('sidebar-main').classList.toggle('show-mobile'); }
-
-    function renderizarTudo() {
-        bancos.forEach(banco => {
-            const db = JSON.parse(localStorage.getItem(banco)) || {};
-            const container = document.getElementById('list-' + banco);
-            container.innerHTML = Object.keys(db).map(id => `
-                <div class="menu-item">
-                    <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
-                    <span onclick="event.stopPropagation(); entrarModoEdicao('${banco}', '${id}')">✏️</span>
-                    <span onclick="event.stopPropagation(); excluirItem('${banco}', '${id}')">🗑️</span>
-                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="entrarModoEdicao('${banco}', 'novo')">+ NOVO</button>`;
-        });
-
-        const mural = document.getElementById('mural-fixacao');
-        mural.innerHTML = "";
-        ['db_postits', 'db_dicas'].forEach(banco => {
-            const db = JSON.parse(localStorage.getItem(banco)) || {};
-            Object.keys(db).forEach(id => {
-                mural.innerHTML += `<div class="mural-item" style="border-color:${cores[banco]}" onclick="abrirConsulta('${banco}', '${id}')"><b>${db[id].nome}</b></div>`;
-            });
-        });
-    }
-
-    function abrirConsulta(banco, id) {
-        const db = JSON.parse(localStorage.getItem(banco));
-        textoConsultado = db[id].texto;
-        document.getElementById('titulo-consulta').innerText = db[id].nome;
-        document.getElementById('corpo-consulta').innerText = db[id].texto;
-        document.getElementById('header-consulta').style.backgroundColor = cores[banco];
-        document.getElementById('janela-consulta').style.display = 'flex';
-    }
-    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
-    function inserirNoEditor() { if(!modoEdicao) document.getElementById('area-peca').value += "\n" + textoConsultado; fecharConsulta(); }
-
-    function entrarModoEdicao(banco, id) {
-        if(modoEdicao) return;
-        const db = JSON.parse(localStorage.getItem(banco)) || {};
-        cachePeca = document.getElementById('area-peca').value;
-        ctx = { banco, id };
-        modoEdicao = true;
-        const item = id === 'novo' ? { nome: "TÍTULO", texto: "TEXTO" } : db[id];
-        document.getElementById('area-peca').value = `${item.nome}\n---\n${item.texto}`;
-        document.getElementById('nome-item-editando').innerText = item.nome;
-        document.getElementById('aviso-edicao').style.display = "block";
-    }
-    function salvarAlteracoes() {
-        let db = JSON.parse(localStorage.getItem(ctx.banco)) || {};
-        const partes = document.getElementById('area-peca').value.split('\n---\n');
-        const id = ctx.id === 'novo' ? 'ID'+Date.now() : ctx.id;
-        db[id] = { nome: (partes[0] || "Sem Titulo").trim(), texto: partes[1] || "" };
-        localStorage.setItem(ctx.banco, JSON.stringify(db));
-        cancelarEdicao();
-    }
-    function cancelarEdicao() { modoEdicao = false; document.getElementById('area-peca').value = cachePeca; document.getElementById('aviso-edicao').style.display = "none"; renderizarTudo(); }
-    function excluirItem(banco, id) { if(confirm("Excluir?")) { let db = JSON.parse(localStorage.getItem(banco)); delete db[id]; localStorage.setItem(banco, JSON.stringify(db)); renderizarTudo(); } }
-
-    function carregarExame(num) {
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('.ex-btn-' + num).classList.add('active');
-        document.getElementById('v-enu').src = `./ro${num}.pdf`;
-        document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf`;
-        document.getElementById('label-exame').innerText = `📍 EXAME XXX${num}`;
-        if(window.innerWidth < 1024) toggleSidebarMobile();
-    }
-
-    function fazerBackup() {
-        const dados = {}; bancos.forEach(b => dados[b] = JSON.parse(localStorage.getItem(b)));
-        const blob = new Blob([JSON.stringify(dados)], {type: 'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `OAB_BACKUP.json`; a.click();
-    }
-    function importarBackup(input) {
-        const leitor = new FileReader();
-        leitor.onload = (e) => {
-            const dados = JSON.parse(e.target.result);
-            Object.keys(dados).forEach(k => localStorage.setItem(k, JSON.stringify(dados[k])));
-            location.reload();
-        };
-        leitor.readAsText(input.files[0]);
-    }
-    function exportarTXT() { 
-        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "MinhaPeca.txt"; a.click();
-    }
-    function expandir(id) { const el = document.getElementById(id); if (el.requestFullscreen) el.requestFullscreen(); else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }
+    function fazerBackup() { alert("Backup Exportado (Mock)"); }
+    function importarBackup(input) { alert("Backup Importado (Mock)"); }
+    function salvarAlteracoes() { alert("Alterações Salvas (Mock)"); }
+    function cancelarEdicao() { alert("Edição Cancelada (Mock)"); }
+    function exportarTXT() { alert("Exportando para TXT (Mock)"); }
+    // A função expandir e v-enu/v-pad não são mais usadas diretamente aqui.
 
     window.onload = () => {
-        const container = document.getElementById('lista-exames');
-        for (let i = 35; i <= 44; i++) {
-            const btn = document.createElement('button');
-            btn.className = 'exame-btn ex-btn-' + i; btn.innerText = `EXAME XXX${i}`;
-            btn.onclick = () => carregarExame(i);
-            container.appendChild(btn);
+       renderAnnotations('postit'); 
+       renderAnnotations('dicas'); 
+    }
+    
+    // ------------------------------------------------------------------
+    // JS: Funcionalidade de Anotações e Pop-up de PDF
+    // ------------------------------------------------------------------
+
+    /**
+     * Abre uma nova janela/pop-up para exibir um PDF.
+     * URLs de exemplo são usadas abaixo, você precisará substituir por URLs reais ou blobs de PDF.
+     * @param {string} type 'enunciado' ou 'gabarito'.
+     */
+    function openPDFWindow(type) {
+        let url = 'about:blank';
+        let title = '';
+
+        if (type === 'enunciado') {
+            // SUBSTITUA ESTA URL PELO CAMINHO DO SEU ARQUIVO DE ENUNCIADO
+            url = 'https://example.com/seu-enunciado.pdf'; 
+            title = 'Visualizar Enunciado';
+        } else if (type === 'gabarito') {
+            // SUBSTITUA ESTA URL PELO CAMINHO DO SEU ARQUIVO DE GABARITO
+            url = 'https://example.com/seu-gabarito.pdf';
+            title = 'Visualizar Gabarito';
         }
-        renderizarTudo();
-        let s = 18000; setInterval(() => {
-            let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
-            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
-            if(s > 0) s--;
-        }, 1000);
-    };
+
+        // Abre em uma nova janela com dimensões específicas
+        window.open(url, title, 'width=800,height=600,menubar=no,status=no,toolbar=no,scrollbars=yes,resizable=yes');
+    }
+
+
+    function addNewNotePrompt(type) {
+        const text = prompt(`Digite sua nova anotação (${type}):`);
+        if (text && text.trim() !== '') {
+            saveAnnotation(type, text);
+        }
+    }
+
+    function saveAnnotation(type, text) {
+        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
+        let annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        
+        const newAnnotation = {
+            id: Date.now(),
+            text: text,
+            date: new Date().toLocaleString('pt-BR')
+        };
+
+        annotations.push(newAnnotation);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(annotations));
+        renderAnnotations(type);
+    }
+
+    function renderAnnotations(type) {
+        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
+        const annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const contentAreaId = type === 'postit' ? 'content-postit' : 'content-dicas';
+        const contentArea = document.getElementById(contentAreaId);
+        contentArea.innerHTML = '';
+
+        annotations.forEach(annotation => {
+            const item = document.createElement('div');
+            item.className = `note-item type-${type}`; 
+            item.innerHTML = `
+                <p>${annotation.text}</p>
+                <small>Criado em: ${annotation.date}</small>
+                <button class="note-delete" onclick="deleteAnnotation('${type}', ${annotation.id})">✖️</button>
+            `;
+            contentArea.appendChild(item);
+        });
+    }
+
+    function deleteAnnotation(type, id) {
+        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
+        let annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        annotations = annotations.filter(annotation => annotation.id !== id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(annotations));
+        renderAnnotations(type); 
+    }
+
+    // Função para rolar até o painel quando o botão do menu é clicado
+    function focusPanel(panelId) {
+        const panel = document.getElementById(panelId);
+        panel.scrollIntoView({ behavior: 'smooth' });
+    }
 </script>
 </body>
 </html>
