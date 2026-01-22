@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - SMART NOTES</title>
+    <title>SISTEMA JOAQUIM - OAB PRO EXAM</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f8f9fa; 
-            --green: #27ae60; --text: #2c3e50; --header-h: 60px;
-            --bottom-nav-h: 75px; --sticky-note-bg: #fef5b1;
+            --orange: #f39c12; --green: #27ae60; --red: #e74c3c;
+            --text: #2c3e50; --header-h: 55px; --side-nav-w: 65px;
+            --postit-bg: #fef5b1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -18,145 +19,164 @@
             background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; 
         }
 
+        /* HEADER */
         header { 
             background-color: var(--primary); color: white; height: var(--header-h); 
             padding: 0 15px; display: flex; justify-content: space-between; align-items: center; 
-            z-index: 1100; flex-shrink: 0;
+            z-index: 1100; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        #timer { font-family: 'Courier New', monospace; color: #f1c40f; font-weight: bold; font-size: 1.1rem; }
+        #timer { font-family: 'Courier New', monospace; color: #f1c40f; font-weight: bold; font-size: 1.2rem; }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* POST-ITS / DICAS SEMPRE VISÍVEIS (DESKTOP) */
-        .sticky-notes-area {
-            width: 200px; background: #e9ecef; border-left: 1px solid #ddd;
-            display: flex; flex-direction: column; padding: 10px; gap: 10px;
-            overflow-y: auto; z-index: 900; transition: transform 0.3s;
+        /* BARRA LATERAL DE ÍCONES (ESQUERDA) */
+        .side-nav {
+            width: var(--side-nav-w); background: #2c3e50; display: flex; flex-direction: column;
+            align-items: center; padding-top: 15px; gap: 20px; z-index: 1001;
         }
-
-        .post-it {
-            background: var(--sticky-note-bg); padding: 12px; border-radius: 4px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); border-left: 4px solid #f1c40f;
-            font-size: 0.75rem; color: #554b00; font-weight: 600;
+        .nav-icon-btn {
+            background: none; border: none; color: #bdc3c7; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            font-size: 0.6rem; transition: 0.2s; width: 100%; font-weight: bold;
         }
+        .nav-icon-btn:hover, .nav-icon-btn.active { color: white; }
+        .nav-icon-btn span { font-size: 1.5rem; }
 
-        /* EDITOR */
-        .work-area { flex: 1; display: flex; flex-direction: column; background: white; }
-        .editor-info { padding: 8px 15px; background: #eee; font-size: 0.7rem; color: #666; display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; }
-        #area-peca { flex: 1; padding: 15px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.5; outline: none; resize: none; }
-
-        /* PDF PANEL */
-        .pdf-panel { 
-            position: absolute; top: 0; right: -100%; width: 100%; height: 100%; 
-            background: #525659; z-index: 1200; transition: 0.3s ease; display: flex; flex-direction: column;
-        }
-        .pdf-panel.active { right: 0; }
-        .pdf-box { flex: 1; background: #333; margin: 5px; border-radius: 8px; overflow: hidden; }
-        .pdf-frame { width: 100%; height: 100%; border: none; background: white; }
-
-        /* DRAWER EXAMES */
+        /* SIDEBAR DE CONTEÚDO */
         .drawer { 
-            position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; 
-            background: white; z-index: 2000; transition: 0.3s ease; box-shadow: 15px 0 30px rgba(0,0,0,0.2);
+            width: 280px; background: white; border-right: 1px solid #ddd;
+            display: flex; flex-direction: column; transition: 0.3s ease;
         }
-        .drawer.open { left: 0; }
-        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; }
-        .overlay.active { display:block; }
+        .drawer-content { flex: 1; overflow-y: auto; padding: 15px; }
 
-        /* BOTTOM NAV */
-        .bottom-nav { height: var(--bottom-nav-h); background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; align-items: center; padding-bottom: 10px; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #7f8c8d; font-size: 0.7rem; font-weight: 600; gap: 4px; }
-        .nav-icon { font-size: 1.3rem; }
-
-        /* AJUSTES RESPONSIVOS */
-        @media (max-width: 1024px) {
-            .sticky-notes-area {
-                position: fixed; bottom: 85px; right: 15px; width: 160px; height: auto;
-                max-height: 200px; background: transparent; border: none; padding: 0;
-                transform: translateX(180px); /* Escondido por padrão no mobile */
-            }
-            .sticky-notes-area.show-mobile { transform: translateX(0); }
-            .toggle-notes-btn {
-                position: fixed; bottom: 90px; right: 0; background: var(--orange);
-                color: white; padding: 8px 12px; border-radius: 20px 0 0 20px;
-                font-size: 0.7rem; font-weight: bold; z-index: 950; display: block !important;
-            }
-        }
-
-        .toggle-notes-btn { display: none; }
+        /* ÁREA DO EDITOR (CADERNO PAUTADO) */
+        .work-area { flex: 1; display: flex; flex-direction: column; background: #fff; position: relative; }
         
-        @media (min-width: 1025px) {
-            .pdf-panel { position: relative; top: 0; right: 0; width: 40%; height: auto; }
-            .bottom-nav { display: none; }
-            .sticky-notes-area { width: 220px; }
+        .editor-header { 
+            padding: 8px 15px; background: #f1f1f1; border-bottom: 1px solid #ddd; 
+            display: flex; justify-content: space-between; align-items: center;
         }
+
+        /* ESTILO FOLHA DE PROVA OAB */
+        #area-peca { 
+            flex: 1; padding: 40px 50px; border: none; outline: none; resize: none;
+            font-family: 'Times New Roman', Times, serif; font-size: 18px; line-height: 30px;
+            background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
+            background-size: 100% 30px;
+            background-attachment: local;
+            color: #2c3e50;
+        }
+
+        /* PAINEL PDF */
+        .pdf-panel { width: 40%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; height: 100%; border: none; background: white; border-radius: 4px; }
+
+        /* MOBILE FIXES */
+        @media (max-width: 1024px) {
+            .side-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; flex-direction: row; justify-content: space-around; padding: 0; }
+            .drawer { position: fixed; top: var(--header-h); left: -100%; height: calc(100% - 125px); width: 85%; z-index: 1002; }
+            .drawer.open { left: 0; }
+            .pdf-panel { position: fixed; top: var(--header-h); right: -100%; width: 100%; height: calc(100% - 125px); z-index: 1200; transition: 0.3s; }
+            .pdf-panel.active { right: 0; }
+            #area-peca { padding: 20px; font-size: 16px; }
+        }
+
+        .acc-item { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 8px; }
+        .acc-header { background: #f8f9fa; padding: 10px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+        .acc-content { display: none; padding: 10px; font-size: 0.75rem; border-top: 1px solid #eee; background: white; }
+
+        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1001; }
+        .overlay.active { display:block; }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
-
-<button class="toggle-notes-btn" onclick="toggleNotesMobile()">💡 DICAS</button>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
 
 <header>
     <div style="display:flex; align-items:center; gap:10px;">
-        <div style="background:var(--accent); padding:5px 10px; border-radius:6px; font-weight:bold; font-size:0.8rem;">JOAQUIM</div>
         <div id="timer">05:00:00</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+        <button onclick="exportarTXT()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">💾 SALVAR</button>
     </div>
 </header>
 
 <main>
-    <aside class="drawer" id="drawer">
-        <div style="padding:20px; background:#f1f1f1; font-weight:bold;">EXAMES OAB</div>
-        <div id="lista-exames" style="padding:10px;"></div>
-    </aside>
+    <nav class="side-nav">
+        <button class="nav-icon-btn active" onclick="showTab('exames')"><span>📚</span>EXAMES</button>
+        <button class="nav-icon-btn" onclick="showTab('estruturas')"><span>📑</span>PEÇAS</button>
+        <button class="nav-icon-btn" onclick="showTab('notas')"><span>📌</span>NOTAS</button>
+        <button class="nav-icon-btn" onclick="showTab('correcao')"><span>⚖️</span>CORREÇÃO</button>
+    </nav>
 
-    <aside class="sticky-notes-area" id="notes-area">
-        <div style="font-size:0.6rem; color:#888; margin-bottom:5px; font-weight:bold;">MINHAS DICAS</div>
-        <div class="post-it">📌 Endereçamento: Vara Cível da Comarca...</div>
-        <div class="post-it">💡 Lembre-se do fechamento padrão: "Pede Deferimento."</div>
-        <div class="post-it">⚠️ Artigo 319 do CPC: Requisitos da Petição.</div>
+    <aside class="drawer" id="drawer">
+        <div class="drawer-content" id="drawer-view"></div>
     </aside>
 
     <section class="work-area">
-        <div class="editor-info">
-            <span id="label-exame">📍 MODO LIVRE</span>
-            <span id="char-count">0 chars</span>
+        <div class="editor-header">
+            <span id="label-exame" style="font-size:0.7rem; font-weight:bold; color:var(--accent);">📍 CADERNO DE PROVA OAB</span>
+            <button onclick="limparTela()" style="color:var(--red); border:none; background:none; font-size:0.6rem; font-weight:bold; cursor:pointer;">[ LIMPAR FOLHA ]</button>
         </div>
-        <textarea id="area-peca" oninput="updateCount()" placeholder="Inicie sua peça..."></textarea>
+        <textarea id="area-peca" spellcheck="false" placeholder="Comece a escrever sua peça respeitando as linhas..."></textarea>
     </section>
 
     <section class="pdf-panel" id="pdf-panel">
-        <div class="pdf-box"><iframe id="v-enu" class="pdf-frame"></iframe></div>
-        <div class="pdf-box"><iframe id="v-gab" class="pdf-frame"></iframe></div>
+        <iframe id="v-enu" class="pdf-frame"></iframe>
+        <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
 </main>
 
-<nav class="bottom-nav">
-    <div class="nav-item" onclick="toggleDrawer()"><span class="nav-icon">📁</span><span>MENU</span></div>
-    <div class="nav-item" onclick="togglePDFs()"><span class="nav-icon">📖</span><span>PDF</span></div>
-    <div class="nav-item" onclick="exportarTXT()" style="color:var(--green);"><span class="nav-icon">💾</span><span>SALVAR</span></div>
-</nav>
+<button onclick="togglePDFs()" style="position:fixed; bottom:85px; right:15px; background:var(--primary); color:white; border:none; width:55px; height:55px; border-radius:50%; z-index:1300; font-size:1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">📖</button>
 
 <script>
-    function montarMenu() {
-        const container = document.getElementById('lista-exames');
-        for (let i = 35; i <= 45; i++) {
-            container.innerHTML += `<div onclick="carregarExame('${i}')" style="padding:15px; border-bottom:1px solid #eee; font-size:0.8rem; font-weight:bold;">EXAME OAB XXX${i}</div>`;
+    let notas = JSON.parse(localStorage.getItem('notas_joaquim')) || [];
+
+    const estruturasDB = [
+        { t: "Petição Inicial (Cível)", c: "<b>Endereçamento:</b> Excelentíssimo Senhor Doutor Juiz de Direito da... Vara Cível da Comarca de...<br><br><b>Fatos:</b> Breve síntese.<br><b>Direito:</b> Fundamentação legal.<br><b>Pedidos:</b> Citação, Procedência, Provas e Valor da Causa." },
+        { t: "Recurso de Apelação", c: "<b>Peça 1:</b> Interposição ao Juízo de 1º Grau.<br><b>Peça 2:</b> Razões ao Tribunal.<br><b>Fundamento:</b> Art. 1.009 CPC." }
+    ];
+
+    function showTab(tab) {
+        const view = document.getElementById('drawer-view');
+        document.querySelectorAll('.nav-icon-btn').forEach(btn => btn.classList.remove('active'));
+        
+        if(window.innerWidth <= 1024) {
+            document.getElementById('drawer').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        if(tab === 'exames') {
+            let h = '<h4>📚 EXAMES ANTERIORES</h4>';
+            for (let i = 35; i <= 45; i++) {
+                h += `<div onclick="carregarExame('${i}')" style="padding:15px; border-bottom:1px solid #eee; font-size:0.85rem; font-weight:bold; cursor:pointer;">OAB XXX${i}</div>`;
+            }
+            view.innerHTML = h;
+        } else if(tab === 'estruturas') {
+            let h = '<h4>📑 ESQUELETO DE PEÇAS</h4>';
+            estruturasDB.forEach((e, idx) => {
+                h += `<div class="acc-item"><div class="acc-header" onclick="toggleAcc(${idx})">${e.t}</div><div class="acc-content" id="acc-${idx}">${e.c}</div></div>`;
+            });
+            view.innerHTML = h;
+        } else if(tab === 'notas') {
+            let h = '<h4>📌 POST-ITS</h4><button onclick="addNota()" style="width:100%; padding:10px; margin-bottom:15px; background:var(--accent); color:white; border:none; border-radius:6px; font-weight:bold;">+ ADICIONAR DICA</button><div id="mural-notas"></div>';
+            view.innerHTML = h;
+            renderizarNotas();
+        } else if(tab === 'correcao') {
+            view.innerHTML = `<h4>⚖️ CHECKLIST DE CORREÇÃO</h4><p style="font-size:0.75rem; color:#666;">Use o campo abaixo para validar se você cumpriu os requisitos da OAB:</p>
+            <div style="margin-top:10px; font-size:0.8rem;">
+                <label><input type="checkbox"> Endereçamento Correto?</label><br>
+                <label><input type="checkbox"> Fundamentação Legal (Artigos)?</label><br>
+                <label><input type="checkbox"> Pedidos Específicos?</label><br>
+                <label><input type="checkbox"> Valor da Causa e Fechamento?</label>
+            </div>`;
         }
     }
 
-    function toggleDrawer() {
-        document.getElementById('drawer').classList.toggle('open');
-        document.getElementById('overlay').classList.toggle('active');
-    }
-
-    function togglePDFs() {
-        document.getElementById('pdf-panel').classList.toggle('active');
-    }
-
-    function toggleNotesMobile() {
-        document.getElementById('notes-area').classList.toggle('show-mobile');
+    function toggleAcc(idx) {
+        const el = document.getElementById(`acc-${idx}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
     }
 
     function carregarExame(num) {
@@ -164,29 +184,63 @@
         document.getElementById('v-enu').src = `./ro${num}.pdf?v=${ts}`;
         document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf?v=${ts}`;
         document.getElementById('label-exame').innerText = `📍 EXAME XXX${num}`;
-        toggleDrawer();
+        if(window.innerWidth <= 1024) closeAll();
     }
 
-    function updateCount() {
-        document.getElementById('char-count').innerText = `${document.getElementById('area-peca').value.length} chars`;
+    function addNota() {
+        const msg = prompt("Sua dica/post-it:");
+        if(msg) {
+            notas.push({ id: Date.now(), texto: msg });
+            localStorage.setItem('notas_joaquim', JSON.stringify(notas));
+            renderizarNotas();
+        }
+    }
+
+    function renderizarNotas() {
+        const mural = document.getElementById('mural-notas');
+        if(!mural) return;
+        mural.innerHTML = '';
+        notas.forEach(n => {
+            mural.innerHTML += `<div style="background:var(--postit-bg); padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.8rem; border-left:4px solid var(--orange); position:relative;">
+                ${n.texto} <button onclick="deletarNota(${n.id})" style="position:absolute; top:5px; right:5px; background:none; border:none; cursor:pointer;">✕</button>
+            </div>`;
+        });
+    }
+
+    function deletarNota(id) {
+        notas = notas.filter(n => n.id !== id);
+        localStorage.setItem('notas_joaquim', JSON.stringify(notas));
+        renderizarNotas();
+    }
+
+    function togglePDFs() {
+        document.getElementById('pdf-panel').classList.toggle('active');
+    }
+
+    function closeAll() {
+        document.getElementById('drawer').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('pdf-panel').classList.remove('active');
+    }
+
+    function limparTela() {
+        if(confirm("Deseja limpar o caderno de prova?")) document.getElementById('area-peca').value = '';
     }
 
     function exportarTXT() {
         const blob = new Blob([document.getElementById('area-peca').value], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Peca_Joaquim.txt`;
+        a.download = `Peca_OAB_Joaquim.txt`;
         a.click();
     }
 
     window.onload = () => {
-        montarMenu();
+        showTab('exames');
         let time = 18000;
         setInterval(() => {
             if(time < 0) return;
-            let h = Math.floor(time / 3600);
-            let m = Math.floor((time % 3600) / 60);
-            let s = time % 60;
+            let h = Math.floor(time/3600), m = Math.floor((time%3600)/60), s = time%60;
             document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             time--;
         }, 1000);
