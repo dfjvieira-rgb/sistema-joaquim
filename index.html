@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MULTI-DISPOSITIVO</title>
+    <title>SISTEMA JOAQUIM - FINAL 2026</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
@@ -13,7 +13,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER RESPONSIVO */
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         #timer { font-family: monospace; font-size: 1.2rem; color: #f1c40f; font-weight: bold; }
         
@@ -22,7 +21,6 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR (MENU DE EXAMES) */
         .sidebar { width: var(--sidebar-w); background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: transform 0.3s ease; }
         .sidebar-content { padding: 15px; }
         h4 { font-size: 0.65rem; color: #666; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; }
@@ -30,38 +28,23 @@
         .exame-btn { background: white; border: 1px solid #ddd; padding: 12px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; width: 100%; display: block; }
         .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* ÁREA DE TRABALHO (EDITOR) */
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; min-width: 0; border-right: 1px solid #ccc; }
         .editor-header { padding: 10px; background: #eee; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; }
         #area-peca { flex: 1; padding: 20px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; resize: none; background-color: #fff; }
 
-        /* PAINEL DE PDFS */
-        .pdf-section { width: 40%; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
+        .pdf-section { width: 45%; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
         .pdf-box { background: #333; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .pdf-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; background: #2c3e50; }
-        .pdf-frame { width: 100%; height: 40vh; border: none; background: white; }
+        .pdf-frame { width: 100%; height: 43vh; border: none; background: white; }
 
-        /* BOTÃO REABRIR MENU (PC) */
-        #btn-reopen { position: fixed; left: 0; top: 70px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 0 5px 5px 0; cursor: pointer; display: none; z-index: 900; }
-
-        /* CONFIGURAÇÕES PARA CELULAR (MOBILE) */
         @media (max-width: 1024px) {
-            header { padding: 0 10px; }
             #mobile-menu-btn { display: block !important; }
-            
             main { flex-direction: column; overflow-y: auto; }
-            
-            .sidebar { 
-                position: fixed; left: -260px; top: 60px; bottom: 0; 
-                z-index: 2000; box-shadow: 5px 0 15px rgba(0,0,0,0.3); 
-            }
+            .sidebar { position: fixed; left: -260px; top: 60px; bottom: 0; z-index: 2000; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
             .sidebar.open { transform: translateX(260px); }
-            
-            .work-section { width: 100%; height: 70vh; flex-shrink: 0; }
-            .pdf-section { width: 100%; height: auto; border-left: none; }
-            .pdf-frame { height: 60vh; }
-            
-            #btn-reopen { display: none !important; }
+            .work-section { width: 100%; height: 65vh; flex-shrink: 0; }
+            .pdf-section { width: 100%; height: auto; }
+            .pdf-frame { height: 75vh; }
         }
     </style>
 </head>
@@ -73,46 +56,38 @@
         <div id="timer">05:00:00</div>
     </div>
     <div class="nav-group">
-        <button class="btn-nav" onclick="exportarTXT()">Salvar TXT</button>
+        <button class="btn-nav" style="background:var(--green)" onclick="exportarTXT()">SALVAR TXT</button>
     </div>
 </header>
-
-<button id="btn-reopen" onclick="toggleSidebarPC()">📂 EXAMES</button>
 
 <main>
     <aside class="sidebar" id="sidebar-main">
         <div class="sidebar-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
-                <h4>EXAMES OAB (35-45)</h4>
-                <button onclick="toggleSidebarPC()" class="pc-only" style="border:none; background:none; cursor:pointer; color:red; font-size:0.6rem;">FECHAR</button>
-            </div>
-            <div id="lista-exames">
-                </div>
-            <button class="btn-nav" style="width:100%; margin-top:20px; background:#27ae60;" onclick="fazerBackup()">BAIXAR BACKUP</button>
+            <h4>EXAMES OAB (35-45)</h4>
+            <div id="lista-exames"></div>
         </div>
     </aside>
 
     <section class="work-section">
         <div class="editor-header">
-            <span id="label-exame" style="font-size:0.75rem; font-weight:bold; color:var(--primary)">📍 SELECIONE UM EXAME</span>
+            <span id="label-exame" style="font-size:0.75rem; font-weight:bold;">📍 SELECIONE O EXAME</span>
         </div>
-        <textarea id="area-peca" placeholder="Comece sua peça profissional aqui..."></textarea>
+        <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
     </section>
 
     <section class="pdf-section">
         <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO (CASO)</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
-            <iframe id="v-enu" class="pdf-frame" src=""></iframe>
+            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')">⛶</button></div>
+            <iframe id="v-enu" class="pdf-frame"></iframe>
         </div>
         <div class="pdf-box">
-            <div class="pdf-header"><span>GABARITO COMENTADO</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
-            <iframe id="v-gab" class="pdf-frame" src=""></iframe>
+            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')">⛶</button></div>
+            <iframe id="v-gab" class="pdf-frame"></iframe>
         </div>
     </section>
 </main>
 
 <script>
-    // --- CONFIGURAÇÃO DOS EXAMES ---
     function montarMenu() {
         const container = document.getElementById('lista-exames');
         let html = '';
@@ -123,48 +98,35 @@
     }
 
     function carregarExame(num) {
-        // O caminho aponta para os arquivos na mesma pasta do GitHub
-        const ts = new Date().getTime(); // Evita cache do navegador
-        document.getElementById('v-enu').src = `ro${num}.pdf?v=${ts}`;
-        document.getElementById('v-gab').src = `ro${num}-gabarito.pdf?v=${ts}`;
+        const ts = new Date().getTime();
+        // IMPORTANTE: Use caminhos relativos para o GitHub Pages
+        const pathEnu = `./ro${num}.pdf?v=${ts}`;
+        const pathGab = `./ro${num}-gabarito.pdf?v=${ts}`;
+
+        console.log("Tentando carregar enunciado:", pathEnu);
+        console.log("Tentando carregar gabarito:", pathGab);
+
+        document.getElementById('v-enu').src = pathEnu;
+        document.getElementById('v-gab').src = pathGab;
         
         document.getElementById('label-exame').innerText = `📍 EXAME OAB XXX${num}`;
         
-        // Destacar botão ativo
         document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-exame-${num}`).classList.add('active');
 
-        // Se for celular, fecha o menu automaticamente ao escolher
-        if (window.innerWidth <= 1024) {
-            toggleMobileMenu();
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+        if (window.innerWidth <= 1024) toggleMobileMenu();
     }
 
-    // --- CONTROLES DE INTERFACE ---
     function toggleMobileMenu() {
         document.getElementById('sidebar-main').classList.toggle('open');
     }
 
-    function toggleSidebarPC() {
-        const sidebar = document.getElementById('sidebar-main');
-        const btn = document.getElementById('btn-reopen');
-        if (sidebar.style.display === 'none') {
-            sidebar.style.display = 'flex';
-            btn.style.display = 'none';
-        } else {
-            sidebar.style.display = 'none';
-            btn.style.display = 'block';
-        }
-    }
-
     function exportarTXT() {
         const texto = document.getElementById('area-peca').value;
-        if(!texto) return alert("Escreva algo antes de salvar!");
         const blob = new Blob([texto], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Peca_OAB_Exame.txt`;
+        a.download = `Peca_OAB.txt`;
         a.click();
     }
 
@@ -174,22 +136,16 @@
         else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
     }
 
-    // Timer de 5 horas
-    function startTimer() {
-        let duration = 5 * 60 * 60;
-        const display = document.getElementById('timer');
-        setInterval(() => {
-            let h = Math.floor(duration / 3600);
-            let m = Math.floor((duration % 3600) / 60);
-            let s = duration % 60;
-            display.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if (--duration < 0) duration = 0;
-        }, 1000);
-    }
-
     window.onload = () => {
         montarMenu();
-        startTimer();
+        let time = 18000;
+        setInterval(() => {
+            let h = Math.floor(time / 3600);
+            let m = Math.floor((time % 3600) / 60);
+            let s = time % 60;
+            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            time--;
+        }, 1000);
     };
 </script>
 </body>
