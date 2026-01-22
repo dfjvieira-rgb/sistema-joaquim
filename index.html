@@ -3,26 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - V2 MOBILE</title>
+    <title>SISTEMA JOAQUIM - SMART NOTES</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f8f9fa; 
             --green: #27ae60; --text: #2c3e50; --header-h: 60px;
-            --bottom-nav-h: 75px;
+            --bottom-nav-h: 75px; --sticky-note-bg: #fef5b1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: var(--bg); 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+            background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; 
         }
 
-        /* HEADER */
         header { 
             background-color: var(--primary); color: white; height: var(--header-h); 
             padding: 0 15px; display: flex; justify-content: space-between; align-items: center; 
@@ -30,66 +25,70 @@
         }
         #timer { font-family: 'Courier New', monospace; color: #f1c40f; font-weight: bold; font-size: 1.1rem; }
 
-        /* MAIN AREA */
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* DRAWER (MENU LATERAL) - ESTILO IOS/ANDROID */
-        .drawer { 
-            position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; 
-            background: white; z-index: 2000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: 15px 0 30px rgba(0,0,0,0.2);
+        /* POST-ITS / DICAS SEMPRE VISÍVEIS (DESKTOP) */
+        .sticky-notes-area {
+            width: 200px; background: #e9ecef; border-left: 1px solid #ddd;
+            display: flex; flex-direction: column; padding: 10px; gap: 10px;
+            overflow-y: auto; z-index: 900; transition: transform 0.3s;
         }
-        .drawer.open { left: 0; }
-        .drawer-header { padding: 20px; background: #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
-        
-        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; backdrop-filter: blur(2px); }
-        .overlay.active { display:block; }
 
-        .exame-grid { padding: 15px; display: grid; grid-template-columns: 1fr; gap: 10px; overflow-y: auto; }
-        .exame-card { 
-            background: white; border: 1px solid #ddd; padding: 18px; border-radius: 12px;
-            font-size: 0.9rem; font-weight: bold; color: var(--text); cursor: pointer;
+        .post-it {
+            background: var(--sticky-note-bg); padding: 12px; border-radius: 4px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); border-left: 4px solid #f1c40f;
+            font-size: 0.75rem; color: #554b00; font-weight: 600;
         }
-        .exame-card.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         /* EDITOR */
-        .work-area { flex: 1; display: flex; flex-direction: column; background: white; width: 100%; }
+        .work-area { flex: 1; display: flex; flex-direction: column; background: white; }
         .editor-info { padding: 8px 15px; background: #eee; font-size: 0.7rem; color: #666; display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; }
-        
-        #area-peca { 
-            flex: 1; padding: 15px; border: none; font-family: 'Courier New', monospace; 
-            font-size: 16px; line-height: 1.5; outline: none; resize: none; width: 100%;
-        }
+        #area-peca { flex: 1; padding: 15px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.5; outline: none; resize: none; }
 
-        /* PDF PANEL - FULLSCREEN NO MOBILE */
+        /* PDF PANEL */
         .pdf-panel { 
-            position: fixed; top: var(--header-h); right: -100%; width: 100%; 
-            height: calc(100% - var(--header-h) - var(--bottom-nav-h)); 
-            background: #525659; z-index: 1200; transition: 0.3s ease;
-            display: flex; flex-direction: column;
+            position: absolute; top: 0; right: -100%; width: 100%; height: 100%; 
+            background: #525659; z-index: 1200; transition: 0.3s ease; display: flex; flex-direction: column;
         }
         .pdf-panel.active { right: 0; }
         .pdf-box { flex: 1; background: #333; margin: 5px; border-radius: 8px; overflow: hidden; }
         .pdf-frame { width: 100%; height: 100%; border: none; background: white; }
 
-        /* BOTTOM NAV - O "CORAÇÃO" DO MOBILE */
-        .bottom-nav { 
-            height: var(--bottom-nav-h); background: white; border-top: 1px solid #ddd;
-            display: flex; justify-content: space-around; align-items: center; padding-bottom: 10px;
+        /* DRAWER EXAMES */
+        .drawer { 
+            position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; 
+            background: white; z-index: 2000; transition: 0.3s ease; box-shadow: 15px 0 30px rgba(0,0,0,0.2);
         }
-        .nav-item { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; 
-            color: #7f8c8d; font-size: 0.7rem; font-weight: 600; gap: 4px;
-        }
-        .nav-item.active-item { color: var(--accent); }
-        .nav-icon { font-size: 1.4rem; }
+        .drawer.open { left: 0; }
+        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; }
+        .overlay.active { display:block; }
 
-        /* DESKTOP ADJUSTS */
+        /* BOTTOM NAV */
+        .bottom-nav { height: var(--bottom-nav-h); background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; align-items: center; padding-bottom: 10px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #7f8c8d; font-size: 0.7rem; font-weight: 600; gap: 4px; }
+        .nav-icon { font-size: 1.3rem; }
+
+        /* AJUSTES RESPONSIVOS */
+        @media (max-width: 1024px) {
+            .sticky-notes-area {
+                position: fixed; bottom: 85px; right: 15px; width: 160px; height: auto;
+                max-height: 200px; background: transparent; border: none; padding: 0;
+                transform: translateX(180px); /* Escondido por padrão no mobile */
+            }
+            .sticky-notes-area.show-mobile { transform: translateX(0); }
+            .toggle-notes-btn {
+                position: fixed; bottom: 90px; right: 0; background: var(--orange);
+                color: white; padding: 8px 12px; border-radius: 20px 0 0 20px;
+                font-size: 0.7rem; font-weight: bold; z-index: 950; display: block !important;
+            }
+        }
+
+        .toggle-notes-btn { display: none; }
+        
         @media (min-width: 1025px) {
-            .drawer { left: -320px; }
-            .pdf-panel { position: relative; top: 0; right: 0; width: 45%; height: auto; transition: none; }
+            .pdf-panel { position: relative; top: 0; right: 0; width: 40%; height: auto; }
             .bottom-nav { display: none; }
-            .pdf-panel.hidden { display: none; }
+            .sticky-notes-area { width: 220px; }
         }
     </style>
 </head>
@@ -97,22 +96,26 @@
 
 <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
 
+<button class="toggle-notes-btn" onclick="toggleNotesMobile()">💡 DICAS</button>
+
 <header>
     <div style="display:flex; align-items:center; gap:10px;">
         <div style="background:var(--accent); padding:5px 10px; border-radius:6px; font-weight:bold; font-size:0.8rem;">JOAQUIM</div>
         <div id="timer">05:00:00</div>
     </div>
-    <div class="desktop-only" id="desktop-btns">
-        </div>
 </header>
 
 <main>
     <aside class="drawer" id="drawer">
-        <div class="drawer-header">
-            <b style="font-size: 0.9rem;">ESCOLHER EXAME</b>
-            <button onclick="toggleDrawer()" style="border:none; background:none; font-size:1.2rem;">✕</button>
-        </div>
-        <div class="exame-grid" id="lista-exames"></div>
+        <div style="padding:20px; background:#f1f1f1; font-weight:bold;">EXAMES OAB</div>
+        <div id="lista-exames" style="padding:10px;"></div>
+    </aside>
+
+    <aside class="sticky-notes-area" id="notes-area">
+        <div style="font-size:0.6rem; color:#888; margin-bottom:5px; font-weight:bold;">MINHAS DICAS</div>
+        <div class="post-it">📌 Endereçamento: Vara Cível da Comarca...</div>
+        <div class="post-it">💡 Lembre-se do fechamento padrão: "Pede Deferimento."</div>
+        <div class="post-it">⚠️ Artigo 319 do CPC: Requisitos da Petição.</div>
     </aside>
 
     <section class="work-area">
@@ -120,7 +123,7 @@
             <span id="label-exame">📍 MODO LIVRE</span>
             <span id="char-count">0 chars</span>
         </div>
-        <textarea id="area-peca" oninput="updateCount()" placeholder="Toque aqui para digitar sua peça..."></textarea>
+        <textarea id="area-peca" oninput="updateCount()" placeholder="Inicie sua peça..."></textarea>
     </section>
 
     <section class="pdf-panel" id="pdf-panel">
@@ -130,28 +133,17 @@
 </main>
 
 <nav class="bottom-nav">
-    <div class="nav-item" onclick="toggleDrawer()">
-        <span class="nav-icon">📁</span>
-        <span>MENU</span>
-    </div>
-    <div class="nav-item" id="nav-pdf" onclick="togglePDFs()">
-        <span class="nav-icon">📖</span>
-        <span>LER PDF</span>
-    </div>
-    <div class="nav-item" onclick="exportarTXT()" style="color: var(--green);">
-        <span class="nav-icon">💾</span>
-        <span>SALVAR</span>
-    </div>
+    <div class="nav-item" onclick="toggleDrawer()"><span class="nav-icon">📁</span><span>MENU</span></div>
+    <div class="nav-item" onclick="togglePDFs()"><span class="nav-icon">📖</span><span>PDF</span></div>
+    <div class="nav-item" onclick="exportarTXT()" style="color:var(--green);"><span class="nav-icon">💾</span><span>SALVAR</span></div>
 </nav>
 
 <script>
     function montarMenu() {
         const container = document.getElementById('lista-exames');
-        let html = '';
         for (let i = 35; i <= 45; i++) {
-            html += `<div class="exame-card" id="card-${i}" onclick="carregarExame('${i}')">EXAME OAB XXX${i}</div>`;
+            container.innerHTML += `<div onclick="carregarExame('${i}')" style="padding:15px; border-bottom:1px solid #eee; font-size:0.8rem; font-weight:bold;">EXAME OAB XXX${i}</div>`;
         }
-        container.innerHTML = html;
     }
 
     function toggleDrawer() {
@@ -160,16 +152,11 @@
     }
 
     function togglePDFs() {
-        const panel = document.getElementById('pdf-panel');
-        const navPdf = document.getElementById('nav-pdf');
-        
-        if (window.innerWidth <= 1024) {
-            panel.classList.toggle('active');
-            navPdf.classList.toggle('active-item');
-            navPdf.querySelector('span:last-child').innerText = panel.classList.contains('active') ? "VOLTAR" : "LER PDF";
-        } else {
-            panel.classList.toggle('hidden');
-        }
+        document.getElementById('pdf-panel').classList.toggle('active');
+    }
+
+    function toggleNotesMobile() {
+        document.getElementById('notes-area').classList.toggle('show-mobile');
     }
 
     function carregarExame(num) {
@@ -177,25 +164,18 @@
         document.getElementById('v-enu').src = `./ro${num}.pdf?v=${ts}`;
         document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf?v=${ts}`;
         document.getElementById('label-exame').innerText = `📍 EXAME XXX${num}`;
-        
-        document.querySelectorAll('.exame-card').forEach(c => c.classList.remove('active'));
-        document.getElementById(`card-${num}`).classList.add('active');
-        
         toggleDrawer();
     }
 
     function updateCount() {
-        const text = document.getElementById('area-peca').value;
-        document.getElementById('char-count').innerText = `${text.length} chars`;
+        document.getElementById('char-count').innerText = `${document.getElementById('area-peca').value.length} chars`;
     }
 
     function exportarTXT() {
-        const texto = document.getElementById('area-peca').value;
-        if(!texto) return alert("Escreva algo antes!");
-        const blob = new Blob([texto], { type: 'text/plain' });
+        const blob = new Blob([document.getElementById('area-peca').value], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Peca_Joaquim_2026.txt`;
+        a.download = `Peca_Joaquim.txt`;
         a.click();
     }
 
