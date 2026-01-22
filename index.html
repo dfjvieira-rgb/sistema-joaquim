@@ -1,194 +1,123 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - ACORDO DE TRABALHO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA JOAQUIM - MENTORIA f5071219</title>
     <style>
-        :root { 
-            --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --orange: #f39c12; --green: #27ae60; --purple: #8e44ad; 
-            --yellow: #f1c40f; --text: #2c3e50; --header-h: 60px; 
-            --sidebar-w: 260px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --primary: #0f172a; --accent: #3b82f6; --bg: #f8fafc; --sidebar-bg: #1e293b; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; background: var(--bg); }
+        #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        #main-app { display: none; width: 100%; height: 100vh; flex-direction: column; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        /* #timer removido */
+        /* Cabeçalho e Cronômetro */
+        header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--accent); flex-shrink: 0; }
+        .timer-container { background: #000; padding: 8px 15px; border-radius: 8px; border: 2px solid var(--accent); display: flex; align-items: center; gap: 10px; }
+        #timer-display { font-family: 'Courier New', monospace; font-size: 1.5rem; color: #fff; font-weight: bold; min-width: 120px; text-align: center; }
+        .timer-controls button { background: var(--accent); border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .timer-controls button.reset { background: var(--danger); }
+
+        .main-layout { display: flex; flex-grow: 1; overflow: hidden; }
+        .sidebar { width: 280px; background: var(--sidebar-bg); padding: 15px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #334155; }
+        .nav-btn { width: 100%; text-align: left; padding: 10px; margin-bottom: 5px; border: none; background: rgba(255,255,255,0.08); color: #f8fafc; cursor: pointer; border-radius: 6px; font-size: 0.8rem; }
+        .nav-btn:hover { background: rgba(255,255,255,0.15); }
+        .nav-btn.active { background: var(--accent); font-weight: bold; }
+
+        .content-area { flex-grow: 1; padding: 20px; overflow-y: auto; }
+        #joaquim { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-height: 85vh; border: 1px solid #e2e8f0; max-width: 900px; margin: 0 auto; }
         
-        .header-left { display: flex; align-items: center; gap: 10px; }
+        .gabarito-panel { background: #f1f5f9; border: 2px solid var(--accent); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .gab-btn { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        .guia-btn { width: 100%; background: #10b981; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 8px; cursor: pointer; }
+        .gab-content, .guia-content { display: none; margin-top: 15px; padding: 20px; background: white; border: 1px solid #cbd5e1; white-space: pre-wrap; font-family: 'Times New Roman', serif; font-size: 1.1rem; }
         
-        .nav-group { display: flex; gap: 5px; }
-        .dropbtn { color: white; padding: 8px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
-        .btn-struct { background-color: var(--accent); }
-        .btn-correc { background-color: var(--orange); }
-        .btn-postit { background-color: var(--yellow); color: #333; }
-        .btn-dicas { background-color: var(--purple); }
-
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); right: 0; border-radius: 6px; padding: 8px; z-index: 2000; border: 1px solid #ddd; }
-        .dropdown:hover .dropdown-content { display: block; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.8rem; color: #333; cursor: pointer; }
-
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        
-        .sidebar { width: var(--sidebar-w); background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; transition: width 0.3s; }
-        .sidebar.collapsed { width: 0; overflow: hidden; border: none; }
-        .sidebar-content { padding: 12px; display: flex; flex-direction: column; gap: 15px; }
-        
-        h4 { font-size: 0.65rem; color: #666; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-        .exame-btn, .nav-btn { background: white; border: 1px solid #ddd; padding: 10px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; width: 100%; }
-        .exame-btn.active, .nav-btn.active { background: var(--accent); color: white; }
-
-        .mural-item { padding: 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px; border-left: 5px solid; background: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
-
-        .work-section { width: 40%; display: flex; flex-direction: column; background: white; flex-shrink: 0; border-right: 1px solid #ccc; }
-        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
-        #resizer { width: 10px; background: #cbd5e0; cursor: col-resize; z-index: 10; border-left: 1px solid #a0aec0; }
-
-        .pdf-section { flex: 1; background: #525659; display: flex; flex-direction: column; gap: 10px; padding: 10px; overflow-y: auto; }
-        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; }
-        .pdf-header { padding: 6px 10px; color: white; font-size: 0.7rem; display: flex; justify-content: space-between; background: #2c3e50; }
-        .pdf-frame { width: 100%; height: 80vh; border: none; background: white; }
-
-        .btn-action { border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
-        #btn-reopen { position: fixed; left: 0; top: 80px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 0 5px 5px 0; cursor: pointer; display: none; z-index: 900; }
-
-        /* Estilos para a nova seção de anotações na Sidebar */
-        .annotation-section-sidebar { margin-top: 15px; }
-        .note-item { padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; position: relative; }
-        .note-delete { position: absolute; right: 5px; top: 5px; background: none; border: none; color: red; cursor: pointer; }
-        .type-postit { background: var(--yellow); }
-        .type-dicas { background: var(--green); color: white; }
-
-        @media (max-width: 1024px) {
-            #resizer { display: none; }
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar { position: fixed; left: -260px; top: var(--header-h); height: 100%; z-index: 3000; width: 260px; transition: transform 0.3s; }
-            .sidebar.show-mobile { transform: translateX(260px); }
-            .work-section { width: 100% !important; height: 50vh; }
-            #mobile-toggle { display: block !important; }
-        }
+        .copy-btn { width: 100%; margin-bottom: 20px; background: #10b981; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        #texto-final { outline: none; min-height: 500px; white-space: pre-wrap; margin-top: 20px; border-top: 2px dashed #cbd5e1; padding-top: 20px; font-family: 'Times New Roman', serif; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-left">
-        <button id="mobile-toggle" style="background:#34495e; color:white; border:none; padding:8px; border-radius:4px; display:none;" onclick="toggleSidebarMobile()">☰ MENU</button>
-        <!-- Removido #timer -->
+<div id="login-screen">
+    <button onclick="liberar()" style="padding:20px 40px; background:var(--accent); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">ENTRAR NO SISTEMA f5071219</button>
+</div>
+
+<div id="main-app">
+    <header>
+        <div>SISTEMA JOAQUIM - MENTORIA</div>
+        <div class="timer-container">
+            <span id="timer-display">05:00:00</span>
+            <div class="timer-controls">
+                <button id="startStopBtn" onclick="toggleTimer()">INICIAR</button>
+                <button class="reset" onclick="resetTimer()">RESET</button>
+            </div>
+        </div>
+    </header>
+    <div class="main-layout">
+        <nav class="sidebar" id="menuLateral"></nav>
+        <main class="content-area"><div id="joaquim">Selecione uma peça na barra lateral.</div></main>
     </div>
-    <div class="nav-group">
-        <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-postit" onclick="focusPanel('annotations-postit')">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-dicas" onclick="focusPanel('annotations-dicas')">👩‍🏫 Dicas</button><div class="dropdown-content" id="list-db_dicas"></div></div>
-    </div>
-</header>
-
-<button id="btn-reopen" onclick="toggleSidebarPC()">ABRIR MENU »</button>
-
-<main id="main-container">
-    <aside class="sidebar" id="sidebar-main">
-        <div class="sidebar-content" id="menuLateral">
-            <div style="display:flex; justify-content:space-between; align-items:center">
-                <h4>📂 ACORDO DE TRABALHO</h4>
-                <button onclick="toggleSidebarPC()" class="pc-only" style="border:none; background:none; cursor:pointer; color:red; font-size:0.6rem;">FECHAR</button>
-            </div>
-            <div id="lista-exames">
-                 <!-- Lista de Exames (pecasMenu) será montada aqui pelo JS -->
-            </div>
-            
-            <h4 style="margin-top:15px">💡 MURAL RÁPIDO</h4>
-            <div id="mural-fixacao"></div>
-
-            <!-- Seção de Anotações movida para dentro da Sidebar -->
-            <div class="annotation-section-sidebar" id="annotations-postit">
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <h4 style="border:none;">📌 POST-ITS</h4>
-                    <button onclick="addNewNotePrompt('postit')" class="btn-action" style="background: var(--yellow); color: black; padding: 4px 8px;">+ Add</button>
-                </div>
-                <div id="content-postit"></div>
-            </div>
-
-            <div class="annotation-section-sidebar" id="annotations-dicas">
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <h4 style="border:none;">👩‍🏫 DICAS</h4>
-                    <button onclick="addNewNotePrompt('dicas')" class="btn-action" style="background: var(--purple); padding: 4px 8px;">+ Add</button>
-                </div>
-                 <div id="content-dicas"></div>
-            </div>
-            <!-- Fim Seção de Anotações na Sidebar -->
-
-            <h4 style="margin-top:15px">💾 DADOS</h4>
-            <button class="btn-action" style="background:#27ae60; width:100%" onclick="fazerBackup()">EXPORTAR</button>
-            <button class="btn-action" style="background:#2980b9; width:100%; margin-top:5px" onclick="document.getElementById('input-file').click()">IMPORTAR</button>
-            <input type="file" id="input-file" style="display:none" onchange="importarBackup(this)">
-        </div>
-    </aside>
-
-    <section class="work-section" id="editor-area">
-        <div id="aviso-edicao" style="display:none; background:var(--yellow); padding:10px; text-align:center; font-weight:bold;">
-            EDITANDO: <span id="nome-item-editando"></span> 
-            <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR</button>
-            <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
-        </div>
-        <div class="editor-header" style="padding:10px; display:flex; justify-content:space-between; align-items:center; background:#eee;">
-            <span id="label-exame" style="font-size:0.7rem; font-weight:bold;">📍 SELECIONE UM ACORDO</span>
-            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">TXT</button>
-        </div>
-        
-        <!-- Área de conteúdo principal (texto e gabaritos) -->
-        <div id="joaquim" style="flex: 1; overflow-y: auto; padding: 25px; font-family: sans-serif;">
-             <textarea id="area-peca" placeholder="Escreva aqui..." style="display: none;"></textarea>
-             <!-- Conteudo dinamico aparece aqui -->
-        </div>
-
-    </section>
-
-    <div id="resizer"></div>
-
-    <section class="pdf-section">
-        <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white;">🔄</button></div>
-            <iframe id="v-enu" class="pdf-frame" src="about:blank"></iframe>
-        </div>
-        <div class="pdf-box">
-            <div class="pdf-header"><span>PADRÃO DE RESPOSTA</span><button onclick="expandir('v-pad')" style="background:none; border:none; color:white;">🔄</button></div>
-            <iframe id="v-pad" class="pdf-frame" src="about:blank"></iframe>
-        </div>
-    </section>
-
-</main>
+</div>
 
 <script>
-    // URLs de exemplo para os PDFs (Substitua pelas suas reais)
-    const URL_ENUNCIADO = 'https://example.com/seu-enunciado.pdf';
-    const URL_GABARITO = 'https://example.com/seu-gabarito.pdf';
-    
-    // --- Funções Mock (do seu código original) ---
-    function toggleSidebarMobile() {}
-    function toggleSidebarPC() {
-        const sidebar = document.getElementById('sidebar-main');
-        const btnReopen = document.getElementById('btn-reopen');
-        sidebar.classList.toggle('collapsed');
-        if (sidebar.classList.contains('collapsed')) {
-            btnReopen.style.display = 'block';
+    // CRONÔMETRO LOGIC
+    let timeLeft = 5 * 60 * 60; // 5 horas em segundos
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+        const hours = Math.floor(timeLeft / 3600);
+        const minutes = Math.floor((timeLeft % 3600) / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer-display').innerText = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        if (timeLeft <= 1800) { // Avisar se faltar 30 min
+            document.getElementById('timer-display').style.color = '#ef4444';
         } else {
-            btnReopen.style.display = 'none';
+            document.getElementById('timer-display').style.color = '#fff';
         }
     }
-    function fazerBackup() { alert("Backup Exportado (Mock)"); }
-    function importarBackup(input) { alert("Backup Importado (Mock)"); }
-    function salvarAlteracoes() { alert("Alterações Salvas (Mock)"); }
-    function cancelarEdicao() { alert("Edição Cancelada (Mock)"); }
-    function exportarTXT() { alert("Exportando para TXT (Mock)"); }
-    // Função expandir original (mock)
-    function expandir(id) { alert(`Expandindo PDF ${id} (Mock)`); }
 
-    // --- Seus dados originais (DB e Menu) ---
+    function toggleTimer() {
+        const btn = document.getElementById('startStopBtn');
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.innerText = 'INICIAR';
+        } else {
+            btn.innerText = 'PAUSAR';
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    alert("TEMPO ESGOTADO! Finalize sua peça.");
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timeLeft = 5 * 60 * 60;
+        document.getElementById('startStopBtn').innerText = 'INICIAR';
+        updateTimerDisplay();
+    }
+
+    // BANCO DE DADOS
     const dbGabaritos = {
+        'rt': { 1: `EXCELENTÍSSIMO SENHOR DOUTO JUIZ DA ... VARA DO TRABALHO...\n\nRECLAMAÇÃO TRABALHISTA\n\nI - MÉRITO: Equiparação Salarial (Art. 461 CLT), Diferenças de FGTS (Art. 611-B, III CLT), Intervalo Intrajornada (Art. 71 CLT).`, guia: `Fundamente a Equiparação no Art. 461 e o FGTS no Art. 611-B.` },
+        'consigna': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nOBJETO: Depósito de verbas rescisórias e pertences (Art. 539 CPC).`, guia: `Use para evitar a multa do Art. 477, § 8º da CLT.` },
+        'cont': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nCONTESTAÇÃO COM RECONVENÇÃO\n\nI - PRELIMINARES: Inépcia e Incompetência.\nII - PREJUDICIAL: Prescrição Quinquenal (Art. 7, XXIX CF).`, guia: `A Reconvenção serve para cobrar prejuízos causados pelo empregado.` },
+        'emb_exec': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS À EXECUÇÃO\n\nTESE: Impenhorabilidade de Bem de Família (Lei 8.009/90).`, guia: `Prazo de 5 dias após a garantia do juízo.` },
+        'ro': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECURSO ORDINÁRIO\n\nRAZÕES DE RECURSO ORDINÁRIO...`, guia: `Art. 895, I da CLT. Prazo de 8 dias.` },
+        'ed': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEMBARGOS DE DECLARAÇÃO\n\nTese: Omissão, Contradição ou Obscuridade.`, guia: `Prazo de 5 dias.` },
+        'ap': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE PETIÇÃO\n\nDelimitação de matérias e valores (Art. 897, § 1º da CLT).`, guia: `Recurso na fase de execução.` },
+        'ai': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nAGRAVO DE INSTRUMENTO\n\nDestrancar recurso (Art. 897, 'b' CLT).`, guia: `Depósito recursal de 50%.` },
+        'rr': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nRECURSO DE REVISTA\n\nArt. 896 CLT.`, guia: `Exige pré-questionamento.` },
+        'epe': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nMatérias de ordem pública.`, guia: `Sem garantia do juízo.` },
+        'ms': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nMANDADO DE SEGURANÇA\n\nLei 12.016/09.`, guia: `Direito líquido e certo.` },
         'ar': { 1: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nAÇÃO RESCISÓRIA\n\nArt. 966 CPC.`, guia: `Prazo de 2 anos.` },
         'inquerito': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nArt. 853 CLT.`, guia: `Empregado estável.` },
         'cautelar': { 1: `AO JUÍZO DA ... VARA DO TRABALHO...\n\nMEDIDA CAUTELAR\n\nArt. 300 CPC.`, guia: `Urgência e probabilidade.` },
@@ -209,108 +138,46 @@
         'emb_terc': '19. Embargos de Terceiro'
     };
 
-    // --- Funções de Carregamento do Menu Original ---
+    function liberar() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        montarMenu();
+    }
 
     function montarMenu() {
         let h = '';
         Object.keys(pecasMenu).forEach(k => {
             h += `<button class="nav-btn" id="btn_${k}" onclick="loadPeca('${k}')">${pecasMenu[k]}</button>`;
         });
-        document.getElementById('lista-exames').innerHTML = h; 
+        document.getElementById('menuLateral').innerHTML = h;
     }
 
     function loadPeca(key) {
         const dados = dbGabaritos[key];
         document.getElementById('joaquim').innerHTML = `
-            <button class="copy-btn btn-action" style="background: var(--accent);" onclick="copyText()">COPIAR MINHA PETIÇÃO</button>
+            <button class="copy-btn" onclick="copyText()">COPIAR MINHA PETIÇÃO</button>
             <div class="gabarito-panel">
-                <h3>Gabarito Completo</h3>
-                <div id="gab_content" class="gab-content" style="border: 1px solid #ccc; padding: 10px; white-space: pre-wrap; font-family: monospace;">${dados[1]}</div>
-                <h3>Dicas de Mentoria</h3>
-                <div id="guia_content" class="guia-content" style="border: 1px solid #ccc; padding: 10px; background: var(--yellow);">${dados.guia}</div>
+                <button class="gab-btn" onclick="toggleElement('gab_content')">📖 Ver Gabarito Completo</button>
+                <div id="gab_content" class="gab-content">${dados[1]}</div>
+                <button class="guia-btn" onclick="toggleElement('guia_content')">💡 DICAS DE MENTORIA</button>
+                <div id="guia_content" class="guia-content">${dados.guia}</div>
             </div>
-            <div id="texto-final" contenteditable="true" style="margin-top: 15px; border: 1px solid #ccc; padding: 15px; min-height: 200px; background: #fff; font-family: 'Courier New', monospace;">f5071219\n\n(Escreva sua peça aqui...)</div>
+            <div id="texto-final" contenteditable="true">f5071219\n\n(Escreva sua peça aqui...)</div>
         `;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn_' + key).classList.add('active');
-        document.getElementById('label-exame').textContent = '📍 EDITANDO: ' + pecasMenu[key];
+    }
+
+    function toggleElement(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
     }
 
     function copyText() {
         const t = document.getElementById('texto-final').innerText;
         navigator.clipboard.writeText(t).then(() => alert("Copiado!"));
     }
-
-
-    // --- Funções de Anotação (Integradas na Sidebar) ---
-
-    function addNewNotePrompt(type) {
-        const text = prompt(`Digite sua nova anotação (${type}):`);
-        if (text && text.trim() !== '') {
-            saveAnnotation(type, text);
-        }
-    }
-
-    function saveAnnotation(type, text) {
-        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
-        let annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        
-        const newAnnotation = {
-            id: Date.now(),
-            text: text,
-            date: new Date().toLocaleString('pt-BR')
-        };
-
-        annotations.push(newAnnotation);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(annotations));
-        renderAnnotations(type);
-    }
-
-    function renderAnnotations(type) {
-        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
-        const annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        const contentAreaId = type === 'postit' ? 'content-postit' : 'content-dicas';
-        const contentArea = document.getElementById(contentAreaId);
-        contentArea.innerHTML = '';
-
-        annotations.forEach(annotation => {
-            const item = document.createElement('div');
-            item.className = `note-item type-${type}`; 
-            item.innerHTML = `
-                <p>${annotation.text}</p>
-                <small>Criado em: ${annotation.date}</small>
-                <button class="note-delete" onclick="deleteAnnotation('${type}', ${annotation.id})">✖️</button>
-            `;
-            contentArea.appendChild(item);
-        });
-    }
-
-    function deleteAnnotation(type, id) {
-        const STORAGE_KEY = `sistemaJoaquimNotes_${type}`;
-        let annotations = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        annotations = annotations.filter(annotation => annotation.id !== id);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(annotations));
-        renderAnnotations(type); 
-    }
-
-    // Função para rolar até o painel na sidebar quando o botão do menu é clicado
-    function focusPanel(panelId) {
-        const panel = document.getElementById(panelId);
-        // Garante que a sidebar esteja aberta antes de rolar
-        if (document.getElementById('sidebar-main').classList.contains('collapsed')) {
-             toggleSidebarPC();
-        }
-        panel.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    // --- Inicialização ---
-    window.onload = () => {
-       montarMenu(); 
-       renderAnnotations('postit'); 
-       renderAnnotations('dicas'); 
-       document.getElementById('v-enu').src = URL_ENUNCIADO;
-       document.getElementById('v-pad').src = URL_GABARITO;
-    }
 </script>
 </body>
 </html>
+
