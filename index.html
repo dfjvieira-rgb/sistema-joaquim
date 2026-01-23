@@ -39,9 +39,9 @@
 
         .workspace { flex: 1; display: flex; overflow: hidden; background: #000; }
 
-        /* NOVO AJUSTE DE COLUNAS: 60% PDF / 40% RESPOSTA */
-        .col-pdf { flex: 1.5; display: flex; flex-direction: column; background: var(--pdf-bg); border-right: 2px solid #000; }
-        .col-res { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        /* PDF FIXO NA DIREITA COM MAIS ESPAÇO (65% da tela) */
+        .col-res { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 2px solid #000; }
+        .col-pdf { flex: 1.8; display: flex; flex-direction: column; background: var(--pdf-bg); }
 
         .pdf-tabs { display: flex; background: #111; padding: 2px; gap: 2px; height: 35px; }
         .tab-btn { flex: 1; border: none; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #222; color: #777; }
@@ -64,7 +64,6 @@
 
         #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; font-weight: bold; }
 
-        /* MODAIS */
         .overlay-consulta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; flex-direction: column; }
         .consulta-card { width: 95%; max-width: 800px; margin: auto; background: white; border-radius: 8px; overflow: hidden; height: 90vh; display: flex; flex-direction: column; }
         .consulta-h { padding: 12px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; }
@@ -108,15 +107,6 @@
 </div>
 
 <main class="workspace">
-    <section class="col-pdf" id="section-pdf">
-        <div class="pdf-tabs">
-            <button id="tab-prova" class="tab-btn active" onclick="mudarDoc('prova')">PROVA</button>
-            <button id="tab-gab" class="tab-btn" onclick="mudarDoc('gabarito')">GABARITO</button>
-            <button id="tab-ary" class="tab-btn" onclick="mudarDoc('aryanna')">ARYANNA</button>
-        </div>
-        <iframe id="f-pdf"></iframe>
-    </section>
-
     <section class="col-res">
         <div class="fgv-header">
             <span id="label-folha">FOLHA FGV</span>
@@ -129,6 +119,15 @@
             <div class="line-nums" id="line-nums-main"></div>
             <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()"></textarea>
         </div>
+    </section>
+
+    <section class="col-pdf" id="section-pdf">
+        <div class="pdf-tabs">
+            <button id="tab-prova" class="tab-btn active" onclick="mudarDoc('prova')">PROVA</button>
+            <button id="tab-gab" class="tab-btn" onclick="mudarDoc('gabarito')">GABARITO</button>
+            <button id="tab-ary" class="tab-btn" onclick="mudarDoc('aryanna')">ARYANNA</button>
+        </div>
+        <iframe id="f-pdf"></iframe>
     </section>
 </main>
 
@@ -158,7 +157,7 @@
         <div class="consulta-b" style="padding:15px;">
             <input type="text" id="cad-nome" placeholder="Título" style="width:100%; padding:10px; margin-bottom:10px;">
             <textarea id="cad-texto" rows="6" placeholder="Texto..." style="width:100%; padding:10px;"></textarea>
-            <button onclick="salvarNovoPostit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:5px; font-weight:bold;">SALVAR NO BANCO</button>
+            <button onclick="salvarNovoPostit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:5px; font-weight:bold; width:100%">SALVAR NO BANCO</button>
         </div>
     </div>
 </div>
@@ -207,7 +206,7 @@
         hist.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'hist-item';
-            div.innerHTML = `<span style="font-size:0.8rem">${item.titulo}</span> <div><button onclick="verHist(${index})" style="background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:3px">VER</button> <button onclick="delHist(${index})" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:3px; margin-left:4px">X</button></div>`;
+            div.innerHTML = `<span style="font-size:0.8rem; color:black">${item.titulo}</span> <div><button onclick="verHist(${index})" style="background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:3px">VER</button> <button onclick="delHist(${index})" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:3px; margin-left:4px">X</button></div>`;
             lista.appendChild(div);
         });
         document.getElementById('view-historico').style.display = 'none';
@@ -242,6 +241,7 @@
     function salvarNovoPostit() {
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
+        if(!nome || !texto) return;
         let db = JSON.parse(localStorage.getItem('db_master')) || {};
         db[Date.now()] = { nome, texto };
         localStorage.setItem('db_master', JSON.stringify(db));
@@ -255,7 +255,7 @@
         for(let id in db) {
             const div = document.createElement('div');
             div.className = 'hist-item';
-            div.innerHTML = `<span>📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:3px">COPIAR</button>`;
+            div.innerHTML = `<span style="color:black">📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:3px">COPIAR</button>`;
             lista.appendChild(div);
         }
         document.getElementById('janela-postits').style.display = 'flex';
