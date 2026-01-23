@@ -3,42 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA FGV - LEITURA EXPANDIDA</title>
+    <title>SISTEMA FGV MASTER - BANCO DE TREINOS</title>
     <style>
         :root {
             --fgv-bg: #f3f4f6; --paper-white: #ffffff; --fgv-blue: #004a8d;
-            --line-height: 25px; --danger: #dc2626; --success: #16a34a;
+            --line-height: 25px; --danger: #dc2626; --success: #16a34a; --gold: #c5a059;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: "Times New Roman", Times, serif; background: var(--fgv-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: #fff; padding: 8px 20px; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        header { background: #fff; padding: 8px 20px; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .logo-fgv { font-weight: bold; border: 2px solid #000; padding: 4px 8px; font-size: 1rem; }
-        
+        #timer-display { font-family: monospace; font-size: 1.6rem; font-weight: bold; color: var(--danger); background: #fee2e2; padding: 2px 10px; border-radius: 4px; border: 1px solid var(--danger); }
+
         .nav-fgv { background: #e5e7eb; border-bottom: 1px solid #999; display: flex; overflow-x: auto; padding: 5px; gap: 5px; flex-shrink: 0; }
         .btn-nav { padding: 6px 12px; border: 1px solid #666; background: #fff; cursor: pointer; font-weight: bold; font-size: 0.7rem; white-space: nowrap; }
         .btn-nav.active { background: var(--fgv-blue); color: white; }
+        .btn-piece { border: 1px solid var(--fgv-blue); color: var(--fgv-blue); }
+        .btn-archive { background: #4b5563; color: white; border: none; }
 
-        /* WORKSPACE REESTRUTURADO */
         .workspace { flex: 1; display: flex; gap: 8px; padding: 8px; overflow-x: auto; background: #ccc; }
         
-        /* COLUNAS DE ESCRITA (MENORES PARA DAR ESPAÇO AO PDF) */
-        .col-write { flex: 0 0 28%; min-width: 320px; display: flex; flex-direction: column; background: #fff; border: 1px solid #000; }
-        
-        /* COLUNA DE PDF (EXPANDIDA PARA LEITURA) */
-        .col-pdf { flex: 0 0 42%; min-width: 500px; display: flex; flex-direction: column; background: #525659; border: 1px solid #000; }
+        /* COLUNAS */
+        .col-write { flex: 0 0 26%; min-width: 310px; display: flex; flex-direction: column; background: #fff; border: 1px solid #000; }
+        .col-pdf { flex: 0 0 46%; min-width: 550px; display: flex; flex-direction: column; background: #525659; border: 1px solid #000; }
 
-        @media (max-width: 1024px) { 
-            .col-write { flex: 0 0 85vw; } 
-            .col-pdf { flex: 0 0 95vw; } 
-        }
-
-        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.8rem; font-weight: bold; }
-        .sheet-info { border: 1px solid #000; margin: 5px; padding: 4px; display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
-
+        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); position: relative; }
-        .line-numbers { width: 30px; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: var(--line-height); color: #000; padding-top: 5px; flex-shrink: 0; }
+        .line-numbers { width: 30px; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: var(--line-height); color: #000; padding-top: 5px; flex-shrink: 0; user-select: none; }
+        
         .textarea-fgv { 
             flex: 1; border: none; outline: none; resize: none; padding: 0 10px;
             font-size: 18px; line-height: var(--line-height);
@@ -47,17 +41,21 @@
             background-attachment: local; color: #000;
         }
 
-        .rascunho-controls { padding: 8px; background: #f8fafc; border-bottom: 1px solid #000; display: flex; flex-wrap: wrap; gap: 4px; }
-        .db-list { height: 80px; overflow-y: auto; background: #fff; border-bottom: 1px solid #000; font-size: 0.75rem; }
-        .db-item { padding: 6px 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        /* BANCO DE TREINOS */
+        #treinos-lista { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 600px; background: white; border: 2px solid #000; z-index: 2000; display: none; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        .rascunho-controls { padding: 6px; background: #f8fafc; border-bottom: 1px solid #000; display: flex; flex-wrap: wrap; gap: 4px; }
+        .db-list { height: 75px; overflow-y: auto; background: #fff; border-bottom: 1px solid #000; font-size: 0.75rem; width: 100%; }
+        .db-item { padding: 5px 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         
-        .btn-del { background: var(--danger); color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; }
+        .btn-del { background: var(--danger); color: white; border: none; padding: 2px 5px; font-size: 0.6rem; cursor: pointer; border-radius: 2px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 10px; flex: 1; font-weight: bold; cursor: pointer; }
-        .btn-insert { background: var(--fgv-blue); color: white; border: none; padding: 10px; flex: 1; font-weight: bold; cursor: pointer; }
+        .btn-transfer { background: var(--fgv-blue); color: white; border: none; padding: 10px; flex: 1; font-weight: bold; cursor: pointer; }
+        .btn-treino { background: #8b5cf6; color: white; border: none; padding: 8px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 5px;}
 
         .tabs { display: flex; background: #000; }
         .tab { flex: 1; padding: 12px; color: #aaa; border: none; background: #222; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
-        .tab.active { background: #fff; color: #000; }
+        .tab.active { background: white; color: black; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
     </style>
 </head>
@@ -65,7 +63,11 @@
 
 <header>
     <div class="logo-fgv">FGV PROJETOS</div>
-    <div id="timer" style="font-family:monospace; font-weight:bold; color:red; font-size: 1.4rem;">05:00:00</div>
+    <div id="timer-display">05:00:00</div>
+    <div>
+        <button class="btn-archive" onclick="abrirBancoTreinos()" style="padding:5px 10px; cursor:pointer;">📂 MEUS TREINOS</button>
+        <button id="timer-btn" onclick="toggleTimer()" style="padding:5px 15px; cursor:pointer; font-weight:bold; background:var(--success); color:white; border:none; border-radius:4px;">INICIAR PROVA</button>
+    </div>
 </header>
 
 <nav class="nav-fgv" id="exam-nav"></nav>
@@ -73,51 +75,114 @@
 
 <main class="workspace">
     <section class="col-write">
-        <div class="sheet-top">RESPOSTA DEFINITIVA</div>
+        <div class="sheet-top">Folha de Resposta Definitiva</div>
         <div class="paper">
             <div class="line-numbers" id="nums-def"></div>
-            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()"></textarea>
+            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()" placeholder="Inicie sua peça oficial aqui..."></textarea>
         </div>
+        <button class="btn-treino" onclick="salvarTreino()">💾 SALVAR COMO TREINO FINALIZADO</button>
     </section>
 
     <section class="col-write" style="border: 2px solid var(--fgv-blue);">
-        <div class="sheet-top" style="background: var(--fgv-blue); color: white;">RASCUNHO (TESES/DICAS)</div>
+        <div class="sheet-top" style="background: var(--fgv-blue); color: white;">Folha de Rascunho (Teses e Dicas)</div>
         <div class="rascunho-controls">
             <button class="btn-nav" id="btn-p" onclick="mudarDB('postits')">TESES</button>
             <button class="btn-nav" id="btn-c" onclick="mudarDB('correcoes')">DICAS</button>
-            <button class="btn-nav" onclick="limparRascunho()" style="background:#000; color:#fff">LIMPAR</button>
-            <input type="text" id="search" placeholder="🔍 Buscar..." style="flex:1; padding:4px;" oninput="filtrar()">
+            <button class="btn-nav" onclick="limparRascunho()" style="background:#000; color:#fff">NOVO</button>
+            <input type="text" id="search" placeholder="🔍 Filtrar..." style="flex:1; padding:4px;" oninput="filtrar()">
         </div>
         <div id="db-list" class="db-list"></div>
-        <input type="text" id="preview-title" style="width: 100%; border: 1px solid #999; padding: 6px; font-weight: bold;" placeholder="TÍTULO">
+        <input type="text" id="preview-title" style="width: 100%; border: 1px solid #999; padding: 6px; font-weight: bold; background: #fffde7;" placeholder="TÍTULO DA TESE">
         <div class="paper" style="background: #fffdec;">
             <div class="line-numbers" id="nums-rasc" style="background: #eee;"></div>
             <textarea id="txt-rasc" class="textarea-fgv" style="background: transparent"></textarea>
         </div>
         <div style="display: flex; gap: 2px;">
-            <button class="btn-save" onclick="salvarAtual()">SALVAR/EDITAR</button>
-            <button class="btn-insert" onclick="transferir()">TRANSFERIR ↑</button>
+            <button class="btn-save" onclick="salvarAtual()">GRAVAR NO CADERNO</button>
+            <button class="btn-transfer" onclick="transferir()">TRANSFERIR ↑</button>
         </div>
     </section>
 
     <section class="col-pdf">
         <div class="tabs">
-            <button class="tab active" onclick="pdf('prova')">ENUNCIADO DA PROVA</button>
-            <button class="tab" onclick="pdf('gabarito')">GABARITO OFICIAL</button>
-            <button class="tab" onclick="pdf('aryanna')">MÉTODO ARYANNA</button>
+            <button class="tab active" onclick="pdf('prova')">ENUNCIADO</button>
+            <button class="tab" onclick="pdf('gabarito')">PADRÃO</button>
+            <button class="tab" onclick="pdf('aryanna')">MÉTODO</button>
         </div>
         <iframe id="frame"></iframe>
     </section>
 </main>
 
+<div id="treinos-lista">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:10px;">
+        <h3>MEUS TREINOS SALVOS</h3>
+        <button onclick="fecharBancoTreinos()" style="cursor:pointer; font-weight:bold;">FECHAR [X]</button>
+    </div>
+    <div id="corpo-treinos" style="max-height:400px; overflow-y:auto;"></div>
+</div>
+
 <script>
     let ex = 42, db = 'postits', idEditando = null;
+    let timeLeft = 18000, timerInterval = null;
+
     const pecas = {
-        "RECLAMAÇÃO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., propor RECLAMAÇÃO TRABALHISTA...",
-        "CONTESTAÇÃO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nRECLAMADO..., apresentar CONTESTAÇÃO...",
-        "RECURSO ORDINÁRIO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nRECORRENTE..., interpor RECURSO ORDINÁRIO..."
+        "RECLAMAÇÃO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., nacionalidade..., estado civil..., profissão..., CPF..., RG..., CTPS..., PIS..., nome da mãe..., residente e domiciliado na rua..., vem, por intermédio de seu advogado, propor\n\nRECLAMÇÃO TRABALHISTA\n\nem face de RECLAMADO...",
+        "CONTESTAÇÃO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\nRECLAMADO..., já qualificado nos autos, vem apresentar CONTESTAÇÃO...",
+        "RECURSO ORDINÁRIO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nRECORRENTE..., vem interpor RECURSO ORDINÁRIO..."
     };
 
+    // --- FUNÇÕES DE TREINO ---
+    function salvarTreino() {
+        const texto = document.getElementById('txt-def').value;
+        if(!texto) return alert("A peça está vazia!");
+        const nomeTreino = prompt("Dê um nome para este treino (ex: Treino 1 - Contestação):");
+        if(!nomeTreino) return;
+
+        let treinos = JSON.parse(localStorage.getItem('banco_treinos')) || [];
+        treinos.push({ nome: nomeTreino, data: new Date().toLocaleString(), conteudo: texto });
+        localStorage.setItem('banco_treinos', JSON.stringify(treinos));
+        alert("Peça salva no Banco de Treinos!");
+    }
+
+    function abrirBancoTreinos() {
+        const modal = document.getElementById('treinos-lista');
+        const corpo = document.getElementById('corpo-treinos');
+        const treinos = JSON.parse(localStorage.getItem('banco_treinos')) || [];
+        
+        corpo.innerHTML = treinos.length ? '' : '<p>Nenhum treino salvo ainda.</p>';
+        treinos.forEach((t, index) => {
+            const item = document.createElement('div');
+            item.style = "padding:10px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between; align-items:center;";
+            item.innerHTML = `
+                <div><strong>${t.nome}</strong><br><small>${t.data}</small></div>
+                <div>
+                    <button onclick="carregarTreino(${index})" style="background:var(--success); color:white; border:none; padding:5px; cursor:pointer;">CARREGAR</button>
+                    <button onclick="excluirTreino(${index})" style="background:var(--danger); color:white; border:none; padding:5px; cursor:pointer;">EXCLUIR</button>
+                </div>`;
+            corpo.appendChild(item);
+        });
+        modal.style.display = 'block';
+    }
+
+    function carregarTreino(index) {
+        if(!confirm("Isso substituirá o texto atual da peça definitiva. Continuar?")) return;
+        const treinos = JSON.parse(localStorage.getItem('banco_treinos'));
+        document.getElementById('txt-def').value = treinos[index].conteudo;
+        saveAuto();
+        fecharBancoTreinos();
+    }
+
+    function excluirTreino(index) {
+        if(!confirm("Excluir este treino permanentemente?")) return;
+        let treinos = JSON.parse(localStorage.getItem('banco_treinos'));
+        treinos.splice(index, 1);
+        localStorage.setItem('banco_treinos', JSON.stringify(treinos));
+        abrirBancoTreinos();
+    }
+
+    function fecharBancoTreinos() { document.getElementById('treinos-lista').style.display = 'none'; }
+
+    // --- FUNÇÕES CORE ---
     function renderMenus() {
         const en = document.getElementById('exam-nav'), pn = document.getElementById('piece-nav');
         en.innerHTML = ''; pn.innerHTML = '';
@@ -126,9 +191,25 @@
             b.onclick = () => { ex = i; pdf('prova'); renderMenus(); }; en.appendChild(b);
         }
         Object.keys(pecas).forEach(p => {
-            let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = p;
-            b.onclick = () => { if(confirm(`Carregar ${p}?`)) document.getElementById('txt-def').value = pecas[p]; }; pn.appendChild(b);
+            let b = document.createElement('button'); b.className = 'btn-nav btn-piece'; b.innerText = p;
+            b.onclick = () => { if(confirm(`Limpar e carregar estrutura de ${p}?`)) { document.getElementById('txt-def').value = pecas[p]; saveAuto(); } };
+            pn.appendChild(b);
         });
+    }
+
+    function toggleTimer() {
+        const btn = document.getElementById('timer-btn');
+        if(timerInterval) {
+            clearInterval(timerInterval); timerInterval = null;
+            btn.innerText = "RETOMAR"; btn.style.background = "var(--success)";
+        } else {
+            btn.innerText = "PAUSAR"; btn.style.background = "var(--danger)";
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
+                document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+        }
     }
 
     function mudarDB(t) {
@@ -161,7 +242,6 @@
 
     function excluirItem(id, e) {
         e.stopPropagation();
-        if(!confirm("Excluir tese?")) return;
         let d = JSON.parse(localStorage.getItem('db_'+db)) || {};
         delete d[id];
         localStorage.setItem('db_'+db, JSON.stringify(d));
@@ -194,7 +274,7 @@
         const nd = document.getElementById('nums-def'), nr = document.getElementById('nums-rasc');
         for(let i=1; i<=150; i++) { nd.innerHTML += i + '<br>'; nr.innerHTML += i + '<br>'; }
         document.getElementById('txt-def').value = localStorage.getItem('save_2026') || "";
-        renderMenus(); mudarDB('postits'); pdf('prova');
+        renderMenus(); mudarDB('postits'); carregarLista(); pdf('prova');
     };
 </script>
 </body>
