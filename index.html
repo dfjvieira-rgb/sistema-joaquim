@@ -19,11 +19,15 @@
         .drawer-section { background: #eee; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #777; border-top: 1px solid #ddd; }
         .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #333; font-weight: 500; font-size: 0.9rem; }
 
-        /* SELEÇÃO DE EXAME E TOOLBAR */
-        .top-controls { background: #dfe6e9; border-bottom: 1px solid #ccc; padding: 10px; }
-        .exame-selector { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #b2bec3; font-weight: bold; background: white; font-size: 0.9rem; }
-        .toolbar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-        .btn-sym { background: white; border: 1px solid #b2bec3; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; white-space: nowrap; }
+        /* CONTROLES SUPERIORES */
+        .top-controls { background: #dfe6e9; border-bottom: 1px solid #ccc; padding: 10px; z-index: 100; }
+        .exame-selector { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 2px solid var(--primary); font-weight: bold; background: white; color: #1a252f; font-size: 1rem; }
+        
+        .vade-links { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 5px; }
+        .btn-link { background: #2c3e50; color: white; border: none; padding: 8px 14px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-decoration: none; white-space: nowrap; }
+
+        .toolbar { display: flex; gap: 8px; overflow-x: auto; padding-top: 8px; border-top: 1px solid #ccc; }
+        .btn-sym { background: white; border: 1px solid #b2bec3; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
 
         /* WORKSPACE */
         .workspace { display: flex; flex: 1; overflow: hidden; }
@@ -36,13 +40,9 @@
         .line-nums { width: 35px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
         textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* MODAL DICAS */
-        .modal-estudo { position: fixed; inset: 0; background: white; z-index: 3000; display: none; flex-direction: column; }
-        .modal-estudo.active { display: flex; }
-
-        /* PDF NAV */
+        /* NAVEGAÇÃO DE PDF (ALTERNÂNCIA) */
         .pdf-nav { display: flex; background: #333; gap: 1px; }
-        .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 12px 5px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
+        .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 14px 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; text-transform: uppercase; }
         .pdf-btn.active { background: var(--accent); color: var(--primary); }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
@@ -50,7 +50,7 @@
 
         @media (max-width: 1024px) {
             .workspace { flex-direction: column; overflow-y: auto; }
-            .col { width: 100%; height: 500px; flex: none; }
+            .col { width: 100%; height: 60vh; flex: none; }
         }
     </style>
 </head>
@@ -59,104 +59,105 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <header>
-    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem; padding: 5px 15px;">☰</div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.2rem; font-weight: bold;">☰ MENU</div>
     <div>JOAQUIM <span style="color:var(--accent)">PRO</span></div>
     <div class="timer" id="timer">05:00:00</div>
 </header>
 
 <nav class="drawer" id="drawer">
     <div class="drawer-header"><b>SISTEMA DE ESTUDO</b></div>
-    <div class="drawer-section">PEÇAS (MODELOS ARYANNA)</div>
+    <div class="drawer-section">PEÇAS (ARYANNA)</div>
     <div class="drawer-item" onclick="inserirModelo('rt')">📄 Reclamação (Art. 840)</div>
     <div class="drawer-item" onclick="inserirModelo('contestacao')">📄 Contestação (Art. 847)</div>
     <div class="drawer-item" onclick="inserirModelo('ro')">📄 Recurso Ordinário (Art. 895)</div>
-    <div class="drawer-section">DICAS DE AULA</div>
-    <div class="drawer-item" style="background:#fffde7; font-weight:bold;" onclick="abrirDicaNova()">+ INCLUIR ANOTAÇÃO</div>
-    <div id="lista-dicas-menu"></div>
 </nav>
 
 <main id="view-treino" class="view active">
     <div class="top-controls">
         <select class="exame-selector" id="select-exame" onchange="selecionarExame()">
-            <option value="">Selecione o Exame para Treinar...</option>
-            <option value="35">XXXV Exame Unificado (RO)</option>
-            <option value="36">XXXVI Exame Unificado (Contestação)</option>
-            <option value="37">XXXVII Exame Unificado (Incial)</option>
-            <option value="apostila">Apostila Completa - Aryanna</option>
+            <option value="">Escolha o Exame para Treino (35 ao 44)</option>
+            <option value="35">🎯 XXXV Exame Unificado</option>
+            <option value="36">🎯 XXXVI Exame Unificado</option>
+            <option value="37">🎯 XXXVII Exame Unificado</option>
+            <option value="38">🎯 XXXVIII Exame Unificado</option>
+            <option value="39">🎯 XXXIX Exame Unificado</option>
+            <option value="40">🎯 XL Exame Unificado</option>
+            <option value="41">🎯 XLI Exame Unificado</option>
+            <option value="42">🎯 XLII Exame Unificado</option>
+            <option value="43">🎯 XLIII Exame Unificado</option>
+            <option value="44">🎯 XLIV Exame Unificado</option>
         </select>
+
+        <div class="vade-links">
+            <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" class="btn-link">CLT</a>
+            <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="btn-link">CF/88</a>
+            <a href="https://www3.tst.jus.br/jurisprudencia/Sumulas_com_indice/Sumulas_Indice_1_50.html" target="_blank" class="btn-link">SÚMULAS</a>
+            <a href="https://www3.tst.jus.br/jurisprudencia/OJ_Indices/index_oj.html" target="_blank" class="btn-link">OJs</a>
+        </div>
+
         <div class="toolbar">
             <button class="btn-sym" onclick="insertSym('§')">§</button>
             <button class="btn-sym" onclick="insertSym('Art. ')">Art.</button>
             <button class="btn-sym" onclick="insertSym('CLT')">CLT</button>
             <button class="btn-sym" onclick="insertSym('TST')">TST</button>
-            <button class="btn-sym" onclick="insertSym('CF/88')">CF/88</button>
+            <button class="btn-sym" onclick="insertSym('OJ ')">OJ</button>
         </div>
     </div>
 
     <div class="workspace">
         <section class="col col-respostas">
             <div style="background:var(--primary); color:white; padding:5px 10px; font-size:0.7rem; display:flex; justify-content:space-between;">
-                <span>FOLHA DE RESPOSTA</span><span id="l-main">L: 1</span>
+                <span>FOLHA OAB</span><span id="l-main">L: 1</span>
             </div>
             <div class="paper"><div class="line-nums" id="n-main"></div><textarea id="area-main" oninput="save()"></textarea></div>
         </section>
 
         <section class="col col-apoio">
             <div class="pdf-nav">
-                <button class="pdf-btn active" id="btn-apostila" onclick="trocarPdf(pdfAtual.apoio,'btn-apostila')">APOSTILA</button>
-                <button class="pdf-btn" id="btn-prova" onclick="trocarPdf(pdfAtual.prova,'btn-prova')">PROVA</button>
-                <button class="pdf-btn" id="btn-gabarito" onclick="trocarPdf(pdfAtual.gab,'btn-gabarito')">GABARITO</button>
+                <button class="pdf-btn active" id="btn-apostila" onclick="alternarVisao('apostila')">Apostila</button>
+                <button class="pdf-btn" id="btn-prova" onclick="alternarVisao('prova')">Prova</button>
+                <button class="pdf-btn" id="btn-gabarito" onclick="alternarVisao('gab')">Gabarito</button>
             </div>
             <iframe id="f-pdf" src="./Aryanna Linhares.pdf" style="flex:1; border:none; background:white;"></iframe>
         </section>
     </div>
 </main>
 
-<div class="modal-estudo" id="modal-dica">
-    <div style="background:var(--primary); color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
-        <input type="text" id="dica-tit" placeholder="Assunto da Aula..." style="background:transparent; border:none; color:white; font-weight:bold; outline:none; width:50%;">
-        <div style="display:flex; gap:5px;">
-            <button onclick="salvarDica()" style="background:var(--accent); border:none; padding:8px; border-radius:4px; font-weight:bold; font-size:0.7rem;">SALVAR</button>
-            <button onclick="fecharModal()" style="background:#95a5a6; border:none; padding:8px; border-radius:4px; color:white; font-size:0.7rem;">VOLTAR</button>
-        </div>
-    </div>
-    <div class="paper">
-        <div class="line-nums" id="n-dica"></div>
-        <textarea id="dica-txt"></textarea>
-    </div>
-</div>
-
 <script>
     const $ = (id) => document.getElementById(id);
     const gen = (el) => { for(let i=1; i<=150; i++) el.innerHTML += i + '<br>'; };
-    gen($('n-main')); gen($('n-dica'));
+    gen($('n-main'));
 
-    // BANCO DE DADOS DE PDFS POR EXAME
-    let pdfAtual = {
-        apoio: './Aryanna Linhares.pdf',
-        prova: './ro35.pdf',
-        gab: './ro35-gabarito.pdf'
+    // Objeto que controla os arquivos do exame selecionado
+    let arquivosAtuais = {
+        apostila: './Aryanna Linhares.pdf',
+        prova: '',
+        gab: ''
     };
 
     function selecionarExame() {
-        const exame = $('select-exame').value;
-        if(exame === "35") {
-            pdfAtual.prova = './ro35.pdf';
-            pdfAtual.gab = './ro35-gabarito.pdf';
-        } else if(exame === "36") {
-            pdfAtual.prova = './prova36.pdf';
-            pdfAtual.gab = './gabarito36.pdf';
-        } else if(exame === "apostila") {
-            pdfAtual.prova = './Aryanna Linhares.pdf';
-            pdfAtual.gab = './Aryanna Linhares.pdf';
+        const e = $('select-exame').value;
+        if(e !== "") {
+            // Define os caminhos dos arquivos baseados no número do exame
+            arquivosAtuais.prova = `./prova${e}.pdf`;
+            arquivosAtuais.gab = `./gabarito${e}.pdf`;
+            
+            // Ao selecionar, abre automaticamente a Prova para começar o treino
+            alternarVisao('prova');
         }
-        trocarPdf(pdfAtual.prova, 'btn-prova'); // Muda o PDF visualizado na hora
     }
 
-    function trocarPdf(url, btnId) {
+    function alternarVisao(tipo) {
+        let url = "";
+        if (tipo === 'apostila') url = arquivosAtuais.apostila;
+        if (tipo === 'prova') url = arquivosAtuais.prova || arquivosAtuais.apostila;
+        if (tipo === 'gab') url = arquivosAtuais.gab || arquivosAtuais.apostila;
+
         $('f-pdf').src = url;
+
+        // Atualiza o estado visual dos botões
         document.querySelectorAll('.pdf-btn').forEach(b => b.classList.remove('active'));
-        if(btnId) $(btnId).classList.add('active');
+        $(`btn-${tipo === 'gab' ? 'gabarito' : tipo}`).classList.add('active');
     }
 
     function toggleMenu() { $('drawer').classList.toggle('open'); $('overlay').classList.toggle('active'); }
@@ -170,31 +171,33 @@
         save();
     }
 
-    function inserirModelo(tipo) {
+    function inserirModelo(t) {
         const m = {
-            rt: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nNOME DO RECLAMANTE, já qualificado, com fulcro no Art. 840, § 1º, da CLT, PROPOR:\n\nRECLAMAÇÃO TRABALHISTA...`,
-            contestacao: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nNOME DA RECLAMADA, já qualificada, com fulcro no Art. 847 da CLT, OFERECER:\n\nCONTESTAÇÃO...`,
-            ro: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nNOME DO RECORRENTE, já qualificado, com fulcro no Art. 895, I, da CLT, INTERPOR:\n\nRECURSO ORDINÁRIO...`
+            rt: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nRECLAMANTE, já qualificado, vem, com fulcro no Art. 840, § 1º, da CLT...`,
+            contestacao: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nRECLAMADA, já qualificada, com fulcro no Art. 847 da CLT...`,
+            ro: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nRECORRENTE, já qualificado, com fulcro no Art. 895, I, da CLT...`
         };
-        if(confirm("Carregar modelo? Isso limpará o texto atual.")) {
-            $('area-main').value = m[tipo];
-            save(); toggleMenu();
-        }
+        if(confirm("Deseja carregar este modelo?")) { $('area-main').value = m[t]; save(); toggleMenu(); }
     }
 
-    // GESTÃO DE DICAS
-    let bancoDicas = JSON.parse(localStorage.getItem('j_banco_dicas')) || [];
-    function abrirDicaNova() { dicaAtualId = Date.now(); $('dica-tit').value = ""; $('dica-txt').value = ""; $('modal-dica').classList.add('active'); toggleMenu(); }
-    function editarDica(id) { const d = bancoDicas.find(x => x.id === id); dicaAtualId = id; $('dica-tit').value = d.tit; $('dica-txt').value = d.txt; $('modal-dica').classList.add('active'); toggleMenu(); }
-    function salvarDica() { const tit = $('dica-tit').value || "Dica s/ Título"; const txt = $('dica-txt').value; const idx = bancoDicas.findIndex(d => d.id === dicaAtualId); if(idx > -1) bancoDicas[idx] = { id: dicaAtualId, tit, txt }; else bancoDicas.push({ id: dicaAtualId, tit, txt }); localStorage.setItem('j_banco_dicas', JSON.stringify(bancoDicas)); renderMenuDicas(); fecharModal(); }
-    function fecharModal() { $('modal-dica').classList.remove('active'); }
-    function renderMenuDicas() { const lista = $('lista-dicas-menu'); lista.innerHTML = ""; bancoDicas.forEach(d => { lista.innerHTML += `<div class="drawer-item" onclick="editarDica(${d.id})">📌 ${d.tit}</div>`; }); }
+    function save() { 
+        localStorage.setItem('j_main', $('area-main').value); 
+        $('l-main').innerText = "L: " + $('area-main').value.split('\n').length; 
+    }
 
-    function save() { localStorage.setItem('j_main', $('area-main').value); $('l-main').innerText = "L: " + $('area-main').value.split('\n').length; }
-    window.onload = () => { $('area-main').value = localStorage.getItem('j_main') || ""; renderMenuDicas(); save(); };
+    window.onload = () => { 
+        $('area-main').value = localStorage.getItem('j_main') || ""; 
+        save(); 
+    };
 
     let s = 18000;
-    setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; $('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
+    setInterval(() => { 
+        if(s>0){ 
+            s--; 
+            let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; 
+            $('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; 
+        } 
+    }, 1000);
 </script>
 </body>
 </html>
