@@ -3,188 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA JOAQUIM PRO 2026</title>
+    <title>SISTEMA JOAQUIM PRO - MÉTODO ARYANNA</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #f1c40f; --bg: #f8f9fa; 
-            --header-h: 60px; --drawer-w: 280px; --red: #e74c3c;
+            --header-h: 60px; --drawer-w: 280px; --yellow-light: #fffde7;
         }
 
-        /* RESET E BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* HEADER */
-        header { 
-            background: var(--primary); color: white; height: var(--header-h); 
-            padding: 0 15px; display: flex; justify-content: space-between; align-items: center; 
-            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .timer { font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.1rem; color: var(--accent); }
+        header { background: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .timer { font-family: monospace; font-weight: bold; color: var(--accent); }
 
         /* MENU LATERAL */
-        .drawer { 
-            position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; 
-            background: white; z-index: 2000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 5px 0 15px rgba(0,0,0,0.3); 
-        }
+        .drawer { position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
         .drawer.open { left: 0; }
-        .drawer-header { background: var(--primary); color: white; padding: 40px 20px 20px; }
-        .drawer-item { padding: 16px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #333; font-weight: 500; }
-
-        /* VIEWS */
-        .view { display: none; flex: 1; overflow: hidden; width: 100%; }
-        .view.active { display: flex; flex-direction: column; }
+        .drawer-header { background: var(--primary); color: white; padding: 30px 20px; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #333; font-weight: 500; }
 
         /* WORKSPACE */
+        .view { display: none; flex: 1; overflow: hidden; }
+        .view.active { display: flex; flex-direction: column; }
         .workspace { display: flex; flex: 1; overflow: hidden; }
-        .col { display: flex; flex-direction: column; border-right: 1px solid #ddd; position: relative; }
+        .col { display: flex; flex-direction: column; border-right: 1px solid #ddd; }
+        
+        /* COLUNAS */
         .col-respostas { flex: 1.2; background: white; }
-        .col-dicas { flex: 0.7; background: #fffde7; }
+        .col-dicas { flex: 0.8; background: var(--yellow-light); }
         .col-apoio { flex: 1; background: #525659; }
 
-        /* Cabeçalhos */
-        .caderno-header { padding: 8px 12px; font-size: 0.7rem; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
+        /* CABEÇALHOS */
+        .cad-header { padding: 8px 12px; font-size: 0.7rem; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
         .bg-oab { background: var(--primary); }
         .bg-dicas { background: #f39c12; }
 
-        /* Botões de Alternância (PDF) */
-        .pdf-nav { display: flex; background: #333; gap: 1px; }
-        .pdf-btn { flex: 1; border: none; background: #444; color: #bbb; padding: 10px 5px; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .pdf-btn.active { background: var(--accent); color: var(--primary); }
-
-        /* Papel Pautado */
+        /* INPUTS DE TEXTO */
         .paper { flex: 1; display: flex; overflow-y: auto; background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 25px; background-attachment: local; }
-        .line-nums { width: 40px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
-        textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
+        .line-nums { width: 35px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
+        textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 17px; line-height: 25px; background: transparent; }
 
-        /* MURAL POST-ITS */
-        #mural { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; overflow-y: auto; background: #f0f2f5; flex: 1; }
-        .postit { background: #fff59d; padding: 15px; border-radius: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); min-height: 150px; position: relative; font-size: 0.9rem; }
-        .postit-del { position: absolute; top: 5px; right: 5px; color: red; border: none; background: none; font-weight: bold; cursor: pointer; }
+        /* SISTEMA DE SALVAMENTO DE DICAS */
+        .dicas-controls { padding: 10px; background: #eee; display: flex; gap: 5px; border-bottom: 1px solid #ddd; }
+        .dicas-controls input { flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 3px; font-size: 0.8rem; }
+        .btn-save { background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .dicas-list { max-height: 120px; overflow-y: auto; background: #fff; padding: 5px; border-bottom: 2px solid #f39c12; }
+        .dica-salva { font-size: 0.7rem; padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; cursor: pointer; }
 
-        /* ESTRUTURAS */
-        .est-grid { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; overflow-y: auto; background: #f0f2f5; flex: 1; }
-        .est-card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid var(--accent); }
-        .btn-usar { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; }
+        /* PDF NAV */
+        .pdf-nav { display: flex; background: #333; }
+        .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 10px; font-size: 0.6rem; cursor: pointer; border-right: 1px solid #555; }
+        .pdf-btn.active { background: var(--accent); color: var(--primary); font-weight: bold; }
 
-        /* RESPONSIVIDADE MOBILE */
+        /* RESPONSIVIDADE */
         @media (max-width: 1024px) {
             .workspace { flex-direction: column; overflow-y: auto; }
-            .col { width: 100%; height: 500px; flex: none; border-bottom: 2px solid #ddd; }
-            .col-apoio { height: 600px; }
-            #mural { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 600px) {
+            .col { width: 100%; height: 500px; flex: none; }
             #mural { grid-template-columns: 1fr; }
         }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
+        .overlay.active { display: block; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
 <header>
-    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
-    <div style="font-weight:bold;">JOAQUIM <span style="color:var(--accent)">PRO</span></div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem; padding: 10px;">☰</div>
+    <div style="font-weight:bold;">SISTEMA <span style="color:var(--accent)">JOAQUIM</span></div>
     <div class="timer" id="timer">05:00:00</div>
 </header>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header"><b>MENU</b></div>
+    <div class="drawer-header"><b>BIBLIOTECA DE ESTUDO</b></div>
     <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📝 Caderno de Treino</div>
-    <div class="drawer-item" onclick="showView('estruturas'); toggleMenu()">📑 Gerador de Estruturas</div>
+    <div class="drawer-item" onclick="showView('estruturas'); toggleMenu()">📑 Gerador de Peças</div>
     <div class="drawer-item" onclick="showView('postits'); toggleMenu()">📌 Mural de Post-its</div>
+    <div class="drawer-item" onclick="showView('apostila'); toggleMenu()">📖 Apostila PDF</div>
 </nav>
 
 <main id="view-treino" class="view active">
     <div class="workspace">
+        
         <section class="col col-respostas">
-            <div class="caderno-header bg-oab"><span>CADERNO DE RESPOSTAS</span> <span id="line-info">L: 1</span></div>
-            <div class="paper"><div class="line-nums" id="ln-res"></div><textarea id="area-peca" oninput="sync()"></textarea></div>
+            <div class="cad-header bg-oab"><span>CADERNO DE RESPOSTAS</span><span id="line-info">Linha: 1</span></div>
+            <div class="paper">
+                <div class="line-nums" id="ln-res"></div>
+                <textarea id="area-peca" oninput="saveCurrent()" placeholder="Redija sua peça..."></textarea>
+            </div>
         </section>
 
         <section class="col col-dicas">
-            <div class="caderno-header bg-dicas"><span>RASCUNHO / DICAS</span></div>
-            <div class="paper" style="background-image: linear-gradient(#fff9c4 1px, transparent 1px);">
+            <div class="cad-header bg-dicas"><span>DICAS DE AULA / RASCUNHOS</span></div>
+            
+            <div class="dicas-controls">
+                <input type="text" id="dica-assunto" placeholder="Ex: Aula 01 - RO">
+                <button class="btn-save" onclick="salvarDicaAula()">SALVAR</button>
+            </div>
+            
+            <div class="dicas-list" id="dicas-salvas-container">
+                </div>
+
+            <div class="paper">
                 <div class="line-nums" style="background:#fffde7;">•</div>
-                <textarea id="area-dicas" oninput="sync()"></textarea>
+                <textarea id="area-dicas" oninput="saveCurrent()" placeholder="Anote as dicas da Aryanna..."></textarea>
             </div>
         </section>
 
         <section class="col col-apoio">
             <div class="pdf-nav">
-                <button class="pdf-btn active" id="btn-prova" onclick="switchPDF('prova')">PROVA (RO35)</button>
-                <button class="pdf-btn" id="btn-gabarito" onclick="switchPDF('gabarito')">GABARITO</button>
-                <button class="pdf-btn" id="btn-apostila" onclick="switchPDF('apostila')">APOSTILA</button>
+                <button class="pdf-btn active" id="b-prova" onclick="loadPDF('prova')">PROVA</button>
+                <button class="pdf-btn" id="b-gab" onclick="loadPDF('gab')">GABARITO</button>
+                <button class="pdf-btn" id="b-apoio" onclick="loadPDF('apoio')">APOSTILA</button>
             </div>
             <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none; background:white;"></iframe>
         </section>
+
     </div>
 </main>
 
-<main id="view-estruturas" class="view">
-    <div class="est-grid" id="lista-estruturas"></div>
-</main>
-
-<main id="view-postits" class="view">
-    <div style="padding:15px; background:var(--primary); color:white; display:flex; justify-content:space-between;">
-        <b>POST-ITS</b>
-        <button onclick="novoPostit()" style="background:var(--accent); border:none; padding:5px 10px; border-radius:4px;">+ NOVO</button>
-    </div>
-    <div id="mural"></div>
-</main>
+<main id="view-estruturas" class="view"><div style="padding:20px;">Use o botão "Gerador de Peças" no menu para modelos rápidos.</div></main>
+<main id="view-postits" class="view"><div id="mural"></div></main>
+<main id="view-apostila" class="view"><iframe src="./Aryanna Linhares.pdf" style="width:100%; height:100%; border:none;"></iframe></main>
 
 <script>
-    // Configuração dos Arquivos
-    const docs = {
-        prova: './ro35.pdf',
-        gabarito: './ro35-gabarito.pdf',
-        apostila: './Aryanna Linhares.pdf'
-    };
+    // Configurações e Linhas
+    const lineRes = document.getElementById('ln-res');
+    for(let i=1; i<=150; i++) lineRes.innerHTML += i + '<br>';
 
-    function switchPDF(tipo) {
-        document.getElementById('f-pdf').src = docs[tipo];
-        document.querySelectorAll('.pdf-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + tipo).classList.add('active');
+    function toggleMenu() {
+        document.getElementById('drawer').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
     }
-
-    // Gerador de Linhas
-    const ln = document.getElementById('ln-res');
-    for(let i=1; i<=150; i++) ln.innerHTML += i + '<br>';
-
-    function toggleMenu() { document.getElementById('drawer').classList.toggle('open'); }
 
     function showView(v) {
         document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
         document.getElementById('view-' + v).classList.add('active');
-        if(v === 'postits') renderPostits();
     }
 
-    function sync() {
-        const pVal = document.getElementById('area-peca').value;
-        const dVal = document.getElementById('area-dicas').value;
-        document.getElementById('line-info').innerText = `L: ${pVal.split('\n').length}`;
-        localStorage.setItem('joaquim_peca', pVal);
-        localStorage.setItem('joaquim_dicas', dVal);
+    function loadPDF(tipo) {
+        const paths = { prova: './ro35.pdf', gab: './ro35-gabarito.pdf', apoio: './Aryanna Linhares.pdf' };
+        document.getElementById('f-pdf').src = paths[tipo];
+        document.querySelectorAll('.pdf-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('b-' + tipo).classList.add('active');
     }
 
-    // Post-its
-    let postits = JSON.parse(localStorage.getItem('joaquim_postits')) || [];
-    function novoPostit() {
-        const txt = prompt("Lembrete:");
-        if(txt) { postits.push(txt); localStorage.setItem('joaquim_postits', JSON.stringify(postits)); renderPostits(); }
+    // --- LÓGICA DE SALVAMENTO DE AULAS ---
+    let bancoDicas = JSON.parse(localStorage.getItem('joaquim_banco_dicas')) || [];
+
+    function salvarDicaAula() {
+        const assunto = document.getElementById('dica-assunto').value;
+        const texto = document.getElementById('area-dicas').value;
+
+        if(!assunto) { alert("Dê um nome ao assunto da aula!"); return; }
+
+        const novaDica = {
+            id: Date.now(),
+            assunto: assunto,
+            texto: texto,
+            data: new Date().toLocaleDateString()
+        };
+
+        bancoDicas.unshift(novaDica); // Adiciona no topo
+        localStorage.setItem('joaquim_banco_dicas', JSON.stringify(bancoDicas));
+        renderListaDicas();
+        alert("Rascunho de aula salvo!");
     }
-    function renderPostits() {
-        const m = document.getElementById('mural');
-        m.innerHTML = '';
-        postits.forEach((p, i) => {
-            m.innerHTML += `<div class="postit"><button class="postit-del" onclick="delPostit(${i})">X</button>${p}</div>`;
+
+    function renderListaDicas() {
+        const container = document.getElementById('dicas-salvas-container');
+        container.innerHTML = bancoDicas.length ? "" : "<p style='font-size:0.6rem; padding:10px; color:#999;'>Nenhum rascunho salvo.</p>";
+        
+        bancoDicas.forEach(dica => {
+            const div = document.createElement('div');
+            div.className = 'dica-salva';
+            div.innerHTML = `<b>${dica.assunto}</b> <span>${dica.data}</span>`;
+            div.onclick = () => carregarDica(dica.id);
+            container.appendChild(div);
         });
     }
-    function delPostit(i) {
-        postits.splice(i, 1);
-        localStorage.setItem('joaquim_postits', JSON.stringify(postits));
-        renderPostits();
+
+    function carregarDica(id) {
+        const dica = bancoDicas.find(d => d.id === id);
+        if(dica && confirm(`Carregar rascunho: ${dica.assunto}?`)) {
+            document.getElementById('area-dicas').value = dica.texto;
+            document.getElementById('dica-assunto').value = dica.assunto;
+            saveCurrent();
+        }
     }
+
+    function saveCurrent() {
+        localStorage.setItem('j_peca_atual', document.getElementById('area-peca').value);
+        localStorage.setItem('j_dica_atual', document.getElementById('area-dicas').value);
+        document.getElementById('line-info').innerText = "Linha: " + document.getElementById('area-peca').value.split('\n').length;
+    }
+
+    window.onload = () => {
+        document.getElementById('area-peca').value = localStorage.getItem('j_peca_atual') || "";
+        document.getElementById('area-dicas').value = localStorage.getItem('j_dica_atual') || "";
+        renderListaDicas();
+        saveCurrent();
+    };
 
     // Timer
     let s = 18000;
@@ -195,11 +216,6 @@
             document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`;
         }
     }, 1000);
-
-    window.onload = () => {
-        document.getElementById('area-peca').value = localStorage.getItem('joaquim_peca') || "";
-        document.getElementById('area-dicas').value = localStorage.getItem('joaquim_dicas') || "";
-    };
 </script>
 </body>
 </html>
