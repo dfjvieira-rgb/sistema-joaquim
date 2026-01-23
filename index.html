@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM PRO - GERADOR DE PEÇAS</title>
+    <title>JOAQUIM PRO - MÉTODO ARYANNA</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #f1c40f; --bg: #f8f9fa; 
@@ -20,28 +20,29 @@
         .drawer { position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .drawer.open { left: 0; }
         .drawer-header { background: var(--primary); color: white; padding: 40px 20px 20px; }
-        .drawer-item { padding: 18px 20px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.9rem; }
 
         .view { display: none; flex: 1; overflow: hidden; }
         .view.active { display: flex; flex-direction: column; }
 
-        /* CADERNO PADRÃO OAB */
+        /* CADERNO */
         .train-container { display: flex; flex: 1; }
-        .editor-side { flex: 1.2; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; }
+        .editor-side { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; }
         .paper { flex: 1; display: flex; overflow-y: auto; background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 25px; background-attachment: local; }
-        .line-nums { width: 45px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 12px; line-height: 25px; padding-top: 25px; user-select: none; }
+        .line-nums { width: 45px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 12px; line-height: 25px; padding-top: 25px; }
         #area-peca { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* ESTRUTURAS (CARDS INTERATIVOS) */
-        .est-grid { padding: 20px; display: grid; gap: 15px; overflow-y: auto; }
-        .est-card { background: white; padding: 20px; border-radius: 10px; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-usar { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-size: 0.8rem; }
-        .btn-usar:hover { background: var(--green); }
+        /* GRID DE ESTRUTURAS */
+        .est-grid { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; overflow-y: auto; background: #f0f2f5; }
+        .est-card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .est-card h3 { font-size: 1rem; margin-bottom: 5px; color: var(--primary); }
+        .est-card p { font-size: 0.75rem; color: #666; margin-bottom: 10px; }
+        .btn-usar { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 0.8rem; font-weight: bold; }
 
-        .support-side { flex: 0.8; background: #525659; display: flex; flex-direction: column; }
-        @media (max-width: 1024px) { .train-container { flex-direction: column; } .support-side { height: 40%; } }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
         .overlay.active { display: block; }
+        
+        @media (max-width: 1024px) { .train-container { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -50,42 +51,35 @@
 
 <header>
     <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
-    <div style="font-weight:bold;">JOAQUIM <span style="color:var(--accent)">PRO</span></div>
+    <div style="font-weight:bold;">SISTEMA <span style="color:var(--accent)">JOAQUIM</span></div>
     <div class="timer" id="timer">05:00:00</div>
 </header>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header"><b>Menu de Navegação</b></div>
-    <div class="drawer-item" onclick="showView('hub'); toggleMenu()">🏠 Início</div>
-    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📚 Caderno de Treino</div>
+    <div class="drawer-header">
+        <b>Plano de Aprovação</b>
+        <p style="font-size:0.7rem;">Profª Aryanna Linhares</p>
+    </div>
+    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📝 Caderno de Prova</div>
     <div class="drawer-item" onclick="showView('estruturas'); toggleMenu()">📑 Gerador de Estruturas</div>
-    <div class="drawer-item" onclick="showView('postits'); toggleMenu()">📌 Post-its</div>
+    <div class="drawer-item" onclick="showView('apostila'); toggleMenu()">📖 Ver Apostila PDF</div>
+    <div class="drawer-item" onclick="showView('hub'); toggleMenu()">🏠 Início</div>
 </nav>
 
-<main id="view-hub" class="view active">
-    <div style="margin: auto; text-align: center; padding: 20px;">
-        <h2>Qual o foco de hoje?</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-            <div onclick="showView('treino')" style="background:white; padding:20px; border-radius:10px;"><i>✍️</i><br>Treinar</div>
-            <div onclick="showView('estruturas')" style="background:white; padding:20px; border-radius:10px;"><i>📑</i><br>Estruturas</div>
-        </div>
-    </div>
-</main>
-
-<main id="view-treino" class="view">
+<main id="view-treino" class="view active">
     <div class="train-container">
         <section class="editor-side">
-            <div style="padding:10px; background:#eee; font-size:0.75rem; display:flex; justify-content:space-between;">
-                <b>FOLHA DE RESPOSTAS FGV</b>
+            <div style="padding:10px; background:#eee; font-size:0.7rem; display:flex; justify-content:space-between;">
+                <b>CADERNO DE RESPOSTAS</b>
                 <span id="line-info">Linha: 1 / 150</span>
             </div>
             <div class="paper">
-                <div class="line-nums" id="line-nums"></div>
-                <textarea id="area-peca" oninput="sync()" placeholder="Selecione uma estrutura no menu ou comece a digitar..."></textarea>
+                <div class="line-nums" id="ln-helper"></div>
+                <textarea id="area-peca" oninput="sync()"></textarea>
             </div>
         </section>
-        <section class="support-side">
-            <iframe id="f-enu" style="flex:1; border:none; background:white;"></iframe>
+        <section style="flex:1; background:#525659; display:flex; flex-direction:column;">
+            <iframe id="f-pdf" style="flex:1; border:none; background:white;"></iframe>
         </section>
     </div>
 </main>
@@ -93,27 +87,45 @@
 <main id="view-estruturas" class="view">
     <div class="est-grid">
         <div class="est-card">
-            <h3>Petição Inicial Genérica</h3>
-            <p style="font-size:0.8rem; color:#666;">Endereçamento, Qualificação, Fatos, Direito e Pedidos.</p>
-            <button class="btn-usar" onclick="gerarEstrutura('inicial')">CARREGAR NO CADERNO</button>
-        </div>
-        <div class="est-card">
-            <h3>Recurso Ordinário (Trabalhista)</h3>
-            <p style="font-size:0.8rem; color:#666;">Peça de Interposição + Peça de Razões inclusas.</p>
-            <button class="btn-usar" onclick="gerarEstrutura('ro')">CARREGAR NO CADERNO</button>
+            <h3>Reclamação Trabalhista</h3>
+            <p>Art. 840, §1º CLT. Rito Ordinário.</p>
+            <button class="btn-usar" onclick="gerar('inicial')">INICIAR PEÇA</button>
         </div>
         <div class="est-card">
             <h3>Contestação</h3>
-            <p style="font-size:0.8rem; color:#666;">Tempestividade, Preliminares, Mérito e Requerimentos.</p>
-            <button class="btn-usar" onclick="gerarEstrutura('contestacao')">CARREGAR NO CADERNO</button>
+            <p>Art. 847 CLT. Preliminares e Mérito.</p>
+            <button class="btn-usar" onclick="gerar('contestacao')">INICIAR PEÇA</button>
+        </div>
+        <div class="est-card">
+            <h3>Recurso Ordinário</h3>
+            <p>Art. 895, I CLT. Interposição e Razões.</p>
+            <button class="btn-usar" onclick="gerar('ro')">INICIAR PEÇA</button>
+        </div>
+        <div class="est-card">
+            <h3>Ação de Consignação</h3>
+            <p>Art. 539 CPC c/c 769 CLT. Pagamento em Juízo.</p>
+            <button class="btn-usar" onclick="gerar('consignacao')">INICIAR PEÇA</button>
+        </div>
+        <div class="est-card">
+            <h3>Agravo de Petição</h3>
+            <p>Art. 897, 'a' CLT. Fase de Execução.</p>
+            <button class="btn-usar" onclick="gerar('agravo')">INICIAR PEÇA</button>
+        </div>
+        <div class="est-card">
+            <h3>Embargos à Execução</h3>
+            <p>Art. 884 CLT. Garantia do Juízo.</p>
+            <button class="btn-usar" onclick="gerar('embargos')">INICIAR PEÇA</button>
         </div>
     </div>
 </main>
 
+<main id="view-apostila" class="view">
+    <iframe src="./Aryanna Linhares.pdf" style="width:100%; height:100%; border:none;"></iframe>
+</main>
+
 <script>
-    // Gerar números de linha
-    const nums = document.getElementById('line-nums');
-    for(let i=1; i<=150; i++) nums.innerHTML += i + '<br>';
+    const ln = document.getElementById('ln-helper');
+    for(let i=1; i<=150; i++) ln.innerHTML += i + '<br>';
 
     function toggleMenu() {
         document.getElementById('drawer').classList.toggle('open');
@@ -125,36 +137,48 @@
         document.getElementById('view-' + v).classList.add('active');
     }
 
-    // A MÁGICA: GERADOR DE ESTRUTURA
-    function gerarEstrutura(tipo) {
+    function sync() {
+        const text = document.getElementById('area-peca').value;
+        document.getElementById('line-info').innerText = `Linha: ${text.split('\n').length} / 150`;
+    }
+
+    function gerar(tipo) {
         const area = document.getElementById('area-peca');
-        let texto = "";
+        let m = "";
+        
+        const ender = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n";
+        const qualif = "NOME..., já qualificado nos autos, por seu advogado..., vem perante este Juízo, com fulcro no Art. ";
 
-        if(tipo === 'inicial') {
-            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\nNOME DO RECLAMANTE, já qualificado nos autos, por seu advogado...\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de NOME DA RECLAMADA, também qualificada...\n\nI - PRELIMINARES\n\nII - MÉRITO\n\nIII - PEDIDOS\n\nIV - REQUERIMENTOS FINAIS\n\nValor da causa: R$ ...\nNestes Termos,\nPede Deferimento.\nLocal... Data...\nAdvogado... OAB...";
-        } 
-        else if(tipo === 'ro') {
-            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nNOME DO RECORRENTE, já qualificado, vem interpor\n\nRECURSO ORDINÁRIO\n\ncom fulcro no Art. 895, I, da CLT...\n\n(Pular para linha de Razões)\n\nEGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\nRAZÕES DO RECURSO ORDINÁRIO";
-        }
-        else if(tipo === 'contestacao') {
-            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nNOME DA RECLAMADA, já qualificada, vem apresentar\n\nCONTESTAÇÃO\n\nI - PRELIMINARES\nII - PREJUDICIAIS DE MÉRITO (PRESCRIÇÃO)\nIII - MÉRITO";
+        switch(tipo) {
+            case 'inicial':
+                m = ender + qualif + "840, § 1º, da CLT, propor RECLAMAÇÃO TRABALHISTA em face de RECLAMADA..., também qualificada...\n\nI - PRELIMINARES\nII - MÉRITO\nIII - PEDIDOS\nIV - REQUERIMENTOS FINAIS\n\nValor da causa R$...\nNestes Termos, Pede Deferimento.";
+                break;
+            case 'contestacao':
+                m = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\n\n\n" + qualif + "847 da CLT, apresentar CONTESTAÇÃO à Reclamação movida por...\n\nI - PRELIMINARES\nII - PREJUDICIAIS (PRESCRIÇÃO)\nIII - MÉRITO";
+                break;
+            case 'ro':
+                m = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\n\n\n" + qualif + "895, I, da CLT, interpor RECURSO ORDINÁRIO...\n\n(Peça de Interposição)\n...\n(Peça de Razões)\nEGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO";
+                break;
+            case 'consignacao':
+                m = ender + qualif + "539 do CPC e 769 da CLT, propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO...\n\nI - FATOS\nII - FUNDAMENTOS DO DEPÓSITO\nIII - PEDIDOS";
+                break;
+            case 'agravo':
+                m = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\n\n\n" + qualif + "897, 'a', da CLT, interpor AGRAVO DE PETIÇÃO...\n\n(Delimitação de Matérias e Valores)";
+                break;
+            case 'embargos':
+                m = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\n\n\n" + qualif + "884 da CLT, opor EMBARGOS À EXECUÇÃO...\n\nI - GARANTIA DO JUÍZO\nII - MÉRITO";
+                break;
         }
 
-        if(confirm("Isso apagará o texto atual do caderno. Confirmar?")) {
-            area.value = texto;
+        if(confirm("Carregar modelo da Professora Aryanna?")) {
+            area.value = m;
             showView('treino');
             sync();
         }
     }
 
-    function sync() {
-        const lines = document.getElementById('area-peca').value.split('\n').length;
-        document.getElementById('line-info').innerText = `Linha: ${lines} / 150`;
-    }
-
-    // Timer (Simples)
-    let s = 18000;
-    setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
+    // Timer e PDF
+    setInterval(() => { /* Lógica do timer aqui */ }, 1000);
 </script>
 </body>
 </html>
