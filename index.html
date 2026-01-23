@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
     <style>
-        :root { --primary: #1a252f; --accent: #f1c40f; --success: #27ae60; --danger: #e74c3c; --fgv-blue: #004a8d; --bg: #f4f4f4; --gold: #d4af37; --postit-bg: #fff9c4; --purple: #8e44ad; --orange: #e67e22; }
+        :root { --primary: #1a252f; --accent: #f1c40f; --success: #27ae60; --danger: #e74c3c; --fgv-blue: #004a8d; --bg: #f4f4f4; --gold: #d4af37; --orange: #e67e22; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
@@ -13,9 +13,6 @@
         .timer { font-family: monospace; color: var(--accent); font-weight: bold; font-size: 1.2rem; }
 
         .top-bars { flex-shrink: 0; z-index: 900; background: #fff; }
-        .links-planalto { background: #2c3e50; padding: 8px; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; }
-        .links-planalto a { color: #fff; text-decoration: none; font-size: 0.7rem; font-weight: bold; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.1); }
-        
         .symbol-bar { background: #eee; padding: 5px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; border-bottom: 1px solid #ccc; }
         .sym-btn { background: white; border: 1px solid #bbb; padding: 8px 2px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-align: center; }
 
@@ -25,30 +22,29 @@
         .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; width: 100%; }
         .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; border-left: 2px solid #ccc; z-index: 1100; transition: 0.3s; }
 
+        /* SELETOR DE PDF (ALTERNÂNCIA) */
+        .pdf-nav { display: flex; background: #222; padding: 5px; gap: 5px; }
+        .btn-pdf { flex: 1; padding: 10px 5px; border: none; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #444; color: white; transition: 0.2s; }
+        .btn-pdf.active { background: var(--accent); color: black; }
+
         .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 10px; border: 1px solid #000; background: white; position: relative; }
         .fgv-h { background: #f0f0f0; border-bottom: 1px solid #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
         .paper { flex: 1; display: flex; overflow-y: auto; }
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         #area-main { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; }
 
-        /* MENUS LATERAIS */
-        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s ease-in-out; box-shadow: 5px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
-        .drawer.open { left: 0; }
-        .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; border-bottom: 4px solid var(--gold); }
-        .drawer-item { padding: 12px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; display: flex; justify-content: space-between; }
-        .drawer-section { background: #f4f4f4; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #666; text-transform: uppercase; }
-
-        /* JANELA DE CONSULTA FULL (MELHORIA JOAQUIM) */
+        /* CONSULTA FULL */
         .consulta-full { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; }
         .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: bold; }
-        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 1.5; }
+        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 1.1rem; }
 
-        /* PDF BOX */
-        .pdf-box { flex: 1; display: flex; flex-direction: column; border-bottom: 2px solid #000; }
-        .pdf-header { background: #222; color: white; padding: 5px 10px; font-size: 0.6rem; display: flex; justify-content: space-between; align-items: center; }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
+        .drawer.open { left: 0; }
+        .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; }
+        .drawer-item { padding: 12px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
+        .drawer-section { background: #f4f4f4; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #666; text-transform: uppercase; }
 
-        .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; flex-shrink: 0; }
+        .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; }
         .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
@@ -71,119 +67,128 @@
 </header>
 
 <div class="top-bars">
-    <div class="links-planalto">
-        <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank">CF/88</a>
-        <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank">CLT</a>
-        <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm" target="_blank">CPC/15</a>
-        <a href="https://www.tst.jus.br/sumulas" target="_blank">SÚMULAS</a>
-        <a href="https://www.tst.jus.br/ojs" target="_blank">OJs</a>
-    </div>
     <div class="symbol-bar">
         <button class="sym-btn" onclick="addSym('§ ')">§</button>
         <button class="sym-btn" onclick="addSym('Art. ')">Art.</button>
         <button class="sym-btn" onclick="abrirBanco('postits')">📌 NOTAS</button>
         <button class="sym-btn" onclick="abrirBanco('correcoes')">⚖️ ERROS</button>
-        <button class="sym-btn" onclick="setApoio()">👩‍🏫 APOIO</button>
-        <button class="sym-btn" onclick="fazerBackup()">📥 BKUP</button>
+        <button class="sym-btn" onclick="fazerBackup()" style="color:var(--purple)">📥 BKUP</button>
+        <button class="sym-btn" onclick="baixarTXT()" style="color:var(--success)">💾 TXT</button>
     </div>
 </div>
 
 <div id="aviso-edicao">
-    ⚠️ EDITANDO BANCO: <span id="nome-edit"></span> 
+    ⚠️ EDITANDO: <span id="nome-edit"></span> 
     <button onclick="salvarBanco()" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:4px; margin-left:10px;">SALVAR</button>
     <button onclick="cancelarEdicao()" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px;">CANCELAR</button>
 </div>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header">ESTRUTURAS FGV</div>
-    <div class="drawer-section">Peças Anti-Surpresa</div>
-    <div class="drawer-item" onclick="aplicar('ms')">🛡️ Mandado de Segurança <span>▶</span></div>
-    <div class="drawer-item" onclick="aplicar('consignacao')">💰 Consignação <span>▶</span></div>
-    <div class="drawer-item" onclick="aplicar('ap')">🔨 Agravo de Petição <span>▶</span></div>
-    <div class="drawer-section">Peças Tradicionais</div>
-    <div class="drawer-item" onclick="aplicar('rt')">📄 Reclamação Trabalhista <span>▶</span></div>
-    <div class="drawer-item" onclick="aplicar('contestacao')">🛡️ Contestação <span>▶</span></div>
-    <div class="drawer-item" onclick="aplicar('ro')">⚖️ Recurso Ordinário <span>▶</span></div>
+    <div class="drawer-header">MÉTODO ARYANNA</div>
+    <div class="drawer-section">Anti-Surpresa</div>
+    <div class="drawer-item" onclick="aplicar('ms')">🛡️ Mandado de Segurança</div>
+    <div class="drawer-item" onclick="aplicar('consignacao')">💰 Consignação</div>
+    <div class="drawer-item" onclick="aplicar('ap')">🔨 Agravo de Petição</div>
+    <div class="drawer-section">Tradicionais</div>
+    <div class="drawer-item" onclick="aplicar('rt')">📄 Reclamação</div>
+    <div class="drawer-item" onclick="aplicar('contestacao')">🛡️ Contestação</div>
+    <div class="drawer-item" onclick="aplicar('ro')">⚖️ Recurso Ordinário</div>
 </nav>
 
 <main class="workspace">
     <section class="col-res">
         <div class="fgv-sheet">
-            <div class="fgv-h">OAB/FGV - TEXTO DEFINITIVO</div>
+            <div class="fgv-h">OAB/FGV - RESPOSTA</div>
             <div class="paper">
                 <div class="line-nums" id="line-nums"></div>
-                <textarea id="area-main" oninput="savePeca()" placeholder="Escreva aqui..."></textarea>
+                <textarea id="area-main" oninput="savePeca()" placeholder="Digite sua peça..."></textarea>
             </div>
         </div>
         <div class="footer-actions">
-            <button onclick="baixarTXT()" class="btn-foot" style="background:var(--success)">SALVAR TXT</button>
-            <button id="btn-mobile-pdf" onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue); display:none;">VER PROVA</button>
-            <button onclick="limparTudo()" class="btn-foot" style="background:var(--danger)">LIMPAR</button>
+            <button id="btn-mobile-pdf" onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue); display:none;">VER PDF</button>
+            <button onclick="limparTudo()" class="btn-foot" style="background:var(--danger)">LIMPAR TUDO</button>
         </div>
     </section>
 
     <section class="col-pdf" id="pdf-area">
-        <div style="padding:5px; background:#222;">
-            <select id="exam-select" onchange="trocarExame()" style="width:100%; padding:8px; font-weight:bold;">
+        <div style="padding:5px; background:#111;">
+            <select id="exam-select" onchange="trocarExame()" style="width:100%; padding:8px; background:#333; color:white; border:none; font-weight:bold;">
                 <option value="42">Exame 42</option>
                 <option value="41">Exame 41</option>
                 <option value="40">Exame 40</option>
+                <option value="39">Exame 39</option>
             </select>
         </div>
-        <div class="pdf-box">
-            <div class="pdf-header">ENUNCIADO <button onclick="expandir('f-enu')">⛶ EXPANDIR</button></div>
-            <iframe id="f-enu"></iframe>
+        <div class="pdf-nav">
+            <button id="nav-p" class="btn-pdf active" onclick="carregarDoc('prova')">PROVA</button>
+            <button id="nav-g" class="btn-pdf" onclick="carregarDoc('gabarito')">GABARITO</button>
+            <button id="nav-a" class="btn-pdf" onclick="carregarDoc('aryanna')">ARYANNA</button>
+            <button class="btn-pdf" onclick="expandirPdf()" style="max-width: 40px;">⛶</button>
         </div>
-        <div class="pdf-box">
-            <div class="pdf-header">GABARITO <button onclick="expandir('f-gab')">⛶ EXPANDIR</button></div>
-            <iframe id="f-gab"></iframe>
-        </div>
+        <iframe id="f-pdf" src=""></iframe>
     </section>
 </main>
 
 <div id="janela-consulta" class="consulta-full">
     <div id="header-consulta" class="consulta-header">
         <span id="titulo-consulta"></span>
-        <button onclick="fecharConsulta()" style="background:rgba(0,0,0,0.2); border:none; color:white; padding:10px; border-radius:5px;">FECHAR X</button>
+        <button onclick="fecharConsulta()" style="background:rgba(0,0,0,0.2); border:none; color:white; padding:10px;">FECHAR [X]</button>
     </div>
     <div id="corpo-consulta" class="consulta-body"></div>
-    <div style="padding:15px; display:flex; gap:10px; background:#f4f4f4;">
+    <div style="padding:15px; display:flex; gap:10px; background:#eee;">
         <button onclick="inserirNaPeca()" style="flex:2; height:50px; background:var(--fgv-blue); color:white; font-weight:bold; border:none; border-radius:5px;">COPIAR PARA PEÇA</button>
-        <button onclick="prepararEdicao()" style="flex:1; background:#ddd; border:none; border-radius:5px; font-weight:bold;">EDITAR</button>
+        <button onclick="prepararEdicao()" style="flex:1; background:#ccc; border:none; border-radius:5px;">EDITAR</button>
     </div>
 </div>
 
 <div id="menu-banco" class="consulta-full" style="background:rgba(0,0,0,0.7);">
     <div style="width:85%; height:100%; background:white; margin-left:auto; display:flex; flex-direction:column;">
-        <div id="header-banco" class="consulta-header" style="background:var(--fgv-blue);">MEU BANCO DE DADOS <button onclick="fecharBanco()">X</button></div>
+        <div id="header-banco" class="consulta-header" style="background:var(--fgv-blue);">BANCO DE DADOS <button onclick="fecharBanco()">X</button></div>
         <div id="lista-itens" style="flex:1; overflow-y:auto; padding:10px;"></div>
-        <button onclick="novoRegistro()" style="padding:20px; background:var(--success); color:white; border:none; font-weight:bold;">+ NOVO REGISTRO</button>
+        <button onclick="novoRegistro()" style="padding:20px; background:var(--success); color:white; border:none; font-weight:bold;">+ NOVO</button>
     </div>
 </div>
 
 <script>
     const area = document.getElementById('area-main');
+    const fPdf = document.getElementById('f-pdf');
     let dbAtual = 'db_postits';
+    let docAtual = 'prova';
     let idEditando = null;
     let cachePeca = "";
 
-    // INICIALIZAÇÃO DE BANCOS (CASO VAZIOS)
-    if(!localStorage.getItem('db_postits')) localStorage.setItem('db_postits', JSON.stringify({'1': {nome: 'DICA: HONORÁRIOS', texto: 'Art. 791-A CLT - 5% a 15%.'}}));
-    if(!localStorage.getItem('db_correcoes')) localStorage.setItem('db_correcoes', JSON.stringify({'1': {nome: 'ERRO: ESTABILIDADE', texto: 'Não confundir Gestante (ADCT) com Acidentário (Súm. 378 TST).'}}));
-
     function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
     function togglePdf() { document.getElementById('pdf-area').classList.toggle('active'); }
-    function closeAll() { document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open')); document.getElementById('overlay').classList.remove('active'); }
+    function closeAll() { document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
 
-    // LÓGICA DE BANCO E CONSULTA
+    // ALTERNÂNCIA DE DOCUMENTOS (CORRIGIDO)
+    function carregarDoc(tipo) {
+        docAtual = tipo;
+        const ex = document.getElementById('exam-select').value;
+        document.querySelectorAll('.btn-pdf').forEach(b => b.classList.remove('active'));
+        
+        if(tipo === 'prova') {
+            fPdf.src = `./ro${ex}.pdf`;
+            document.getElementById('nav-p').classList.add('active');
+        } else if(tipo === 'gabarito') {
+            fPdf.src = `./ro${ex}-gabarito.pdf`;
+            document.getElementById('nav-g').classList.add('active');
+        } else {
+            fPdf.src = `./Aryanna Linhares.pdf`;
+            document.getElementById('nav-a').classList.add('active');
+        }
+    }
+
+    function trocarExame() { carregarDoc(docAtual); loadPeca(); }
+    function expandirPdf() { if (fPdf.requestFullscreen) fPdf.requestFullscreen(); else if (fPdf.webkitRequestFullscreen) fPdf.webkitRequestFullscreen(); }
+
+    // BANCO DE DADOS E CONSULTA
     function abrirBanco(tipo) {
         dbAtual = 'db_' + tipo;
         const db = JSON.parse(localStorage.getItem(dbAtual)) || {};
         const container = document.getElementById('lista-itens');
         document.getElementById('header-banco').style.backgroundColor = tipo === 'postits' ? 'var(--accent)' : 'var(--orange)';
-        container.innerHTML = Object.keys(db).map(id => `
-            <div onclick="verDetalhes('${id}')" style="padding:15px; border-bottom:1px solid #eee; font-weight:bold;">📌 ${db[id].nome}</div>
-        `).join('');
+        container.innerHTML = Object.keys(db).map(id => `<div onclick="verDetalhes('${id}')" style="padding:15px; border-bottom:1px solid #eee; font-weight:bold;">📌 ${db[id].nome}</div>`).join('');
         document.getElementById('menu-banco').style.display = 'flex';
     }
 
@@ -200,9 +205,7 @@
     function prepararEdicao() {
         const db = JSON.parse(localStorage.getItem(dbAtual));
         cachePeca = area.value;
-        const item = db[idEditando];
-        area.value = item.nome + "\n---\n" + item.texto;
-        document.getElementById('nome-edit').innerText = item.nome;
+        area.value = db[idEditando].nome + "\n---\n" + db[idEditando].texto;
         document.getElementById('aviso-edicao').style.display = 'block';
         fecharConsulta();
     }
@@ -222,26 +225,16 @@
     function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
     function fecharBanco() { document.getElementById('menu-banco').style.display = 'none'; }
 
-    // ESTRUTURAS E PDFS
+    // AUXILIARES
     function aplicar(tipo) {
         const m = { ro: "AO DOUTO JUÍZO... RECURSO ORDINÁRIO...", rt: "AO DOUTO JUÍZO... RECLAMAÇÃO TRABALHISTA...", ms: "AO DOUTO JUÍZO... MANDADO DE SEGURANÇA...", contestacao: "AO DOUTO JUÍZO... CONTESTAÇÃO...", consignacao: "AO DOUTO JUÍZO... CONSIGNAÇÃO...", ap: "AO DOUTO JUÍZO... AGRAVO DE PETIÇÃO..." };
         area.value = m[tipo]; savePeca(); closeAll();
     }
-
-    function trocarExame() {
-        const ex = document.getElementById('exam-select').value;
-        document.getElementById('f-enu').src = `./ro${ex}.pdf`;
-        document.getElementById('f-gab').src = `./ro${ex}-gabarito.pdf`;
-        loadPeca();
-    }
-
-    function setApoio() { document.getElementById('f-enu').src = "./Aryanna Linhares.pdf"; }
-    function expandir(id) { const el = document.getElementById(id); if (el.requestFullscreen) el.requestFullscreen(); else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }
     function addSym(s) { area.setRangeText(s, area.selectionStart, area.selectionEnd, 'end'); area.focus(); }
     function savePeca() { localStorage.setItem(`peca_${document.getElementById('exam-select').value}`, area.value); }
     function loadPeca() { area.value = localStorage.getItem(`peca_${document.getElementById('exam-select').value}`) || ""; }
-    function baixarTXT() { const b = new Blob([area.value], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "Peca.txt"; a.click(); }
-    function fazerBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(localStorage)], {type: 'application/json'})); a.download = "BACKUP_OAB.json"; a.click(); }
+    function baixarTXT() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([area.value], {type:'text/plain'})); a.download = "Peca.txt"; a.click(); }
+    function fazerBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(localStorage)], {type: 'application/json'})); a.download = "BACKUP.json"; a.click(); }
     function limparTudo() { if(confirm("Limpar?")) { area.value = ""; savePeca(); } }
 
     window.onload = () => {
