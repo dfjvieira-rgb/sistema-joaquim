@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
@@ -39,20 +41,28 @@
 
         .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; transition: 0.3s; }
         .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; border-bottom: 1px solid #000; }
+        
+        /* FOLHA COM ESCRITA MANUAL */
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
-        .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
+        .line-nums { width: 35px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; font-family: sans-serif; }
         .textarea-fgv { 
             flex: 1; border: none; outline: none; resize: none; padding: 0 15px; 
-            font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; 
-            background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); 
-            background-size: 100% 25px; color: black;
+            /* CONFIGURAÇÃO DA LETRA MANUSCRITA */
+            font-family: 'Caveat', cursive; 
+            font-size: 24px; /* Tamanho ajustado para a fonte cursiva */
+            line-height: 25px; 
+            background-attachment: local; 
+            background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
+            background-size: 100% 25px; 
+            color: #001f3f; /* Azul Caneta */
+            overflow-y: hidden;
         }
 
         .col-pdf { flex: 1; display: flex; flex-direction: column; background: var(--pdf-bg); border-left: 2px solid #000; transition: 0.3s; z-index: 1100; }
         .pdf-tabs { display: flex; background: #111; padding: 2px; gap: 2px; }
         .tab-btn { flex: 1; padding: 12px 5px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; text-transform: uppercase; }
         .tab-btn.active { background: white; color: var(--fgv-blue); }
-        .btn-externo { background: var(--warning); color: black !important; flex: 0.4; }
+        .btn-externo { background: var(--warning); color: black !important; flex: 0.3; }
         
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
@@ -66,10 +76,6 @@
             background: var(--fgv-blue); color: white; border: 3px solid var(--gold);
             width: 65px; height: 65px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-
-        .input-group { margin-bottom: 12px; padding: 0 20px; }
-        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #555; margin-bottom: 5px; }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
@@ -104,16 +110,18 @@
 </div>
 
 <div class="pratica-bar">
-    <button class="btn-pratica bg-pratica" onclick="modoTreino('peca')">🏋️ PRATICAR PEÇA</button>
-    <button class="btn-pratica bg-discursiva" onclick="modoTreino('questoes')">📝 DISCURSIVAS</button>
+    <button class="btn-pratica bg-pratica" id="btn-modo-peca" onclick="modoTreino('peca')">🏋️ PEÇA (150 LINHAS)</button>
+    <button class="btn-pratica bg-discursiva" id="btn-modo-questoes" onclick="modoTreino('questoes')">📝 QUESTÕES (1-4)</button>
 </div>
 
 <main class="workspace">
     <section class="col-res" id="section-res">
         <div class="fgv-header" id="label-folha">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
-        <div class="paper">
+        <div class="paper" id="main-paper-container">
             <div class="line-nums" id="line-nums-main"></div>
-            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Comece a redação..."></textarea>
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva aqui como se estivesse com a caneta na mão..."></textarea>
+            </div>
         </div>
     </section>
 
@@ -135,9 +143,9 @@
         <div class="consulta-h"><span id="consulta-titulo">MEUS REGISTROS</span><button onclick="document.getElementById('janela-consulta').style.display='none'">X</button></div>
         <div id="lista-itens" class="consulta-b"></div>
         <div id="item-detalhe" class="consulta-b" style="display:none; background:white;">
-            <div class="fgv-header" style="background:#eee; color:#333">VISUALIZAÇÃO EM FOLHA FGV</div>
+            <div class="fgv-header" style="background:#eee; color:#333">PRÉ-VISUALIZAÇÃO</div>
             <div class="paper" style="flex:1;"><div class="line-nums" id="line-nums-preview"></div><textarea id="preview-texto" class="textarea-fgv" readonly></textarea></div>
-            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px;"><button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px;">VOLTAR</button><button onclick="copiarParaPeca()" style="flex:2; background:var(--fgv-blue); color:white; border:none; font-weight:bold;">COPIAR PARA PEÇA</button></div>
+            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px;"><button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px;">VOLTAR</button><button onclick="copiarParaPeca()" style="flex:2; background:var(--fgv-blue); color:white; border:none; font-weight:bold;">COPIAR PARA FOLHA</button></div>
         </div>
     </div>
 </div>
@@ -146,10 +154,9 @@
     <div class="consulta-card" style="height:auto;" onclick="event.stopPropagation()">
         <div class="consulta-h">SALVAR NOVO <button onclick="fecharModalCadastro()">X</button></div>
         <div class="consulta-b" style="padding:20px;">
-            <div class="input-group"><label>Categoria:</label><select id="cad-tipo"><option value="postits">📌 Post-it</option><option value="correcoes">⚖️ Erro</option></select></div>
-            <div class="input-group"><label>Título:</label><input type="text" id="cad-nome"></div>
-            <div class="input-group"><label>Conteúdo:</label><textarea id="cad-texto" rows="8"></textarea></div>
-            <button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px;">SALVAR NO BANCO</button>
+            <div style="margin-bottom:10px"><label style="color:#333; font-weight:bold">Título:</label><br><input type="text" id="cad-nome" style="width:100%; padding:8px;"></div>
+            <div style="margin-bottom:10px"><label style="color:#333; font-weight:bold">Conteúdo:</label><br><textarea id="cad-texto" rows="8" style="width:100%; padding:8px;"></textarea></div>
+            <button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO BANCO</button>
         </div>
     </div>
 </div>
@@ -157,7 +164,7 @@
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; let modoAtual = 'peca';
 
-    // GERAR GRADE
+    // GERAR GRADE EXAMES
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=44; i++){
         const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
@@ -171,10 +178,7 @@
         if(tipo === 'gabarito') document.getElementById('tab-gab').classList.add('active');
         else if(tipo === 'aryanna') document.getElementById('tab-ary').classList.add('active');
         else document.getElementById('tab-prova').classList.add('active');
-
-        const frame = document.getElementById('f-pdf');
-        let path = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        frame.src = path;
+        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
     }
 
     function abrirExterno() {
@@ -186,13 +190,29 @@
         modoAtual = tipo;
         const area = document.getElementById('texto-final');
         const label = document.getElementById('label-folha');
+        const lineContainer = document.getElementById('line-nums-main');
+        
+        document.getElementById('btn-modo-peca').style.opacity = tipo === 'peca' ? '1' : '0.5';
+        document.getElementById('btn-modo-questoes').style.opacity = tipo === 'questoes' ? '1' : '0.5';
+
         if(tipo === 'peca') {
-            label.innerText = "FOLHA DE RESPOSTA - PEÇA PRÁTICA";
+            label.innerText = "FOLHA DE RESPOSTA DEFINITIVA - PEÇA PROFISSIONAL";
+            area.style.height = "3750px"; 
+            gerarLinhas(150, lineContainer);
             area.value = localStorage.getItem('save_2026_peca') || "";
         } else {
-            label.innerText = "FOLHA DE RESPOSTA - QUESTÕES DISCURSIVAS";
-            area.value = localStorage.getItem('save_2026_questoes') || "";
+            label.innerText = "FOLHA DE RESPOSTA DEFINITIVA - QUESTÕES DISCURSIVAS";
+            area.style.height = "3000px"; 
+            gerarLinhas(120, lineContainer);
+            area.value = localStorage.getItem('save_2026_questoes') || "QUESTÃO 1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQUESTÃO 2:";
         }
+        document.getElementById('main-paper-container').scrollTop = 0;
+    }
+
+    function gerarLinhas(qtd, container) {
+        let html = "";
+        for(let i=1; i<=qtd; i++) html += i + "<br>";
+        container.innerHTML = html;
     }
 
     function saveAuto() {
@@ -201,7 +221,7 @@
     }
 
     function aplicarEstruct(tipo) {
-        if(modoAtual !== 'peca') return alert("Mude para PRATICAR PEÇA.");
+        if(modoAtual !== 'peca') return alert("Mude para o modo PEÇA.");
         const m = {
             rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., já qualificado...\nRECLAMAÇÃO TRABALHISTA...",
             cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECLAMADO..., já qualificado...\nCONTESTAÇÃO...",
@@ -212,21 +232,19 @@
         saveAuto();
     }
 
-    // CRUD
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
     function salvarNovoItem() {
-        const tipo = document.getElementById('cad-tipo').value;
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
         if(!nome || !texto) return alert("Preencha tudo!");
-        let db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
+        let db = JSON.parse(localStorage.getItem('db_postits')) || {};
         db[Date.now()] = { nome, texto };
-        localStorage.setItem('db_' + tipo, JSON.stringify(db));
+        localStorage.setItem('db_postits', JSON.stringify(db));
         fecharModalCadastro();
     }
-    function abrirBanco(tipo) {
-        const db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
+    function abrirBanco() {
+        const db = JSON.parse(localStorage.getItem('db_postits')) || {};
         const lista = document.getElementById('lista-itens');
         lista.innerHTML = '';
         for(let id in db) {
@@ -248,7 +266,6 @@
         saveAuto();
     }
 
-    // TIMER
     function toggleTimer() {
         if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
         else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); }
@@ -260,9 +277,7 @@
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
 
     window.onload = () => {
-        const m = document.getElementById('line-nums-main');
-        const p = document.getElementById('line-nums-preview');
-        for(let i=1; i<=150; i++) { m.innerHTML += i + '<br>'; p.innerHTML += i + '<br>'; }
+        gerarLinhas(150, document.getElementById('line-nums-preview'));
         modoTreino('peca');
         mudarDoc('prova');
     };
