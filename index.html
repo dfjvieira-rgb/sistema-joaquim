@@ -47,11 +47,18 @@
 
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
         .line-nums { width: 35px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; font-family: sans-serif; }
+        
+        /* AJUSTE DE TAMANHO DE LETRA */
         .textarea-fgv { 
             flex: 1; border: none; outline: none; resize: none; padding: 0 15px; 
-            font-family: 'Caveat', cursive; font-size: 24px; line-height: 25px; 
-            background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
-            background-size: 100% 25px; color: #001f3f; overflow-y: hidden;
+            font-family: 'Caveat', cursive; 
+            font-size: 20px; /* Reduzido de 24px para 20px */
+            line-height: 25px; 
+            background-attachment: local; 
+            background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
+            background-size: 100% 25px; 
+            color: #001f3f; 
+            overflow-y: hidden;
         }
 
         .col-pdf { flex: 1; display: flex; flex-direction: column; background: var(--pdf-bg); border-left: 2px solid #000; transition: 0.3s; z-index: 1100; }
@@ -69,7 +76,6 @@
         .consulta-b { padding: 0; overflow-y: auto; color: #333; flex: 1; }
 
         .hist-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .hist-item:hover { background: #f9f9f9; }
 
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
@@ -89,7 +95,7 @@
 <div class="laws-bar">
     <button class="law-link" onclick="abrirBancoPostits()" style="background:var(--warning); color:black;">📌 MEUS POST-ITS</button>
     <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success); color:white;">➕ NOVO POST-IT</button>
-    <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 VER MEUS TREINOS</button>
+    <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 MEUS TREINOS SALVOS</button>
 </div>
 
 <div class="exam-grid" id="exam-grid"></div>
@@ -112,12 +118,12 @@
             <span id="label-folha">FOLHA FGV</span>
             <div>
                 <button class="btn-history" onclick="arquivarTreino()">📁 ARQUIVAR TREINO</button>
-                <button class="btn-save-folha" onclick="saveManual()">💾 SALVAR ATUAL</button>
+                <button class="btn-save-folha" onclick="saveManual()">💾 SALVAR RASCUNHO</button>
             </div>
         </div>
         <div class="paper" id="main-paper-container">
             <div class="line-nums" id="line-nums-main"></div>
-            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()"></textarea>
+            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Comece sua escrita..."></textarea>
         </div>
     </section>
 
@@ -135,7 +141,7 @@
 
 <div id="janela-historico" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
-        <div class="consulta-h">MEU HISTÓRICO DE TREINOS <button onclick="document.getElementById('janela-historico').style.display='none'">X</button></div>
+        <div class="consulta-h">HISTÓRICO DE PRODUÇÕES <button onclick="document.getElementById('janela-historico').style.display='none'">X</button></div>
         <div id="lista-historico" class="consulta-b"></div>
         <div id="view-historico" class="consulta-b" style="display:none; background:white;">
             <div class="fgv-header" style="background:#eee;"><span id="view-hist-titulo"></span> <button onclick="fecharViewHist()">VOLTAR</button></div>
@@ -146,18 +152,18 @@
 
 <div id="janela-postits" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
-        <div class="consulta-h">MEUS POST-ITS <button onclick="document.getElementById('janela-postits').style.display='none'">X</button></div>
+        <div class="consulta-h">BANCO DE TESES/POST-ITS <button onclick="document.getElementById('janela-postits').style.display='none'">X</button></div>
         <div id="lista-postits" class="consulta-b"></div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta">
     <div class="consulta-card" style="height:auto;" onclick="event.stopPropagation()">
-        <div class="consulta-h">SALVAR NOVO POST-IT <button onclick="fecharModalCadastro()">X</button></div>
+        <div class="consulta-h">CADASTRAR TESE <button onclick="fecharModalCadastro()">X</button></div>
         <div class="consulta-b" style="padding:20px;">
-            <input type="text" id="cad-nome" placeholder="Título da Tese" style="width:100%; padding:10px; margin-bottom:10px;">
-            <textarea id="cad-texto" rows="8" placeholder="Texto para copiar..." style="width:100%; padding:10px;"></textarea>
-            <button onclick="salvarNovoPostit()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold;">SALVAR</button>
+            <input type="text" id="cad-nome" placeholder="Nome da Tese (Ex: Horas Extras)" style="width:100%; padding:12px; margin-bottom:12px;">
+            <textarea id="cad-texto" rows="8" placeholder="Texto jurídico para copiar..." style="width:100%; padding:12px;"></textarea>
+            <button onclick="salvarNovoPostit()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold; width:100%">SALVAR NO MEU BANCO</button>
         </div>
     </div>
 </div>
@@ -165,7 +171,6 @@
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; let modoAtual = 'peca';
 
-    // GRADE
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=44; i++){
         const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
@@ -173,30 +178,25 @@
         grid.appendChild(b);
     }
 
-    // ARQUIVAMENTO E HISTÓRICO
     function arquivarTreino() {
         const texto = document.getElementById('texto-final').value;
-        if(texto.length < 10) return alert("Escreva algo antes de arquivar!");
-        
-        const data = new Date().toLocaleString();
-        const titulo = `${modoAtual.toUpperCase()} - Exame ${exAtual} (${data})`;
-        
+        if(texto.length < 5) return alert("Nada para arquivar.");
+        const data = new Date().toLocaleString('pt-BR');
+        const titulo = `${modoAtual.toUpperCase()} - Exame ${exAtual} - ${data}`;
         let historico = JSON.parse(localStorage.getItem('master_historico')) || [];
-        historico.unshift({ titulo, texto, modo: modoAtual, data });
+        historico.unshift({ titulo, texto, modo: modoAtual });
         localStorage.setItem('master_historico', JSON.stringify(historico));
-        
-        alert("Treino guardado com sucesso no seu histórico!");
+        alert("Treino arquivado com sucesso!");
     }
 
     function abrirHistorico() {
         const hist = JSON.parse(localStorage.getItem('master_historico')) || [];
         const lista = document.getElementById('lista-historico');
-        lista.innerHTML = hist.length ? '' : '<p style="padding:20px">Nenhum treino arquivado ainda.</p>';
-        
+        lista.innerHTML = hist.length ? '' : '<p style="padding:20px; color:black">Vazio.</p>';
         hist.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'hist-item';
-            div.innerHTML = `<span><b>${item.titulo}</b></span> <div><button onclick="verHist(${index})" style="padding:5px 10px; background:var(--primary); color:white; border:none; border-radius:3px; cursor:pointer">VER</button> <button onclick="delHist(${index})" style="padding:5px 10px; background:var(--danger); color:white; border:none; border-radius:3px; cursor:pointer; margin-left:5px">X</button></div>`;
+            div.innerHTML = `<span style="color:black; font-weight:bold">${item.titulo}</span> <div><button onclick="verHist(${index})" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px">VER</button> <button onclick="delHist(${index})" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px; margin-left:5px">X</button></div>`;
             lista.appendChild(div);
         });
         document.getElementById('view-historico').style.display = 'none';
@@ -213,13 +213,10 @@
         gerarLinhas(item.modo === 'peca' ? 150 : 120, document.getElementById('line-nums-hist'));
     }
 
-    function fecharViewHist() {
-        document.getElementById('view-historico').style.display = 'none';
-        document.getElementById('lista-historico').style.display = 'block';
-    }
+    function fecharViewHist() { document.getElementById('view-historico').style.display = 'none'; document.getElementById('lista-historico').style.display = 'block'; }
 
     function delHist(index) {
-        if(confirm("Excluir este treino permanentemente?")) {
+        if(confirm("Excluir definitivamente?")) {
             let hist = JSON.parse(localStorage.getItem('master_historico'));
             hist.splice(index, 1);
             localStorage.setItem('master_historico', JSON.stringify(hist));
@@ -227,14 +224,12 @@
         }
     }
 
-    // SISTEMA DE PEÇA/QUESTÕES
     function modoTreino(tipo) {
         modoAtual = tipo;
         const area = document.getElementById('texto-final');
         const lineContainer = document.getElementById('line-nums-main');
         document.getElementById('btn-modo-peca').style.opacity = tipo === 'peca' ? '1' : '0.5';
         document.getElementById('btn-modo-questoes').style.opacity = tipo === 'questoes' ? '1' : '0.5';
-
         if(tipo === 'peca') {
             document.getElementById('label-folha').innerText = "PEÇA (150 LINHAS)";
             area.style.height = "3750px"; 
@@ -244,33 +239,23 @@
             document.getElementById('label-folha').innerText = "DISCURSIVAS (120 LINHAS)";
             area.style.height = "3000px"; 
             gerarLinhas(120, lineContainer);
-            area.value = localStorage.getItem('save_2026_questoes') || "QUESTÃO 1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQUESTÃO 2:";
+            area.value = localStorage.getItem('save_2026_questoes') || "QUESTÃO 1:\n\n\n\n\n\n\n\n\n\n\nQUESTÃO 2:";
         }
     }
 
-    function saveAuto() {
-        localStorage.setItem(modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', document.getElementById('texto-final').value);
-    }
+    function saveAuto() { localStorage.setItem(modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', document.getElementById('texto-final').value); }
+    function saveManual() { saveAuto(); const btn = document.querySelector('.btn-save-folha'); btn.innerText = "✅ SALVO!"; setTimeout(() => btn.innerText = "💾 SALVAR RASCUNHO", 2000); }
 
-    function saveManual() {
-        saveAuto();
-        const btn = document.querySelector('.btn-save-folha');
-        btn.innerText = "✅ SALVO!";
-        setTimeout(() => btn.innerText = "💾 SALVAR ATUAL", 2000);
-    }
-
-    // POST-ITS
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
     function salvarNovoPostit() {
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return alert("Preencha tudo!");
+        if(!nome || !texto) return alert("Preencha!");
         let db = JSON.parse(localStorage.getItem('db_master')) || {};
         db[Date.now()] = { nome, texto };
         localStorage.setItem('db_master', JSON.stringify(db));
         fecharModalCadastro();
-        alert("Post-it salvo!");
     }
 
     function abrirBancoPostits() {
@@ -280,7 +265,7 @@
         for(let id in db) {
             const item = document.createElement('div');
             item.className = 'hist-item';
-            item.innerHTML = `<span>📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="padding:5px; background:var(--success); color:white; border:none; cursor:pointer">COPIAR</button>`;
+            item.innerHTML = `<span style="color:black">📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:4px">COPIAR</button>`;
             lista.appendChild(item);
         }
         document.getElementById('janela-postits').style.display = 'flex';
@@ -293,7 +278,6 @@
         saveAuto();
     }
 
-    // FUNÇÕES BÁSICAS (PDF/TIMER)
     function mudarDoc(tipo) {
         docAtual = tipo;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -308,21 +292,9 @@
         saveAuto();
     }
 
-    function gerarLinhas(qtd, container) {
-        let html = ""; for(let i=1; i<=qtd; i++) html += i + "<br>";
-        container.innerHTML = html;
-    }
-
-    function toggleTimer() {
-        if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); }
-    }
-
-    function updateTimerDisplay() {
-        const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60;
-        document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-
+    function gerarLinhas(qtd, container) { let html = ""; for(let i=1; i<=qtd; i++) html += i + "<br>"; container.innerHTML = html; }
+    function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); } }
+    function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
 
     window.onload = () => {
