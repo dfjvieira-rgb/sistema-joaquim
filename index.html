@@ -2,67 +2,73 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA MASTER OAB 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
     <style>
         :root {
             --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
             --warning: #f59e0b; --bg: #111827; --card: #1f2937;
-            --gold: #d4af37; --paper-yellow: #fefce8; --fgv-blue: #004a8d;
+            --fgv-blue: #004a8d; --gold: #d4af37; --pdf-bg: #525659;
+            --paper-yellow: #fefce8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* HEADER */
-        header { background: var(--card); padding: 10px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        #timer-display { font-family: monospace; font-size: 1.3rem; font-weight: bold; color: var(--warning); }
+        header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
+        #timer-display { font-family: monospace; font-size: 1.5rem; font-weight: bold; color: var(--warning); }
 
-        /* LAYOUT PRINCIPAL */
-        .workspace { flex: 1; display: flex; overflow: hidden; position: relative; background: #333; }
+        /* MENU SELETOR DE EXAMES */
+        .exam-grid { display: flex; overflow-x: auto; background: #000; padding: 5px; gap: 5px; flex-shrink: 0; border-bottom: 1px solid #333; scrollbar-width: none; }
+        .exam-grid::-webkit-scrollbar { display: none; }
+        .btn-ex { padding: 10px 20px; border: none; background: #222; color: #888; font-size: 0.75rem; font-weight: bold; cursor: pointer; white-space: nowrap; border-radius: 4px; }
+        .btn-ex.active { background: var(--success); color: white; border: 1px solid white; }
+
+        /* ÁREA DE TRABALHO */
+        .workspace { flex: 1; display: flex; overflow: hidden; position: relative; background: #444; }
         @media (max-width: 768px) { .workspace { flex-direction: column; } }
 
-        /* COLUNAS */
-        .col { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid #000; position: relative; }
-        .col-pdf { background: #525659; }
-
-        /* ESTILO FOLHA FGV */
-        .fgv-header { background: #e5e7eb; color: #000; text-align: center; padding: 6px; font-size: 0.65rem; font-weight: bold; border-bottom: 1px solid #000; text-transform: uppercase; }
-        .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
-        .line-nums { width: 30px; background: #f9fafb; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
-        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-image: linear-gradient(transparent, transparent 24px, #e5e7eb 25px); background-size: 100% 25px; color: black; background-attachment: local; }
-
-        /* SIDEBAR RETRÁTIL (ESTILO GAVETA) */
+        /* SIDEBAR RETRÁTIL (POST-ITS E DICAS) */
         #sidebar { 
-            position: absolute; left: -100%; top: 0; bottom: 0; width: 400px; max-width: 85vw;
-            background: var(--card); z-index: 1000; transition: 0.3s ease-in-out;
+            position: absolute; left: -100%; top: 0; bottom: 0; width: 420px; max-width: 90vw;
+            background: var(--card); z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; border-right: 3px solid var(--gold);
-            box-shadow: 10px 0 20px rgba(0,0,0,0.5);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
         #sidebar.active { left: 0; }
 
-        /* BUSCA E LISTA */
-        .sidebar-top { padding: 15px; background: #111827; }
-        .search-box { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--gold); background: #1f2937; color: white; margin-bottom: 10px; }
-        .db-list { height: 150px; overflow-y: auto; background: #000; border-radius: 4px; }
-        .db-item { padding: 10px; border-bottom: 1px solid #222; font-size: 0.8rem; cursor: pointer; color: #ccc; }
-        .db-item:hover { background: #2d3748; color: white; }
+        /* COLUNAS */
+        .col-main { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #333; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: var(--pdf-bg); }
 
-        /* FICHA DE CONSULTA (AMARELA) */
-        .notebook-preview { flex: 1; display: flex; flex-direction: column; background: var(--paper-yellow); }
-        .notebook-title { background: #fef08a; border: none; border-bottom: 2px solid #eab308; padding: 12px; font-family: serif; font-weight: bold; font-size: 1.1rem; color: #854d0e; outline: none; }
+        /* ESTILO FOLHA DE RESPOSTA FGV */
+        .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 6px; font-size: 0.65rem; font-weight: bold; border-bottom: 1px solid #000; text-transform: uppercase; }
+        .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
+        .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
+        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; color: black; }
 
-        /* BOTÕES FLUTUANTES / AÇÃO */
-        .action-bar { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
-        .btn-float { width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.4rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+        /* LISTA E BUSCA NA SIDEBAR */
+        .db-header { padding: 15px; background: #111827; }
+        .search-box { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--gold); background: #1f2937; color: white; }
+        .db-list-area { height: 150px; overflow-y: auto; background: #000; margin-top: 10px; border-radius: 4px; }
+        .db-item { padding: 10px; border-bottom: 1px solid #222; font-size: 0.8rem; cursor: pointer; color: #aaa; }
+        .db-item:hover { background: #1f2937; color: white; }
 
-        .pdf-nav { display: flex; background: #000; }
+        /* FICHA DE CONSULTA AMARELA */
+        .preview-notebook { flex: 1; display: flex; flex-direction: column; background: var(--paper-yellow); border-top: 2px solid var(--gold); }
+        .notebook-title { background: #fef08a; border: none; border-bottom: 2px solid #eab308; padding: 12px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 1.1rem; color: #854d0e; outline: none; }
+        
+        /* BOTÕES FLUTUANTES */
+        .fab-container { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 3000; }
+        .fab { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+
+        .pdf-tabs { display: flex; background: #111; flex-shrink: 0; }
         .tab-btn { flex: 1; padding: 12px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; }
         .tab-btn.active { background: white; color: var(--fgv-blue); }
         iframe { width: 100%; height: 100%; border: none; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
-        .modal { background: white; width: 90%; max-width: 450px; padding: 20px; border-radius: 8px; color: black; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; }
+        .modal { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 8px; color: black; }
     </style>
 </head>
 <body>
@@ -70,120 +76,142 @@
 <header>
     <div style="font-weight:bold; color:var(--gold)">ARYANNA MASTER 2026</div>
     <div id="timer-display">05:00:00</div>
-    <button onclick="toggleTimer()" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:4px; font-weight:bold;">INICIAR</button>
+    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:8px 15px; border-radius:4px; font-weight:bold;">INICIAR</button>
 </header>
+
+<div class="exam-grid" id="exam-grid"></div>
+
+<div class="fab-container">
+    <button class="fab" style="background:var(--success); color:white" onclick="abrirModal()">+</button>
+    <button class="fab" style="background:var(--danger); color:white" onclick="abrirSidebar('correcoes')">⚖️</button>
+    <button class="fab" style="background:var(--warning); color:black" onclick="abrirSidebar('postits')">📌</button>
+</div>
 
 <main class="workspace">
     <aside id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; background:var(--gold); padding:10px; color:black;">
-            <strong id="side-type">POST-ITS</strong>
-            <button onclick="closeSide()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <strong id="sidebar-title">POST-ITS</strong>
+            <button onclick="fecharSidebar()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
-        <div class="sidebar-top">
-            <input type="text" id="db-search" class="search-box" placeholder="🔎 Filtrar teses..." oninput="filtrar()">
-            <div class="db-list" id="db-lista"></div>
+        <div class="db-header">
+            <input type="text" id="db-search" class="search-box" placeholder="🔎 Buscar tese ou erro..." oninput="filtrarItens()">
+            <div class="db-list-area" id="db-lista"></div>
         </div>
-        <div class="notebook-preview">
-            <div class="fgv-header" style="background:#fde68a; color:#854d0e">FICHA DE CONSULTA (EDITÁVEL)</div>
-            <input type="text" id="pre-title" class="notebook-title" placeholder="Título da Tese">
-            <div class="paper" style="background:var(--paper-yellow)">
-                <div class="line-nums" id="nums-pre" style="background:#fef9c3"></div>
-                <textarea id="pre-text" class="textarea-fgv" style="background:transparent"></textarea>
+        <div class="preview-notebook">
+            <div class="fgv-header" style="background:#fde68a; color:#854d0e">FICHA DE RESPOSTA FGV (PREVIEW)</div>
+            <input type="text" id="txt-preview-title" class="notebook-title" placeholder="Título da Tese">
+            <div class="paper" style="background: var(--paper-yellow);">
+                <div class="line-nums" id="nums-prev" style="background: #fef9c3;"></div>
+                <textarea id="txt-preview" class="textarea-fgv" style="background-color: transparent;" placeholder="O texto da tese..."></textarea>
             </div>
-            <button onclick="colarNaPeca()" style="padding:18px; background:var(--fgv-blue); color:white; border:none; font-weight:bold;">INSERIR NA PEÇA ↑</button>
+            <button onclick="transferirTexto()" style="padding:20px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer;">COLAR NA PEÇA PRINCIPAL ↑</button>
         </div>
     </aside>
 
-    <section class="col">
+    <section class="col-main">
         <div class="fgv-header">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
         <div class="paper">
             <div class="line-nums" id="nums-main"></div>
-            <textarea id="txt-main" class="textarea-fgv" oninput="salvarAuto()"></textarea>
+            <textarea id="txt-main" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva sua peça aqui..."></textarea>
         </div>
     </section>
 
-    <section class="col col-pdf">
-        <div class="pdf-nav">
-            <button class="tab-btn active" onclick="pdf('prova')">PROVA</button>
-            <button class="tab-btn" onclick="pdf('gabarito')">GABARITO</button>
-            <button class="tab-btn" onclick="pdf('metodo')">MÉTODO</button>
+    <section class="col-pdf">
+        <div class="pdf-tabs">
+            <button class="tab-btn active" onclick="mudarPDF('prova')">PROVA</button>
+            <button class="tab-btn" onclick="mudarPDF('gabarito')">GABARITO</button>
+            <button class="tab-btn" onclick="mudarPDF('aryanna')">MÉTODO</button>
         </div>
         <iframe id="frame-pdf"></iframe>
     </section>
 </main>
 
-<div class="action-bar">
-    <button class="btn-float" style="background:var(--success); color:white" onclick="openModal()">+</button>
-    <button class="btn-float" style="background:var(--danger); color:white" onclick="openSide('correcoes')">⚖️</button>
-    <button class="btn-float" style="background:var(--warning); color:black" onclick="openSide('postits')">📌</button>
-</div>
-
-<div id="modal-new" class="modal-overlay" onclick="closeModal()">
+<div id="modal-cad" class="overlay" onclick="fecharModal()">
     <div class="modal" onclick="event.stopPropagation()">
-        <h3 style="margin-bottom:10px">Nova Ficha</h3>
-        <select id="new-tipo" style="width:100%; padding:10px; margin-bottom:10px"><option value="postits">Post-it</option><option value="correcoes">Correção</option></select>
-        <input type="text" id="new-nome" placeholder="Título" style="width:100%; padding:10px; margin-bottom:10px">
-        <textarea id="new-corpo" rows="5" placeholder="Conteúdo..." style="width:100%; padding:10px; margin-bottom:15px"></textarea>
-        <button onclick="salvarNovo()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; font-weight:bold; border-radius:5px;">SALVAR</button>
+        <h3>Cadastrar Nova Ficha</h3>
+        <select id="cad-tipo" style="width:100%; padding:10px; margin:10px 0"><option value="postits">Post-it (Tese)</option><option value="correcoes">Correção (Erro)</option></select>
+        <input type="text" id="cad-nome" placeholder="Título (ex: Horas Extras)" style="width:100%; padding:10px; margin-bottom:10px">
+        <textarea id="cad-corpo" rows="8" placeholder="Fundamentação completa..." style="width:100%; padding:10px; margin-bottom:15px"></textarea>
+        <button onclick="salvarNovo()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; font-weight:bold; border-radius:4px;">SALVAR FICHA</button>
     </div>
 </div>
 
 <script>
-    let currentType = 'postits';
-    let timer; let segs = 18000;
+    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; let dbTipoAtual = 'postits';
 
-    function openSide(t) {
-        currentType = t;
-        document.getElementById('side-type').innerText = t === 'postits' ? '📌 MEUS POST-ITS' : '⚖️ MINHAS CORREÇÕES';
+    const grid = document.getElementById('exam-grid');
+    for(let i=35; i<=44; i++){
+        const b = document.createElement('button');
+        b.className = `btn-ex ${i==42?'active':''}`; b.innerText = "Exame " + i;
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF(docAtual); };
+        grid.appendChild(b);
+    }
+
+    function abrirSidebar(tipo) {
+        dbTipoAtual = tipo;
+        document.getElementById('sidebar-title').innerText = tipo === 'postits' ? '📌 MEUS POST-ITS' : '⚖️ MINHAS CORREÇÕES';
         document.getElementById('sidebar').classList.add('active');
         carregarLista();
     }
-    function closeSide() { document.getElementById('sidebar').classList.remove('active'); }
+    function fecharSidebar() { document.getElementById('sidebar').classList.remove('active'); }
+
+    function mudarPDF(tipo) {
+        docAtual = tipo;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const f = document.getElementById('frame-pdf');
+        if(tipo === 'prova') f.src = `./ro${exAtual}.pdf`;
+        else if(tipo === 'gabarito') f.src = `./ro${exAtual}-gabarito.pdf`;
+        else f.src = `./Aryanna Linhares.pdf`;
+    }
 
     function carregarLista() {
-        const div = document.getElementById('db-lista');
-        const db = JSON.parse(localStorage.getItem('db_' + currentType)) || {};
-        div.innerHTML = '';
+        const listaDiv = document.getElementById('db-lista');
+        const db = JSON.parse(localStorage.getItem('db_'+dbTipoAtual)) || {};
+        listaDiv.innerHTML = '';
         Object.keys(db).forEach(id => {
-            const el = document.createElement('div');
-            el.className = 'db-item';
-            el.innerText = db[id].nome;
-            el.onclick = () => {
-                document.getElementById('pre-title').value = db[id].nome;
-                document.getElementById('pre-text').value = db[id].corpo;
-            };
-            div.appendChild(el);
+            const item = document.createElement('div');
+            item.className = 'db-item';
+            item.innerText = db[id].nome;
+            item.onclick = () => { document.getElementById('txt-preview-title').value = db[id].nome; document.getElementById('txt-preview').value = db[id].texto; };
+            listaDiv.appendChild(item);
         });
     }
 
-    function filtrar() {
-        const t = document.getElementById('db-search').value.toLowerCase();
-        document.querySelectorAll('.db-item').forEach(e => e.style.display = e.innerText.toLowerCase().includes(t) ? 'block' : 'none');
+    function filtrarItens() {
+        const termo = document.getElementById('db-search').value.toLowerCase();
+        document.querySelectorAll('.db-item').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(termo) ? 'block' : 'none'; });
     }
 
-    function colarNaPeca() {
-        const m = document.getElementById('txt-main');
-        const t = document.getElementById('pre-title').value.toUpperCase();
-        const c = document.getElementById('pre-text').value;
-        m.value += (m.value ? "\n\n" : "") + t + "\n" + c;
-        closeSide();
-        salvarAuto();
+    function transferirTexto() {
+        const main = document.getElementById('txt-main'), titulo = document.getElementById('txt-preview-title').value, texto = document.getElementById('txt-preview').value;
+        main.value += (main.value ? "\n\n" : "") + titulo.toUpperCase() + "\n" + texto;
+        fecharSidebar(); saveAuto();
     }
 
-    function pdf(t) {
-        const f = document.getElementById('frame-pdf');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        if(t === 'prova') f.src = "./ro42.pdf";
-        else if(t === 'gabarito') f.src = "./ro42-gabarito.pdf";
-        else f.src = "./Aryanna Linhares.pdf";
-    }
-
-    function salvarAuto() { localStorage.setItem('save_2026', document.getElementById('txt-main').value); }
-    function openModal() { document.getElementById('modal-new').style.display = 'flex'; }
-    function closeModal() { document.getElementById('modal-new').style.display = 'none'; }
-
+    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-main').value); }
+    function abrirModal() { document.getElementById('modal-cad').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modal-cad').style.display = 'none'; }
+    
     function salvarNovo() {
-        const t = document.getElementById('new-tipo').value, n = document.getElementById('new-nome').value, c = document.getElementById('new-corpo').value;
+        const t = document.getElementById('cad-tipo').value, n = document.getElementById('cad-nome').value, c = document.getElementById('cad-corpo').value;
         if(!n || !c) return;
-        let db = JSON.parse(localStorage.getItem('db_' + t))
+        let db = JSON.parse(localStorage.getItem('db_'+t)) || {};
+        db[Date.now()] = { nome: n, texto: c };
+        localStorage.setItem('db_'+t, JSON.stringify(db));
+        fecharModal(); if(document.getElementById('sidebar').classList.contains('active')) carregarLista();
+    }
+
+    function toggleTimer() {
+        if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        else { timerInterval = setInterval(() => { timeLeft--; const h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }, 1000); }
+    }
+
+    window.onload = () => {
+        const m = document.getElementById('nums-main'), p = document.getElementById('nums-prev');
+        for(let i=1; i<=150; i++) { m.innerHTML += i + '<br>'; p.innerHTML += i + '<br>'; }
+        document.getElementById('txt-main').value = localStorage.getItem('save_2026') || "";
+        mudarPDF('prova');
+    };
+</script>
+</body>
+</html>
