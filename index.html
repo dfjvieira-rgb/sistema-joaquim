@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA JOAQUIM PRO - MÉTODO ARYANNA</title>
+    <title>SISTEMA JOAQUIM PRO 2026</title>
     <style>
-        :root { 
-            --primary: #1a252f; --accent: #f1c40f; --bg: #f8f9fa; 
-            --header-h: 60px; --drawer-w: 280px; --yellow-oab: #fffde7;
-        }
-
+        :root { --primary: #1a252f; --accent: #f1c40f; --bg: #f8f9fa; --header-h: 60px; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        header { background: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .timer { font-family: monospace; font-weight: bold; color: var(--accent); }
+        header { background: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .timer { font-family: monospace; color: var(--accent); font-weight: bold; }
 
         /* MENU LATERAL */
-        .drawer { position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         .drawer.open { left: 0; }
-        .drawer-header { background: var(--primary); color: white; padding: 30px 20px; }
-        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #333; font-weight: 500; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #333; font-weight: 500; }
 
         /* VIEWS */
         .view { display: none; flex: 1; overflow: hidden; }
@@ -30,34 +25,38 @@
         .workspace { display: flex; flex: 1; overflow: hidden; }
         .col { display: flex; flex-direction: column; border-right: 1px solid #ddd; }
         .col-respostas { flex: 1.2; background: white; }
-        .col-dicas { flex: 0.8; background: var(--yellow-oab); }
+        .col-dicas { flex: 0.8; background: #fffde7; }
         .col-apoio { flex: 1; background: #525659; }
 
+        /* BARRA DE ATALHOS (SÍMBOLOS) */
+        .toolbar { background: #eee; padding: 5px; display: flex; gap: 10px; border-bottom: 1px solid #ddd; }
+        .btn-sym { background: white; border: 1px solid #ccc; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
         /* CABEÇALHOS */
-        .cad-header { padding: 8px 12px; font-size: 0.7rem; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .cad-header { padding: 8px; font-size: 0.7rem; font-weight: bold; color: white; display: flex; justify-content: space-between; }
         .bg-oab { background: var(--primary); }
         .bg-dicas { background: #f39c12; }
 
-        /* PAPEL PAUTADO OAB */
+        /* PAPEL PAUTADO */
         .paper { flex: 1; display: flex; overflow-y: auto; background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 25px; background-attachment: local; }
         .line-nums { width: 35px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
-        textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 17px; line-height: 25px; background: transparent; }
+        textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* MURAL DE POST-ITS */
-        #view-postits { background: #f0f2f5; }
+        /* POST-ITS MURAL */
         .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; }
-        .postit-card { background: #fff59d; padding: 15px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); height: 160px; position: relative; cursor: pointer; overflow: hidden; font-size: 0.8rem; border-left: 4px solid #f1c40f; }
-        .postit-card b { display: block; margin-bottom: 5px; color: #856404; text-transform: uppercase; font-size: 0.7rem; }
-        .btn-del-post { position: absolute; top: 5px; right: 5px; color: red; background: none; border: none; font-weight: bold; }
+        .postit-card { background: #fff59d; padding: 15px; border-radius: 4px; height: 150px; cursor: pointer; position: relative; border-left: 5px solid #f1c40f; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
 
-        /* MODAL DE EDIÇÃO DO POSTIT (ESTILO OAB) */
+        /* MODAL POST-IT OAB */
         .modal-postit { position: fixed; inset: 0; background: white; z-index: 3000; display: none; flex-direction: column; }
         .modal-postit.active { display: flex; }
 
         /* PDF NAV */
         .pdf-nav { display: flex; background: #333; }
         .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 10px; font-size: 0.6rem; cursor: pointer; }
-        .pdf-btn.active { background: var(--accent); color: var(--primary); font-weight: bold; }
+        .pdf-btn.active { background: var(--accent); color: var(--primary); }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
+        .overlay.active { display: block; }
 
         @media (max-width: 1024px) {
             .workspace { flex-direction: column; overflow-y: auto; }
@@ -67,33 +66,41 @@
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
 <header>
-    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem; padding: 10px;">☰</div>
-    <div style="font-weight:bold;">SISTEMA <span style="color:var(--accent)">JOAQUIM</span></div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
+    <div>JOAQUIM <span style="color:var(--accent)">PRO</span></div>
     <div class="timer" id="timer">05:00:00</div>
 </header>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header"><b>ESTUDO MOBILE</b></div>
-    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📝 Cadernos Principais</div>
+    <div style="background:var(--primary); color:white; padding:30px 20px;"><b>SISTEMA DE ESTUDO</b></div>
+    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📝 Cadernos de Treino</div>
     <div class="drawer-item" onclick="showView('postits'); toggleMenu()">📌 Mural de Post-its</div>
     <div class="drawer-item" onclick="showView('apostila'); toggleMenu()">📖 Apostila PDF</div>
+    <div class="drawer-item" onclick="limparTudo()" style="color:red;">⚠️ Limpar Tudo</div>
 </nav>
 
 <main id="view-treino" class="view active">
+    <div class="toolbar">
+        <button class="btn-sym" onclick="insertSym('§')">§</button>
+        <button class="btn-sym" onclick="insertSym('Art. ')">Art.</button>
+        <button class="btn-sym" onclick="insertSym('CLT')">CLT</button>
+    </div>
     <div class="workspace">
         <section class="col col-respostas">
-            <div class="cad-header bg-oab"><span>FOLHA OAB</span><span id="ln-info-main">L: 1</span></div>
-            <div class="paper"><div class="line-nums" id="nums-main"></div><textarea id="area-peca" oninput="syncMain()"></textarea></div>
+            <div class="cad-header bg-oab"><span>PEÇA (OAB)</span><span id="l-main">L: 1</span></div>
+            <div class="paper"><div class="line-nums" id="n-main"></div><textarea id="area-main" oninput="save()"></textarea></div>
         </section>
         <section class="col col-dicas">
-            <div class="cad-header bg-dicas"><span>DICAS RÁPIDAS</span></div>
-            <div class="paper" style="background-image: linear-gradient(#fff9c4 1px, transparent 1px);"><div class="line-nums" style="background:#fffde7;">•</div><textarea id="area-dicas" oninput="syncMain()"></textarea></div>
+            <div class="cad-header bg-dicas"><span>DICAS DA AULA</span></div>
+            <div class="paper" style="background-image: linear-gradient(#fff9c4 1px, transparent 1px);"><div class="line-nums" style="background:#fffde7;">•</div><textarea id="area-dicas" oninput="save()"></textarea></div>
         </section>
         <section class="col col-apoio">
             <div class="pdf-nav">
-                <button class="pdf-btn active" id="btn-p" onclick="loadPDF('prova')">PROVA</button>
-                <button class="pdf-btn" id="btn-g" onclick="loadPDF('gab')">GABARITO</button>
+                <button class="pdf-btn active" id="b-p" onclick="pdf('./ro35.pdf','b-p')">PROVA</button>
+                <button class="pdf-btn" id="b-g" onclick="pdf('./ro35-gabarito.pdf','b-g')">GABARITO</button>
             </div>
             <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none; background:white;"></iframe>
         </section>
@@ -101,118 +108,84 @@
 </main>
 
 <main id="view-postits" class="view">
-    <div style="padding:15px; background:var(--primary); color:white; display:flex; justify-content:space-between; align-items:center;">
-        <b>MEUS POST-ITS (ESTILO OAB)</b>
-        <button onclick="abrirNovoPostit()" style="background:var(--accent); border:none; padding:8px 15px; border-radius:4px; font-weight:bold;">+ NOVO LEMBRETE</button>
+    <div style="padding:15px; background:var(--primary); color:white; display:flex; justify-content:space-between;">
+        <b>POST-ITS (FOLHA OAB)</b>
+        <button onclick="novoPostit()" style="background:var(--accent); border:none; padding:8px; border-radius:4px; font-weight:bold;">+ NOVO</button>
     </div>
-    <div class="mural-grid" id="mural-container"></div>
+    <div class="mural-grid" id="mural"></div>
 </main>
 
 <div class="modal-postit" id="modal-postit">
-    <div class="cad-header bg-oab" style="height:50px; padding:0 15px;">
-        <input type="text" id="postit-titulo" placeholder="TÍTULO DO ASSUNTO..." style="background:transparent; border:none; color:white; font-weight:bold; outline:none; width:70%;">
-        <button onclick="fecharPostit()" style="background:var(--accent); border:none; padding:5px 15px; border-radius:4px; font-weight:bold;">SALVAR</button>
+    <div class="cad-header bg-oab" style="height:50px;">
+        <input type="text" id="post-tit" placeholder="Assunto da Aula..." style="background:transparent; border:none; color:white; outline:none; font-weight:bold; width:70%; padding-left:15px;">
+        <button onclick="salvarPostit()" style="background:var(--accent); border:none; padding:5px 15px; margin-right:10px; border-radius:4px; font-weight:bold;">SALVAR</button>
     </div>
     <div class="paper">
-        <div class="line-nums" id="nums-postit"></div>
-        <textarea id="postit-texto" placeholder="Escreva aqui como se fosse na folha de resposta..."></textarea>
+        <div class="line-nums" id="n-post"></div>
+        <textarea id="post-txt"></textarea>
     </div>
 </div>
 
 <main id="view-apostila" class="view"><iframe src="./Aryanna Linhares.pdf" style="width:100%; height:100%; border:none;"></iframe></main>
 
 <script>
-    // Gerar números das linhas
-    const genLines = (el) => { for(let i=1; i<=150; i++) el.innerHTML += i + '<br>'; };
-    genLines(document.getElementById('nums-main'));
-    genLines(document.getElementById('nums-postit'));
+    const $ = (id) => document.getElementById(id);
+    const gen = (el) => { for(let i=1; i<=150; i++) el.innerHTML += i + '<br>'; };
+    gen($('n-main')); gen($('n-post'));
 
-    function toggleMenu() { document.getElementById('drawer').classList.toggle('open'); }
-    function showView(v) { 
-        document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-        document.getElementById('view-' + v).classList.add('active');
-        if(v === 'postits') renderMural();
+    function toggleMenu() { $('drawer').classList.toggle('open'); $('overlay').classList.toggle('active'); }
+    function showView(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); $(`view-${v}`).classList.add('active'); if(v==='postits') renderMural(); }
+    function pdf(src, b) { $('f-pdf').src = src; document.querySelectorAll('.pdf-btn').forEach(x => x.classList.remove('active')); $(b).classList.add('active'); }
+
+    function insertSym(s) {
+        const a = $('area-main');
+        const start = a.selectionStart;
+        a.value = a.value.slice(0, start) + s + a.value.slice(a.selectionEnd);
+        a.focus();
+        a.setSelectionRange(start + s.length, start + s.length);
+        save();
     }
 
-    // Lógica do Mural Estilo OAB
-    let postits = JSON.parse(localStorage.getItem('j_banco_postits')) || [];
-    let postitEditandoId = null;
+    // POST-ITS LÓGICA
+    let banco = JSON.parse(localStorage.getItem('joaquim_banco')) || [];
+    let editId = null;
 
-    function abrirNovoPostit() {
-        postitEditandoId = Date.now();
-        document.getElementById('postit-titulo').value = "";
-        document.getElementById('postit-texto').value = "";
-        document.getElementById('modal-postit').classList.add('active');
-    }
-
-    function fecharPostit() {
-        const titulo = document.getElementById('postit-titulo').value || "SEM TÍTULO";
-        const texto = document.getElementById('postit-texto').value;
-        
-        // Atualiza ou Cria
-        const index = postits.findIndex(p => p.id === postitEditandoId);
-        if(index > -1) {
-            postits[index] = { id: postitEditandoId, titulo, texto };
-        } else {
-            postits.push({ id: postitEditandoId, titulo, texto });
-        }
-        
-        localStorage.setItem('j_banco_postits', JSON.stringify(postits));
-        document.getElementById('modal-postit').classList.remove('active');
+    function novoPostit() { editId = Date.now(); $('post-tit').value=""; $('post-txt').value=""; $('modal-postit').classList.add('active'); }
+    function salvarPostit() {
+        const p = { id: editId, tit: $('post-tit').value || "SEM TÍTULO", txt: $('post-txt').value };
+        const idx = banco.findIndex(x => x.id === editId);
+        if(idx > -1) banco[idx] = p; else banco.push(p);
+        localStorage.setItem('joaquim_banco', JSON.stringify(banco));
+        $('modal-postit').classList.remove('active');
         renderMural();
     }
-
-    function editarPostit(id) {
-        const p = postits.find(p => p.id === id);
-        postitEditandoId = id;
-        document.getElementById('postit-titulo').value = p.titulo;
-        document.getElementById('postit-texto').value = p.texto;
-        document.getElementById('modal-postit').classList.add('active');
-    }
-
-    function deletarPostit(id, e) {
-        e.stopPropagation();
-        if(confirm("Excluir nota?")) {
-            postits = postits.filter(p => p.id !== id);
-            localStorage.setItem('j_banco_postits', JSON.stringify(postits));
-            renderMural();
-        }
-    }
-
     function renderMural() {
-        const container = document.getElementById('mural-container');
-        container.innerHTML = "";
-        postits.forEach(p => {
-            container.innerHTML += `
-                <div class="postit-card" onclick="editarPostit(${p.id})">
-                    <button class="btn-del-post" onclick="deletarPostit(${p.id}, event)">X</button>
-                    <b>${p.titulo}</b>
-                    ${p.texto.substring(0, 100)}...
-                </div>
-            `;
+        $('mural').innerHTML = "";
+        banco.forEach(p => {
+            const d = document.createElement('div');
+            d.className = 'postit-card';
+            d.innerHTML = `<b>${p.tit}</b><p style="font-size:0.7rem;">${p.txt.substring(0,80)}...</p>`;
+            d.onclick = () => { editId=p.id; $('post-tit').value=p.tit; $('post-txt').value=p.txt; $('modal-postit').classList.add('active'); };
+            $('mural').appendChild(d);
         });
     }
 
-    function syncMain() {
-        localStorage.setItem('j_peca_main', document.getElementById('area-peca').value);
-        localStorage.setItem('j_dica_main', document.getElementById('area-dicas').value);
-        document.getElementById('ln-info-main').innerText = "L: " + document.getElementById('area-peca').value.split('\n').length;
+    function save() {
+        localStorage.setItem('j_main', $('area-main').value);
+        localStorage.setItem('j_dicas', $('area-dicas').value);
+        $('l-main').innerText = "L: " + $('area-main').value.split('\n').length;
     }
 
-    function loadPDF(t) {
-        const p = { prova: './ro35.pdf', gab: './ro35-gabarito.pdf' };
-        document.getElementById('f-pdf').src = p[t];
-    }
+    function limparTudo() { if(confirm("Apagar TUDO?")) { localStorage.clear(); location.reload(); } }
 
     window.onload = () => {
-        document.getElementById('area-peca').value = localStorage.getItem('j_peca_main') || "";
-        document.getElementById('area-dicas').value = localStorage.getItem('j_dica_main') || "";
-        renderMural();
+        $('area-main').value = localStorage.getItem('j_main') || "";
+        $('area-dicas').value = localStorage.getItem('j_dicas') || "";
+        save();
     };
 
-    // Timer simples
     let s = 18000;
-    setInterval(() => { if(s > 0) { s--; let h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sc = s%60; document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
+    setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; $('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
 </script>
 </body>
 </html>
