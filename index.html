@@ -3,218 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
+    <title>SISTEMA FGV OFICIAL - 2ª FASE OAB</title>
     <style>
         :root {
-            --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
-            --warning: #f59e0b; --bg: #111827; --card: #1f2937;
-            --fgv-blue: #004a8d; --gold: #d4af37; --pdf-bg: #525659;
-            --paper-yellow: #fefce8;
+            --fgv-bg: #f3f4f6;
+            --paper-white: #ffffff;
+            --fgv-blue: #004a8d;
+            --border-gray: #000000;
+            --line-height: 25px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: "Times New Roman", Times, serif; background: var(--fgv-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
-        #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--warning); }
+        /* HEADER TÉCNICO */
+        header { background: #fff; padding: 10px 20px; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .logo-fgv { font-weight: bold; font-size: 1.2rem; text-transform: uppercase; border: 2px solid #000; padding: 5px 10px; }
+        #timer { font-family: monospace; font-size: 1.5rem; font-weight: bold; color: #d9534f; }
 
-        /* NAVEGAÇÃO */
-        .nav-container { background: #000; border-bottom: 1px solid #333; flex-shrink: 0; }
-        .scroll-row { display: flex; overflow-x: auto; padding: 5px; gap: 5px; scrollbar-width: none; }
-        .label-row { font-size: 10px; color: var(--gold); padding: 4px 10px 0 10px; text-transform: uppercase; font-weight: bold; }
-        .btn-nav { padding: 8px 15px; border: none; background: #222; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; border-radius: 4px; white-space: nowrap; }
-        .btn-nav.active { background: var(--success); color: white; border: 1px solid white; }
-        .btn-piece { background: #1e293b; color: #3b82f6; border: 1px solid #3b82f6; }
+        /* MENU SUPERIOR */
+        .nav-fgv { background: #e5e7eb; border-bottom: 1px solid #999; display: flex; overflow-x: auto; padding: 5px; gap: 5px; }
+        .btn-nav { padding: 6px 12px; border: 1px solid #666; background: #fff; cursor: pointer; font-weight: bold; font-size: 0.75rem; white-space: nowrap; }
+        .btn-nav.active { background: var(--fgv-blue); color: white; }
 
-        /* WORKSPACE EM 3 COLUNAS FIXAS */
-        .workspace { flex: 1; display: flex; overflow: hidden; background: #333; gap: 2px; }
-        @media (max-width: 1024px) { .workspace { overflow-x: auto; } .col { min-width: 90vw; } }
+        /* WORKSPACE: TRÊS FOLHAS LADO A LADO */
+        .workspace { flex: 1; display: flex; gap: 10px; padding: 10px; overflow-x: auto; }
+        .col { flex: 1; min-width: 450px; display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); border: 1px solid #000; }
 
-        .col { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
+        /* CABEÇALHO DA FOLHA DE RASCUNHO/RESPOSTA */
+        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 5px; text-align: center; }
+        .sheet-info { border: 1px solid #000; margin: 5px; padding: 5px; display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
 
-        /* ESTILO FGV */
-        .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 8px; font-size: 0.7rem; font-weight: bold; border-bottom: 2px solid #000; text-transform: uppercase; flex-shrink: 0; }
-        .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
-        .line-nums { width: 35px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
-        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; color: black; }
+        /* A FOLHA DE PROVA (RASCUNHO E DEFINITIVA) */
+        .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); position: relative; }
+        .line-numbers { width: 35px; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: var(--line-height); color: #000; padding-top: 5px; flex-shrink: 0; user-select: none; }
+        
+        .textarea-fgv { 
+            flex: 1; border: none; outline: none; resize: none; padding: 0 10px;
+            font-size: 18px; line-height: var(--line-height);
+            background-image: linear-gradient(#ccc 1px, transparent 1px);
+            background-size: 100% var(--line-height);
+            background-attachment: local;
+            color: #000;
+        }
 
-        /* COLUNA CENTRAL: FOLHA DE CADERNO FIXA */
-        .col-notebook { background: var(--paper-yellow) !important; border-left: 2px solid var(--gold); border-right: 2px solid var(--gold); }
-        .paper-yellow { background: var(--paper-yellow) !important; }
-        .nums-yellow { background: #fef9c3 !important; border-right: 1px solid #eab308 !important; }
-        .notebook-title { background: #fef08a; border: none; border-bottom: 2px solid #eab308; padding: 15px; font-family: serif; font-weight: bold; font-size: 1.2rem; color: #854d0e; outline: none; width: 100%; }
+        /* BARRA DE BUSCA NA FOLHA DE RASCUNHO */
+        .rascunho-controls { padding: 5px; background: #ddd; border-bottom: 1px solid #000; display: flex; gap: 5px; }
+        .rascunho-controls input { flex: 1; padding: 5px; border: 1px solid #000; }
+        .db-list { height: 80px; overflow-y: auto; background: #fff; border-bottom: 1px solid #000; font-size: 0.8rem; }
+        .db-item { padding: 5px 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .db-item:hover { background: #f0f7ff; }
 
-        /* BUSCA E LISTA FIXAS NA COLUNA CENTRAL */
-        .notebook-search-area { background: #111; padding: 10px; display: flex; gap: 5px; flex-shrink: 0; }
-        .search-input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--gold); background: #1f2937; color: white; }
-        .btn-db-toggle { padding: 8px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        /* PDF */
+        .pdf-area { flex: 1; display: flex; flex-direction: column; }
+        .pdf-tabs { display: flex; background: #333; }
+        .tab { flex: 1; padding: 10px; color: #fff; border: none; background: #444; cursor: pointer; font-size: 0.7rem; }
+        .tab.active { background: #fff; color: #000; font-weight: bold; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* PDF E OUTROS */
-        .pdf-tabs { display: flex; background: #000; flex-shrink: 0; }
-        .tab-btn { flex: 1; padding: 12px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; }
-        .tab-btn.active { background: white; color: var(--fgv-blue); }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
-
-        /* MODAL E FABS */
-        .fab-container { position: fixed; right: 20px; bottom: 20px; z-index: 5000; }
-        .fab { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 2rem; background: var(--success); color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 6000; display: none; align-items: center; justify-content: center; }
-        .modal { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 8px; color: black; }
+        .btn-action { padding: 15px; background: var(--fgv-blue); color: white; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
+        /* MODAL */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
+        .modal { background: white; width: 400px; padding: 20px; border: 2px solid #000; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight:bold; color:var(--gold)">ARYANNA MASTER 2026</div>
-    <div id="timer-display">05:00:00</div>
-    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold;">INICIAR</button>
+    <div class="logo-fgv">FGV PROJETOS</div>
+    <div style="text-align: center">
+        <div style="font-weight: bold; font-size: 0.8rem">EXAME DE ORDEM UNIFICADO - 2ª FASE</div>
+        <div style="font-size: 0.7rem">CADERNO DE RASCUNHO E RESPOSTA - DIREITO DO TRABALHO</div>
+    </div>
+    <div id="timer">05:00:00</div>
 </header>
 
-<nav class="nav-container">
-    <div class="label-row">Exames FGV</div>
-    <div class="scroll-row" id="exam-grid"></div>
-    <div class="label-row">Estruturas Aryanna</div>
-    <div class="scroll-row" id="piece-grid"></div>
-</nav>
-
-<div class="fab-container">
-    <button class="fab" onclick="abrirModal()">+</button>
-</div>
+<nav class="nav-fgv" id="exam-nav"></nav>
+<nav class="nav-fgv" id="piece-nav"></nav>
 
 <main class="workspace">
-    <section class="col col-main">
-        <div class="fgv-header" id="header-definitivo">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
+    <section class="col">
+        <div class="sheet-top"><strong>FOLHA DE RESPOSTA DEFINITIVA</strong></div>
+        <div class="sheet-info">
+            <span>PEÇA PROFISSIONAL</span>
+            <span>LINHAS 1 A 150</span>
+        </div>
         <div class="paper">
-            <div class="line-nums" id="nums-main"></div>
-            <textarea id="txt-main" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva sua peça aqui..."></textarea>
+            <div class="line-numbers" id="nums-def"></div>
+            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()"></textarea>
         </div>
     </section>
 
-    <section class="col col-notebook">
-        <div class="fgv-header" style="background: var(--gold); border-bottom: 2px solid #854d0e;">CADERNO DE POST-ITS E CORREÇÕES</div>
+    <section class="col">
+        <div class="sheet-top" style="background: #fff9c4;"><strong>FOLHA DE RASCUNHO (TESES E DICAS)</strong></div>
         
-        <div class="notebook-search-area">
-            <button class="btn-db-toggle" id="btn-tipo-postit" onclick="mudarTipoDB('postits')" style="background:var(--warning)">📌</button>
-            <button class="btn-db-toggle" id="btn-tipo-correcao" onclick="mudarTipoDB('correcoes')" style="background:#444; color:white">⚖️</button>
-            <input type="text" id="db-search" class="search-input" placeholder="Buscar na folha..." oninput="filtrarItens()">
+        <div class="rascunho-controls">
+            <button onclick="mudarDB('postits')" id="btn-p" style="background: #ffd700; border: 1px solid #000; padding: 5px;">TESES</button>
+            <button onclick="mudarDB('correcoes')" id="btn-c" style="background: #eee; border: 1px solid #000; padding: 5px;">DICAS</button>
+            <input type="text" id="search" placeholder="Filtrar rascunhos..." oninput="filtrar()">
+            <button onclick="abrirModal()" style="background: #5cb85c; color: #fff; border: 1px solid #000; width: 30px;">+</button>
         </div>
+        <div id="db-list" class="db-list"></div>
 
-        <div id="db-lista" style="height: 100px; overflow-y: auto; background: #000; font-size: 0.8rem;"></div>
-
-        <div class="notebook-sheet" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
-            <input type="text" id="txt-preview-title" class="notebook-title" placeholder="Título do Item Selecionado">
-            <div class="paper paper-yellow">
-                <div class="line-nums nums-yellow" id="nums-prev"></div>
-                <textarea id="txt-preview" class="textarea-fgv" style="background-color: transparent;" placeholder="O conteúdo aparecerá aqui nesta folha de caderno..."></textarea>
-            </div>
-            <button onclick="transferirTexto()" style="padding:20px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer;">TRANSFERIR PARA PEÇA ↑</button>
+        <div class="sheet-info" style="background: #fff9c4;">
+            <input type="text" id="preview-title" style="width: 100%; border: none; background: transparent; font-weight: bold; outline: none;" placeholder="TÍTULO DA TESE">
         </div>
+        <div class="paper" style="background: #fffdec;">
+            <div class="line-numbers" id="nums-rasc" style="background: #fff9c4;"></div>
+            <textarea id="txt-rasc" class="textarea-fgv" style="background: transparent"></textarea>
+        </div>
+        <button class="btn-action" onclick="transferir()">Inserir na Folha Definitiva ↑</button>
     </section>
 
-    <section class="col col-pdf">
-        <div class="pdf-tabs">
-            <button class="tab-btn active" onclick="mudarPDF('prova')">PROVA</button>
-            <button class="tab-btn" onclick="mudarPDF('gabarito')">GABARITO</button>
-            <button class="tab-btn" onclick="mudarPDF('aryanna')">MÉTODO</button>
+    <section class="col">
+        <div class="pdf-area">
+            <div class="pdf-tabs">
+                <button class="tab active" onclick="pdf('prova')">ENUNCIADO</button>
+                <button class="tab" onclick="pdf('gabarito')">PADRÃO</button>
+                <button class="tab" onclick="pdf('aryanna')">ARYANNA</button>
+            </div>
+            <iframe id="frame"></iframe>
         </div>
-        <iframe id="frame-pdf"></iframe>
     </section>
 </main>
 
-<div id="modal-cad" class="overlay" onclick="fecharModal()">
+<div id="modal" class="overlay" onclick="fecharModal()">
     <div class="modal" onclick="event.stopPropagation()">
-        <h3>Cadastrar na Folha de Caderno</h3>
-        <select id="cad-tipo" style="width:100%; padding:10px; margin:10px 0"><option value="postits">Post-it (Tese)</option><option value="correcoes">Correção (Erro)</option></select>
-        <input type="text" id="cad-nome" placeholder="Título" style="width:100%; padding:10px; margin-bottom:10px">
-        <textarea id="cad-corpo" rows="8" placeholder="Fundamentação..." style="width:100%; padding:10px; margin-bottom:15px"></textarea>
-        <button onclick="salvarNovo()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; font-weight:bold; border-radius:4px;">SALVAR NO CADERNO</button>
+        <h4 style="margin-bottom:10px">SALVAR NO RASCUNHO</h4>
+        <select id="cad-tipo" style="width:100%; margin-bottom:10px"><option value="postits">Tese</option><option value="correcoes">Dica de Correção</option></select>
+        <input type="text" id="cad-nome" placeholder="Título" style="width:100%; margin-bottom:10px; padding:5px">
+        <textarea id="cad-corpo" rows="10" style="width:100%; padding:5px; font-family:serif"></textarea>
+        <button onclick="salvar()" style="width:100%; padding:10px; background: #5cb85c; color: #fff; border: none; margin-top: 10px; font-weight: bold;">GRAVAR</button>
     </div>
 </div>
 
 <script>
-    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let dbAtual = 'postits';
+    let ex = 42, db = 'postits';
     const pecas = {
-        "RECLAMAÇÃO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., nacionalidade..., estado civil..., propor RECLAMAÇÃO TRABALHISTA...",
-        "CONTESTAÇÃO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\nRECLAMADO..., apresentar CONTESTAÇÃO...",
-        "RECURSO ORDINÁRIO": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nRECORRENTE..., interpor RECURSO ORDINÁRIO...",
-        "AÇÃO CONSIG.": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nCONSIGNANTE..., propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO..."
+        "RECLAMAÇÃO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., vem propor RECLAMAÇÃO TRABALHISTA...",
+        "CONTESTAÇÃO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nRECLAMADO..., vem apresentar CONTESTAÇÃO...",
+        "RECURSO ORDINÁRIO": "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECORRENTE..., vem interpor RECURSO ORDINÁRIO..."
     };
 
-    // UI Exames
-    const eg = document.getElementById('exam-grid');
-    for(let i=35; i<=44; i++){
-        const b = document.createElement('button'); b.className = `btn-nav ${i==42?'active':''}`; b.innerText = "Exame " + i;
-        b.onclick = () => { document.querySelectorAll('#exam-grid .btn-nav').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF('prova'); };
-        eg.appendChild(b);
+    function renderMenus() {
+        const en = document.getElementById('exam-nav'), pn = document.getElementById('piece-nav');
+        for(let i=35; i<=44; i++) {
+            let b = document.createElement('button'); b.className = `btn-nav ${i==ex?'active':''}`; b.innerText = `EXAME ${i}`;
+            b.onclick = () => { ex = i; pdf('prova'); renderMenus(); }; en.appendChild(b);
+        }
+        Object.keys(pecas).forEach(p => {
+            let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = p;
+            b.onclick = () => { if(confirm(`Limpar folha para ${p}?`)) document.getElementById('txt-def').value = pecas[p]; }; pn.appendChild(b);
+        });
     }
 
-    // UI Peças
-    const pg = document.getElementById('piece-grid');
-    Object.keys(pecas).forEach(p => {
-        const b = document.createElement('button'); b.className = 'btn-nav btn-piece'; b.innerText = p;
-        b.onclick = () => { if(confirm("Carregar estrutura de " + p + "?")) { document.getElementById('txt-main').value = pecas[p]; document.getElementById('header-definitivo').innerText = "PRODUÇÃO: " + p; saveAuto(); } };
-        pg.appendChild(b);
-    });
-
-    function mudarTipoDB(tipo) {
-        dbAtual = tipo;
-        document.getElementById('btn-tipo-postit').style.background = tipo === 'postits' ? 'var(--warning)' : '#444';
-        document.getElementById('btn-tipo-correcao').style.background = tipo === 'correcoes' ? 'var(--danger)' : '#444';
+    function mudarDB(t) {
+        db = t;
+        document.getElementById('btn-p').style.background = t === 'postits' ? '#ffd700' : '#eee';
+        document.getElementById('btn-c').style.background = t === 'correcoes' ? '#ffd700' : '#eee';
         carregarLista();
     }
 
     function carregarLista() {
-        const listaDiv = document.getElementById('db-lista');
-        const db = JSON.parse(localStorage.getItem('db_'+dbAtual)) || {};
-        listaDiv.innerHTML = '';
-        Object.keys(db).forEach(id => {
-            const item = document.createElement('div');
-            item.className = 'db-item'; item.innerText = db[id].nome;
-            item.onclick = () => { document.getElementById('txt-preview-title').value = db[id].nome; document.getElementById('txt-preview').value = db[id].texto; };
-            listaDiv.appendChild(item);
+        const lista = document.getElementById('db-list'), itens = JSON.parse(localStorage.getItem('db_'+db)) || {};
+        lista.innerHTML = '';
+        Object.keys(itens).forEach(id => {
+            let d = document.createElement('div'); d.className = 'db-item'; d.innerText = itens[id].nome;
+            d.onclick = () => { document.getElementById('preview-title').value = itens[id].nome; document.getElementById('txt-rasc').value = itens[id].texto; };
+            lista.appendChild(d);
         });
     }
 
-    function transferirTexto() {
-        const m = document.getElementById('txt-main'), t = document.getElementById('txt-preview-title').value, c = document.getElementById('txt-preview').value;
-        if(!t && !c) return;
-        m.value += (m.value ? "\n\n" : "") + "--- " + t.toUpperCase() + " ---\n" + c;
-        saveAuto(); m.focus();
+    function transferir() {
+        const d = document.getElementById('txt-def'), t = document.getElementById('preview-title').value, r = document.getElementById('txt-rasc').value;
+        if(!r) return;
+        d.value += `\n\n--- ${t.toUpperCase()} ---\n${r}`;
+        saveAuto(); d.focus();
     }
 
-    function mudarPDF(tipo) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const f = document.getElementById('frame-pdf');
-        if(tipo === 'prova') f.src = `./ro${exAtual}.pdf`;
-        else if(tipo === 'gabarito') f.src = `./ro${exAtual}-gabarito.pdf`;
+    function pdf(t) {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        const f = document.getElementById('frame');
+        if(t==='prova') f.src = `./ro${ex}.pdf`;
+        else if(t==='gabarito') f.src = `./ro${ex}-gabarito.pdf`;
         else f.src = `./Aryanna Linhares.pdf`;
     }
 
-    function filtrarItens() {
-        const t = document.getElementById('db-search').value.toLowerCase();
-        document.querySelectorAll('.db-item').forEach(e => e.style.display = e.innerText.toLowerCase().includes(t) ? 'block' : 'none');
-    }
-
-    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-main').value); }
-    function abrirModal() { document.getElementById('modal-cad').style.display = 'flex'; }
-    function fecharModal() { document.getElementById('modal-cad').style.display = 'none'; }
-    function toggleTimer() { if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } else { timerInterval=setInterval(()=>{timeLeft--; const h=Math.floor(timeLeft/3600), m=Math.floor((timeLeft%3600)/60), s=timeLeft%60; document.getElementById('timer-display').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000); } }
-
-    function salvarNovo() {
+    function salvar() {
         const t = document.getElementById('cad-tipo').value, n = document.getElementById('cad-nome').value, c = document.getElementById('cad-corpo').value;
-        if(!n || !c) return;
-        let db = JSON.parse(localStorage.getItem('db_'+t)) || {};
-        db[Date.now()] = { nome: n, texto: c };
-        localStorage.setItem('db_'+t, JSON.stringify(db));
+        let d = JSON.parse(localStorage.getItem('db_'+t)) || {};
+        d[Date.now()] = { nome: n, texto: c };
+        localStorage.setItem('db_'+t, JSON.stringify(d));
         fecharModal(); carregarLista();
     }
 
+    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-def').value); }
+    function abrirModal() { document.getElementById('modal').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+
     window.onload = () => {
-        const m = document.getElementById('nums-main'), p = document.getElementById('nums-prev');
-        for(let i=1; i<=150; i++) { m.innerHTML += i + '<br>'; p.innerHTML += i + '<br>'; }
-        document.getElementById('txt-main').value = localStorage.getItem('save_2026') || "";
-        mudarTipoDB('postits');
-        mudarPDF('prova');
+        const nd = document.getElementById('nums-def'), nr = document.getElementById('nums-rasc');
+        for(let i=1; i<=150; i++) { nd.innerHTML += i + '<br>'; nr.innerHTML += i + '<br>'; }
+        document.getElementById('txt-def').value = localStorage.getItem('save_2026') || "";
+        renderMenus(); mudarDB('postits'); pdf('prova');
     };
 </script>
 </body>
