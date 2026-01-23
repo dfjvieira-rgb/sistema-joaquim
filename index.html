@@ -23,7 +23,7 @@
         /* ÁREA DE TRABALHO */
         .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
         .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; width: 100%; }
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; border-left: 2px solid #ccc; z-index: 1100; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; border-left: 2px solid #ccc; z-index: 1100; transition: 0.3s; }
 
         /* FOLHA FGV */
         .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 10px; border: 1px solid #000; background: white; position: relative; }
@@ -36,7 +36,7 @@
         .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s ease-in-out; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         .drawer.open { left: 0; }
         .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; border-bottom: 4px solid var(--gold); }
-        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .drawer-section { background: #f4f4f4; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #666; text-transform: uppercase; }
 
         /* MURAL FLUTUANTE (📌) */
@@ -51,11 +51,17 @@
         .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; flex-shrink: 0; }
         .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; font-size: 0.75rem; }
 
+        /* PDF NAV */
+        .pdf-header { padding: 10px; background: #222; display: flex; flex-direction: column; gap: 5px; }
+        .pdf-nav { display: flex; gap: 5px; }
+        .pdf-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; background: #444; color: white; cursor: pointer; font-size: 0.65rem; }
+        .pdf-btn.active { background: var(--accent); color: black; }
+
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
         .overlay.active { display: block; }
 
         @media (max-width: 1024px) {
-            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; transition: 0.3s; }
+            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
             .col-pdf.active { left: 0; }
             #btn-mobile-pdf { display: block !important; }
             .mural-side { width: 85%; }
@@ -109,7 +115,7 @@
         <div class="postit-card" style="border-left-color:var(--success)"><h4>🚀 Dicas Aryanna</h4><textarea id="p-ary" oninput="saveNotes()"></textarea></div>
         <div class="postit-card" style="border-left-color:var(--danger)"><h4>⚠️ Teses Chave</h4><textarea id="p-warn" oninput="saveNotes()"></textarea></div>
     </div>
-    <button onclick="toggleMural()" style="padding:15px; background:#ddd; border:none; font-weight:bold;">FECHAR MURAL</button>
+    <button onclick="toggleMural()" style="padding:15px; background:#ddd; border:none; font-weight:bold;">FECHAR</button>
 </aside>
 
 <main class="workspace">
@@ -130,21 +136,15 @@
 
     <section class="col-pdf" id="pdf-area">
         <div class="pdf-header">
-            <select id="exam-select" style="padding:10px; border-radius:4px; font-weight:bold; width:100%;" onchange="trocarPdf()">
-                <option value="35">Exame 35</option>
-                <option value="36">Exame 36</option>
-                <option value="37">Exame 37</option>
-                <option value="38">Exame 38</option>
-                <option value="39">Exame 39</option>
-                <option value="40">Exame 40</option>
-                <option value="41">Exame 41</option>
-                <option value="42">Exame 42</option>
-                <option value="43">Exame 43</option>
-                <option value="44">Exame 44</option>
+            <select id="exam-select" style="padding:10px; border-radius:4px; font-weight:bold;" onchange="trocarExame()">
+                <option value="35">Exame 35</option><option value="36">Exame 36</option><option value="37">Exame 37</option>
+                <option value="38">Exame 38</option><option value="39">Exame 39</option><option value="40">Exame 40</option>
+                <option value="41">Exame 41</option><option value="42">Exame 42</option><option value="43">Exame 43</option><option value="44">Exame 44</option>
             </select>
-            <div class="pdf-nav" style="display:flex; gap:5px; margin-top:5px;">
-                <button id="btn-p" class="pdf-btn active" style="flex:1; padding:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="setPdf('prova')">PROVA</button>
-                <button id="btn-g" class="pdf-btn" style="flex:1; padding:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="setPdf('gabarito')">GABARITO</button>
+            <div class="pdf-nav">
+                <button id="btn-p" class="pdf-btn active" onclick="setPdf('prova')">PROVA</button>
+                <button id="btn-g" class="pdf-btn" onclick="setPdf('gabarito')">GABARITO</button>
+                <button id="btn-a" class="pdf-btn" onclick="setPdf('apoio')">ARYANNA</button>
             </div>
         </div>
         <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none; background:white;"></iframe>
@@ -164,23 +164,31 @@
     function aplicar(tipo) {
         if(area.value !== "" && !confirm("Substituir o texto atual?")) return;
         const m = {
-            ms: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n     MANDADO DE SEGURANÇA...",
+            ms: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     MANDADO DE SEGURANÇA...",
             ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     RECURSO ORDINÁRIO...",
             rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     RECLAMAÇÃO TRABALHISTA...",
-            contestacao: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     CONTESTAÇÃO..."
+            contestacao: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     CONTESTAÇÃO...",
+            consignacao: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     AÇÃO DE CONSIGNAÇÃO...",
+            ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     AGRAVO DE PETIÇÃO...",
+            embargos: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n     EMBARGOS À EXECUÇÃO..."
         };
-        area.value = m[tipo] || "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n";
-        saveAll(); closeAll();
+        area.value = m[tipo] || ""; saveAll(); closeAll();
     }
 
-    function trocarPdf() { setPdf(currentMode); loadAll(); }
+    function trocarExame() { setPdf(currentMode); loadAll(); }
+    
     function setPdf(tipo) {
         currentMode = tipo;
         const ex = examSelect.value;
         const frame = document.getElementById('f-pdf');
-        document.getElementById('btn-p').style.background = tipo === 'prova' ? 'var(--accent)' : '#444';
-        document.getElementById('btn-g').style.background = tipo === 'gabarito' ? 'var(--accent)' : '#444';
-        frame.src = tipo === 'prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`;
+        
+        document.getElementById('btn-p').classList.toggle('active', tipo === 'prova');
+        document.getElementById('btn-g').classList.toggle('active', tipo === 'gabarito');
+        document.getElementById('btn-a').classList.toggle('active', tipo === 'apoio');
+
+        if(tipo === 'prova') frame.src = `./ro${ex}.pdf`;
+        else if(tipo === 'gabarito') frame.src = `./ro${ex}-gabarito.pdf`;
+        else frame.src = `./Aryanna Linhares.pdf`;
     }
 
     function saveAll() { localStorage.setItem(`peca_${examSelect.value}`, area.value); }
@@ -215,10 +223,10 @@
         l.href = window.URL.createObjectURL(b); l.click();
     }
 
-    function limparTudo() { if(confirm("Deseja apagar sua resposta?")) { area.value = ""; saveAll(); } }
+    function limparTudo() { if(confirm("Apagar resposta?")) { area.value = ""; saveAll(); } }
 
     let s = 18000;
-    setInterval(() => { if(s > 0) { s--; /* Timer logic */ } }, 1000);
+    setInterval(() => { if(s > 0) s--; }, 1000);
 </script>
 </body>
 </html>
