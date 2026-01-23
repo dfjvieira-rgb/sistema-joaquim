@@ -3,77 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>JOAQUIM PRO 2026</title>
+    <title>JOAQUIM PRO - GERADOR DE PEÇAS</title>
     <style>
         :root { 
             --primary: #1a252f; --accent: #f1c40f; --bg: #f8f9fa; 
-            --header-h: 60px; --drawer-w: 280px;
+            --header-h: 60px; --drawer-w: 280px; --green: #27ae60;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* HEADER */
-        header { 
-            background: var(--primary); color: white; height: var(--header-h); 
-            padding: 0 15px; display: flex; justify-content: space-between; align-items: center; 
-            z-index: 1000; padding-top: env(safe-area-inset-top);
-        }
-        .menu-trigger { font-size: 1.5rem; cursor: pointer; display: none; } /* Só aparece no mobile */
-        .timer { font-family: monospace; color: var(--accent); font-weight: bold; }
+        header { background: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .timer { font-family: monospace; font-weight: bold; color: var(--accent); }
 
-        /* DASHBOARD (MODO DESKTOP) */
-        #hub { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 20px; text-align: center; 
-        }
-        .hub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 700px; width: 100%; margin-top: 30px; }
-        .card { 
-            background: white; padding: 30px; border-radius: 15px; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid var(--accent); }
-        .card i { font-size: 2.5rem; }
-
-        /* MENU HAMBÚRGUER (MODO MOBILE) */
-        .drawer { 
-            position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; 
-            background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.2); 
-        }
+        /* MENU LATERAL */
+        .drawer { position: fixed; top: 0; left: -100%; width: var(--drawer-w); height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .drawer.open { left: 0; }
         .drawer-header { background: var(--primary); color: white; padding: 40px 20px 20px; }
-        .drawer-item { padding: 15px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; font-weight: 500; }
+        .drawer-item { padding: 18px 20px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
-        /* ÁREAS DE CONTEÚDO */
         .view { display: none; flex: 1; overflow: hidden; }
         .view.active { display: flex; flex-direction: column; }
 
-        /* EDITOR E TREINO */
-        .split-view { display: flex; flex: 1; }
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; }
-        .paper { flex: 1; display: flex; overflow-y: auto; background-image: linear-gradient(#eee 1px, transparent 1px); background-size: 100% 25px; }
-        #area-peca { flex: 1; padding: 25px; border: none; outline: none; font-family: serif; font-size: 18px; line-height: 25px; background: transparent; }
-        
-        .pdf-side { flex: 1; background: #525659; display: flex; flex-direction: column; }
-        .tabs { background: #333; display: flex; }
-        .tab { flex: 1; padding: 10px; color: #999; background: none; border: none; font-size: 0.7rem; cursor: pointer; }
-        .tab.active { color: white; background: #444; font-weight: bold; }
+        /* CADERNO PADRÃO OAB */
+        .train-container { display: flex; flex: 1; }
+        .editor-side { flex: 1.2; display: flex; flex-direction: column; background: white; border-right: 1px solid #ddd; }
+        .paper { flex: 1; display: flex; overflow-y: auto; background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 25px; background-attachment: local; }
+        .line-nums { width: 45px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 12px; line-height: 25px; padding-top: 25px; user-select: none; }
+        #area-peca { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* POST-ITS */
-        #mural { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; overflow-y: auto; }
-        .postit { background: #fff59d; padding: 15px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-height: 120px; }
+        /* ESTRUTURAS (CARDS INTERATIVOS) */
+        .est-grid { padding: 20px; display: grid; gap: 15px; overflow-y: auto; }
+        .est-card { background: white; padding: 20px; border-radius: 10px; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-usar { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-size: 0.8rem; }
+        .btn-usar:hover { background: var(--green); }
 
-        /* RESPONSIVIDADE (MOBILE) */
-        @media (max-width: 1024px) {
-            .menu-trigger { display: block; }
-            #hub { display: none; } /* No mobile, inicia direto no último modo ou precisa abrir o menu */
-            .split-view { flex-direction: column; }
-            .pdf-side { height: 40%; }
-            .card { padding: 20px; }
-            .hub-grid { grid-template-columns: 1fr; padding: 10px; }
-        }
-
+        .support-side { flex: 0.8; background: #525659; display: flex; flex-direction: column; }
+        @media (max-width: 1024px) { .train-container { flex-direction: column; } .support-side { height: 40%; } }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
         .overlay.active { display: block; }
     </style>
@@ -83,73 +49,71 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <header>
-    <div class="menu-trigger" onclick="toggleMenu()">☰</div>
-    <div style="font-weight:bold;" onclick="showView('hub')">JOAQUIM <span style="color:var(--accent)">PRO</span></div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
+    <div style="font-weight:bold;">JOAQUIM <span style="color:var(--accent)">PRO</span></div>
     <div class="timer" id="timer">05:00:00</div>
 </header>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header">
-        <div style="font-size:1.2rem; font-weight:bold;">Menu de Estudos</div>
-        <div style="font-size:0.7rem; opacity:0.8;">Bem-vindo, Joaquim</div>
-    </div>
-    <div onclick="showView('treino'); toggleMenu()" class="drawer-item">📚 Simulado de Peça</div>
-    <div onclick="showView('estruturas'); toggleMenu()" class="drawer-item">📑 Estruturas</div>
-    <div onclick="showView('postits'); toggleMenu()" class="drawer-item">📌 Post-its</div>
-    <div onclick="showView('hub'); toggleMenu()" class="drawer-item">🏠 Início (Dashboard)</div>
+    <div class="drawer-header"><b>Menu de Navegação</b></div>
+    <div class="drawer-item" onclick="showView('hub'); toggleMenu()">🏠 Início</div>
+    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📚 Caderno de Treino</div>
+    <div class="drawer-item" onclick="showView('estruturas'); toggleMenu()">📑 Gerador de Estruturas</div>
+    <div class="drawer-item" onclick="showView('postits'); toggleMenu()">📌 Post-its</div>
 </nav>
 
 <main id="view-hub" class="view active">
-    <section id="hub">
-        <h2>O que vamos praticar agora?</h2>
-        <div class="hub-grid">
-            <div class="card" onclick="showView('treino')"><i>📚</i><b>Simulado de Peça</b><small>Provas e Gabaritos</small></div>
-            <div class="card" onclick="showView('estruturas')"><i>📑</i><b>Estruturas</b><small>Modelos de Peças</small></div>
-            <div class="card" onclick="showView('postits')"><i>📌</i><b>Post-its</b><small>Minhas Notas</small></div>
-            <div class="card" onclick="exportar()"><i>💾</i><b>Salvar Tudo</b><small>Backup Local</small></div>
+    <div style="margin: auto; text-align: center; padding: 20px;">
+        <h2>Qual o foco de hoje?</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+            <div onclick="showView('treino')" style="background:white; padding:20px; border-radius:10px;"><i>✍️</i><br>Treinar</div>
+            <div onclick="showView('estruturas')" style="background:white; padding:20px; border-radius:10px;"><i>📑</i><br>Estruturas</div>
         </div>
-    </section>
+    </div>
 </main>
 
 <main id="view-treino" class="view">
-    <div class="split-view">
-        <section class="editor-container">
-            <div style="padding:10px; background:#eee; font-size:0.7rem; display:flex; justify-content:space-between;">
-                <b id="status-txt">CADERNO PAUTADO</b>
+    <div class="train-container">
+        <section class="editor-side">
+            <div style="padding:10px; background:#eee; font-size:0.75rem; display:flex; justify-content:space-between;">
+                <b>FOLHA DE RESPOSTAS FGV</b>
                 <span id="line-info">Linha: 1 / 150</span>
             </div>
             <div class="paper">
-                <div style="width:30px; border-right:1px solid #ddd; text-align:center; color:#ccc; font-size:10px; padding-top:25px;" id="lines"></div>
-                <textarea id="area-peca" oninput="sync()"></textarea>
+                <div class="line-nums" id="line-nums"></div>
+                <textarea id="area-peca" oninput="sync()" placeholder="Selecione uma estrutura no menu ou comece a digitar..."></textarea>
             </div>
         </section>
-        <section class="pdf-side">
-            <div class="tabs">
-                <button class="tab active" id="tab-enu" onclick="setPdf('enu')">ENUNCIADO</button>
-                <button class="tab" id="tab-gab" onclick="setPdf('gab')">GABARITO</button>
-            </div>
-            <iframe id="f-enu" style="flex:1; background:white; border:none;"></iframe>
-            <iframe id="f-gab" style="flex:1; background:white; border:none; display:none;"></iframe>
+        <section class="support-side">
+            <iframe id="f-enu" style="flex:1; border:none; background:white;"></iframe>
         </section>
     </div>
 </main>
 
-<main id="view-postits" class="view">
-    <div id="mural"></div>
-    <button onclick="novaNota()" style="position:fixed; bottom:30px; right:30px; width:60px; height:60px; border-radius:50%; background:var(--primary); color:white; border:none; font-size:2rem;">+</button>
-</main>
-
-<main id="view-estruturas" class="view" style="padding:20px; overflow-y:auto;">
-    <div style="background:white; padding:20px; border-radius:10px; margin-bottom:15px; border-left:5px solid var(--accent);">
-        <h3>Recurso Ordinário (Trabalhista)</h3>
-        <p style="font-size:0.8rem; margin-top:5px;">Peça 1: Interposição (Juiz a quo) | Peça 2: Razões (TRT)</p>
+<main id="view-estruturas" class="view">
+    <div class="est-grid">
+        <div class="est-card">
+            <h3>Petição Inicial Genérica</h3>
+            <p style="font-size:0.8rem; color:#666;">Endereçamento, Qualificação, Fatos, Direito e Pedidos.</p>
+            <button class="btn-usar" onclick="gerarEstrutura('inicial')">CARREGAR NO CADERNO</button>
+        </div>
+        <div class="est-card">
+            <h3>Recurso Ordinário (Trabalhista)</h3>
+            <p style="font-size:0.8rem; color:#666;">Peça de Interposição + Peça de Razões inclusas.</p>
+            <button class="btn-usar" onclick="gerarEstrutura('ro')">CARREGAR NO CADERNO</button>
+        </div>
+        <div class="est-card">
+            <h3>Contestação</h3>
+            <p style="font-size:0.8rem; color:#666;">Tempestividade, Preliminares, Mérito e Requerimentos.</p>
+            <button class="btn-usar" onclick="gerarEstrutura('contestacao')">CARREGAR NO CADERNO</button>
+        </div>
     </div>
 </main>
 
 <script>
-    // Setup das linhas
-    const lDiv = document.getElementById('lines');
-    for(let i=1; i<=150; i++) lDiv.innerHTML += i + '<br>';
+    // Gerar números de linha
+    const nums = document.getElementById('line-nums');
+    for(let i=1; i<=150; i++) nums.innerHTML += i + '<br>';
 
     function toggleMenu() {
         document.getElementById('drawer').classList.toggle('open');
@@ -159,25 +123,28 @@
     function showView(v) {
         document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
         document.getElementById('view-' + v).classList.add('active');
-        if(v === 'treino' && !document.getElementById('f-enu').src) {
-            const n = prompt("Qual Exame? (35-45)");
-            if(n) carregar(n);
+    }
+
+    // A MÁGICA: GERADOR DE ESTRUTURA
+    function gerarEstrutura(tipo) {
+        const area = document.getElementById('area-peca');
+        let texto = "";
+
+        if(tipo === 'inicial') {
+            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\nNOME DO RECLAMANTE, já qualificado nos autos, por seu advogado...\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de NOME DA RECLAMADA, também qualificada...\n\nI - PRELIMINARES\n\nII - MÉRITO\n\nIII - PEDIDOS\n\nIV - REQUERIMENTOS FINAIS\n\nValor da causa: R$ ...\nNestes Termos,\nPede Deferimento.\nLocal... Data...\nAdvogado... OAB...";
+        } 
+        else if(tipo === 'ro') {
+            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nNOME DO RECORRENTE, já qualificado, vem interpor\n\nRECURSO ORDINÁRIO\n\ncom fulcro no Art. 895, I, da CLT...\n\n(Pular para linha de Razões)\n\nEGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\nRAZÕES DO RECURSO ORDINÁRIO";
         }
-        if(v === 'postits') renderNotas();
-    }
+        else if(tipo === 'contestacao') {
+            texto = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nNOME DA RECLAMADA, já qualificada, vem apresentar\n\nCONTESTAÇÃO\n\nI - PRELIMINARES\nII - PREJUDICIAIS DE MÉRITO (PRESCRIÇÃO)\nIII - MÉRITO";
+        }
 
-    function carregar(n) {
-        const ts = new Date().getTime();
-        document.getElementById('f-enu').src = `./ro${n}.pdf?v=${ts}`;
-        document.getElementById('f-gab').src = `./ro${n}-gabarito.pdf?v=${ts}`;
-        document.getElementById('status-txt').innerText = `OAB EXAME XXX${n}`;
-    }
-
-    function setPdf(t) {
-        document.getElementById('f-enu').style.display = t === 'enu' ? 'block' : 'none';
-        document.getElementById('f-gab').style.display = t === 'gab' ? 'block' : 'none';
-        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + t).classList.add('active');
+        if(confirm("Isso apagará o texto atual do caderno. Confirmar?")) {
+            area.value = texto;
+            showView('treino');
+            sync();
+        }
     }
 
     function sync() {
@@ -185,24 +152,9 @@
         document.getElementById('line-info').innerText = `Linha: ${lines} / 150`;
     }
 
-    // Post-its
-    let notas = JSON.parse(localStorage.getItem('j_notas')) || [];
-    function novaNota() {
-        const t = prompt("Anotação:");
-        if(t) { notas.push(t); localStorage.setItem('j_notas', JSON.stringify(notas)); renderNotas(); }
-    }
-    function renderNotas() {
-        const m = document.getElementById('mural');
-        m.innerHTML = '';
-        notas.forEach(n => m.innerHTML += `<div class="postit">${n}</div>`);
-    }
-
-    // Timer
+    // Timer (Simples)
     let s = 18000;
     setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
-
-    // No mobile, inicia no Hub se for tela pequena
-    window.onload = () => { if(window.innerWidth < 1024) showView('hub'); };
 </script>
 </body>
 </html>
