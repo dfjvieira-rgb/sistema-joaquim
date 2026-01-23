@@ -7,12 +7,12 @@
     <style>
         :root { --primary: #1a252f; --accent: #f1c40f; --success: #27ae60; --danger: #e74c3c; --fgv-blue: #004a8d; --bg: #f4f4f4; --gold: #d4af37; --postit-bg: #fff9c4; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         header { background: var(--fgv-blue); color: white; height: 50px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 3px solid var(--gold); flex-shrink: 0; }
         .timer { font-family: monospace; color: var(--accent); font-weight: bold; font-size: 1.2rem; }
 
-        /* BARRAS DE ACESSO RÁPIDO RESPONSIVAS */
+        /* BARRAS DE ACESSO RÁPIDO */
         .top-bars { flex-shrink: 0; z-index: 900; background: #fff; }
         .links-planalto { background: #2c3e50; padding: 8px; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
         .links-planalto a { color: #fff; text-decoration: none; font-size: 0.7rem; font-weight: bold; padding: 4px 10px; border-radius: 4px; background: rgba(255,255,255,0.1); }
@@ -32,26 +32,24 @@
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         #area-main { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; }
 
-        /* MENU LATERAL (ESTRUTURAS) */
-        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        /* MENU ESTRUTURAS */
+        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s ease-in-out; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         .drawer.open { left: 0; }
         .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; border-bottom: 4px solid var(--gold); }
         .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .drawer-section { background: #f4f4f4; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #666; text-transform: uppercase; }
 
-        /* NOVO MURAL DE POST-ITS FLUTUANTE */
+        /* MURAL FLUTUANTE (📌) */
         .mural-toggle { position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2500; cursor: pointer; font-size: 1.5rem; border: 2px solid white; }
         .mural-side { position: fixed; top: 0; right: -100%; width: 300px; height: 100%; background: #fff; z-index: 2600; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
         .mural-side.open { right: 0; }
         .mural-content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; background: #f0f0f0; }
         .postit-card { background: var(--postit-bg); padding: 12px; border-radius: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); border-left: 6px solid var(--accent); }
         .postit-card h4 { font-size: 0.7rem; margin-bottom: 5px; color: #856404; text-transform: uppercase; }
-        .postit-card textarea { width: 100%; height: 100px; border: none; background: transparent; resize: none; font-size: 0.9rem; outline: none; font-family: inherit; line-height: 1.4; }
+        .postit-card textarea { width: 100%; height: 100px; border: none; background: transparent; resize: none; font-size: 0.9rem; outline: none; font-family: inherit; }
 
-        /* BOTÕES DE AÇÃO */
         .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; flex-shrink: 0; }
-        .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
-        .btn-foot:active { transform: scale(0.95); }
+        .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; font-size: 0.75rem; }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
         .overlay.active { display: block; }
@@ -105,20 +103,11 @@
 
 <div class="mural-toggle" onclick="toggleMural()">📌</div>
 <aside class="mural-side" id="mural-side">
-    <div class="drawer-header" style="background:var(--accent); color:black;">MEU MURAL DE DICAS</div>
+    <div class="drawer-header" style="background:var(--accent); color:black;">MURAL DE DICAS</div>
     <div class="mural-content">
-        <div class="postit-card">
-            <h4>💡 Identificação da Peça</h4>
-            <textarea id="p-id" oninput="saveNotes()" placeholder="Como identificar..."></textarea>
-        </div>
-        <div class="postit-card" style="border-left-color: var(--success)">
-            <h4>🚀 Dicas Aryanna</h4>
-            <textarea id="p-ary" oninput="saveNotes()" placeholder="Dicas de ouro..."></textarea>
-        </div>
-        <div class="postit-card" style="border-left-color: var(--danger)">
-            <h4>⚠️ Atenção / Súmulas</h4>
-            <textarea id="p-warn" oninput="saveNotes()" placeholder="Não esquecer..."></textarea>
-        </div>
+        <div class="postit-card"><h4>💡 Identificação</h4><textarea id="p-id" oninput="saveNotes()"></textarea></div>
+        <div class="postit-card" style="border-left-color:var(--success)"><h4>🚀 Dicas Aryanna</h4><textarea id="p-ary" oninput="saveNotes()"></textarea></div>
+        <div class="postit-card" style="border-left-color:var(--danger)"><h4>⚠️ Teses Chave</h4><textarea id="p-warn" oninput="saveNotes()"></textarea></div>
     </div>
     <button onclick="toggleMural()" style="padding:15px; background:#ddd; border:none; font-weight:bold;">FECHAR MURAL</button>
 </aside>
@@ -129,26 +118,33 @@
             <div class="fgv-h">FOLHA DE RESPOSTA DEFINITIVA</div>
             <div class="paper">
                 <div class="line-nums" id="line-nums"></div>
-                <textarea id="area-main" oninput="saveAll()" placeholder="Escolha a peça no menu..."></textarea>
+                <textarea id="area-main" oninput="saveAll()" placeholder="Escolha a peça no menu lateral..."></textarea>
             </div>
         </div>
         <div class="footer-actions">
             <button onclick="baixarArquivo()" class="btn-foot" style="background:var(--success)">SALVAR</button>
-            <button id="btn-mobile-pdf" onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue); display:none;">VER PROVA</button>
+            <button id="btn-mobile-pdf" onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue); display:none;">PROVA</button>
             <button onclick="limparTudo()" class="btn-foot" style="background:var(--danger)">LIMPAR</button>
         </div>
     </section>
 
     <section class="col-pdf" id="pdf-area">
         <div class="pdf-header">
-            <select id="exam-select" style="padding:10px; border-radius:4px; font-weight:bold;" onchange="trocarPdf()">
-                <option value="35">35º Exame</option><option value="36">36º</option><option value="37">37º</option>
-                <option value="38">38º</option><option value="39">39º</option><option value="40">40º</option>
-                <option value="41">41º</option><option value="42">42º</option><option value="43">43º</option><option value="44">44º</option>
+            <select id="exam-select" style="padding:10px; border-radius:4px; font-weight:bold; width:100%;" onchange="trocarPdf()">
+                <option value="35">Exame 35</option>
+                <option value="36">Exame 36</option>
+                <option value="37">Exame 37</option>
+                <option value="38">Exame 38</option>
+                <option value="39">Exame 39</option>
+                <option value="40">Exame 40</option>
+                <option value="41">Exame 41</option>
+                <option value="42">Exame 42</option>
+                <option value="43">Exame 43</option>
+                <option value="44">Exame 44</option>
             </select>
-            <div class="pdf-nav">
-                <button id="btn-p" class="pdf-btn active" onclick="setPdf('prova')">PROVA</button>
-                <button id="btn-g" class="pdf-btn" onclick="setPdf('gabarito')">GABARITO</button>
+            <div class="pdf-nav" style="display:flex; gap:5px; margin-top:5px;">
+                <button id="btn-p" class="pdf-btn active" style="flex:1; padding:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="setPdf('prova')">PROVA</button>
+                <button id="btn-g" class="pdf-btn" style="flex:1; padding:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="setPdf('gabarito')">GABARITO</button>
             </div>
         </div>
         <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none; background:white;"></iframe>
@@ -163,11 +159,7 @@
     function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
     function toggleMural() { document.getElementById('mural-side').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
     function togglePdf() { document.getElementById('pdf-area').classList.toggle('active'); }
-    function closeAll() { 
-        document.getElementById('drawer').classList.remove('open'); 
-        document.getElementById('mural-side').classList.remove('open');
-        document.getElementById('overlay').classList.remove('active'); 
-    }
+    function closeAll() { document.getElementById('drawer').classList.remove('open'); document.getElementById('mural-side').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
 
     function aplicar(tipo) {
         if(area.value !== "" && !confirm("Substituir o texto atual?")) return;
@@ -186,8 +178,8 @@
         currentMode = tipo;
         const ex = examSelect.value;
         const frame = document.getElementById('f-pdf');
-        document.getElementById('btn-p').classList.toggle('active', tipo === 'prova');
-        document.getElementById('btn-g').classList.toggle('active', tipo === 'gabarito');
+        document.getElementById('btn-p').style.background = tipo === 'prova' ? 'var(--accent)' : '#444';
+        document.getElementById('btn-g').style.background = tipo === 'gabarito' ? 'var(--accent)' : '#444';
         frame.src = tipo === 'prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`;
     }
 
@@ -226,13 +218,7 @@
     function limparTudo() { if(confirm("Deseja apagar sua resposta?")) { area.value = ""; saveAll(); } }
 
     let s = 18000;
-    setInterval(() => {
-        if(s > 0) {
-            s--;
-            let h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sc = s%60;
-            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`;
-        }
-    }, 1000);
+    setInterval(() => { if(s > 0) { s--; /* Timer logic */ } }, 1000);
 </script>
 </body>
 </html>
