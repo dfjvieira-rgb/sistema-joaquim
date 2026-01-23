@@ -39,43 +39,37 @@
 
         .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; transition: 0.3s; }
-        .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; border-bottom: 1px solid #000; }
+        .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; transition: 0.3s; position: relative; }
+        .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; border-bottom: 1px solid #000; display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; }
         
-        /* FOLHA COM ESCRITA MANUAL */
+        .btn-save-folha { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.65rem; cursor: pointer; font-weight: bold; }
+        .btn-history { background: var(--gold); color: black; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.65rem; cursor: pointer; font-weight: bold; }
+
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
         .line-nums { width: 35px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; font-family: sans-serif; }
         .textarea-fgv { 
             flex: 1; border: none; outline: none; resize: none; padding: 0 15px; 
-            /* CONFIGURAÇÃO DA LETRA MANUSCRITA */
-            font-family: 'Caveat', cursive; 
-            font-size: 24px; /* Tamanho ajustado para a fonte cursiva */
-            line-height: 25px; 
-            background-attachment: local; 
-            background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
-            background-size: 100% 25px; 
-            color: #001f3f; /* Azul Caneta */
-            overflow-y: hidden;
+            font-family: 'Caveat', cursive; font-size: 24px; line-height: 25px; 
+            background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
+            background-size: 100% 25px; color: #001f3f; overflow-y: hidden;
         }
 
         .col-pdf { flex: 1; display: flex; flex-direction: column; background: var(--pdf-bg); border-left: 2px solid #000; transition: 0.3s; z-index: 1100; }
         .pdf-tabs { display: flex; background: #111; padding: 2px; gap: 2px; }
         .tab-btn { flex: 1; padding: 12px 5px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; text-transform: uppercase; }
         .tab-btn.active { background: white; color: var(--fgv-blue); }
-        .btn-externo { background: var(--warning); color: black !important; flex: 0.3; }
         
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
+        #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 65px; height: 65px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+
         .overlay-consulta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; flex-direction: column; }
-        .consulta-card { width: 95%; max-width: 700px; margin: auto; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
-        .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .consulta-b { padding: 0; overflow-y: auto; color: #333; flex: 1; display: flex; flex-direction: column; }
-        
-        #mobile-switch { 
-            display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; 
-            background: var(--fgv-blue); color: white; border: 3px solid var(--gold);
-            width: 65px; height: 65px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+        .consulta-card { width: 95%; max-width: 800px; margin: auto; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
+        .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .consulta-b { padding: 0; overflow-y: auto; color: #333; flex: 1; }
+
+        .hist-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .hist-item:hover { background: #f9f9f9; }
 
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
@@ -93,11 +87,9 @@
 </header>
 
 <div class="laws-bar">
-    <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" class="law-link">CLT</a>
-    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="law-link">CF/88</a>
-    <button class="law-link" onclick="abrirBanco('postits')" style="background:var(--warning); color:black;">📌 POST-ITS</button>
-    <button class="law-link" onclick="abrirBanco('correcoes')" style="background:var(--danger); color:white;">⚖️ ERROS</button>
-    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success); color:white;">➕ NOVO</button>
+    <button class="law-link" onclick="abrirBancoPostits()" style="background:var(--warning); color:black;">📌 MEUS POST-ITS</button>
+    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success); color:white;">➕ NOVO POST-IT</button>
+    <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 VER MEUS TREINOS</button>
 </div>
 
 <div class="exam-grid" id="exam-grid"></div>
@@ -110,18 +102,22 @@
 </div>
 
 <div class="pratica-bar">
-    <button class="btn-pratica bg-pratica" id="btn-modo-peca" onclick="modoTreino('peca')">🏋️ PEÇA (150 LINHAS)</button>
-    <button class="btn-pratica bg-discursiva" id="btn-modo-questoes" onclick="modoTreino('questoes')">📝 QUESTÕES (1-4)</button>
+    <button class="btn-pratica bg-pratica" id="btn-modo-peca" onclick="modoTreino('peca')">🏋️ PEÇA PROFISSIONAL</button>
+    <button class="btn-pratica bg-discursiva" id="btn-modo-questoes" onclick="modoTreino('questoes')">📝 QUESTÕES 1-4</button>
 </div>
 
 <main class="workspace">
-    <section class="col-res" id="section-res">
-        <div class="fgv-header" id="label-folha">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
+    <section class="col-res">
+        <div class="fgv-header">
+            <span id="label-folha">FOLHA FGV</span>
+            <div>
+                <button class="btn-history" onclick="arquivarTreino()">📁 ARQUIVAR TREINO</button>
+                <button class="btn-save-folha" onclick="saveManual()">💾 SALVAR ATUAL</button>
+            </div>
+        </div>
         <div class="paper" id="main-paper-container">
             <div class="line-nums" id="line-nums-main"></div>
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva aqui como se estivesse com a caneta na mão..."></textarea>
-            </div>
+            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()"></textarea>
         </div>
     </section>
 
@@ -130,7 +126,6 @@
             <button id="tab-prova" class="tab-btn active" onclick="mudarDoc('prova')">PROVA</button>
             <button id="tab-gab" class="tab-btn" onclick="mudarDoc('gabarito')">GAB.</button>
             <button id="tab-ary" class="tab-btn" onclick="mudarDoc('aryanna')">ARYANNA</button>
-            <button class="tab-btn btn-externo" onclick="abrirExterno()">↗</button>
         </div>
         <iframe id="f-pdf"></iframe>
     </section>
@@ -138,25 +133,31 @@
 
 <button id="mobile-switch" onclick="switchMobile()">PDF</button>
 
-<div id="janela-consulta" class="overlay-consulta" onclick="this.style.display='none'">
+<div id="janela-historico" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
-        <div class="consulta-h"><span id="consulta-titulo">MEUS REGISTROS</span><button onclick="document.getElementById('janela-consulta').style.display='none'">X</button></div>
-        <div id="lista-itens" class="consulta-b"></div>
-        <div id="item-detalhe" class="consulta-b" style="display:none; background:white;">
-            <div class="fgv-header" style="background:#eee; color:#333">PRÉ-VISUALIZAÇÃO</div>
-            <div class="paper" style="flex:1;"><div class="line-nums" id="line-nums-preview"></div><textarea id="preview-texto" class="textarea-fgv" readonly></textarea></div>
-            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px;"><button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px;">VOLTAR</button><button onclick="copiarParaPeca()" style="flex:2; background:var(--fgv-blue); color:white; border:none; font-weight:bold;">COPIAR PARA FOLHA</button></div>
+        <div class="consulta-h">MEU HISTÓRICO DE TREINOS <button onclick="document.getElementById('janela-historico').style.display='none'">X</button></div>
+        <div id="lista-historico" class="consulta-b"></div>
+        <div id="view-historico" class="consulta-b" style="display:none; background:white;">
+            <div class="fgv-header" style="background:#eee;"><span id="view-hist-titulo"></span> <button onclick="fecharViewHist()">VOLTAR</button></div>
+            <div class="paper" style="flex:1;"><div class="line-nums" id="line-nums-hist"></div><textarea id="texto-hist-view" class="textarea-fgv" readonly></textarea></div>
         </div>
+    </div>
+</div>
+
+<div id="janela-postits" class="overlay-consulta" onclick="this.style.display='none'">
+    <div class="consulta-card" onclick="event.stopPropagation()">
+        <div class="consulta-h">MEUS POST-ITS <button onclick="document.getElementById('janela-postits').style.display='none'">X</button></div>
+        <div id="lista-postits" class="consulta-b"></div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta">
     <div class="consulta-card" style="height:auto;" onclick="event.stopPropagation()">
-        <div class="consulta-h">SALVAR NOVO <button onclick="fecharModalCadastro()">X</button></div>
+        <div class="consulta-h">SALVAR NOVO POST-IT <button onclick="fecharModalCadastro()">X</button></div>
         <div class="consulta-b" style="padding:20px;">
-            <div style="margin-bottom:10px"><label style="color:#333; font-weight:bold">Título:</label><br><input type="text" id="cad-nome" style="width:100%; padding:8px;"></div>
-            <div style="margin-bottom:10px"><label style="color:#333; font-weight:bold">Conteúdo:</label><br><textarea id="cad-texto" rows="8" style="width:100%; padding:8px;"></textarea></div>
-            <button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO BANCO</button>
+            <input type="text" id="cad-nome" placeholder="Título da Tese" style="width:100%; padding:10px; margin-bottom:10px;">
+            <textarea id="cad-texto" rows="8" placeholder="Texto para copiar..." style="width:100%; padding:10px;"></textarea>
+            <button onclick="salvarNovoPostit()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold;">SALVAR</button>
         </div>
     </div>
 </div>
@@ -164,7 +165,7 @@
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; let modoAtual = 'peca';
 
-    // GERAR GRADE EXAMES
+    // GRADE
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=44; i++){
         const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
@@ -172,112 +173,160 @@
         grid.appendChild(b);
     }
 
-    function mudarDoc(tipo) {
-        docAtual = tipo;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if(tipo === 'gabarito') document.getElementById('tab-gab').classList.add('active');
-        else if(tipo === 'aryanna') document.getElementById('tab-ary').classList.add('active');
-        else document.getElementById('tab-prova').classList.add('active');
-        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+    // ARQUIVAMENTO E HISTÓRICO
+    function arquivarTreino() {
+        const texto = document.getElementById('texto-final').value;
+        if(texto.length < 10) return alert("Escreva algo antes de arquivar!");
+        
+        const data = new Date().toLocaleString();
+        const titulo = `${modoAtual.toUpperCase()} - Exame ${exAtual} (${data})`;
+        
+        let historico = JSON.parse(localStorage.getItem('master_historico')) || [];
+        historico.unshift({ titulo, texto, modo: modoAtual, data });
+        localStorage.setItem('master_historico', JSON.stringify(historico));
+        
+        alert("Treino guardado com sucesso no seu histórico!");
     }
 
-    function abrirExterno() {
-        let path = docAtual === 'prova' ? `ro${exAtual}.pdf` : docAtual === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        window.open(path, '_blank');
+    function abrirHistorico() {
+        const hist = JSON.parse(localStorage.getItem('master_historico')) || [];
+        const lista = document.getElementById('lista-historico');
+        lista.innerHTML = hist.length ? '' : '<p style="padding:20px">Nenhum treino arquivado ainda.</p>';
+        
+        hist.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'hist-item';
+            div.innerHTML = `<span><b>${item.titulo}</b></span> <div><button onclick="verHist(${index})" style="padding:5px 10px; background:var(--primary); color:white; border:none; border-radius:3px; cursor:pointer">VER</button> <button onclick="delHist(${index})" style="padding:5px 10px; background:var(--danger); color:white; border:none; border-radius:3px; cursor:pointer; margin-left:5px">X</button></div>`;
+            lista.appendChild(div);
+        });
+        document.getElementById('view-historico').style.display = 'none';
+        document.getElementById('lista-historico').style.display = 'block';
+        document.getElementById('janela-historico').style.display = 'flex';
     }
 
+    function verHist(index) {
+        const item = JSON.parse(localStorage.getItem('master_historico'))[index];
+        document.getElementById('lista-historico').style.display = 'none';
+        document.getElementById('view-historico').style.display = 'flex';
+        document.getElementById('view-hist-titulo').innerText = item.titulo;
+        document.getElementById('texto-hist-view').value = item.texto;
+        gerarLinhas(item.modo === 'peca' ? 150 : 120, document.getElementById('line-nums-hist'));
+    }
+
+    function fecharViewHist() {
+        document.getElementById('view-historico').style.display = 'none';
+        document.getElementById('lista-historico').style.display = 'block';
+    }
+
+    function delHist(index) {
+        if(confirm("Excluir este treino permanentemente?")) {
+            let hist = JSON.parse(localStorage.getItem('master_historico'));
+            hist.splice(index, 1);
+            localStorage.setItem('master_historico', JSON.stringify(hist));
+            abrirHistorico();
+        }
+    }
+
+    // SISTEMA DE PEÇA/QUESTÕES
     function modoTreino(tipo) {
         modoAtual = tipo;
         const area = document.getElementById('texto-final');
-        const label = document.getElementById('label-folha');
         const lineContainer = document.getElementById('line-nums-main');
-        
         document.getElementById('btn-modo-peca').style.opacity = tipo === 'peca' ? '1' : '0.5';
         document.getElementById('btn-modo-questoes').style.opacity = tipo === 'questoes' ? '1' : '0.5';
 
         if(tipo === 'peca') {
-            label.innerText = "FOLHA DE RESPOSTA DEFINITIVA - PEÇA PROFISSIONAL";
+            document.getElementById('label-folha').innerText = "PEÇA (150 LINHAS)";
             area.style.height = "3750px"; 
             gerarLinhas(150, lineContainer);
             area.value = localStorage.getItem('save_2026_peca') || "";
         } else {
-            label.innerText = "FOLHA DE RESPOSTA DEFINITIVA - QUESTÕES DISCURSIVAS";
+            document.getElementById('label-folha').innerText = "DISCURSIVAS (120 LINHAS)";
             area.style.height = "3000px"; 
             gerarLinhas(120, lineContainer);
-            area.value = localStorage.getItem('save_2026_questoes') || "QUESTÃO 1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQUESTÃO 2:";
+            area.value = localStorage.getItem('save_2026_questoes') || "QUESTÃO 1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQUESTÃO 2:";
         }
-        document.getElementById('main-paper-container').scrollTop = 0;
-    }
-
-    function gerarLinhas(qtd, container) {
-        let html = "";
-        for(let i=1; i<=qtd; i++) html += i + "<br>";
-        container.innerHTML = html;
     }
 
     function saveAuto() {
-        const val = document.getElementById('texto-final').value;
-        localStorage.setItem(modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', val);
+        localStorage.setItem(modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', document.getElementById('texto-final').value);
+    }
+
+    function saveManual() {
+        saveAuto();
+        const btn = document.querySelector('.btn-save-folha');
+        btn.innerText = "✅ SALVO!";
+        setTimeout(() => btn.innerText = "💾 SALVAR ATUAL", 2000);
+    }
+
+    // POST-ITS
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+    function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
+    function salvarNovoPostit() {
+        const nome = document.getElementById('cad-nome').value;
+        const texto = document.getElementById('cad-texto').value;
+        if(!nome || !texto) return alert("Preencha tudo!");
+        let db = JSON.parse(localStorage.getItem('db_master')) || {};
+        db[Date.now()] = { nome, texto };
+        localStorage.setItem('db_master', JSON.stringify(db));
+        fecharModalCadastro();
+        alert("Post-it salvo!");
+    }
+
+    function abrirBancoPostits() {
+        const db = JSON.parse(localStorage.getItem('db_master')) || {};
+        const lista = document.getElementById('lista-postits');
+        lista.innerHTML = '';
+        for(let id in db) {
+            const item = document.createElement('div');
+            item.className = 'hist-item';
+            item.innerHTML = `<span>📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="padding:5px; background:var(--success); color:white; border:none; cursor:pointer">COPIAR</button>`;
+            lista.appendChild(item);
+        }
+        document.getElementById('janela-postits').style.display = 'flex';
+    }
+
+    function copiarPostit(id) {
+        const db = JSON.parse(localStorage.getItem('db_master'));
+        document.getElementById('texto-final').value += "\n" + db[id].texto;
+        document.getElementById('janela-postits').style.display = 'none';
+        saveAuto();
+    }
+
+    // FUNÇÕES BÁSICAS (PDF/TIMER)
+    function mudarDoc(tipo) {
+        docAtual = tipo;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active');
+        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
     }
 
     function aplicarEstruct(tipo) {
-        if(modoAtual !== 'peca') return alert("Mude para o modo PEÇA.");
-        const m = {
-            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., já qualificado...\nRECLAMAÇÃO TRABALHISTA...",
-            cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECLAMADO..., já qualificado...\nCONTESTAÇÃO...",
-            ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECORRENTE..., já qualificado...\nRECURSO ORDINÁRIO...",
-            ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nAGRAVANTE..., já qualificado...\nAGRAVO DE PETIÇÃO..."
-        };
+        if(modoAtual !== 'peca') return;
+        const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." };
         document.getElementById('texto-final').value = m[tipo];
         saveAuto();
     }
 
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
-    function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
-    function salvarNovoItem() {
-        const nome = document.getElementById('cad-nome').value;
-        const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return alert("Preencha tudo!");
-        let db = JSON.parse(localStorage.getItem('db_postits')) || {};
-        db[Date.now()] = { nome, texto };
-        localStorage.setItem('db_postits', JSON.stringify(db));
-        fecharModalCadastro();
-    }
-    function abrirBanco() {
-        const db = JSON.parse(localStorage.getItem('db_postits')) || {};
-        const lista = document.getElementById('lista-itens');
-        lista.innerHTML = '';
-        for(let id in db) {
-            const item = document.createElement('div');
-            item.style = "padding:15px; border-bottom:1px solid #eee; cursor:pointer; color:black; font-weight:bold";
-            item.innerText = "📄 " + db[id].nome;
-            item.onclick = () => {
-                document.getElementById('lista-itens').style.display = 'none';
-                document.getElementById('item-detalhe').style.display = 'flex';
-                document.getElementById('preview-texto').value = db[id].texto;
-            };
-            lista.appendChild(item);
-        }
-        document.getElementById('janela-consulta').style.display = 'flex';
-    }
-    function copiarParaPeca() {
-        document.getElementById('texto-final').value += "\n" + document.getElementById('preview-texto').value;
-        document.getElementById('janela-consulta').style.display = 'none';
-        saveAuto();
+    function gerarLinhas(qtd, container) {
+        let html = ""; for(let i=1; i<=qtd; i++) html += i + "<br>";
+        container.innerHTML = html;
     }
 
     function toggleTimer() {
         if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
         else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); }
     }
+
     function updateTimerDisplay() {
         const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60;
         document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
+
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
 
     window.onload = () => {
-        gerarLinhas(150, document.getElementById('line-nums-preview'));
+        gerarLinhas(150, document.getElementById('line-nums-main'));
         modoTreino('peca');
         mudarDoc('prova');
     };
