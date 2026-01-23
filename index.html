@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA FGV - PDF MOBILE FIX</title>
+    <title>SISTEMA FGV - MOBILE FIX</title>
     <style>
         :root {
             --fgv-bg: #f3f4f6; --paper-white: #ffffff; --fgv-blue: #004a8d;
@@ -19,15 +19,20 @@
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
-            position: fixed; width: 100%;
+            position: fixed; width: 100%; /* Evita bounce no iOS */
         }
 
+        /* HEADER RESPONSIVO */
         header { 
             background: #fff; padding: 5px 10px; border-bottom: 3px solid var(--gold); 
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; 
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; flex-shrink: 0; 
         }
         
-        .header-right { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .header-left { flex: 0 0 auto; }
+        .header-right { 
+            flex: 1; display: flex; justify-content: flex-end; gap: 4px; flex-wrap: wrap; 
+            padding: 2px 0;
+        }
 
         #timer-display { 
             font-family: monospace; font-size: 1.1rem; font-weight: bold; 
@@ -37,7 +42,7 @@
         
         .btn-head { 
             padding: 6px 8px; border: none; border-radius: 4px; cursor: pointer; 
-            font-weight: bold; font-size: 0.6rem; color: white; text-transform: uppercase;
+            font-weight: bold; font-size: 0.65rem; color: white; text-transform: uppercase;
         }
         .bg-timer { background: var(--success); }
         .bg-treinos { background: #4b5563; }
@@ -45,6 +50,7 @@
         .bg-dicas { background: #8b5cf6; }
         .bg-questoes { background: #2563eb; }
 
+        /* NAVEGAÇÃO DE EXAMES */
         .nav-fgv { 
             background: #e5e7eb; border-bottom: 1px solid #999; display: flex; 
             overflow-x: auto; padding: 4px; gap: 4px; flex-shrink: 0;
@@ -52,13 +58,14 @@
         }
         .btn-nav { padding: 5px 10px; border: 1px solid #666; background: #fff; font-size: 0.6rem; white-space: nowrap; }
 
+        /* WORKSPACE DINÂMICO */
         .workspace { flex: 1; display: flex; gap: 2px; padding: 2px; background: #999; overflow: hidden; }
         
         .col-main { flex: 0 0 50%; display: flex; flex-direction: column; background: #fff; }
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; overflow: hidden; position: relative; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; }
 
-        /* ESTILO FOLHA */
-        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        /* FOLHA ESTILO FGV */
+        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.7rem; font-weight: bold; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); }
         .line-numbers { 
             width: 25px; border-right: 1px solid #000; text-align: center; 
@@ -67,35 +74,35 @@
         }
         .textarea-fgv { 
             flex: 1; border: none; outline: none; resize: none; padding: 0 5px; 
-            font-size: 16px; line-height: var(--line-height); 
+            font-size: 16px; /* Evita zoom no iOS */
+            line-height: var(--line-height); 
             background-image: linear-gradient(#eee 1px, transparent 1px); 
             background-size: 100% var(--line-height); background-attachment: local; 
         }
 
-        /* CONTAINER PDF MOBILE */
-        .pdf-wrapper { flex: 1; width: 100%; height: 100%; -webkit-overflow-scrolling: touch; overflow-y: auto; background: #525659; }
-        #frame { width: 100%; height: 100%; border: none; display: block; }
-
-        /* MODAIS */
+        /* MODAIS PARA MOBILE */
         .modal-folha { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; }
         .modal-content { background: white; width: 100%; height: 100%; display: flex; flex-direction: column; }
-        .modal-controls { padding: 8px; background: #ddd; display: flex; gap: 5px; align-items: center; }
-        .modal-controls input { flex: 1; padding: 8px; font-size: 14px; border: 1px solid #ccc; }
+        .modal-controls { padding: 8px; background: #ddd; display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+        .modal-controls input { flex: 1; padding: 8px; font-size: 14px; }
+        
         .lista-itens { height: 80px; overflow-y: auto; background: #fff; border-bottom: 1px solid #000; }
         .item-row { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.75rem; }
 
         @media (max-width: 768px) {
             .workspace { flex-direction: column; }
             .col-main, .col-pdf { flex: 1 1 50%; width: 100%; }
-            .header-right { flex: 1; gap: 2px; }
-            .btn-head { padding: 5px 4px; font-size: 0.5rem; }
+            .header-right { justify-content: flex-start; }
+            .btn-head { padding: 4px 6px; font-size: 0.55rem; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-left"><div id="timer-display">05:00:00</div></div>
+    <div class="header-left">
+        <div id="timer-display">05:00:00</div>
+    </div>
     <div class="header-right">
         <button id="timer-btn" class="btn-head bg-timer" onclick="toggleTimer()">PLAY</button>
         <button class="btn-head bg-treinos" onclick="abrirFolhaEspecial('treinos')">TREINOS</button>
@@ -109,23 +116,20 @@
 
 <main class="workspace">
     <section class="col-main">
-        <div class="sheet-top">RESPOSTA DEFINITIVA</div>
+        <div class="sheet-top">RESPOSTA DEFINITIVA (PEÇA)</div>
         <div class="paper">
             <div class="line-numbers" id="nums-def"></div>
-            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()"></textarea>
+            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva sua peça..."></textarea>
         </div>
-        <button class="bg-timer" style="padding:10px; border:none; color:white; font-weight:bold; font-size:0.7rem;" onclick="salvarDiretoBanco()">💾 SALVAR PEÇA</button>
+        <button class="bg-timer" style="padding:10px; border:none; color:white; font-weight:bold; font-size:0.7rem;" onclick="salvarDiretoBanco()">💾 SALVAR NO BANCO</button>
     </section>
 
     <section class="col-pdf">
         <div style="display:flex; background:#000;">
             <button class="btn-nav" style="flex:1; background:#333; color:white; border:none;" onclick="pdf('prova')">ENUNCIADO</button>
             <button class="btn-nav" style="flex:1; background:#333; color:white; border:none;" onclick="pdf('gabarito')">GABARITO</button>
-            <button class="btn-nav" style="flex:0.5; background:#c5a059; color:black; border:none;" onclick="abrirExterno()">↗</button>
         </div>
-        <div class="pdf-wrapper">
-            <iframe id="frame" src=""></iframe>
-        </div>
+        <iframe id="frame" style="width:100%; height:100%; background:white; border:none;"></iframe>
     </section>
 </main>
 
@@ -143,17 +147,18 @@
             <div class="line-numbers" id="nums-modal"></div>
             <textarea id="txt-modal" class="textarea-fgv"></textarea>
         </div>
-        <button id="btn-transferir" onclick="transferirParaPeca()" class="bg-treinos" style="padding:15px; color:white; border:none; font-weight:bold;">TRANSFERIR ↑</button>
+        <button id="btn-transferir" onclick="transferirParaPeca()" class="bg-treinos" style="padding:15px; color:white; border:none; font-weight:bold;">TRANSFERIR PARA PEÇA ↑</button>
     </div>
 </div>
 
 <script>
     let ex = 42, dbAtual = '', idEditando = null, timeLeft = 18000, timerInterval = null;
-    let currentPdfPath = '';
 
     window.onload = () => {
         const nDef = document.getElementById('nums-def'), nMod = document.getElementById('nums-modal');
-        for(let i=1; i<=150; i++) { nDef.innerHTML += i + '<br>'; nMod.innerHTML += i + '<br>'; }
+        for(let i=1; i<=150; i++) { 
+            nDef.innerHTML += i + '<br>'; nMod.innerHTML += i + '<br>'; 
+        }
         document.getElementById('txt-def').value = localStorage.getItem('save_2026_peca') || "";
         const en = document.getElementById('exam-nav');
         for(let i=35; i<=44; i++) {
@@ -163,31 +168,9 @@
         pdf('prova');
     };
 
-    // FUNÇÃO PDF MELHORADA
-    function pdf(t) {
-        let path = t === 'prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`;
-        currentPdfPath = path;
-        const frame = document.getElementById('frame');
-        
-        // No mobile, alguns navegadores precisam do Viewer do Google para renderizar dentro do iframe
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        if (isMobile) {
-            // Tenta carregar direto, se falhar, o usuário tem o botão de abrir externo ↗
-            frame.src = path;
-        } else {
-            frame.src = path;
-        }
-    }
-
-    function abrirExterno() {
-        if(currentPdfPath) window.open(currentPdfPath, '_blank');
-    }
-
-    // CONTROLES DE FOLHA E TIMER (MANTIDOS)
     function abrirFolhaEspecial(tipo) {
         dbAtual = tipo; idEditando = null;
-        const titulos = { 'treinos': 'BANCO DE TREINOS', 'postits': 'POST-ITS (TESES)', 'dicas': 'DICAS (CORREÇÕES)', 'questoes': 'QUESTÕES' };
+        const titulos = { 'treinos': 'BANCO DE TREINOS', 'postits': 'POST-ITS (TESES)', 'dicas': 'DICAS (CORREÇÕES)', 'questoes': 'QUESTÕES DISCURSIVAS' };
         const cores = { 'treinos': '#4b5563', 'postits': '#eab308', 'dicas': '#8b5cf6', 'questoes': '#2563eb' };
         document.getElementById('modal-titulo').innerText = titulos[tipo];
         document.getElementById('modal-titulo').style.background = cores[tipo];
@@ -200,7 +183,10 @@
         const lista = document.getElementById('modal-lista'), itens = JSON.parse(localStorage.getItem('db_'+dbAtual)) || [];
         lista.innerHTML = '';
         itens.forEach((item, index) => {
-            lista.innerHTML += `<div class="item-row"><span onclick="editarItemModal(${index})" style="flex:1"><b>${item.nome}</b></span><button onclick="excluirItemModal(${index})" style="color:red; border:none; background:none; padding:0 10px;">X</button></div>`;
+            lista.innerHTML += `<div class="item-row">
+                <span onclick="editarItemModal(${index})" style="flex:1"><b>${item.nome}</b></span>
+                <button onclick="excluirItemModal(${index})" style="color:red; border:none; background:none; padding:0 10px;">X</button>
+            </div>`;
         });
     }
 
@@ -240,7 +226,12 @@
 
     function novoItemModal() { idEditando = null; document.getElementById('modal-item-nome').value = ''; document.getElementById('txt-modal').value = ''; }
     function fecharFolha() { document.getElementById('modal-folha').style.display = 'none'; }
-    function transferirParaPeca() { document.getElementById('txt-def').value += `\n\n${document.getElementById('txt-modal').value}`; saveAuto(); fecharFolha(); }
+    function transferirParaPeca() {
+        document.getElementById('txt-def').value += `\n\n${document.getElementById('txt-modal').value}`;
+        saveAuto(); fecharFolha();
+    }
+
+    function pdf(t) { document.getElementById('frame').src = t==='prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`; }
     function saveAuto() { localStorage.setItem('save_2026_peca', document.getElementById('txt-def').value); }
     
     function toggleTimer() {
