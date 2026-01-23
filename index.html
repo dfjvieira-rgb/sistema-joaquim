@@ -20,7 +20,7 @@
         }
         #timer-display { font-family: monospace; font-size: 1.8rem; font-weight: bold; color: var(--warning); }
 
-        /* BARRAS DE LEIS E LINKS */
+        /* BARRAS DE LEIS */
         .laws-bar { background: #000; padding: 5px; display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid #333; flex-shrink: 0; }
         .law-link { background: #333; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-decoration: none; white-space: nowrap; border: 1px solid #444; cursor: pointer; }
 
@@ -53,22 +53,22 @@
         .tab-btn.active { background: white; color: var(--fgv-blue); }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        /* MODAL DE CONSULTA COM FOLHA FGV */
+        /* MODAIS */
         .overlay-consulta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; flex-direction: column; }
-        .consulta-card { width: 95%; max-width: 700px; margin: auto; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
+        .consulta-card { width: 95%; max-width: 750px; margin: auto; background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
         .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .consulta-b { padding: 0; overflow-y: auto; color: #333; flex: 1; display: flex; flex-direction: column; }
         
-        /* BOTÃO MOBILE */
+        .form-cadastro { padding: 20px; background: #f8fafc; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.8rem; font-weight: bold; color: var(--fgv-blue); margin-bottom: 5px; text-transform: uppercase; }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
+        
         #mobile-switch { 
             display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; 
             background: var(--fgv-blue); color: white; border: 3px solid var(--gold);
-            width: 65px; height: 65px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 65px; height: 65px; border-radius: 50%; font-weight: bold;
         }
-
-        .input-group { margin-bottom: 12px; padding: 0 20px; }
-        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #555; margin-bottom: 5px; }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
@@ -89,8 +89,8 @@
     <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" class="law-link">CLT</a>
     <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="law-link">CF/88</a>
     <button class="law-link" onclick="abrirBanco('postits')" style="background:var(--warning); color:black;">📌 POST-ITS</button>
-    <button class="law-link" onclick="abrirBanco('correcoes')" style="background:var(--danger); color:white;">⚖️ ERROS</button>
-    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success); color:white;">➕ NOVO</button>
+    <button class="law-link" onclick="abrirBanco('correcoes')" style="background:var(--danger); color:white;">⚖️ CORREÇÃO</button>
+    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success); color:white;">➕ NOVO MODELO</button>
 </div>
 
 <div class="exam-grid" id="exam-grid"></div>
@@ -104,10 +104,10 @@
 
 <main class="workspace">
     <section class="col-res" id="section-res">
-        <div class="fgv-header">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
+        <div class="fgv-header">FOLHA DE RESPOSTA DEFINITIVA (MÉTODO ARYANNA)</div>
         <div class="paper">
             <div class="line-nums" id="line-nums-main"></div>
-            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Comece a redação..."></textarea>
+            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Inicie sua peça profissional aqui..."></textarea>
         </div>
     </section>
 
@@ -126,31 +126,41 @@
 <div id="janela-consulta" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
         <div class="consulta-h"><span id="consulta-titulo">MEUS REGISTROS</span><button onclick="document.getElementById('janela-consulta').style.display='none'">X</button></div>
-        
         <div id="lista-itens" class="consulta-b"></div>
-        
         <div id="item-detalhe" class="consulta-b" style="display:none; background:white;">
-            <div class="fgv-header" style="background:#eee; color:#333">VISUALIZAÇÃO EM FOLHA FGV</div>
+            <div class="fgv-header" style="background:#ddd;">PRÉ-VISUALIZAÇÃO EM FOLHA FGV</div>
             <div class="paper" style="flex:1;">
                 <div class="line-nums" id="line-nums-preview"></div>
                 <textarea id="preview-texto" class="textarea-fgv" readonly></textarea>
             </div>
-            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px; border-top:1px solid #ddd;">
-                <button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px; border:1px solid #ccc; background:white; border-radius:6px; font-weight:bold;">VOLTAR</button>
-                <button onclick="copiarParaPeca()" style="flex:2; padding:12px; background:var(--fgv-blue); color:white; border:none; border-radius:6px; font-weight:bold;">COPIAR PARA PEÇA</button>
+            <div style="padding:15px; background:#f1f5f9; display:flex; gap:10px; border-top:1px solid #cbd5e1;">
+                <button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px; border:1px solid #94a3b8; background:white; border-radius:6px; font-weight:bold;">VOLTAR</button>
+                <button onclick="copiarParaPeca()" style="flex:2; padding:12px; background:var(--fgv-blue); color:white; border:none; border-radius:6px; font-weight:bold;">COPIAR PARA PEÇA PRINCIPAL</button>
             </div>
         </div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta">
-    <div class="consulta-card" style="height:auto; max-height:85vh;" onclick="event.stopPropagation()">
-        <div class="consulta-h">SALVAR NOVO <button onclick="fecharModalCadastro()">X</button></div>
-        <div class="consulta-b" style="padding:20px 0;">
-            <div class="input-group"><label>Categoria:</label><select id="cad-tipo"><option value="postits">📌 Post-it (Tese/Dica)</option><option value="correcoes">⚖️ Erro (Atenção)</option></select></div>
-            <div class="input-group"><label>Título:</label><input type="text" id="cad-nome" placeholder="Ex: Adicional de Periculosidade"></div>
-            <div class="input-group"><label>Conteúdo para a Peça:</label><textarea id="cad-texto" rows="8" placeholder="Digite a tese completa..."></textarea></div>
-            <div style="padding:0 20px;"><button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO BANCO</button></div>
+    <div class="consulta-card" style="height:auto; max-height:90vh;" onclick="event.stopPropagation()">
+        <div class="consulta-h">CADASTRAR ESTRUTURA / TESE <button onclick="fecharModalCadastro()">X</button></div>
+        <div class="consulta-b form-cadastro">
+            <div class="input-group">
+                <label>Onde salvar?</label>
+                <select id="cad-tipo">
+                    <option value="postits">📌 Post-it (Dicas e Teses)</option>
+                    <option value="correcoes">⚖️ Correção (Atenção/Erros)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Título do Modelo (Identificação):</label>
+                <input type="text" id="cad-nome" placeholder="Ex: Preliminar de Incompetência">
+            </div>
+            <div class="input-group">
+                <label>Texto da Peça (Padrão Folha FGV):</label>
+                <textarea id="cad-texto" rows="10" placeholder="Digite aqui o texto que será inserido na folha de respostas..."></textarea>
+            </div>
+            <button onclick="salvarNovoItem()" style="width:100%; padding:18px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold; font-size:1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">SALVAR NO MEU BANCO DE DADOS</button>
         </div>
     </div>
 </div>
@@ -158,7 +168,6 @@
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova';
 
-    // RENDERIZAR GRADE 35-44
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=44; i++){
         const b = document.createElement('button');
@@ -177,23 +186,22 @@
 
     function aplicarEstruct(tipo) {
         const m = {
-            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., já qualificado nos autos...\nRECLAMAÇÃO TRABALHISTA...",
-            cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECLAMADO..., já qualificado...\nCONTESTAÇÃO...",
-            ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECORRENTE..., já qualificado...\nRECURSO ORDINÁRIO...",
-            ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nAGRAVANTE..., já qualificado...\nAGRAVO DE PETIÇÃO..."
+            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., qualificação...\nRECLAMAÇÃO TRABALHISTA...",
+            cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECLAMADO..., qualificação...\nCONTESTAÇÃO...",
+            ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECORRENTE..., qualificação...\nRECURSO ORDINÁRIO...",
+            ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nAGRAVANTE..., qualificação...\nAGRAVO DE PETIÇÃO..."
         };
         document.getElementById('texto-final').value = m[tipo];
         saveAuto();
     }
 
-    // GESTÃO DO BANCO DE DADOS
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
     function salvarNovoItem() {
         const tipo = document.getElementById('cad-tipo').value;
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return alert("Preencha título e conteúdo!");
+        if(!nome || !texto) return alert("Por favor, preencha o título e o conteúdo.");
         let db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
         db[Date.now()] = { nome, texto };
         localStorage.setItem('db_' + tipo, JSON.stringify(db));
@@ -206,11 +214,11 @@
         const lista = document.getElementById('lista-itens');
         const detalhe = document.getElementById('item-detalhe');
         lista.style.display = 'block'; detalhe.style.display = 'none';
-        lista.innerHTML = Object.keys(db).length ? '' : '<p style="padding:20px; color:#666">Nenhum registro encontrado.</p>';
+        lista.innerHTML = Object.keys(db).length ? '' : '<p style="padding:20px; text-align:center; color:#64748b;">Nenhum modelo salvo nesta categoria.</p>';
         for(let id in db) {
             const item = document.createElement('div');
-            item.style = "padding:15px; border-bottom:1px solid #eee; cursor:pointer; color:black; font-weight:bold";
-            item.innerText = "📄 " + db[id].nome;
+            item.style = "padding:18px; border-bottom:1px solid #f1f5f9; cursor:pointer; color:#1e293b; font-weight:600; font-size:0.95rem";
+            item.innerHTML = (tipo === 'postits' ? '📌 ' : '⚖️ ') + db[id].nome;
             item.onclick = () => {
                 lista.style.display = 'none'; detalhe.style.display = 'flex';
                 document.getElementById('preview-texto').value = db[id].texto;
@@ -221,13 +229,11 @@
     }
 
     function copiarParaPeca() {
-        const area = document.getElementById('texto-final');
-        area.value += "\n" + document.getElementById('preview-texto').value;
+        document.getElementById('texto-final').value += "\n" + document.getElementById('preview-texto').value;
         document.getElementById('janela-consulta').style.display = 'none';
         saveAuto();
     }
 
-    // TIMER E MOBILE
     function toggleTimer() {
         const btn = document.getElementById('btn-timer');
         if(timerInterval) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "RETOMAR"; }
