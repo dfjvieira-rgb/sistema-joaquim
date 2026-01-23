@@ -3,76 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA FGV - BOTOES DIREITA</title>
+    <title>SISTEMA FGV - PDF MOBILE FIX</title>
     <style>
         :root {
             --fgv-bg: #f3f4f6; --paper-white: #ffffff; --fgv-blue: #004a8d;
             --line-height: 25px; --danger: #dc2626; --success: #16a34a; --gold: #c5a059;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: "Times New Roman", Times, serif; background: var(--fgv-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background: var(--fgv-bg); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            position: fixed; width: 100%;
+        }
 
-        /* CABEÇALHO COM BOTÕES À DIREITA */
         header { 
-            background: #fff; padding: 10px 15px; border-bottom: 3px solid var(--gold); 
+            background: #fff; padding: 5px 10px; border-bottom: 3px solid var(--gold); 
             display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; 
         }
         
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .header-right { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+        .header-right { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
 
-        #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--danger); background: #fee2e2; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--danger); }
+        #timer-display { 
+            font-family: monospace; font-size: 1.1rem; font-weight: bold; 
+            color: var(--danger); background: #fee2e2; padding: 2px 6px; 
+            border-radius: 4px; border: 1px solid var(--danger);
+        }
         
-        .btn-head { padding: 8px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; color: white; text-transform: uppercase; white-space: nowrap; }
+        .btn-head { 
+            padding: 6px 8px; border: none; border-radius: 4px; cursor: pointer; 
+            font-weight: bold; font-size: 0.6rem; color: white; text-transform: uppercase;
+        }
         .bg-timer { background: var(--success); }
         .bg-treinos { background: #4b5563; }
         .bg-postit { background: #eab308; color: #000; }
         .bg-dicas { background: #8b5cf6; }
         .bg-questoes { background: #2563eb; }
 
-        .nav-fgv { background: #e5e7eb; border-bottom: 1px solid #999; display: flex; overflow-x: auto; padding: 5px; gap: 5px; flex-shrink: 0; }
-        .btn-nav { padding: 6px 12px; border: 1px solid #666; background: #fff; cursor: pointer; font-weight: bold; font-size: 0.65rem; white-space: nowrap; }
+        .nav-fgv { 
+            background: #e5e7eb; border-bottom: 1px solid #999; display: flex; 
+            overflow-x: auto; padding: 4px; gap: 4px; flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .btn-nav { padding: 5px 10px; border: 1px solid #666; background: #fff; font-size: 0.6rem; white-space: nowrap; }
 
-        .workspace { flex: 1; display: flex; gap: 4px; padding: 4px; background: #999; overflow: hidden; }
-        .col-main { flex: 0 0 45%; display: flex; flex-direction: column; background: #fff; border-right: 2px solid #000; }
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; }
-
-        /* PADRÃO FOLHA FGV */
-        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 6px; text-align: center; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-        .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); position: relative; }
-        .line-numbers { width: 35px; border-right: 1px solid #000; text-align: center; font-size: 11px; line-height: var(--line-height); padding-top: 5px; flex-shrink: 0; background: #f9f9f9; color: #000; }
-        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-size: 18px; line-height: var(--line-height); background-image: linear-gradient(#ccc 1px, transparent 1px); background-size: 100% var(--line-height); background-attachment: local; }
-
-        /* MODAL FOLHAS */
-        .modal-folha { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5000; display: none; padding: 15px; }
-        .modal-content { background: white; width: 100%; max-width: 850px; height: 95vh; margin: auto; display: flex; flex-direction: column; border: 4px solid #000; }
-        .modal-controls { padding: 10px; background: #ddd; border-bottom: 1px solid #000; display: flex; gap: 8px; align-items: center; }
+        .workspace { flex: 1; display: flex; gap: 2px; padding: 2px; background: #999; overflow: hidden; }
         
-        .lista-itens { height: 90px; overflow-y: auto; background: #fff; border: 1px solid #999; font-size: 0.75rem; }
-        .item-row { padding: 6px 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; cursor: pointer; }
+        .col-main { flex: 0 0 50%; display: flex; flex-direction: column; background: #fff; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; overflow: hidden; position: relative; }
+
+        /* ESTILO FOLHA */
+        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); }
+        .line-numbers { 
+            width: 25px; border-right: 1px solid #000; text-align: center; 
+            font-size: 9px; line-height: var(--line-height); padding-top: 5px; 
+            flex-shrink: 0; background: #f9f9f9; 
+        }
+        .textarea-fgv { 
+            flex: 1; border: none; outline: none; resize: none; padding: 0 5px; 
+            font-size: 16px; line-height: var(--line-height); 
+            background-image: linear-gradient(#eee 1px, transparent 1px); 
+            background-size: 100% var(--line-height); background-attachment: local; 
+        }
+
+        /* CONTAINER PDF MOBILE */
+        .pdf-wrapper { flex: 1; width: 100%; height: 100%; -webkit-overflow-scrolling: touch; overflow-y: auto; background: #525659; }
+        #frame { width: 100%; height: 100%; border: none; display: block; }
+
+        /* MODAIS */
+        .modal-folha { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; }
+        .modal-content { background: white; width: 100%; height: 100%; display: flex; flex-direction: column; }
+        .modal-controls { padding: 8px; background: #ddd; display: flex; gap: 5px; align-items: center; }
+        .modal-controls input { flex: 1; padding: 8px; font-size: 14px; border: 1px solid #ccc; }
+        .lista-itens { height: 80px; overflow-y: auto; background: #fff; border-bottom: 1px solid #000; }
+        .item-row { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.75rem; }
 
         @media (max-width: 768px) {
-            header { flex-direction: column; gap: 10px; }
-            .header-right { justify-content: center; width: 100%; }
-            .workspace { flex-direction: column; overflow-y: auto; }
-            .col-main, .col-pdf { flex: 0 0 auto; width: 100%; height: 80vh; }
+            .workspace { flex-direction: column; }
+            .col-main, .col-pdf { flex: 1 1 50%; width: 100%; }
+            .header-right { flex: 1; gap: 2px; }
+            .btn-head { padding: 5px 4px; font-size: 0.5rem; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-left">
-        <div id="timer-display">05:00:00</div>
-    </div>
-    
+    <div class="header-left"><div id="timer-display">05:00:00</div></div>
     <div class="header-right">
-        <button id="timer-btn" class="btn-head bg-timer" onclick="toggleTimer()">INICIAR</button>
-        <button class="btn-head bg-treinos" onclick="abrirFolhaEspecial('treinos')">📂 TREINOS</button>
-        <button class="btn-head bg-postit" onclick="abrirFolhaEspecial('postits')">📌 POST-ITS</button>
-        <button class="btn-head bg-dicas" onclick="abrirFolhaEspecial('dicas')">📝 DICAS</button>
-        <button class="btn-head bg-questoes" onclick="abrirFolhaEspecial('questoes')">✍️ QUESTÕES</button>
+        <button id="timer-btn" class="btn-head bg-timer" onclick="toggleTimer()">PLAY</button>
+        <button class="btn-head bg-treinos" onclick="abrirFolhaEspecial('treinos')">TREINOS</button>
+        <button class="btn-head bg-postit" onclick="abrirFolhaEspecial('postits')">POST-IT</button>
+        <button class="btn-head bg-dicas" onclick="abrirFolhaEspecial('dicas')">DICAS</button>
+        <button class="btn-head bg-questoes" onclick="abrirFolhaEspecial('questoes')">QUESTÕES</button>
     </div>
 </header>
 
@@ -80,81 +109,90 @@
 
 <main class="workspace">
     <section class="col-main">
-        <div class="sheet-top">Folha de Resposta: PEÇA PROFISSIONAL</div>
+        <div class="sheet-top">RESPOSTA DEFINITIVA</div>
         <div class="paper">
             <div class="line-numbers" id="nums-def"></div>
             <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()"></textarea>
         </div>
-        <button class="bg-timer" style="padding:15px; border:none; color:white; font-weight:bold; cursor:pointer;" onclick="salvarDiretoBanco()">💾 SALVAR PEÇA NO BANCO DE TREINOS</button>
+        <button class="bg-timer" style="padding:10px; border:none; color:white; font-weight:bold; font-size:0.7rem;" onclick="salvarDiretoBanco()">💾 SALVAR PEÇA</button>
     </section>
 
     <section class="col-pdf">
         <div style="display:flex; background:#000;">
             <button class="btn-nav" style="flex:1; background:#333; color:white; border:none;" onclick="pdf('prova')">ENUNCIADO</button>
             <button class="btn-nav" style="flex:1; background:#333; color:white; border:none;" onclick="pdf('gabarito')">GABARITO</button>
+            <button class="btn-nav" style="flex:0.5; background:#c5a059; color:black; border:none;" onclick="abrirExterno()">↗</button>
         </div>
-        <iframe id="frame" style="width:100%; height:100%; background:white; border:none;"></iframe>
+        <div class="pdf-wrapper">
+            <iframe id="frame" src=""></iframe>
+        </div>
     </section>
 </main>
 
 <div id="modal-folha" class="modal-folha">
     <div class="modal-content">
-        <div class="sheet-top" id="modal-titulo">FOLHA FGV</div>
+        <div class="sheet-top" id="modal-titulo" style="padding:10px; color:white;">FOLHA</div>
         <div class="modal-controls">
-            <button onclick="novoItemModal()">[+] NOVO</button>
-            <input type="text" id="modal-item-nome" placeholder="Título..." style="flex:1; padding:6px;">
-            <button onclick="salvarItemModal()" class="bg-timer" style="color:white; border:none; padding:6px 15px; font-weight:bold;">GRAVAR</button>
-            <button onclick="fecharFolha()" style="background:red; color:white; border:none; padding:6px; cursor:pointer;">FECHAR</button>
+            <button onclick="novoItemModal()" style="padding:8px;">+ NOVO</button>
+            <input type="text" id="modal-item-nome" placeholder="Título...">
+            <button onclick="salvarItemModal()" class="bg-timer" style="color:white; border:none; padding:8px 12px;">OK</button>
+            <button onclick="fecharFolha()" style="background:red; color:white; border:none; padding:8px;">X</button>
         </div>
-        
         <div id="modal-lista" class="lista-itens"></div>
-
         <div class="paper">
             <div class="line-numbers" id="nums-modal"></div>
             <textarea id="txt-modal" class="textarea-fgv"></textarea>
         </div>
-        <button id="btn-transferir" onclick="transferirParaPeca()" class="bg-treinos" style="padding:15px; color:white; border:none; font-weight:bold; cursor:pointer;">TRANSFERIR PARA A PEÇA PRINCIPAL ↑</button>
+        <button id="btn-transferir" onclick="transferirParaPeca()" class="bg-treinos" style="padding:15px; color:white; border:none; font-weight:bold;">TRANSFERIR ↑</button>
     </div>
 </div>
 
 <script>
     let ex = 42, dbAtual = '', idEditando = null, timeLeft = 18000, timerInterval = null;
+    let currentPdfPath = '';
 
     window.onload = () => {
         const nDef = document.getElementById('nums-def'), nMod = document.getElementById('nums-modal');
-        for(let i=1; i<=150; i++) { 
-            nDef.innerHTML += i + '<br>'; 
-            nMod.innerHTML += i + '<br>'; 
-        }
+        for(let i=1; i<=150; i++) { nDef.innerHTML += i + '<br>'; nMod.innerHTML += i + '<br>'; }
         document.getElementById('txt-def').value = localStorage.getItem('save_2026_peca') || "";
-        
         const en = document.getElementById('exam-nav');
         for(let i=35; i<=44; i++) {
-            let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = "EXAME "+i;
+            let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = "EX"+i;
             b.onclick = () => { ex=i; pdf('prova'); }; en.appendChild(b);
         }
         pdf('prova');
     };
 
+    // FUNÇÃO PDF MELHORADA
+    function pdf(t) {
+        let path = t === 'prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`;
+        currentPdfPath = path;
+        const frame = document.getElementById('frame');
+        
+        // No mobile, alguns navegadores precisam do Viewer do Google para renderizar dentro do iframe
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // Tenta carregar direto, se falhar, o usuário tem o botão de abrir externo ↗
+            frame.src = path;
+        } else {
+            frame.src = path;
+        }
+    }
+
+    function abrirExterno() {
+        if(currentPdfPath) window.open(currentPdfPath, '_blank');
+    }
+
+    // CONTROLES DE FOLHA E TIMER (MANTIDOS)
     function abrirFolhaEspecial(tipo) {
         dbAtual = tipo; idEditando = null;
-        const titulos = {
-            'treinos': '📂 BANCO DE TREINOS (PEÇAS)',
-            'postits': '📌 BANCO DE POST-ITS (TESES)',
-            'dicas': '📝 BANCO DE DICAS (CORREÇÕES)',
-            'questoes': '✍️ BANCO DE QUESTÕES DISCURSIVAS'
-        };
+        const titulos = { 'treinos': 'BANCO DE TREINOS', 'postits': 'POST-ITS (TESES)', 'dicas': 'DICAS (CORREÇÕES)', 'questoes': 'QUESTÕES' };
         const cores = { 'treinos': '#4b5563', 'postits': '#eab308', 'dicas': '#8b5cf6', 'questoes': '#2563eb' };
-        
         document.getElementById('modal-titulo').innerText = titulos[tipo];
         document.getElementById('modal-titulo').style.background = cores[tipo];
-        document.getElementById('modal-titulo').style.color = tipo === 'postits' ? '#000' : '#fff';
-        
-        // Só mostra transferir para Post-its e Dicas
         document.getElementById('btn-transferir').style.display = (tipo === 'postits' || tipo === 'dicas') ? 'block' : 'none';
-        
-        novoItemModal();
-        carregarListaModal();
+        novoItemModal(); carregarListaModal();
         document.getElementById('modal-folha').style.display = 'flex';
     }
 
@@ -162,27 +200,19 @@
         const lista = document.getElementById('modal-lista'), itens = JSON.parse(localStorage.getItem('db_'+dbAtual)) || [];
         lista.innerHTML = '';
         itens.forEach((item, index) => {
-            lista.innerHTML += `<div class="item-row">
-                <span onclick="editarItemModal(${index})" style="flex:1"><b>${item.nome}</b> (${item.data})</span>
-                <button onclick="excluirItemModal(${index})" style="color:red; border:none; background:none;">[X]</button>
-            </div>`;
+            lista.innerHTML += `<div class="item-row"><span onclick="editarItemModal(${index})" style="flex:1"><b>${item.nome}</b></span><button onclick="excluirItemModal(${index})" style="color:red; border:none; background:none; padding:0 10px;">X</button></div>`;
         });
     }
 
     function salvarItemModal() {
         const nome = document.getElementById('modal-item-nome').value;
         const texto = document.getElementById('txt-modal').value;
-        if(!nome || !texto) return alert("Preencha título e conteúdo.");
-        
+        if(!nome || !texto) return;
         let itens = JSON.parse(localStorage.getItem('db_'+dbAtual)) || [];
-        const data = new Date().toLocaleDateString();
-
-        if(idEditando !== null) itens[idEditando] = { nome, texto, data };
-        else itens.push({ nome, texto, data });
-
+        if(idEditando !== null) itens[idEditando] = { nome, texto, data: new Date().toLocaleDateString() };
+        else itens.push({ nome, texto, data: new Date().toLocaleDateString() });
         localStorage.setItem('db_'+dbAtual, JSON.stringify(itens));
-        novoItemModal();
-        carregarListaModal();
+        novoItemModal(); carregarListaModal();
     }
 
     function editarItemModal(index) {
@@ -193,41 +223,32 @@
     }
 
     function excluirItemModal(index) {
-        if(!confirm("Excluir item permanentemente?")) return;
+        if(!confirm("Excluir?")) return;
         let itens = JSON.parse(localStorage.getItem('db_'+dbAtual));
         itens.splice(index, 1);
         localStorage.setItem('db_'+dbAtual, JSON.stringify(itens));
-        novoItemModal();
-        carregarListaModal();
+        novoItemModal(); carregarListaModal();
     }
 
     function salvarDiretoBanco() {
-        const txt = document.getElementById('txt-def').value;
-        if(!txt) return;
-        const nome = prompt("Título para salvar no Banco de Treinos:");
-        if(!nome) return;
+        const txt = document.getElementById('txt-def').value; if(!txt) return;
+        const nome = prompt("Título do Treino:"); if(!nome) return;
         let itens = JSON.parse(localStorage.getItem('db_treinos')) || [];
         itens.push({ nome, texto: txt, data: new Date().toLocaleDateString() });
-        localStorage.setItem('db_treinos', JSON.stringify(itens));
-        alert("Peça salva no Banco de Treinos!");
+        localStorage.setItem('db_treinos', JSON.stringify(itens)); alert("Salvo!");
     }
 
     function novoItemModal() { idEditando = null; document.getElementById('modal-item-nome').value = ''; document.getElementById('txt-modal').value = ''; }
     function fecharFolha() { document.getElementById('modal-folha').style.display = 'none'; }
-    function transferirParaPeca() {
-        document.getElementById('txt-def').value += `\n\n${document.getElementById('txt-modal').value}`;
-        saveAuto(); fecharFolha();
-    }
-
-    function pdf(t) { document.getElementById('frame').src = t==='prova' ? `./ro${ex}.pdf` : `./ro${ex}-gabarito.pdf`; }
+    function transferirParaPeca() { document.getElementById('txt-def').value += `\n\n${document.getElementById('txt-modal').value}`; saveAuto(); fecharFolha(); }
     function saveAuto() { localStorage.setItem('save_2026_peca', document.getElementById('txt-def').value); }
+    
     function toggleTimer() {
         const btn = document.getElementById('timer-btn');
         if(timerInterval) { 
-            clearInterval(timerInterval); timerInterval = null; 
-            btn.innerText = "RETOMAR"; btn.style.background = "var(--success)";
+            clearInterval(timerInterval); timerInterval = null; btn.innerText = "PLAY"; 
         } else { 
-            btn.innerText = "PAUSAR"; btn.style.background = "red";
+            btn.innerText = "STOP";
             timerInterval = setInterval(() => { 
                 timeLeft--; 
                 let h=Math.floor(timeLeft/3600), m=Math.floor((timeLeft%3600)/60), s=timeLeft%60; 
