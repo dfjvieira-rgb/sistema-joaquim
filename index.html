@@ -17,21 +17,18 @@
         .drawer.open { left: 0; }
         .drawer-header { background: var(--primary); color: white; padding: 30px 20px; }
         .drawer-section { background: #eee; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #777; border-top: 1px solid #ddd; }
-        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #333; font-weight: 500; font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #333; font-weight: 500; font-size: 0.9rem; }
 
-        /* VIEWS */
-        .view { display: none; flex: 1; overflow: hidden; }
-        .view.active { display: flex; flex-direction: column; }
-
-        /* TOOLBAR */
-        .toolbar { background: #dfe6e9; padding: 8px; display: flex; gap: 8px; border-bottom: 1px solid #ccc; overflow-x: auto; }
-        .btn-sym { background: white; border: 1px solid #b2bec3; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        /* SELEÇÃO DE EXAME E TOOLBAR */
+        .top-controls { background: #dfe6e9; border-bottom: 1px solid #ccc; padding: 10px; }
+        .exame-selector { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #b2bec3; font-weight: bold; background: white; font-size: 0.9rem; }
+        .toolbar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+        .btn-sym { background: white; border: 1px solid #b2bec3; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; white-space: nowrap; }
 
         /* WORKSPACE */
         .workspace { display: flex; flex: 1; overflow: hidden; }
         .col { display: flex; flex-direction: column; border-right: 1px solid #ddd; }
         .col-respostas { flex: 1.3; background: white; }
-        .col-dicas { flex: 0.7; background: #fffde7; }
         .col-apoio { flex: 1; background: #525659; }
 
         /* PAPEL PAUTADO OAB */
@@ -39,13 +36,13 @@
         .line-nums { width: 35px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
         textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* MODAL DICAS/POSTIT (FORMATO CADERNO) */
+        /* MODAL DICAS */
         .modal-estudo { position: fixed; inset: 0; background: white; z-index: 3000; display: none; flex-direction: column; }
         .modal-estudo.active { display: flex; }
 
-        /* BOTOES PDF */
-        .pdf-nav { display: flex; background: #333; }
-        .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 10px; font-size: 0.6rem; cursor: pointer; }
+        /* PDF NAV */
+        .pdf-nav { display: flex; background: #333; gap: 1px; }
+        .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 12px 5px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
         .pdf-btn.active { background: var(--accent); color: var(--primary); }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
@@ -69,69 +66,100 @@
 
 <nav class="drawer" id="drawer">
     <div class="drawer-header"><b>SISTEMA DE ESTUDO</b></div>
-    
-    <div class="drawer-section">TREINAMENTO</div>
-    <div class="drawer-item" onclick="showView('treino'); toggleMenu()">📝 Caderno de Peça Principal</div>
-    <div class="drawer-item" onclick="showView('apostila'); toggleMenu()">📖 Apostila PDF (Aryanna)</div>
-    
-    <div class="drawer-section">DICAS DE AULA (ARYANNA)</div>
+    <div class="drawer-section">PEÇAS (MODELOS ARYANNA)</div>
+    <div class="drawer-item" onclick="inserirModelo('rt')">📄 Reclamação (Art. 840)</div>
+    <div class="drawer-item" onclick="inserirModelo('contestacao')">📄 Contestação (Art. 847)</div>
+    <div class="drawer-item" onclick="inserirModelo('ro')">📄 Recurso Ordinário (Art. 895)</div>
+    <div class="drawer-section">DICAS DE AULA</div>
     <div class="drawer-item" style="background:#fffde7; font-weight:bold;" onclick="abrirDicaNova()">+ INCLUIR ANOTAÇÃO</div>
-    <div id="lista-dicas-menu">
-        </div>
-
-    <div class="drawer-section">SISTEMA</div>
-    <div class="drawer-item" onclick="limparTudo()" style="color:red;">⚠️ Limpar Banco de Dados</div>
+    <div id="lista-dicas-menu"></div>
 </nav>
 
 <main id="view-treino" class="view active">
-    <div class="toolbar">
-        <button class="btn-sym" onclick="insertSym('§')">§</button>
-        <button class="btn-sym" onclick="insertSym('Art. ')">Art.</button>
-        <button class="btn-sym" onclick="insertSym('CLT')">CLT</button>
-        <button class="btn-sym" onclick="insertSym('TST')">TST</button>
+    <div class="top-controls">
+        <select class="exame-selector" id="select-exame" onchange="selecionarExame()">
+            <option value="">Selecione o Exame para Treinar...</option>
+            <option value="35">XXXV Exame Unificado (RO)</option>
+            <option value="36">XXXVI Exame Unificado (Contestação)</option>
+            <option value="37">XXXVII Exame Unificado (Incial)</option>
+            <option value="apostila">Apostila Completa - Aryanna</option>
+        </select>
+        <div class="toolbar">
+            <button class="btn-sym" onclick="insertSym('§')">§</button>
+            <button class="btn-sym" onclick="insertSym('Art. ')">Art.</button>
+            <button class="btn-sym" onclick="insertSym('CLT')">CLT</button>
+            <button class="btn-sym" onclick="insertSym('TST')">TST</button>
+            <button class="btn-sym" onclick="insertSym('CF/88')">CF/88</button>
+        </div>
     </div>
+
     <div class="workspace">
         <section class="col col-respostas">
             <div style="background:var(--primary); color:white; padding:5px 10px; font-size:0.7rem; display:flex; justify-content:space-between;">
-                <span>FOLHA OAB PRINCIPAL</span><span id="l-main">L: 1</span>
+                <span>FOLHA DE RESPOSTA</span><span id="l-main">L: 1</span>
             </div>
             <div class="paper"><div class="line-nums" id="n-main"></div><textarea id="area-main" oninput="save()"></textarea></div>
         </section>
+
         <section class="col col-apoio">
             <div class="pdf-nav">
-                <button class="pdf-btn active" id="b-p" onclick="pdf('./ro35.pdf','b-p')">PROVA</button>
-                <button class="pdf-btn" id="b-g" onclick="pdf('./ro35-gabarito.pdf','b-g')">GABARITO</button>
+                <button class="pdf-btn active" id="btn-apostila" onclick="trocarPdf(pdfAtual.apoio,'btn-apostila')">APOSTILA</button>
+                <button class="pdf-btn" id="btn-prova" onclick="trocarPdf(pdfAtual.prova,'btn-prova')">PROVA</button>
+                <button class="pdf-btn" id="btn-gabarito" onclick="trocarPdf(pdfAtual.gab,'btn-gabarito')">GABARITO</button>
             </div>
-            <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none; background:white;"></iframe>
+            <iframe id="f-pdf" src="./Aryanna Linhares.pdf" style="flex:1; border:none; background:white;"></iframe>
         </section>
     </div>
 </main>
 
 <div class="modal-estudo" id="modal-dica">
     <div style="background:var(--primary); color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
-        <input type="text" id="dica-tit" placeholder="Assunto da Aula (Ex: Aula 01 - RO)..." style="background:transparent; border:none; color:white; font-weight:bold; outline:none; width:60%;">
-        <div style="display:flex; gap:10px;">
-            <button onclick="excluirDica()" id="btn-excluir" style="background:#e74c3c; border:none; padding:8px 12px; border-radius:4px; color:white; font-weight:bold; display:none;">EXCLUIR</button>
-            <button onclick="salvarDica()" style="background:var(--accent); border:none; padding:8px 12px; border-radius:4px; font-weight:bold;">SALVAR</button>
-            <button onclick="fecharModal()" style="background:#95a5a6; border:none; padding:8px 12px; border-radius:4px; color:white; font-weight:bold;">VOLTAR</button>
+        <input type="text" id="dica-tit" placeholder="Assunto da Aula..." style="background:transparent; border:none; color:white; font-weight:bold; outline:none; width:50%;">
+        <div style="display:flex; gap:5px;">
+            <button onclick="salvarDica()" style="background:var(--accent); border:none; padding:8px; border-radius:4px; font-weight:bold; font-size:0.7rem;">SALVAR</button>
+            <button onclick="fecharModal()" style="background:#95a5a6; border:none; padding:8px; border-radius:4px; color:white; font-size:0.7rem;">VOLTAR</button>
         </div>
     </div>
     <div class="paper">
         <div class="line-nums" id="n-dica"></div>
-        <textarea id="dica-txt" placeholder="Anote as dicas da Professora Aryanna aqui..."></textarea>
+        <textarea id="dica-txt"></textarea>
     </div>
 </div>
-
-<main id="view-apostila" class="view"><iframe src="./Aryanna Linhares.pdf" style="width:100%; height:100%; border:none;"></iframe></main>
 
 <script>
     const $ = (id) => document.getElementById(id);
     const gen = (el) => { for(let i=1; i<=150; i++) el.innerHTML += i + '<br>'; };
     gen($('n-main')); gen($('n-dica'));
 
+    // BANCO DE DADOS DE PDFS POR EXAME
+    let pdfAtual = {
+        apoio: './Aryanna Linhares.pdf',
+        prova: './ro35.pdf',
+        gab: './ro35-gabarito.pdf'
+    };
+
+    function selecionarExame() {
+        const exame = $('select-exame').value;
+        if(exame === "35") {
+            pdfAtual.prova = './ro35.pdf';
+            pdfAtual.gab = './ro35-gabarito.pdf';
+        } else if(exame === "36") {
+            pdfAtual.prova = './prova36.pdf';
+            pdfAtual.gab = './gabarito36.pdf';
+        } else if(exame === "apostila") {
+            pdfAtual.prova = './Aryanna Linhares.pdf';
+            pdfAtual.gab = './Aryanna Linhares.pdf';
+        }
+        trocarPdf(pdfAtual.prova, 'btn-prova'); // Muda o PDF visualizado na hora
+    }
+
+    function trocarPdf(url, btnId) {
+        $('f-pdf').src = url;
+        document.querySelectorAll('.pdf-btn').forEach(b => b.classList.remove('active'));
+        if(btnId) $(btnId).classList.add('active');
+    }
+
     function toggleMenu() { $('drawer').classList.toggle('open'); $('overlay').classList.toggle('active'); }
-    function showView(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); $(`view-${v}`).classList.add('active'); }
-    function pdf(src, b) { $('f-pdf').src = src; document.querySelectorAll('.pdf-btn').forEach(x => x.classList.remove('active')); $(b).classList.add('active'); }
 
     function insertSym(s) {
         const a = $('area-main');
@@ -142,78 +170,29 @@
         save();
     }
 
-    // LÓGICA DE DICAS (ESTILO CADERNO)
+    function inserirModelo(tipo) {
+        const m = {
+            rt: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nNOME DO RECLAMANTE, já qualificado, com fulcro no Art. 840, § 1º, da CLT, PROPOR:\n\nRECLAMAÇÃO TRABALHISTA...`,
+            contestacao: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nNOME DA RECLAMADA, já qualificada, com fulcro no Art. 847 da CLT, OFERECER:\n\nCONTESTAÇÃO...`,
+            ro: `AO DOUTO JUÍZO DA ____ VARA DO TRABALHO DE ____\n\nProcesso nº ____\n\nNOME DO RECORRENTE, já qualificado, com fulcro no Art. 895, I, da CLT, INTERPOR:\n\nRECURSO ORDINÁRIO...`
+        };
+        if(confirm("Carregar modelo? Isso limpará o texto atual.")) {
+            $('area-main').value = m[tipo];
+            save(); toggleMenu();
+        }
+    }
+
+    // GESTÃO DE DICAS
     let bancoDicas = JSON.parse(localStorage.getItem('j_banco_dicas')) || [];
-    let dicaAtualId = null;
-
-    function abrirDicaNova() {
-        dicaAtualId = Date.now();
-        $('dica-tit').value = "";
-        $('dica-txt').value = "";
-        $('btn-excluir').style.display = "none";
-        $('modal-dica').classList.add('active');
-        toggleMenu();
-    }
-
-    function editarDica(id) {
-        const dica = bancoDicas.find(d => d.id === id);
-        dicaAtualId = id;
-        $('dica-tit').value = dica.tit;
-        $('dica-txt').value = dica.txt;
-        $('btn-excluir').style.display = "block";
-        $('modal-dica').classList.add('active');
-        toggleMenu();
-    }
-
-    function salvarDica() {
-        const tit = $('dica-tit').value || "Dica sem Título";
-        const txt = $('dica-txt').value;
-        const idx = bancoDicas.findIndex(d => d.id === dicaAtualId);
-
-        if(idx > -1) {
-            bancoDicas[idx] = { id: dicaAtualId, tit, txt };
-        } else {
-            bancoDicas.push({ id: dicaAtualId, tit, txt });
-        }
-
-        localStorage.setItem('j_banco_dicas', JSON.stringify(bancoDicas));
-        renderMenuDicas();
-        fecharModal();
-    }
-
-    function excluirDica() {
-        if(confirm("Deseja excluir permanentemente esta anotação?")) {
-            bancoDicas = bancoDicas.filter(d => d.id !== dicaAtualId);
-            localStorage.setItem('j_banco_dicas', JSON.stringify(bancoDicas));
-            renderMenuDicas();
-            fecharModal();
-        }
-    }
-
+    function abrirDicaNova() { dicaAtualId = Date.now(); $('dica-tit').value = ""; $('dica-txt').value = ""; $('modal-dica').classList.add('active'); toggleMenu(); }
+    function editarDica(id) { const d = bancoDicas.find(x => x.id === id); dicaAtualId = id; $('dica-tit').value = d.tit; $('dica-txt').value = d.txt; $('modal-dica').classList.add('active'); toggleMenu(); }
+    function salvarDica() { const tit = $('dica-tit').value || "Dica s/ Título"; const txt = $('dica-txt').value; const idx = bancoDicas.findIndex(d => d.id === dicaAtualId); if(idx > -1) bancoDicas[idx] = { id: dicaAtualId, tit, txt }; else bancoDicas.push({ id: dicaAtualId, tit, txt }); localStorage.setItem('j_banco_dicas', JSON.stringify(bancoDicas)); renderMenuDicas(); fecharModal(); }
     function fecharModal() { $('modal-dica').classList.remove('active'); }
+    function renderMenuDicas() { const lista = $('lista-dicas-menu'); lista.innerHTML = ""; bancoDicas.forEach(d => { lista.innerHTML += `<div class="drawer-item" onclick="editarDica(${d.id})">📌 ${d.tit}</div>`; }); }
 
-    function renderMenuDicas() {
-        const lista = $('lista-dicas-menu');
-        lista.innerHTML = "";
-        bancoDicas.forEach(d => {
-            lista.innerHTML += `<div class="drawer-item" onclick="editarDica(${d.id})"><span>📌 ${d.tit}</span> <span>➔</span></div>`;
-        });
-    }
+    function save() { localStorage.setItem('j_main', $('area-main').value); $('l-main').innerText = "L: " + $('area-main').value.split('\n').length; }
+    window.onload = () => { $('area-main').value = localStorage.getItem('j_main') || ""; renderMenuDicas(); save(); };
 
-    function save() {
-        localStorage.setItem('j_main', $('area-main').value);
-        $('l-main').innerText = "L: " + $('area-main').value.split('\n').length;
-    }
-
-    function limparTudo() { if(confirm("CUIDADO: Isso apagará todas as peças e dicas salvas!")) { localStorage.clear(); location.reload(); } }
-
-    window.onload = () => {
-        $('area-main').value = localStorage.getItem('j_main') || "";
-        renderMenuDicas();
-        save();
-    };
-
-    // Cronometro
     let s = 18000;
     setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; $('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
 </script>
