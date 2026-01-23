@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA MASTER OAB 2026 - HÍBRIDO</title>
+    <title>SISTEMA MASTER OAB 2026 - SIMULADOR FGV</title>
     <style>
         :root { --primary: #1a252f; --accent: #f1c40f; --success: #27ae60; --danger: #e74c3c; --fgv-blue: #004a8d; --bg: #f4f4f4; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,58 +12,60 @@
         header { background: var(--fgv-blue); color: white; height: 50px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         .timer { font-family: monospace; color: var(--accent); font-weight: bold; }
 
-        /* LINKS E SÍMBOLOS */
+        /* BARRAS DE APOIO */
         .top-bars { flex-shrink: 0; z-index: 900; }
         .links-planalto { background: #2c3e50; padding: 5px 15px; display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; }
         .links-planalto a { color: #bdc3c7; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
         .symbol-bar { background: #ddd; padding: 8px 10px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid #bbb; }
         .sym-btn { background: white; border: 1px solid #bbb; padding: 5px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        /* ÁREA DE INFORMAÇÕES (POST-ITS) */
+        /* ÁREA DE DICAS */
         .info-area { background: #eee; border-bottom: 1px solid #ccc; flex-shrink: 0; }
         .postits-container { display: flex; gap: 10px; padding: 8px; overflow-x: auto; }
-        .postit { background: white; border-left: 5px solid var(--accent); min-width: 250px; padding: 5px; border-radius: 4px; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
-        .postit-header { font-size: 0.6rem; font-weight: bold; color: #777; margin-bottom: 3px; }
+        .postit { background: white; border-left: 5px solid var(--accent); min-width: 280px; padding: 5px; border-radius: 4px; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+        .postit-header { font-size: 0.65rem; font-weight: bold; color: #777; margin-bottom: 3px; }
         .postit textarea { width: 100%; height: 45px; border: none; outline: none; resize: none; font-size: 0.8rem; background: transparent; }
 
         /* WORKSPACE HÍBRIDO */
         .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
-
-        /* COLUNA PDF */
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; transition: 0.3s; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; }
         .pdf-header { padding: 8px; display: flex; flex-direction: column; gap: 5px; }
         .pdf-nav { display: flex; gap: 5px; }
-        .pdf-btn { flex: 1; padding: 8px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #444; color: white; }
+        .pdf-btn { flex: 1; padding: 8px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: bold; background: #444; color: white; cursor: pointer; }
         .pdf-btn.active { background: var(--accent); color: black; }
 
-        /* COLUNA RESPOSTA (FOLHA FGV) */
+        /* FOLHA DE RESPOSTA */
         .col-res { flex: 1; display: flex; flex-direction: column; background: white; border-left: 2px solid #ccc; }
-        .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 10px; border: 1px solid #000; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 10px; border: 1px solid #000; }
         .fgv-h { background: #f0f0f0; border-bottom: 1px solid #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; }
         .paper { flex: 1; display: flex; overflow-y: auto; }
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; }
         #area-main { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; }
 
-        /* AJUSTES MOBILE (TELA PEQUENA) */
-        @media (max-width: 1024px) {
-            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; z-index: 500; }
-            .col-pdf.active { left: 0; }
-            .col-res { width: 100%; }
-        }
+        /* SIMULADOR DE NOTAS (NO MENU) */
+        .score-board { padding: 15px; background: #f9f9f9; border-top: 2px solid var(--fgv-blue); }
+        .score-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.8rem; }
+        .score-row select { padding: 3px; font-weight: bold; }
+        .total-box { background: var(--fgv-blue); color: white; padding: 10px; text-align: center; font-weight: bold; border-radius: 4px; margin-top: 10px; }
 
-        /* MENU LATERAL (HAMBURGUER) */
-        .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
+        /* MENU DRAWER */
+        .drawer { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 2000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
         .drawer.open { left: 0; }
-        .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; }
-        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .drawer-content { flex: 1; overflow-y: auto; }
+        .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; }
+        .drawer-section { background: #eee; padding: 8px 20px; font-size: 0.7rem; font-weight: bold; color: #666; }
+        .drawer-item { padding: 12px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
         .overlay.active { display: block; }
 
         .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; }
         .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 4px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
-        .btn-mobile-only { display: none; }
-        @media (max-width: 1024px) { .btn-mobile-only { display: block; } }
+
+        @media (max-width: 1024px) {
+            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; z-index: 500; transition: 0.3s; }
+            .col-pdf.active { left: 0; }
+        }
     </style>
 </head>
 <body>
@@ -71,8 +73,7 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <header>
-    <div onclick="toggleMenu()" style="cursor:pointer; font-weight:bold; color:var(--accent)">☰ MENU</div>
-    <div style="font-size: 0.7rem;">SISTEMA MASTER FGV</div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-weight:bold; color:var(--accent)">☰ MENU & NOTAS</div>
     <div id="timer" class="timer">05:00:00</div>
 </header>
 
@@ -96,29 +97,43 @@
     <div class="postits-container">
         <div class="postit">
             <div class="postit-header">📌 DICAS ARYANNA</div>
-            <textarea id="dica-prof" oninput="saveInfo()" placeholder="Anote dicas da aula..."></textarea>
+            <textarea id="dica-prof" oninput="saveInfo()" placeholder="Dicas da aula..."></textarea>
         </div>
         <div class="postit" style="border-left-color: var(--success)">
             <div class="postit-header">📝 MEUS LEMBRETES</div>
-            <textarea id="dica-pessoal" oninput="saveInfo()" placeholder="Lembretes de prazos..."></textarea>
+            <textarea id="dica-pessoal" oninput="saveInfo()" placeholder="Prazos e súmulas..."></textarea>
         </div>
     </div>
 </div>
 
 <nav class="drawer" id="drawer">
-    <div class="drawer-header">ESTRUTURAS PEÇAS</div>
-    <div class="drawer-item" onclick="inserirModelo('rt')">📄 Reclamação Trabalhista</div>
-    <div class="drawer-item" onclick="inserirModelo('contestacao')">🛡️ Contestação</div>
-    <div class="drawer-item" onclick="inserirModelo('ro')">⚖️ Recurso Ordinário</div>
-    <div class="drawer-item" onclick="inserirModelo('ap')">🔨 Agravo de Petição</div>
+    <div class="drawer-header">ESTRUTURAS E NOTAS</div>
+    <div class="drawer-content">
+        <div class="drawer-section">SIMULADOR DE PONTOS (0-5)</div>
+        <div class="score-board">
+            <div class="score-row"><span>Endereçamento</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="0.1">0.1</option></select></div>
+            <div class="score-row"><span>Qualificação</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="0.2">0.2</option></select></div>
+            <div class="score-row"><span>Preliminares</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="0.5">0.5</option><option value="1.0">1.0</option></select></div>
+            <div class="score-row"><span>Mérito/Súmula</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="1.0">1.0</option><option value="2.0">2.0</option><option value="2.5">2.5</option></select></div>
+            <div class="score-row"><span>Honorários</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="0.5">0.5</option></select></div>
+            <div class="score-row"><span>Pedidos/Fecham.</span> <select class="grade" onchange="calcNota()"><option value="0">0.0</option><option value="0.5">0.5</option><option value="0.7">0.7</option></select></div>
+            <div class="total-box">NOTA TOTAL: <span id="nota-final">0.0</span> / 5.0</div>
+        </div>
+
+        <div class="drawer-section">PEÇAS DISPONÍVEIS</div>
+        <div class="drawer-item" onclick="inserirModelo('rt')">📄 Reclamação Trabalhista</div>
+        <div class="drawer-item" onclick="inserirModelo('contestacao')">🛡️ Contestação</div>
+        <div class="drawer-item" onclick="inserirModelo('ro')">⚖️ Recurso Ordinário</div>
+        <div class="drawer-item" onclick="inserirModelo('ap')">🔨 Agravo de Petição</div>
+    </div>
 </nav>
 
 <main class="workspace">
     <section class="col-pdf" id="pdf-area">
         <div class="pdf-header">
             <div style="display:flex; gap:5px;">
-                <button class="btn-mobile-only" onclick="togglePdf()" style="padding:10px; background:var(--accent); border:none; border-radius:4px; font-weight:bold;">VOLTAR</button>
-                <select id="exam-select" style="flex:1; padding:8px; border-radius:4px;" onchange="trocarPdf('prova')">
+                <button class="btn-mobile" onclick="togglePdf()" style="padding:8px; background:var(--accent); border:none; border-radius:4px; font-weight:bold;">VOLTAR</button>
+                <select id="exam-select" style="flex:1; border-radius:4px;" onchange="trocarPdf('prova')">
                     <option value="35">35º Exame</option><option value="36">36º Exame</option>
                     <option value="37">37º Exame</option><option value="38">38º Exame</option>
                     <option value="39">39º Exame</option><option value="40">40º Exame</option>
@@ -137,15 +152,15 @@
 
     <section class="col-res">
         <div class="fgv-sheet">
-            <div class="fgv-h">FGV PROJETOS - CADERNO DE RESPOSTAS</div>
+            <div class="fgv-h">FGV PROJETOS - SIMULADOR MASTER</div>
             <div class="paper">
                 <div class="line-nums" id="line-nums"></div>
-                <textarea id="area-main" oninput="saveAll()" placeholder="Escreva sua peça..."></textarea>
+                <textarea id="area-main" oninput="saveAll()" placeholder="Escreva sua peça conforme o padrão FGV..."></textarea>
             </div>
         </div>
         <div class="footer-actions">
             <button onclick="baixarArquivo()" class="btn-foot" style="background:var(--success)">SALVAR</button>
-            <button onclick="togglePdf()" class="btn-foot btn-mobile-only" style="background:var(--fgv-blue)">VER PDF</button>
+            <button onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue)">VER PDF</button>
             <button onclick="limparTela()" class="btn-foot" style="background:var(--danger)">LIMPAR</button>
         </div>
     </section>
@@ -165,6 +180,12 @@
         area.focus(); area.setSelectionRange(start + s.length, start + s.length); saveAll();
     }
 
+    function calcNota() {
+        let total = 0;
+        document.querySelectorAll('.grade').forEach(s => total += parseFloat(s.value));
+        document.getElementById('nota-final').innerText = total.toFixed(1);
+    }
+
     function inserirModelo(tipo) {
         const m = {
             rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., Art. 840, § 1º da CLT...",
@@ -181,16 +202,15 @@
         if(t === 'prova') f.src = `./ro${e}.pdf`;
         else if(t === 'gabarito') f.src = `./ro${e}-gabarito.pdf`;
         else f.src = `./Aryanna Linhares.pdf`;
-        
         document.getElementById('btn-p').classList.toggle('active', t === 'prova');
         document.getElementById('btn-g').classList.toggle('active', t === 'gabarito');
         document.getElementById('btn-a').classList.toggle('active', t === 'apoio');
     }
 
-    function saveAll() { localStorage.setItem('master_peca_2026', area.value); }
+    function saveAll() { localStorage.setItem('master_peca_v4', area.value); }
     function saveInfo() { 
-        localStorage.setItem('master_dprof', dProf.value);
-        localStorage.setItem('master_dpers', dPers.value);
+        localStorage.setItem('master_dprof_v4', dProf.value);
+        localStorage.setItem('master_dpers_v4', dPers.value);
     }
 
     function baixarArquivo() {
@@ -202,9 +222,9 @@
     function limparTela() { if(confirm("Limpar tudo?")) { area.value = ""; saveAll(); } }
 
     window.onload = () => {
-        area.value = localStorage.getItem('master_peca_2026') || "";
-        dProf.value = localStorage.getItem('master_dprof') || "";
-        dPers.value = localStorage.getItem('master_dpers') || "";
+        area.value = localStorage.getItem('master_peca_v4') || "";
+        dProf.value = localStorage.getItem('master_dprof_v4') || "";
+        dPers.value = localStorage.getItem('master_dpers_v4') || "";
         const lines = document.getElementById('line-nums');
         for(let i=1; i<=150; i++) lines.innerHTML += i + '<br>';
     };
