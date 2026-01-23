@@ -108,4 +108,67 @@
         <div class="footer-btns">
             <button onclick="baixarArquivo()" class="action-btn" style="background:var(--success)">SALVAR</button>
             <button onclick="togglePdf()" class="action-btn" style="background:#3498db">VER PDF</button>
-            <button onclick="limparTela()" class="action-btn" style="background
+            <button onclick="limparTela()" class="action-btn" style="background:var(--danger)">LIMPAR</button>
+        </div>
+    </section>
+
+    <section class="col col-pdf" id="pdf-section">
+        <div style="background:#333; padding:8px; display:flex; gap:5px; align-items:center;">
+            <button onclick="togglePdf()" style="background:var(--accent); border:none; padding:5px 10px; border-radius:4px; font-weight:bold;">VOLTAR</button>
+            <select id="exam-select" style="flex:1; padding:5px; border-radius:4px;" onchange="trocarPdf()">
+                <option value="35">Exame 35</option>
+                <option value="36">Exame 36</option>
+                <option value="37">Exame 37</option>
+            </select>
+        </div>
+        <iframe id="f-pdf" src="./ro35.pdf" style="flex:1; border:none;"></iframe>
+    </section>
+</main>
+
+<script>
+    const $ = (id) => document.getElementById(id);
+    const genLines = () => { $('n-main').innerHTML=''; for(let i=1; i<=150; i++) $('n-main').innerHTML += i + '<br>'; };
+    genLines();
+
+    function toggleMenu() { $('drawer').classList.toggle('open'); $('overlay').classList.toggle('active'); }
+    function togglePdf() { $('pdf-section').classList.toggle('active'); }
+    
+    function addSym(s) { 
+        const a = $('area-main'); const start = a.selectionStart;
+        a.value = a.value.substring(0, start) + s + a.value.substring(a.selectionEnd);
+        a.focus(); a.setSelectionRange(start + s.length, start + s.length); save();
+    }
+
+    function trocarPdf() {
+        const exame = $('exam-select').value;
+        $('f-pdf').src = `./ro${exame}.pdf`;
+    }
+
+    function inserirModelo(t) {
+        const m = {
+            rt: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., Art. 840, § 1º da CLT...`,
+            contestacao: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMADA..., Art. 847 da CLT...`,
+            ro: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECORRENTE..., Art. 895, I da CLT...`,
+            ms: `AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO...\n\nIMPETRANTE..., Art. 5º, LXIX da CF...`,
+            consignacao: `AO DOUTO JUÍZO..., Art. 539 CPC...`,
+            ap: `AO DOUTO JUÍZO..., Art. 897, 'a' da CLT...`,
+            embargos: `AO DOUTO JUÍZO..., Art. 884 da CLT...`
+        };
+        if(confirm("Inserir modelo?")) { $('area-main').value = m[t]; save(); toggleMenu(); }
+    }
+
+    function baixarArquivo() {
+        const b = new Blob([$('area-main').value], {type:'text/plain'});
+        const l = document.createElement('a'); l.download = `Peca_OAB.txt`;
+        l.href = window.URL.createObjectURL(b); l.click();
+    }
+
+    function limparTela() { if(confirm("Limpar tudo?")) { $('area-main').value = ""; save(); } }
+    function save() { localStorage.setItem('oab_joaquim_mobile', $('area-main').value); }
+    window.onload = () => { $('area-main').value = localStorage.getItem('oab_joaquim_mobile') || ""; };
+
+    let s = 18000;
+    setInterval(() => { if(s>0){ s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; $('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
+</script>
+</body>
+</html>
