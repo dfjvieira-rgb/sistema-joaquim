@@ -3,123 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Peças - Padrão FGV</title>
+    <title>Simulador OAB - Padrão FGV</title>
     <style>
         :root {
             --fgv-yellow: #fff9c4;
             --fgv-blue: #0d47a1;
             --paper-white: #ffffff;
             --line-color: #e0e0e0;
+            --text-gray: #333;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* Estilo Mobile-First */
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             background: var(--paper-white);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 20px;
-            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 25px;
+            border-radius: 12px;
+            box-sizing: border-box;
         }
 
         header {
             text-align: center;
-            border-bottom: 2px solid var(--fgv-blue);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            border-bottom: 3px solid var(--fgv-blue);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
         }
 
         .fgv-header-text {
             color: var(--fgv-blue);
-            font-weight: bold;
+            font-weight: 800;
             text-transform: uppercase;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
         }
 
-        /* Folha de Respostas */
+        header p {
+            margin: 5px 0 0;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Estilização da Folha de Respostas FGV */
+        .answer-sheet-container {
+            position: relative;
+            border: 1px solid #bdc3c7;
+            background-color: #fff;
+            padding: 10px;
+        }
+
         .answer-sheet {
             background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
+            background-size: 100% 2.5em;
+            line-height: 2.5em;
             padding: 0 10px;
-            border: 1px solid #ccc;
-            min-height: 500px;
+            min-height: 600px;
             outline: none;
+            font-size: 16px;
+            color: #2c3e50;
+            font-family: 'Courier New', Courier, monospace;
             white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        /* Área de Post-its e Dicas */
+        .answer-sheet:empty:before {
+            content: attr(placeholder);
+            color: #bbb;
+        }
+
+        /* Ferramentas de Estudo (Post-its e Dicas) */
         .study-tools {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 20px;
+            margin-top: 25px;
         }
 
-        .post-it, .tips-box {
+        .tool-card {
             padding: 15px;
-            border-radius: 5px;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
-            min-height: 150px;
+            border-radius: 8px;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
         }
 
         .post-it {
             background-color: var(--fgv-yellow);
-            border-left: 5px solid #fbc02d;
+            border-left: 6px solid #fbc02d;
         }
 
         .tips-box {
             background-color: #e3f2fd;
-            border-left: 5px solid #2196f3;
+            border-left: 6px solid #2196f3;
         }
 
-        h3 {
-            margin-top: 0;
-            font-size: 1rem;
-            color: #333;
+        .tool-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #444;
         }
 
-        textarea {
+        .tool-card textarea {
             width: 100%;
             border: none;
             background: transparent;
-            resize: vertical;
-            font-family: 'Courier New', Courier, monospace;
+            resize: none;
+            font-family: 'Verdana', sans-serif;
             font-size: 14px;
+            color: #444;
+            outline: none;
         }
 
+        /* Botão Salvar */
         .btn-save {
-            margin-top: 20px;
-            padding: 12px 25px;
-            background-color: var(--fgv-blue);
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #2e7d32;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1rem;
             width: 100%;
+            transition: background 0.3s;
+            text-transform: uppercase;
         }
 
         .btn-save:hover {
-            background-color: #1565c0;
+            background-color: #1b5e20;
         }
 
-        @media (max-width: 600px) {
+        /* Ajustes para Mobile */
+        @media (max-width: 650px) {
             .study-tools {
                 grid-template-columns: 1fr;
             }
-            body {
-                padding: 10px;
+            .container {
+                padding: 15px;
+            }
+            .fgv-header-text {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -128,55 +163,74 @@
 
     <div class="container">
         <header>
-            <div class="fgv-header-text">Exame de Ordem Unificado - FGV</div>
-            <p>Caderno de Respostas - Prova Prático-Profissional</p>
+            <div class="fgv-header-text">EXAME DE ORDEM UNIFICADO - FGV</div>
+            <p>Caderno de Respostas Prático-Profissionais</p>
         </header>
 
-        <div id="folhaResposta" class="answer-sheet" contenteditable="true" placeholder="Comece a redigir sua peça aqui..."></div>
+        <div class="answer-sheet-container">
+            <div id="mainEditor" class="answer-sheet" contenteditable="true" placeholder="Redija sua peça profissional aqui conforme os critérios da FGV..."></div>
+        </div>
 
         <div class="study-tools">
-            <div class="post-it">
-                <h3>📌 Post-it de Teses</h3>
-                <textarea id="postitData" rows="6" placeholder="Anote as teses principais..."></textarea>
+            <div class="tool-card post-it">
+                <h3>📌 TESES E FUNDAMENTOS</h3>
+                <textarea id="postitInput" rows="5" placeholder="Liste aqui as teses de mérito e preliminares..."></textarea>
             </div>
 
-            <div class="tips-box">
-                <h3>💡 Dicas e Lembretes</h3>
-                <textarea id="tipsData" rows="6" placeholder="Artigos importantes e prazos..."></textarea>
+            <div class="tool-card tips-box">
+                <h3>💡 ARTIGOS E LEMBRETES</h3>
+                <textarea id="tipsInput" rows="5" placeholder="Anote os artigos da lei e súmulas importantes..."></textarea>
             </div>
         </div>
 
-        <button class="btn-save" onclick="saveProgress()">💾 SALVAR PROGRESSO DA PEÇA</button>
+        <button class="btn-save" onclick="saveData()">💾 SALVAR MINHA PEÇA E ANOTAÇÕES</button>
+        <p style="text-align: center; font-size: 12px; color: #888; margin-top: 10px;">
+            Seu progresso é salvo localmente no seu dispositivo.
+        </p>
     </div>
 
     <script>
-        // Função para salvar no LocalStorage do navegador
-        function saveProgress() {
-            const peca = document.getElementById('folhaResposta').innerText;
-            const postits = document.getElementById('postitData').value;
-            const dicas = document.getElementById('tipsData').value;
+        // Carregar dados salvos ao abrir a página
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('estudo_oab_v2');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('mainEditor').innerText = data.peca || "";
+                document.getElementById('postitInput').value = data.teses || "";
+                document.getElementById('tipsInput').value = data.dicas || "";
+                console.log("Dados recuperados da última sessão.");
+            }
+        });
 
-            const data = {
-                peca,
-                postits,
-                dicas,
-                date: new Date().toLocaleString()
+        // Função para salvar no LocalStorage
+        function saveData() {
+            const pecaContent = document.getElementById('mainEditor').innerText;
+            const tesesContent = document.getElementById('postitInput').value;
+            const dicasContent = document.getElementById('tipsInput').value;
+
+            const appState = {
+                peca: pecaContent,
+                teses: tesesContent,
+                dicas: dicasContent,
+                timestamp: new Date().toISOString()
             };
 
-            localStorage.setItem('estudo_oab_atual', JSON.stringify(data));
-            alert('Progresso salvo com sucesso! Você pode continuar de onde parou, mesmo se fechar o navegador.');
+            localStorage.setItem('estudo_oab_v2', JSON.stringify(appState));
+            
+            // Efeito visual simples de confirmação
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerText;
+            btn.innerText = "✅ SALVO COM SUCESSO!";
+            btn.style.backgroundColor = "#1565c0";
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = "#2e7d32";
+            }, 2000);
         }
 
-        // Carregar dados ao abrir
-        window.onload = function() {
-            const saved = localStorage.getItem('estudo_oab_atual');
-            if (saved) {
-                const data = JSON.parse(saved);
-                document.getElementById('folhaResposta').innerText = data.peca;
-                document.getElementById('postitData').value = data.postits;
-                document.getElementById('tipsData').value = data.dicas;
-            }
-        };
+        // Auto-save a cada 30 segundos para evitar perdas no mobile
+        setInterval(saveData, 30000);
     </script>
 </body>
 </html>
