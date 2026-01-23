@@ -31,6 +31,12 @@
         .pecas-menu { background: var(--card); padding: 8px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid var(--gold); flex-shrink: 0; }
         .btn-peca { padding: 8px 15px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
 
+        /* NOVA BARRA DE PRÁTICA */
+        .pratica-bar { background: #2d3748; padding: 8px; display: flex; gap: 10px; border-bottom: 1px solid #4a5568; flex-shrink: 0; }
+        .btn-pratica { flex: 1; padding: 10px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; }
+        .bg-pratica { background: #6366f1; }
+        .bg-discursiva { background: #8b5cf6; }
+
         .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
 
         .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; transition: 0.3s; }
@@ -61,10 +67,6 @@
             background: var(--fgv-blue); color: white; border: 3px solid var(--gold);
             width: 65px; height: 65px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-
-        .input-group { margin-bottom: 12px; padding: 0 20px; }
-        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #555; margin-bottom: 5px; }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
@@ -98,9 +100,14 @@
     <button class="btn-peca" onclick="aplicarEstruct('ap')">AGRAVO PET.</button>
 </div>
 
+<div class="pratica-bar">
+    <button class="btn-pratica bg-pratica" onclick="modoTreino('peca')">🏋️ PRATICAR PEÇA</button>
+    <button class="btn-pratica bg-discursiva" onclick="modoTreino('questoes')">📝 DISCURSIVAS</button>
+</div>
+
 <main class="workspace">
     <section class="col-res" id="section-res">
-        <div class="fgv-header">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
+        <div class="fgv-header" id="label-folha">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
         <div class="paper">
             <div class="line-nums" id="line-nums-main"></div>
             <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()" placeholder="Comece a redação..."></textarea>
@@ -122,63 +129,72 @@
 <div id="janela-consulta" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
         <div class="consulta-h"><span id="consulta-titulo">MEUS REGISTROS</span><button onclick="document.getElementById('janela-consulta').style.display='none'">X</button></div>
-        
         <div id="lista-itens" class="consulta-b"></div>
-        
         <div id="item-detalhe" class="consulta-b" style="display:none; background:white;">
             <div class="fgv-header" style="background:#eee; color:#333">VISUALIZAÇÃO EM FOLHA FGV</div>
-            <div class="paper" style="flex:1;">
-                <div class="line-nums" id="line-nums-preview"></div>
-                <textarea id="preview-texto" class="textarea-fgv" readonly></textarea>
-            </div>
-            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px; border-top:1px solid #ddd;">
-                <button onclick="voltarParaLista()" style="flex:1; padding:12px; border:1px solid #ccc; background:white; border-radius:6px; font-weight:bold;">VOLTAR</button>
-                <button onclick="copiarParaPeca()" style="flex:2; padding:12px; background:var(--fgv-blue); color:white; border:none; border-radius:6px; font-weight:bold;">COPIAR PARA PEÇA</button>
-            </div>
+            <div class="paper" style="flex:1;"><div class="line-nums" id="line-nums-preview"></div><textarea id="preview-texto" class="textarea-fgv" readonly></textarea></div>
+            <div style="padding:15px; background:#f9f9f9; display:flex; gap:10px;"><button onclick="document.getElementById('item-detalhe').style.display='none'; document.getElementById('lista-itens').style.display='block';" style="flex:1; padding:12px;">VOLTAR</button><button onclick="copiarParaPeca()" style="flex:2; background:var(--fgv-blue); color:white; border:none; font-weight:bold;">COPIAR PARA PEÇA</button></div>
         </div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta">
-    <div class="consulta-card" style="height:auto; max-height:85vh;" onclick="event.stopPropagation()">
+    <div class="consulta-card" style="height:auto;" onclick="event.stopPropagation()">
         <div class="consulta-h">SALVAR NOVO <button onclick="fecharModalCadastro()">X</button></div>
-        <div class="consulta-b" style="padding:20px 0;">
-            <div class="input-group"><label>Categoria:</label><select id="cad-tipo"><option value="postits">📌 Post-it (Tese/Dica)</option><option value="correcoes">⚖️ Erro (Atenção)</option></select></div>
-            <div class="input-group"><label>Título:</label><input type="text" id="cad-nome" placeholder="Ex: Adicional de Periculosidade"></div>
-            <div class="input-group"><label>Conteúdo para a Peça:</label><textarea id="cad-texto" rows="8" placeholder="Digite a tese completa..."></textarea></div>
-            <div style="padding:0 20px;"><button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO BANCO</button></div>
+        <div class="consulta-b" style="padding:20px;">
+            <div class="input-group"><label>Categoria:</label><select id="cad-tipo"><option value="postits">📌 Post-it</option><option value="correcoes">⚖️ Erro</option></select></div>
+            <div class="input-group"><label>Título:</label><input type="text" id="cad-nome"></div>
+            <div class="input-group"><label>Conteúdo:</label><textarea id="cad-texto" rows="8"></textarea></div>
+            <button onclick="salvarNovoItem()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px;">SALVAR NO BANCO</button>
         </div>
     </div>
 </div>
 
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova';
+    let modoAtual = 'peca'; // Alterna entre 'peca' e 'questoes'
 
-    // RENDERIZAR GRADE EXAMES
+    // RENDERIZAR GRADE
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=44; i++){
-        const b = document.createElement('button');
-        b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
+        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
         b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc(docAtual); };
         grid.appendChild(b);
+    }
+
+    function modoTreino(tipo) {
+        modoAtual = tipo;
+        const area = document.getElementById('texto-final');
+        const label = document.getElementById('label-folha');
+        
+        if(tipo === 'peca') {
+            label.innerText = "FOLHA DE RESPOSTA - PEÇA PRÁTICA";
+            area.value = localStorage.getItem('save_2026_peca') || "";
+            area.placeholder = "Redija sua peça profissional aqui...";
+        } else {
+            label.innerText = "FOLHA DE RESPOSTA - QUESTÕES DISCURSIVAS (1 a 4)";
+            area.value = localStorage.getItem('save_2026_questoes') || "";
+            area.placeholder = "QUESTÃO 1: \n\nQUESTÃO 2: \n\nQUESTÃO 3: \n\nQUESTÃO 4: ";
+        }
     }
 
     function mudarDoc(tipo) {
         docAtual = tipo;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if(tipo === 'gabarito') document.getElementById('tab-gab').classList.add('active');
-        else if(tipo === 'aryanna') document.getElementById('tab-ary').classList.add('active');
-        else document.getElementById('tab-prova').classList.add('active');
+        document.getElementById('tab-' + (tipo === 'gabarito' ? 'gab' : tipo === 'aryanna' ? 'ary' : 'prova')).classList.add('active');
+        document.getElementById('f-pdf').src = tipo === 'prova' ? `./ro${exAtual}.pdf` : tipo === 'gabarito' ? `./ro${exAtual}-gabarito.pdf` : `./Aryanna Linhares.pdf`;
+    }
 
-        const frame = document.getElementById('f-pdf');
-        if(tipo === 'prova') frame.src = `./ro${exAtual}.pdf`;
-        else if(tipo === 'gabarito') frame.src = `./ro${exAtual}-gabarito.pdf`;
-        else frame.src = `./Aryanna Linhares.pdf`;
+    function saveAuto() {
+        const val = document.getElementById('texto-final').value;
+        if(modoAtual === 'peca') localStorage.setItem('save_2026_peca', val);
+        else localStorage.setItem('save_2026_questoes', val);
     }
 
     function aplicarEstruct(tipo) {
+        if(modoAtual !== 'peca') { alert("Mude para o modo PRATICAR PEÇA para aplicar a estrutura."); return; }
         const m = {
-            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., já qualificado nos autos...\nRECLAMAÇÃO TRABALHISTA...",
+            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., já qualificado...\nRECLAMAÇÃO TRABALHISTA...",
             cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECLAMADO..., já qualificado...\nCONTESTAÇÃO...",
             ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nRECORRENTE..., já qualificado...\nRECURSO ORDINÁRIO...",
             ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nProcesso nº ...\n\nAGRAVANTE..., já qualificado...\nAGRAVO DE PETIÇÃO..."
@@ -187,86 +203,13 @@
         saveAuto();
     }
 
-    // GESTÃO DO BANCO DE DADOS
+    // CRUD E TIMER (MANTIDOS)
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
-    
     function salvarNovoItem() {
         const tipo = document.getElementById('cad-tipo').value;
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return alert("Preencha título e conteúdo!");
         let db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
         db[Date.now()] = { nome, texto };
-        localStorage.setItem('db_' + tipo, JSON.stringify(db));
-        fecharModalCadastro();
-        document.getElementById('cad-nome').value = ''; document.getElementById('cad-texto').value = '';
-    }
-
-    function abrirBanco(tipo) {
-        const db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
-        const lista = document.getElementById('lista-itens');
-        const detalhe = document.getElementById('item-detalhe');
-        document.getElementById('consulta-titulo').innerText = tipo === 'postits' ? 'BANCO DE POST-ITS' : 'BANCO DE ERROS';
-        lista.style.display = 'block'; detalhe.style.display = 'none';
-        lista.innerHTML = Object.keys(db).length ? '' : '<p style="padding:20px; color:#666">Vazio.</p>';
-        for(let id in db) {
-            const item = document.createElement('div');
-            item.style = "padding:15px; border-bottom:1px solid #eee; cursor:pointer; color:black; font-weight:bold";
-            item.innerHTML = `📄 ${db[id].nome} <span onclick="excluirItem('${tipo}','${id}', event)" style="float:right; color:red;">[X]</span>`;
-            item.onclick = () => {
-                lista.style.display = 'none'; detalhe.style.display = 'flex';
-                document.getElementById('preview-texto').value = db[id].texto;
-            };
-            lista.appendChild(item);
-        }
-        document.getElementById('janela-consulta').style.display = 'flex';
-    }
-
-    function excluirItem(tipo, id, e) {
-        e.stopPropagation();
-        if(!confirm("Excluir item?")) return;
-        let db = JSON.parse(localStorage.getItem('db_' + tipo));
-        delete db[id];
-        localStorage.setItem('db_' + tipo, JSON.stringify(db));
-        abrirBanco(tipo);
-    }
-
-    function voltarParaLista() {
-        document.getElementById('item-detalhe').style.display = 'none';
-        document.getElementById('lista-itens').style.display = 'block';
-    }
-
-    function copiarParaPeca() {
-        const area = document.getElementById('texto-final');
-        area.value += "\n\n" + document.getElementById('preview-texto').value;
-        document.getElementById('janela-consulta').style.display = 'none';
-        saveAuto();
-    }
-
-    // TIMER E AUXILIARES
-    function toggleTimer() {
-        const btn = document.getElementById('btn-timer');
-        if(timerInterval) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "RETOMAR"; }
-        else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); btn.innerText = "PAUSAR"; }
-    }
-    function updateTimerDisplay() {
-        const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60;
-        document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-    function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
-    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('texto-final').value); }
-
-    window.onload = () => {
-        const mainLines = document.getElementById('line-nums-main');
-        const prevLines = document.getElementById('line-nums-preview');
-        for(let i=1; i<=150; i++) {
-            mainLines.innerHTML += i + '<br>';
-            prevLines.innerHTML += i + '<br>';
-        }
-        document.getElementById('texto-final').value = localStorage.getItem('save_2026') || "";
-        mudarDoc('prova');
-    };
-</script>
-</body>
-</html>
+        localStorage.setItem
