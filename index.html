@@ -9,98 +9,114 @@
             --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
             --warning: #f59e0b; --bg: #111827; --card: #1f2937;
             --fgv-blue: #004a8d; --gold: #d4af37; --pdf-bg: #525659;
+            --paper-yellow: #fefce8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: var(--card); padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
-        #timer-display { font-family: monospace; font-size: 1.6rem; font-weight: bold; color: var(--warning); }
+        header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
+        #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--warning); }
 
-        .laws-bar { background: #000; padding: 5px; display: flex; gap: 5px; overflow-x: auto; flex-shrink: 0; }
-        .law-link { background: #333; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border: 1px solid #444; white-space: nowrap; text-decoration: none; }
-
-        .exam-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; background: #000; padding: 2px; border-bottom: 1px solid #333; flex-shrink: 0; }
-        .btn-ex { padding: 8px 0; border: none; background: #222; color: #888; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        .exam-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; background: #000; flex-shrink: 0; }
+        .btn-ex { padding: 8px 0; border: none; background: #222; color: #888; font-size: 0.65rem; cursor: pointer; }
         .btn-ex.active { background: var(--success); color: white; }
 
-        .pecas-menu { background: var(--card); padding: 8px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid var(--gold); flex-shrink: 0; }
-        .btn-peca { padding: 8px 15px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
+        .workspace { flex: 1; display: flex; overflow: hidden; position: relative; background: #444; }
 
-        .workspace { flex: 1; display: flex; overflow: hidden; gap: 2px; background: #444; }
+        /* BOTÕES FLUTUANTES (MINIMALISTAS) */
+        .fab-container { position: fixed; left: 15px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 3000; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .fab-postit { background: var(--warning); color: #000; }
+        .fab-correcao { background: var(--danger); color: #fff; }
+        .fab-novo { background: var(--success); color: #fff; width: 45px; height: 45px; font-size: 1.2rem; }
 
-        .col-main { flex: 1.5; display: flex; flex-direction: column; background: white; min-width: 350px; }
-        .col-view { flex: 1; display: flex; flex-direction: column; background: #f8f9fa; border-left: 2px solid var(--gold); border-right: 2px solid var(--gold); min-width: 300px; }
-        .col-pdf { flex: 1.5; display: flex; flex-direction: column; background: var(--pdf-bg); min-width: 350px; }
+        /* SIDEBAR OVERLAY */
+        #sidebar { 
+            position: absolute; left: -100%; top: 0; bottom: 0; width: 400px; max-width: 90vw;
+            background: var(--card); z-index: 4000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; border-right: 3px solid var(--gold);
+            box-shadow: 15px 0 30px rgba(0,0,0,0.7);
+        }
+        #sidebar.active { left: 0; }
 
+        /* COLUNAS LADO A LADO */
+        .col-main { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #333; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: var(--pdf-bg); }
+
+        /* FOLHA FGV */
         .fgv-header { background: #f0f0f0; color: #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; border-bottom: 1px solid #000; text-transform: uppercase; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; position: relative; }
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; color: black; }
 
-        .db-controls { background: #1f2937; padding: 8px; flex-shrink: 0; }
-        .search-box { width: 100%; padding: 8px; border-radius: 4px; border: none; font-size: 0.8rem; margin-bottom: 5px; }
-        .db-list-area { height: 100px; overflow-y: auto; }
-        .db-item { padding: 8px; border-bottom: 1px solid #374151; font-size: 0.75rem; cursor: pointer; color: #fff; font-weight: bold; }
-        .db-item:hover { background: #4b5563; }
+        /* BUSCA E FICHA NA SIDEBAR */
+        .db-header { padding: 15px; background: #111827; }
+        .search-box { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--gold); background: #1f2937; color: white; margin-bottom: 10px; }
+        .db-list-area { height: 140px; overflow-y: auto; background: #000; border-radius: 4px; }
+        .db-item { padding: 10px; border-bottom: 1px solid #222; font-size: 0.75rem; cursor: pointer; color: #aaa; }
+        .db-item:hover { background: #2d3748; color: white; }
 
-        .pdf-tabs { display: flex; background: #111; padding: 2px; gap: 2px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; }
+        .preview-notebook { flex: 1; display: flex; flex-direction: column; background: var(--paper-yellow); }
+        .notebook-title { background: #fef08a; border: none; border-bottom: 2px solid #eab308; padding: 12px; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 1rem; color: #854d0e; outline: none; }
+
+        .tab-btn { flex: 1; padding: 10px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #333; color: #aaa; }
         .tab-btn.active { background: white; color: var(--fgv-blue); }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; }
+        .overlay-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; align-items: center; justify-content: center; }
         .modal { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 8px; color: black; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight:bold; color:var(--gold)">SISTEMA MASTER OAB 2026</div>
+    <div style="font-weight:bold; color:var(--gold); font-size: 0.9rem;">ARYANNA MASTER 2026</div>
     <div id="timer-display">05:00:00</div>
-    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:6px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">INICIAR</button>
+    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:6px 10px; border-radius:4px; font-weight:bold; font-size: 0.7rem;">INICIAR</button>
 </header>
-
-<div class="laws-bar">
-    <button class="law-link" onclick="ativarBusca('postits')" style="background:var(--warning); color:black;">📌 POST-ITS</button>
-    <button class="law-link" onclick="ativarBusca('correcoes')" style="background:var(--danger); color:white;">⚖️ CORREÇÃO</button>
-    <button class="law-link" onclick="abrirModal()" style="background:var(--success); color:white;">➕ NOVO</button>
-    <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" class="law-link">CLT</a>
-</div>
 
 <div class="exam-grid" id="exam-grid"></div>
 
-<div class="pecas-menu">
-    <button class="btn-peca" onclick="setEstruct('rt')">RECLAMAÇÃO</button>
-    <button class="btn-peca" onclick="setEstruct('cont')">CONTESTAÇÃO</button>
-    <button class="btn-peca" onclick="setEstruct('ro')">RECURSO ORD.</button>
-    <button class="btn-peca" onclick="setEstruct('ap')">AGRAVO PET.</button>
+<div class="fab-container">
+    <button class="fab fab-novo" onclick="abrirModal()" title="Cadastrar Novo">+</button>
+    <button class="fab fab-correcao" onclick="abrirSidebar('correcoes')" title="Ver Correções">⚖️</button>
+    <button class="fab fab-postit" onclick="abrirSidebar('postits')" title="Ver Post-its">📌</button>
 </div>
 
 <main class="workspace">
+    <aside id="sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--gold); padding:10px; color:black;">
+            <strong id="sidebar-title">POST-ITS</strong>
+            <button onclick="fecharSidebar()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        
+        <div class="db-header">
+            <input type="text" id="db-search" class="search-box" placeholder="🔎 Filtrar teses..." oninput="filtrarItens()">
+            <div class="db-list-area" id="db-lista"></div>
+        </div>
+
+        <div class="preview-notebook">
+            <div class="fgv-header" style="background:#fde68a; color:#854d0e">FOLHA DE RESPOSTA (PREVIEW)</div>
+            <input type="text" id="txt-preview-title" class="notebook-title" placeholder="Título da Tese">
+            <div class="paper" style="background: var(--paper-yellow);">
+                <div class="line-nums" id="nums-prev" style="background: #fef9c3;"></div>
+                <textarea id="txt-preview" class="textarea-fgv" style="background-color: transparent;" placeholder="Edite aqui..."></textarea>
+            </div>
+            <button onclick="transferirTexto()" style="padding:18px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer;">INSERIR NA PEÇA DEFINITIVA ↑</button>
+        </div>
+    </aside>
+
     <section class="col-main">
         <div class="fgv-header">FOLHA DE RESPOSTA DEFINITIVA (FGV)</div>
         <div class="paper">
             <div class="line-nums" id="nums-main"></div>
-            <textarea id="txt-main" class="textarea-fgv" oninput="saveAuto()" placeholder="Escreva sua peça aqui..."></textarea>
+            <textarea id="txt-main" class="textarea-fgv" oninput="saveAuto()"></textarea>
         </div>
-    </section>
-
-    <section class="col-view">
-        <div class="db-controls">
-            <input type="text" id="db-search" class="search-box" placeholder="🔎 Filtrar banco..." oninput="filtrarItens()">
-            <div class="db-list-area" id="db-lista"></div>
-        </div>
-        <div class="fgv-header" style="background:#fef3c7; color:#92400e;">PRÉ-VISUALIZAÇÃO (EDITÁVEL)</div>
-        <div class="paper">
-            <div class="line-nums" id="nums-prev"></div>
-            <textarea id="txt-preview" class="textarea-fgv" placeholder="Selecione um item acima para ajustar aqui..."></textarea>
-        </div>
-        <button onclick="transferirTexto()" style="padding:15px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer;">Inserir na Peça Principal ↑</button>
     </section>
 
     <section class="col-pdf">
-        <div class="pdf-tabs">
+        <div class="pdf-tabs" style="display:flex; background:#111">
             <button class="tab-btn active" onclick="mudarPDF('prova')">PROVA</button>
             <button class="tab-btn" onclick="mudarPDF('gabarito')">GABARITO</button>
             <button class="tab-btn" onclick="mudarPDF('aryanna')">MÉTODO</button>
@@ -109,16 +125,13 @@
     </section>
 </main>
 
-<div id="modal-cad" class="overlay" onclick="fecharModal()">
+<div id="modal-cad" class="overlay-modal" onclick="fecharModal()">
     <div class="modal" onclick="event.stopPropagation()">
-        <h3 style="margin-bottom:15px">Novo Modelo</h3>
-        <select id="cad-tipo" style="width:100%; padding:10px; margin-bottom:10px">
-            <option value="postits">Post-it (Dica/Tese)</option>
-            <option value="correcoes">Correção (Atenção)</option>
-        </select>
-        <input type="text" id="cad-nome" placeholder="Título" style="width:100%; padding:10px; margin-bottom:10px">
-        <textarea id="cad-corpo" rows="8" placeholder="Fundamentação..." style="width:100%; padding:10px; margin-bottom:15px"></textarea>
-        <button onclick="salvarNovo()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; font-weight:bold; border-radius:4px;">SALVAR</button>
+        <h3 style="margin-bottom:15px">Nova Ficha de Estudo</h3>
+        <select id="cad-tipo" style="width:100%; padding:10px; margin-bottom:10px"><option value="postits">Post-it (Tese)</option><option value="correcoes">Correção (Atenção)</option></select>
+        <input type="text" id="cad-nome" placeholder="Título da Tese" style="width:100%; padding:10px; margin-bottom:10px">
+        <textarea id="cad-corpo" rows="6" placeholder="Texto formatado..." style="width:100%; padding:10px; margin-bottom:15px"></textarea>
+        <button onclick="salvarNovo()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; font-weight:bold; border-radius:6px;">SALVAR FICHA</button>
     </div>
 </div>
 
@@ -129,87 +142,4 @@
     for(let i=35; i<=44; i++){
         const b = document.createElement('button');
         b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF(docAtual); };
-        grid.appendChild(b);
-    }
-
-    function mudarPDF(tipo) {
-        docAtual = tipo;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const f = document.getElementById('frame-pdf');
-        if(tipo === 'prova') { f.src = `./ro${exAtual}.pdf`; document.querySelector('.tab-btn:nth-child(1)').classList.add('active'); }
-        else if(tipo === 'gabarito') { f.src = `./ro${exAtual}-gabarito.pdf`; document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); }
-        else { f.src = `./Aryanna Linhares.pdf`; document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); }
-    }
-
-    function ativarBusca(tipo) { dbTipoAtual = tipo; carregarLista(); }
-
-    function carregarLista() {
-        const listaDiv = document.getElementById('db-lista');
-        const db = JSON.parse(localStorage.getItem('db_'+dbTipoAtual)) || {};
-        listaDiv.innerHTML = '';
-        Object.keys(db).sort().forEach(id => {
-            const item = document.createElement('div');
-            item.className = 'db-item';
-            item.innerText = (dbTipoAtual === 'postits' ? '📌 ' : '⚖️ ') + db[id].nome;
-            item.onclick = () => { document.getElementById('txt-preview').value = db[id].texto; };
-            listaDiv.appendChild(item);
-        });
-    }
-
-    function filtrarItens() {
-        const termo = document.getElementById('db-search').value.toLowerCase();
-        document.querySelectorAll('.db-item').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(termo) ? 'block' : 'none'; });
-    }
-
-    function transferirTexto() {
-        const principal = document.getElementById('txt-main');
-        principal.value += (principal.value ? "\n" : "") + document.getElementById('txt-preview').value;
-        saveAuto();
-    }
-
-    function setEstruct(tipo) {
-        const m = {
-            rt: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO...\n\nRECLAMAÇÃO TRABALHISTA...",
-            cont: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO...\nPROCESSO Nº ...\n\nCONTESTAÇÃO...",
-            ro: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO...\nPROCESSO Nº ...\n\nRECURSO ORDINÁRIO...",
-            ap: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO...\nPROCESSO Nº ...\n\nAGRAVO DE PETIÇÃO..."
-        };
-        document.getElementById('txt-main').value = m[tipo];
-        saveAuto();
-    }
-
-    function abrirModal() { document.getElementById('modal-cad').style.display = 'flex'; }
-    function fecharModal() { document.getElementById('modal-cad').style.display = 'none'; }
-    
-    function salvarNovo() {
-        const t = document.getElementById('cad-tipo').value, n = document.getElementById('cad-nome').value, c = document.getElementById('cad-corpo').value;
-        if(!n || !c) return;
-        let db = JSON.parse(localStorage.getItem('db_'+t)) || {};
-        db[Date.now()] = { nome: n, texto: c };
-        localStorage.setItem('db_'+t, JSON.stringify(db));
-        fecharModal();
-        carregarLista();
-    }
-
-    function toggleTimer() {
-        if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        else { timerInterval = setInterval(() => { timeLeft--; updateTimer(); }, 1000); }
-    }
-
-    function updateTimer() {
-        const h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
-        document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-
-    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-main').value); }
-
-    window.onload = () => {
-        const m = document.getElementById('nums-main'), p = document.getElementById('nums-prev');
-        for(let i=1; i<=150; i++) { m.innerHTML += i + '<br>'; p.innerHTML += i + '<br>'; }
-        document.getElementById('txt-main').value = localStorage.getItem('save_2026') || "";
-        mudarPDF('prova');
-    };
-</script>
-</body>
-</html>
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF(docAtual
