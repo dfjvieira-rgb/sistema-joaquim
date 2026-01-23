@@ -18,6 +18,7 @@
         header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--warning); }
 
+        /* GRADE DE EXAMES COMPACTA */
         .exam-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; background: #000; flex-shrink: 0; }
         .btn-ex { padding: 8px 0; border: none; background: #222; color: #888; font-size: 0.65rem; cursor: pointer; }
         .btn-ex.active { background: var(--success); color: white; }
@@ -31,7 +32,7 @@
         .fab-correcao { background: var(--danger); color: #fff; }
         .fab-novo { background: var(--success); color: #fff; width: 45px; height: 45px; font-size: 1.2rem; }
 
-        /* SIDEBAR OVERLAY */
+        /* SIDEBAR QUE NÃO EMPURRA A TELA (OVERLAY) */
         #sidebar { 
             position: absolute; left: -100%; top: 0; bottom: 0; width: 400px; max-width: 90vw;
             background: var(--card); z-index: 4000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -50,7 +51,7 @@
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; color: black; }
 
-        /* BUSCA E FICHA NA SIDEBAR */
+        /* FICHA DE CADERNO DENTRO DA SIDEBAR */
         .db-header { padding: 15px; background: #111827; }
         .search-box { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--gold); background: #1f2937; color: white; margin-bottom: 10px; }
         .db-list-area { height: 140px; overflow-y: auto; background: #000; border-radius: 4px; }
@@ -101,9 +102,9 @@
             <input type="text" id="txt-preview-title" class="notebook-title" placeholder="Título da Tese">
             <div class="paper" style="background: var(--paper-yellow);">
                 <div class="line-nums" id="nums-prev" style="background: #fef9c3;"></div>
-                <textarea id="txt-preview" class="textarea-fgv" style="background-color: transparent;" placeholder="Edite aqui..."></textarea>
+                <textarea id="txt-preview" class="textarea-fgv" style="background-color: transparent;" placeholder="Edite aqui antes de inserir..."></textarea>
             </div>
-            <button onclick="transferirTexto()" style="padding:18px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer;">INSERIR NA PEÇA DEFINITIVA ↑</button>
+            <button onclick="transferirTexto()" style="padding:18px; background:var(--fgv-blue); color:white; border:none; font-weight:bold; cursor:pointer; font-size:0.9rem;">INSERIR NA PEÇA DEFINITIVA ↑</button>
         </div>
     </aside>
 
@@ -142,4 +143,88 @@
     for(let i=35; i<=44; i++){
         const b = document.createElement('button');
         b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF(docAtual
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarPDF(docAtual); };
+        grid.appendChild(b);
+    }
+
+    function abrirSidebar(tipo) {
+        dbTipoAtual = tipo;
+        document.getElementById('sidebar-title').innerText = tipo === 'postits' ? '📌 MEUS POST-ITS' : '⚖️ MINHAS CORREÇÕES';
+        document.getElementById('sidebar').classList.add('active');
+        carregarLista();
+    }
+
+    function fecharSidebar() { document.getElementById('sidebar').classList.remove('active'); }
+
+    function mudarPDF(tipo) {
+        docAtual = tipo;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const f = document.getElementById('frame-pdf');
+        if(tipo === 'prova') f.src = `./ro${exAtual}.pdf`;
+        else if(tipo === 'gabarito') f.src = `./ro${exAtual}-gabarito.pdf`;
+        else f.src = `./Aryanna Linhares.pdf`;
+    }
+
+    function carregarLista() {
+        const listaDiv = document.getElementById('db-lista');
+        const db = JSON.parse(localStorage.getItem('db_'+dbTipoAtual)) || {};
+        listaDiv.innerHTML = '';
+        Object.keys(db).sort().forEach(id => {
+            const item = document.createElement('div');
+            item.className = 'db-item';
+            item.innerText = db[id].nome;
+            item.onclick = () => { 
+                document.getElementById('txt-preview-title').value = db[id].nome;
+                document.getElementById('txt-preview').value = db[id].texto; 
+            };
+            listaDiv.appendChild(item);
+        });
+    }
+
+    function filtrarItens() {
+        const termo = document.getElementById('db-search').value.toLowerCase();
+        document.querySelectorAll('.db-item').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(termo) ? 'block' : 'none'; });
+    }
+
+    function transferirTexto() {
+        const principal = document.getElementById('txt-main');
+        const titulo = document.getElementById('txt-preview-title').value;
+        const texto = document.getElementById('txt-preview').value;
+        principal.value += (principal.value ? "\n\n" : "") + titulo.toUpperCase() + "\n" + texto;
+        fecharSidebar();
+        saveAuto();
+    }
+
+    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-main').value); }
+    function abrirModal() { document.getElementById('modal-cad').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modal-cad').style.display = 'none'; }
+    
+    function salvarNovo() {
+        const t = document.getElementById('cad-tipo').value, n = document.getElementById('cad-nome').value, c = document.getElementById('cad-corpo').value;
+        if(!n || !c) return;
+        let db = JSON.parse(localStorage.getItem('db_'+t)) || {};
+        db[Date.now()] = { nome: n, texto: c };
+        localStorage.setItem('db_'+t, JSON.stringify(db));
+        fecharModal();
+        if(document.getElementById('sidebar').classList.contains('active')) carregarLista();
+    }
+
+    function toggleTimer() {
+        if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        else { timerInterval = setInterval(() => { timeLeft--; updateTimer(); }, 1000); }
+    }
+
+    function updateTimer() {
+        const h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
+        document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    window.onload = () => {
+        const m = document.getElementById('nums-main'), p = document.getElementById('nums-prev');
+        for(let i=1; i<=150; i++) { m.innerHTML += i + '<br>'; p.innerHTML += i + '<br>'; }
+        document.getElementById('txt-main').value = localStorage.getItem('save_2026') || "";
+        mudarPDF('prova');
+    };
+</script>
+</body>
+</html>
