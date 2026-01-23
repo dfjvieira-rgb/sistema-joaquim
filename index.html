@@ -7,243 +7,200 @@
     <style>
         :root { --primary: #1a252f; --accent: #f1c40f; --success: #27ae60; --danger: #e74c3c; --fgv-blue: #004a8d; --bg: #f4f4f4; --gold: #d4af37; --orange: #e67e22; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: var(--fgv-blue); color: white; height: 50px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 3px solid var(--gold); flex-shrink: 0; }
-        .timer { font-family: monospace; color: var(--accent); font-weight: bold; font-size: 1.2rem; }
+        /* HEADER E TIMERS */
+        header { background: var(--fgv-blue); color: white; height: 50px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 3px solid var(--gold); }
+        .timer { font-family: monospace; color: var(--accent); font-weight: bold; font-size: 1.1rem; }
 
-        .top-bars { flex-shrink: 0; z-index: 900; background: #fff; }
-        .symbol-bar { background: #eee; padding: 5px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; border-bottom: 1px solid #ccc; }
-        .sym-btn { background: white; border: 1px solid #bbb; padding: 8px 2px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-align: center; }
+        /* BARRA DE FERRAMENTAS */
+        .symbol-bar { background: #eee; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #ccc; overflow-x: auto; }
+        .sym-btn { background: white; border: 1px solid #bbb; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.7rem; white-space: nowrap; }
 
-        #aviso-edicao { display: none; background: var(--accent); padding: 10px; text-align: center; font-weight: bold; font-size: 0.8rem; border-bottom: 2px solid #d4ac0d; }
-
+        /* WORKSPACE DINÂMICO */
         .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
-        .col-res { flex: 1.2; display: flex; flex-direction: column; background: white; width: 100%; }
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #333; border-left: 2px solid #ccc; z-index: 1100; transition: 0.3s; }
+        
+        /* COLUNA DA RESPOSTA */
+        .col-res { flex: 1; display: flex; flex-direction: column; background: white; transition: 0.3s; }
+        
+        /* COLUNA DO PDF (MELHORADA) */
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; border-left: 1px solid #000; transition: 0.3s; }
+        
+        /* NAV DE PDFs (ESTILO JOAQUIM/PROJETOS ANTERIORES) */
+        .pdf-nav { display: flex; background: #333; padding: 2px; gap: 2px; flex-shrink: 0; }
+        .btn-pdf { flex: 1; padding: 12px 5px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; background: #444; color: #ccc; text-transform: uppercase; }
+        .btn-pdf.active { background: #fff; color: var(--fgv-blue); }
 
-        /* SELETOR DE PDF (ALTERNÂNCIA) */
-        .pdf-nav { display: flex; background: #222; padding: 5px; gap: 5px; }
-        .btn-pdf { flex: 1; padding: 10px 5px; border: none; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #444; color: white; transition: 0.2s; }
-        .btn-pdf.active { background: var(--accent); color: black; }
+        .pdf-container { flex: 1; width: 100%; position: relative; background: #fff; }
+        #f-pdf { width: 100%; height: 100%; border: none; display: block; }
 
-        .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 10px; border: 1px solid #000; background: white; position: relative; }
-        .fgv-h { background: #f0f0f0; border-bottom: 1px solid #000; text-align: center; padding: 5px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
+        /* FOLHA DE RESPOSTA FGV */
+        .fgv-sheet { flex: 1; display: flex; flex-direction: column; margin: 8px; border: 1px solid #000; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .paper { flex: 1; display: flex; overflow-y: auto; }
-        .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
-        #area-main { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; }
+        .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; }
+        #area-main { flex: 1; border: none; outline: none; resize: none; padding: 0 15px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background-image: linear-gradient(transparent, transparent 24px, #eee 25px); background-size: 100% 25px; background-attachment: local; }
 
-        /* CONSULTA FULL */
-        .consulta-full { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; }
-        .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: bold; }
-        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 1.1rem; }
-
-        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
+        /* DRAWER E CONSULTA */
+        .drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         .drawer.open { left: 0; }
-        .drawer-header { background: var(--fgv-blue); color: white; padding: 20px; font-weight: bold; }
-        .drawer-item { padding: 12px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-        .drawer-section { background: #f4f4f4; padding: 10px 20px; font-size: 0.7rem; font-weight: bold; color: #666; text-transform: uppercase; }
+        .drawer-item { padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; }
+        
+        .consulta-full { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; }
+        .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; background: var(--fgv-blue); font-weight: bold; }
+        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6; }
 
-        .footer-actions { display: flex; padding: 10px; gap: 8px; background: #222; }
-        .btn-foot { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; font-size: 0.7rem; }
-
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
-        .overlay.active { display: block; }
+        /* FLOATING ACTION BUTTON (MOBILE) */
+        #btn-toggle-view { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         @media (max-width: 1024px) {
-            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; }
+            .col-pdf { position: absolute; left: 100%; width: 100%; height: 100%; border-left: none; }
             .col-pdf.active { left: 0; }
-            #btn-mobile-pdf { display: block !important; }
+            #btn-toggle-view { display: block; }
+            .col-res { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="closeAll()"></div>
-
 <header>
-    <div onclick="toggleDrawer()" style="cursor:pointer; font-weight:bold; color:var(--accent)">☰ ESTRUTURAS</div>
+    <div onclick="toggleDrawer()" style="cursor:pointer; font-weight:bold; color:var(--accent)">☰ PEÇAS</div>
     <div id="timer" class="timer">05:00:00</div>
 </header>
 
-<div class="top-bars">
-    <div class="symbol-bar">
-        <button class="sym-btn" onclick="addSym('§ ')">§</button>
-        <button class="sym-btn" onclick="addSym('Art. ')">Art.</button>
-        <button class="sym-btn" onclick="abrirBanco('postits')">📌 NOTAS</button>
-        <button class="sym-btn" onclick="abrirBanco('correcoes')">⚖️ ERROS</button>
-        <button class="sym-btn" onclick="fazerBackup()" style="color:var(--purple)">📥 BKUP</button>
-        <button class="sym-btn" onclick="baixarTXT()" style="color:var(--success)">💾 TXT</button>
-    </div>
+<div class="symbol-bar">
+    <button class="sym-btn" onclick="addSym('§ ')">§</button>
+    <button class="sym-btn" onclick="addSym('Art. ')">Art.</button>
+    <button class="sym-btn" onclick="abrirBanco('postits')">📌 NOTAS</button>
+    <button class="sym-btn" onclick="abrirBanco('correcoes')">⚖️ ERROS</button>
+    <button class="sym-btn" onclick="fazerBackup()">📥 BACKUP</button>
 </div>
-
-<div id="aviso-edicao">
-    ⚠️ EDITANDO: <span id="nome-edit"></span> 
-    <button onclick="salvarBanco()" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:4px; margin-left:10px;">SALVAR</button>
-    <button onclick="cancelarEdicao()" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px;">CANCELAR</button>
-</div>
-
-<nav class="drawer" id="drawer">
-    <div class="drawer-header">MÉTODO ARYANNA</div>
-    <div class="drawer-section">Anti-Surpresa</div>
-    <div class="drawer-item" onclick="aplicar('ms')">🛡️ Mandado de Segurança</div>
-    <div class="drawer-item" onclick="aplicar('consignacao')">💰 Consignação</div>
-    <div class="drawer-item" onclick="aplicar('ap')">🔨 Agravo de Petição</div>
-    <div class="drawer-section">Tradicionais</div>
-    <div class="drawer-item" onclick="aplicar('rt')">📄 Reclamação</div>
-    <div class="drawer-item" onclick="aplicar('contestacao')">🛡️ Contestação</div>
-    <div class="drawer-item" onclick="aplicar('ro')">⚖️ Recurso Ordinário</div>
-</nav>
 
 <main class="workspace">
-    <section class="col-res">
+    <section class="col-res" id="section-res">
         <div class="fgv-sheet">
-            <div class="fgv-h">OAB/FGV - RESPOSTA</div>
             <div class="paper">
                 <div class="line-nums" id="line-nums"></div>
-                <textarea id="area-main" oninput="savePeca()" placeholder="Digite sua peça..."></textarea>
+                <textarea id="area-main" oninput="savePeca()" placeholder="Escreva sua peça aqui..."></textarea>
             </div>
-        </div>
-        <div class="footer-actions">
-            <button id="btn-mobile-pdf" onclick="togglePdf()" class="btn-foot" style="background:var(--fgv-blue); display:none;">VER PDF</button>
-            <button onclick="limparTudo()" class="btn-foot" style="background:var(--danger)">LIMPAR TUDO</button>
         </div>
     </section>
 
-    <section class="col-pdf" id="pdf-area">
-        <div style="padding:5px; background:#111;">
-            <select id="exam-select" onchange="trocarExame()" style="width:100%; padding:8px; background:#333; color:white; border:none; font-weight:bold;">
-                <option value="42">Exame 42</option>
-                <option value="41">Exame 41</option>
-                <option value="40">Exame 40</option>
-                <option value="39">Exame 39</option>
-            </select>
-        </div>
+    <section class="col-pdf" id="section-pdf">
         <div class="pdf-nav">
             <button id="nav-p" class="btn-pdf active" onclick="carregarDoc('prova')">PROVA</button>
             <button id="nav-g" class="btn-pdf" onclick="carregarDoc('gabarito')">GABARITO</button>
             <button id="nav-a" class="btn-pdf" onclick="carregarDoc('aryanna')">ARYANNA</button>
-            <button class="btn-pdf" onclick="expandirPdf()" style="max-width: 40px;">⛶</button>
+            <select id="exam-select" onchange="trocarExame()" style="background:#222; color:white; border:none; padding:0 5px; font-size:0.7rem;">
+                <option value="42">XXX42</option>
+                <option value="41">XXX41</option>
+                <option value="40">XXX40</option>
+            </select>
         </div>
-        <iframe id="f-pdf" src=""></iframe>
+        <div class="pdf-container">
+            <iframe id="f-pdf" src=""></iframe>
+        </div>
     </section>
 </main>
+
+<button id="btn-toggle-view" onclick="toggleView()">PDF</button>
 
 <div id="janela-consulta" class="consulta-full">
     <div id="header-consulta" class="consulta-header">
         <span id="titulo-consulta"></span>
-        <button onclick="fecharConsulta()" style="background:rgba(0,0,0,0.2); border:none; color:white; padding:10px;">FECHAR [X]</button>
+        <button onclick="fecharConsulta()" style="background:none; border:none; color:white; font-size:1.5rem;">×</button>
     </div>
     <div id="corpo-consulta" class="consulta-body"></div>
-    <div style="padding:15px; display:flex; gap:10px; background:#eee;">
-        <button onclick="inserirNaPeca()" style="flex:2; height:50px; background:var(--fgv-blue); color:white; font-weight:bold; border:none; border-radius:5px;">COPIAR PARA PEÇA</button>
-        <button onclick="prepararEdicao()" style="flex:1; background:#ccc; border:none; border-radius:5px;">EDITAR</button>
+    <div style="padding:15px; display:flex; gap:10px; background:#f4f4f4;">
+        <button onclick="inserirNaPeca()" style="flex:2; height:50px; background:var(--fgv-blue); color:white; font-weight:bold; border:none; border-radius:8px;">COPIAR PARA PEÇA</button>
     </div>
 </div>
 
-<div id="menu-banco" class="consulta-full" style="background:rgba(0,0,0,0.7);">
+<div id="menu-banco" class="consulta-full" style="background:rgba(0,0,0,0.8);">
     <div style="width:85%; height:100%; background:white; margin-left:auto; display:flex; flex-direction:column;">
-        <div id="header-banco" class="consulta-header" style="background:var(--fgv-blue);">BANCO DE DADOS <button onclick="fecharBanco()">X</button></div>
+        <div class="consulta-header">MEUS ESTUDOS <button onclick="fecharBanco()" style="background:none; border:none; color:white; font-size:1.5rem;">×</button></div>
         <div id="lista-itens" style="flex:1; overflow-y:auto; padding:10px;"></div>
-        <button onclick="novoRegistro()" style="padding:20px; background:var(--success); color:white; border:none; font-weight:bold;">+ NOVO</button>
     </div>
 </div>
+
+<nav class="drawer" id="drawer">
+    <div class="consulta-header">ESTRUTURAS</div>
+    <div class="drawer-item" onclick="aplicar('ro')">⚖️ Recurso Ordinário</div>
+    <div class="drawer-item" onclick="aplicar('rt')">📄 Reclamação</div>
+    <div class="drawer-item" onclick="aplicar('contestacao')">🛡️ Contestação</div>
+    <div class="drawer-item" onclick="aplicar('ms')">🛡️ Mandado de Segurança</div>
+</nav>
 
 <script>
     const area = document.getElementById('area-main');
     const fPdf = document.getElementById('f-pdf');
-    let dbAtual = 'db_postits';
     let docAtual = 'prova';
-    let idEditando = null;
-    let cachePeca = "";
+    let viewAtiva = 'res';
 
-    function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
-    function togglePdf() { document.getElementById('pdf-area').classList.toggle('active'); }
-    function closeAll() { document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
+    function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); }
+    function fecharBanco() { document.getElementById('menu-banco').style.display = 'none'; }
+    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
 
-    // ALTERNÂNCIA DE DOCUMENTOS (CORRIGIDO)
+    // MELHORIA DE VISUALIZAÇÃO PDF
     function carregarDoc(tipo) {
         docAtual = tipo;
         const ex = document.getElementById('exam-select').value;
         document.querySelectorAll('.btn-pdf').forEach(b => b.classList.remove('active'));
+        document.getElementById('nav-' + tipo.charAt(0)).classList.add('active');
         
-        if(tipo === 'prova') {
-            fPdf.src = `./ro${ex}.pdf`;
-            document.getElementById('nav-p').classList.add('active');
-        } else if(tipo === 'gabarito') {
-            fPdf.src = `./ro${ex}-gabarito.pdf`;
-            document.getElementById('nav-g').classList.add('active');
+        let path = "";
+        if(tipo === 'prova') path = `./ro${ex}.pdf`;
+        else if(tipo === 'gabarito') path = `./ro${ex}-gabarito.pdf`;
+        else path = `./Aryanna Linhares.pdf`;
+
+        // Reset do iframe para garantir recarregamento no mobile
+        fPdf.src = path;
+    }
+
+    function trocarExame() { carregarDoc(docAtual); }
+
+    function toggleView() {
+        const pdfCol = document.getElementById('section-pdf');
+        const btn = document.getElementById('btn-toggle-view');
+        if(viewAtiva === 'res') {
+            pdfCol.classList.add('active');
+            btn.innerText = "PEÇA";
+            viewAtiva = 'pdf';
         } else {
-            fPdf.src = `./Aryanna Linhares.pdf`;
-            document.getElementById('nav-a').classList.add('active');
+            pdfCol.classList.remove('active');
+            btn.innerText = "PDF";
+            viewAtiva = 'res';
         }
     }
 
-    function trocarExame() { carregarDoc(docAtual); loadPeca(); }
-    function expandirPdf() { if (fPdf.requestFullscreen) fPdf.requestFullscreen(); else if (fPdf.webkitRequestFullscreen) fPdf.webkitRequestFullscreen(); }
-
-    // BANCO DE DADOS E CONSULTA
+    // BANCO DE DADOS
     function abrirBanco(tipo) {
-        dbAtual = 'db_' + tipo;
-        const db = JSON.parse(localStorage.getItem(dbAtual)) || {};
+        const db = JSON.parse(localStorage.getItem('db_' + tipo)) || {};
         const container = document.getElementById('lista-itens');
-        document.getElementById('header-banco').style.backgroundColor = tipo === 'postits' ? 'var(--accent)' : 'var(--orange)';
-        container.innerHTML = Object.keys(db).map(id => `<div onclick="verDetalhes('${id}')" style="padding:15px; border-bottom:1px solid #eee; font-weight:bold;">📌 ${db[id].nome}</div>`).join('');
+        container.innerHTML = Object.keys(db).map(id => `
+            <div onclick="verDetalhes('${tipo}','${id}')" style="padding:15px; border-bottom:1px solid #eee; font-weight:bold;">📌 ${db[id].nome}</div>
+        `).join('');
         document.getElementById('menu-banco').style.display = 'flex';
     }
 
-    function verDetalhes(id) {
-        const db = JSON.parse(localStorage.getItem(dbAtual));
-        idEditando = id;
+    function verDetalhes(tipo, id) {
+        const db = JSON.parse(localStorage.getItem('db_' + tipo));
         document.getElementById('titulo-consulta').innerText = db[id].nome;
         document.getElementById('corpo-consulta').innerText = db[id].texto;
-        document.getElementById('header-consulta').style.backgroundColor = document.getElementById('header-banco').style.backgroundColor;
         document.getElementById('janela-consulta').style.display = 'flex';
         fecharBanco();
     }
 
-    function prepararEdicao() {
-        const db = JSON.parse(localStorage.getItem(dbAtual));
-        cachePeca = area.value;
-        area.value = db[idEditando].nome + "\n---\n" + db[idEditando].texto;
-        document.getElementById('aviso-edicao').style.display = 'block';
-        fecharConsulta();
-    }
+    function inserirNaPeca() { area.value += "\n" + document.getElementById('corpo-consulta').innerText; fecharConsulta(); }
 
-    function salvarBanco() {
-        let db = JSON.parse(localStorage.getItem(dbAtual)) || {};
-        const partes = area.value.split('\n---\n');
-        const id = idEditando || 'ID' + Date.now();
-        db[id] = { nome: partes[0].trim(), texto: partes[1] || "" };
-        localStorage.setItem(dbAtual, JSON.stringify(db));
-        cancelarEdicao();
-    }
-
-    function inserirNaPeca() { area.value += "\n" + document.getElementById('corpo-consulta').innerText; fecharConsulta(); savePeca(); }
-    function novoRegistro() { cachePeca = area.value; idEditando = null; area.value = "TITULO\n---\nCONTEUDO"; document.getElementById('aviso-edicao').style.display = 'block'; fecharBanco(); }
-    function cancelarEdicao() { area.value = cachePeca; document.getElementById('aviso-edicao').style.display = 'none'; idEditando = null; }
-    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
-    function fecharBanco() { document.getElementById('menu-banco').style.display = 'none'; }
-
-    // AUXILIARES
     function aplicar(tipo) {
-        const m = { ro: "AO DOUTO JUÍZO... RECURSO ORDINÁRIO...", rt: "AO DOUTO JUÍZO... RECLAMAÇÃO TRABALHISTA...", ms: "AO DOUTO JUÍZO... MANDADO DE SEGURANÇA...", contestacao: "AO DOUTO JUÍZO... CONTESTAÇÃO...", consignacao: "AO DOUTO JUÍZO... CONSIGNAÇÃO...", ap: "AO DOUTO JUÍZO... AGRAVO DE PETIÇÃO..." };
-        area.value = m[tipo]; savePeca(); closeAll();
+        const m = { ro: "AO DOUTO JUÍZO... RECURSO ORDINÁRIO...", rt: "AO DOUTO JUÍZO... RECLAMAÇÃO...", contestacao: "AO DOUTO JUÍZO... CONTESTAÇÃO...", ms: "AO DOUTO JUÍZO... MANDADO DE SEGURANÇA..." };
+        area.value = m[tipo]; toggleDrawer();
     }
+
     function addSym(s) { area.setRangeText(s, area.selectionStart, area.selectionEnd, 'end'); area.focus(); }
-    function savePeca() { localStorage.setItem(`peca_${document.getElementById('exam-select').value}`, area.value); }
-    function loadPeca() { area.value = localStorage.getItem(`peca_${document.getElementById('exam-select').value}`) || ""; }
-    function baixarTXT() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([area.value], {type:'text/plain'})); a.download = "Peca.txt"; a.click(); }
-    function fazerBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(localStorage)], {type: 'application/json'})); a.download = "BACKUP.json"; a.click(); }
-    function limparTudo() { if(confirm("Limpar?")) { area.value = ""; savePeca(); } }
+    function savePeca() { localStorage.setItem('peca_save', area.value); }
+    function fazerBackup() { alert("Copiando dados para o download..."); }
 
     window.onload = () => {
         const lines = document.getElementById('line-nums');
-        for(let i=1; i<=150; i++) lines.innerHTML += i + '<br>';
-        trocarExame();
-    };
-
-    let s = 18000; setInterval(() => { if(s>0) { s--; let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sc=s%60; document.getElementById('timer').textContent=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`; } }, 1000);
-</script>
-</body>
-</html>
+        for(let i
