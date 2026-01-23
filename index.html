@@ -40,7 +40,7 @@
         .line-nums { width: 35px; background: #f8f9fa; border-right: 1px solid #ddd; text-align: center; color: #bbb; font-size: 11px; line-height: 25px; padding-top: 25px; }
         textarea { flex: 1; padding: 25px; border: none; outline: none; resize: none; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 25px; background: transparent; }
 
-        /* NAVEGAÇÃO DE PDF (ALTERNÂNCIA) */
+        /* NAVEGAÇÃO DE PDF */
         .pdf-nav { display: flex; background: #333; gap: 1px; }
         .pdf-btn { flex: 1; border: none; background: #444; color: #ccc; padding: 14px 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; text-transform: uppercase; }
         .pdf-btn.active { background: var(--accent); color: var(--primary); }
@@ -75,17 +75,17 @@
 <main id="view-treino" class="view active">
     <div class="top-controls">
         <select class="exame-selector" id="select-exame" onchange="selecionarExame()">
-            <option value="">Escolha o Exame para Treino (35 ao 44)</option>
-            <option value="35">🎯 XXXV Exame Unificado</option>
-            <option value="36">🎯 XXXVI Exame Unificado</option>
-            <option value="37">🎯 XXXVII Exame Unificado</option>
-            <option value="38">🎯 XXXVIII Exame Unificado</option>
-            <option value="39">🎯 XXXIX Exame Unificado</option>
-            <option value="40">🎯 XL Exame Unificado</option>
-            <option value="41">🎯 XLI Exame Unificado</option>
-            <option value="42">🎯 XLII Exame Unificado</option>
-            <option value="43">🎯 XLIII Exame Unificado</option>
-            <option value="44">🎯 XLIV Exame Unificado</option>
+            <option value="">Selecione o Exame (35 ao 44)</option>
+            <option value="35">35º Exame Unificado</option>
+            <option value="36">36º Exame Unificado</option>
+            <option value="37">37º Exame Unificado</option>
+            <option value="38">38º Exame Unificado</option>
+            <option value="39">39º Exame Unificado</option>
+            <option value="40">40º Exame Unificado</option>
+            <option value="41">41º Exame Unificado</option>
+            <option value="42">42º Exame Unificado</option>
+            <option value="43">43º Exame Unificado</option>
+            <option value="44">44º Exame Unificado</option>
         </select>
 
         <div class="vade-links">
@@ -128,7 +128,6 @@
     const gen = (el) => { for(let i=1; i<=150; i++) el.innerHTML += i + '<br>'; };
     gen($('n-main'));
 
-    // Objeto que controla os arquivos do exame selecionado
     let arquivosAtuais = {
         apostila: './Aryanna Linhares.pdf',
         prova: '',
@@ -138,11 +137,8 @@
     function selecionarExame() {
         const e = $('select-exame').value;
         if(e !== "") {
-            // Define os caminhos dos arquivos baseados no número do exame
             arquivosAtuais.prova = `./prova${e}.pdf`;
             arquivosAtuais.gab = `./gabarito${e}.pdf`;
-            
-            // Ao selecionar, abre automaticamente a Prova para começar o treino
             alternarVisao('prova');
         }
     }
@@ -152,16 +148,12 @@
         if (tipo === 'apostila') url = arquivosAtuais.apostila;
         if (tipo === 'prova') url = arquivosAtuais.prova || arquivosAtuais.apostila;
         if (tipo === 'gab') url = arquivosAtuais.gab || arquivosAtuais.apostila;
-
         $('f-pdf').src = url;
-
-        // Atualiza o estado visual dos botões
         document.querySelectorAll('.pdf-btn').forEach(b => b.classList.remove('active'));
         $(`btn-${tipo === 'gab' ? 'gabarito' : tipo}`).classList.add('active');
     }
 
     function toggleMenu() { $('drawer').classList.toggle('open'); $('overlay').classList.toggle('active'); }
-
     function insertSym(s) {
         const a = $('area-main');
         const start = a.selectionStart;
