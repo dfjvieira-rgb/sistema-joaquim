@@ -3,58 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA FGV MASTER - FOCO TOTAL</title>
+    <title>SISTEMA FGV - MOBILE RESPONSIVE</title>
     <style>
         :root {
             --fgv-bg: #f3f4f6; --paper-white: #ffffff; --fgv-blue: #004a8d;
             --line-height: 25px; --danger: #dc2626; --success: #16a34a; --gold: #c5a059;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: "Times New Roman", Times, serif; background: var(--fgv-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: #fff; padding: 8px 20px; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 10; }
-        .logo-fgv { font-weight: bold; border: 2px solid #000; padding: 4px 8px; font-size: 1rem; }
-        #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--danger); }
+        header { background: #fff; padding: 5px 15px; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .logo-fgv { font-weight: bold; border: 2px solid #000; padding: 2px 5px; font-size: 0.8rem; }
+        #timer-display { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: var(--danger); }
 
-        .nav-fgv { background: #e5e7eb; border-bottom: 1px solid #999; display: flex; overflow-x: auto; padding: 5px; gap: 5px; flex-shrink: 0; }
-        .btn-nav { padding: 6px 12px; border: 1px solid #666; background: #fff; cursor: pointer; font-weight: bold; font-size: 0.7rem; white-space: nowrap; }
+        .nav-fgv { background: #e5e7eb; border-bottom: 1px solid #999; display: flex; overflow-x: auto; padding: 5px; gap: 5px; flex-shrink: 0; scrollbar-width: none; }
+        .nav-fgv::-webkit-scrollbar { display: none; }
+        .btn-nav { padding: 8px 15px; border: 1px solid #666; background: #fff; cursor: pointer; font-weight: bold; font-size: 0.7rem; white-space: nowrap; border-radius: 4px; }
         .btn-nav.active { background: var(--fgv-blue); color: white; }
 
-        /* WORKSPACE DIVIDIDO (50/50 ou 45/55) */
-        .workspace { flex: 1; display: flex; gap: 4px; padding: 4px; background: #999; overflow: hidden; position: relative; }
-        .col-definitiva { flex: 0 0 45%; display: flex; flex-direction: column; background: #fff; border-right: 2px solid #000; }
-        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; }
+        /* WORKSPACE RESPONSIVO */
+        .workspace { flex: 1; display: flex; flex-direction: row; gap: 4px; padding: 4px; background: #999; overflow: hidden; position: relative; }
+        
+        @media (max-width: 768px) {
+            .workspace { flex-direction: column; overflow-y: auto; }
+            .col-definitiva, .col-pdf { flex: 0 0 auto !important; width: 100% !important; height: 80vh; }
+            #drawer-rascunho { width: 92% !important; left: -100% !important; }
+            #drawer-rascunho.open { left: 0 !important; }
+        }
 
-        /* PAINEL DE RASCUNHO RETRÁTIL (DRAWER) */
+        .col-definitiva { flex: 0 0 45%; display: flex; flex-direction: column; background: #fff; border-bottom: 2px solid #000; }
+        .col-pdf { flex: 1; display: flex; flex-direction: column; background: #525659; min-height: 500px; }
+
+        /* DRAWER RASCUNHO */
         #drawer-rascunho { 
-            position: absolute; left: -400px; top: 0; bottom: 0; width: 400px; 
-            background: #fff; z-index: 1000; transition: 0.3s; 
-            box-shadow: 5px 0 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; border-right: 2px solid var(--fgv-blue);
+            position: absolute; left: -450px; top: 0; bottom: 0; width: 450px; 
+            background: #fff; z-index: 1000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; border-right: 3px solid var(--fgv-blue);
         }
         #drawer-rascunho.open { left: 0; }
         
         .btn-toggle-rascunho { 
-            position: absolute; left: 10px; bottom: 20px; z-index: 1100;
-            background: var(--fgv-blue); color: white; border: none; padding: 15px;
-            border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            position: fixed; left: 15px; bottom: 25px; z-index: 1100;
+            background: var(--fgv-blue); color: white; border: none; width: 60px; height: 60px;
+            border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; text-align: center;
         }
 
-        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 4px; text-align: center; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .sheet-top { background: #eee; border-bottom: 1px solid #000; padding: 6px; text-align: center; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: var(--paper-white); position: relative; }
-        .line-numbers { width: 30px; border-right: 1px solid #000; text-align: center; font-size: 10px; line-height: var(--line-height); padding-top: 5px; flex-shrink: 0; }
-        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-size: 18px; line-height: var(--line-height); background-image: linear-gradient(#ccc 1px, transparent 1px); background-size: 100% var(--line-height); background-attachment: local; }
+        .line-numbers { width: 25px; border-right: 1px solid #000; text-align: center; font-size: 9px; line-height: var(--line-height); padding-top: 5px; flex-shrink: 0; background: #f9f9f9; color: #999; }
+        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-size: 16px; line-height: var(--line-height); background-image: linear-gradient(#eee 1px, transparent 1px); background-size: 100% var(--line-height); background-attachment: local; }
 
-        /* MODAIS E LISTAS */
-        #modal-treinos { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 85%; max-width: 600px; height: 70vh; display: flex; flex-direction: column; }
-        .db-list { height: 80px; overflow-y: auto; background: #f0f0f0; border-bottom: 1px solid #000; font-size: 0.75rem; }
-        .db-item { padding: 6px; border-bottom: 1px solid #ccc; cursor: pointer; display: flex; justify-content: space-between; }
-        
-        .btn-action { padding: 8px; cursor: pointer; border: none; font-weight: bold; color: white; }
+        .btn-action { padding: 12px; cursor: pointer; border: none; font-weight: bold; color: white; font-size: 0.8rem; }
         .bg-blue { background: var(--fgv-blue); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
-        .tabs { display: flex; background: #000; }
-        .tab { flex: 1; padding: 12px; color: #fff; background: #222; border: none; cursor: pointer; font-size: 0.7rem; }
+        
+        .tabs { display: flex; background: #000; flex-wrap: nowrap; overflow-x: auto; }
+        .tab { flex: 1; padding: 12px 5px; color: #fff; background: #222; border: none; cursor: pointer; font-size: 0.65rem; white-space: nowrap; border-right: 1px solid #444; }
+        .tab.active { background: #fff; color: #000; }
+
+        #modal-treinos { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 10px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -62,9 +71,9 @@
 <header>
     <div class="logo-fgv">FGV OAB</div>
     <div id="timer-display">05:00:00</div>
-    <div>
-        <button onclick="abrirBancoTreinos()" style="padding:5px 10px; cursor:pointer;">📂 MEUS TREINOS</button>
-        <button id="timer-btn" onclick="toggleTimer()" style="padding:5px 15px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:4px;">INICIAR</button>
+    <div style="display: flex; gap: 5px;">
+        <button onclick="abrirBancoTreinos()" style="border:none; background:none; font-size: 1.2rem; cursor:pointer;">📂</button>
+        <button id="timer-btn" onclick="toggleTimer()" style="padding:5px 10px; background:var(--success); color:white; border:none; border-radius:4px; font-size:0.7rem;">INICIAR</button>
     </div>
 </header>
 
@@ -77,116 +86,4 @@
         <div class="sheet-top">Folha Definitiva</div>
         <div class="paper">
             <div class="line-numbers" id="nums-def"></div>
-            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()"></textarea>
-        </div>
-        <button class="bg-green btn-action" onclick="salvarNovoTreino()">💾 SALVAR TREINO</button>
-    </section>
-
-    <section class="col-pdf">
-        <div class="tabs">
-            <button class="tab" onclick="pdf('prova')">ENUNCIADO</button>
-            <button class="tab" onclick="pdf('gabarito')">PADRÃO</button>
-            <button class="tab" onclick="pdf('aryanna')">MÉTODO</button>
-        </div>
-        <iframe id="frame" style="width:100%; height:100%; border:none; background:white;"></iframe>
-    </section>
-
-    <div id="drawer-rascunho">
-        <div class="sheet-top" style="background: var(--fgv-blue); color:white;">RASCUNHO (TESES / DICAS)</div>
-        <div style="padding:5px; background:#eee; display:flex; gap:2px;">
-            <button class="btn-nav" onclick="mudarDB('postits')">TESES</button>
-            <button class="btn-nav" onclick="mudarDB('correcoes')">DICAS</button>
-            <button class="btn-nav" onclick="toggleRascunho()" style="background:red; color:white;">X</button>
-        </div>
-        <div id="db-list" class="db-list"></div>
-        <input type="text" id="preview-title" style="width: 100%; padding: 8px; font-weight:bold;" placeholder="TÍTULO DA TESE">
-        <div class="paper" style="background: #fffde7;">
-            <div class="line-numbers" id="nums-rasc"></div>
-            <textarea id="txt-rasc" class="textarea-fgv" style="background:transparent;"></textarea>
-        </div>
-        <div style="display:flex;">
-            <button class="bg-green btn-action" style="flex:1" onclick="salvarAtualTese()">GRAVAR</button>
-            <button class="bg-blue btn-action" style="flex:1" onclick="transferir()">TRANSFERIR ↑</button>
-        </div>
-    </div>
-
-    <button class="btn-toggle-rascunho" onclick="toggleRascunho()">✎<br>RASC</button>
-
-</main>
-
-<div id="modal-treinos">
-    <div class="modal-content">
-        <div class="sheet-top">MEUS TREINOS <button onclick="fecharBancoTreinos()" style="float:right">X</button></div>
-        <div id="corpo-treinos" style="flex:1; overflow-y:auto; padding:10px;"></div>
-    </div>
-</div>
-
-<script>
-    let ex = 42, db = 'postits', idEditandoTese = null, timeLeft = 18000, timerInterval = null;
-    const pecas = { "RECLAMAÇÃO": "AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECLAMANTE...", "CONTESTAÇÃO": "AO JUÍZO DA ... VARA DO TRABALHO...\n\nProcesso nº...\n\nRECLAMADO...", "RECURSO ORDINÁRIO": "AO JUÍZO DA ... VARA DO TRABALHO...\n\nRECORRENTE..." };
-
-    function toggleRascunho() { document.getElementById('drawer-rascunho').classList.toggle('open'); }
-
-    // --- TREINOS ---
-    function salvarNovoTreino() {
-        const txt = document.getElementById('txt-def').value; if(!txt) return;
-        const nome = prompt("Nome do Treino:"); if(!nome) return;
-        let t = JSON.parse(localStorage.getItem('banco_treinos')) || [];
-        t.push({ id: Date.now(), nome, texto: txt, data: new Date().toLocaleString() });
-        localStorage.setItem('banco_treinos', JSON.stringify(t)); alert("Salvo!");
-    }
-    function abrirBancoTreinos() {
-        const corpo = document.getElementById('corpo-treinos');
-        const treinos = JSON.parse(localStorage.getItem('banco_treinos')) || [];
-        corpo.innerHTML = '';
-        treinos.forEach((t, i) => {
-            corpo.innerHTML += `<div style="border-bottom:1px solid #ccc; padding:10px;">
-                <strong>${t.nome}</strong><br>
-                <button onclick="carregarTreino(${i})">CARREGAR</button>
-                <button onclick="excluirTreino(${i})">EXCLUIR</button>
-            </div>`;
-        });
-        document.getElementById('modal-treinos').style.display = 'flex';
-    }
-    function carregarTreino(i) { const t = JSON.parse(localStorage.getItem('banco_treinos')); document.getElementById('txt-def').value = t[i].texto; fecharBancoTreinos(); saveAuto(); }
-    function excluirTreino(i) { let t = JSON.parse(localStorage.getItem('banco_treinos')); t.splice(i, 1); localStorage.setItem('banco_treinos', JSON.stringify(t)); abrirBancoTreinos(); }
-    function fecharBancoTreinos() { document.getElementById('modal-treinos').style.display = 'none'; }
-
-    // --- RASCUNHO ---
-    function mudarDB(t) { db = t; carregarTeses(); }
-    function carregarTeses() {
-        const lista = document.getElementById('db-list'), itens = JSON.parse(localStorage.getItem('db_'+db)) || {};
-        lista.innerHTML = '';
-        Object.keys(itens).forEach(id => {
-            lista.innerHTML += `<div class="db-item" onclick="setTese('${id}')"><span>${itens[id].nome}</span><button onclick="excluirTese('${id}', event)">X</button></div>`;
-        });
-    }
-    function setTese(id) { 
-        const itens = JSON.parse(localStorage.getItem('db_'+db));
-        idEditandoTese = id; document.getElementById('preview-title').value = itens[id].nome; document.getElementById('txt-rasc').value = itens[id].texto; 
-    }
-    function salvarAtualTese() {
-        const n = document.getElementById('preview-title').value, t = document.getElementById('txt-rasc').value;
-        let d = JSON.parse(localStorage.getItem('db_'+db)) || {};
-        const id = idEditandoTese || Date.now(); d[id] = { nome: n, texto: t };
-        localStorage.setItem('db_'+db, JSON.stringify(d)); carregarTeses();
-    }
-    function excluirTese(id, e) { e.stopPropagation(); let d = JSON.parse(localStorage.getItem('db_'+db)) || {}; delete d[id]; localStorage.setItem('db_'+db, JSON.stringify(d)); carregarTeses(); }
-    function transferir() { document.getElementById('txt-def').value += `\n\n${document.getElementById('txt-rasc').value}`; saveAuto(); }
-
-    // --- CORE ---
-    function pdf(t) { document.getElementById('frame').src = t==='prova' ? `./ro${ex}.pdf` : t==='gabarito' ? `./ro${ex}-gabarito.pdf` : `./Aryanna Linhares.pdf`; }
-    function toggleTimer() { if(!timerInterval) timerInterval = setInterval(() => { timeLeft--; let h=Math.floor(timeLeft/3600), m=Math.floor((timeLeft%3600)/60), s=timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }, 1000); }
-    function saveAuto() { localStorage.setItem('save_2026', document.getElementById('txt-def').value); }
-
-    window.onload = () => {
-        for(let i=1; i<=150; i++) { document.getElementById('nums-def').innerHTML += i + '<br>'; document.getElementById('nums-rasc').innerHTML += i + '<br>'; }
-        document.getElementById('txt-def').value = localStorage.getItem('save_2026') || "";
-        const en = document.getElementById('exam-nav'), pn = document.getElementById('piece-nav');
-        for(let i=35; i<=44; i++) { let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = "EXAME "+i; b.onclick = () => { ex=i; pdf('prova'); }; en.appendChild(b); }
-        Object.keys(pecas).forEach(p => { let b = document.createElement('button'); b.className = 'btn-nav'; b.innerText = p; b.onclick = () => { document.getElementById('txt-def').value = pecas[p]; }; pn.appendChild(b); });
-        carregarTeses(); pdf('prova');
-    };
-</script>
-</body>
-</html>
+            <textarea id="txt-def" class="textarea-fgv" oninput="saveAuto()" placeholder="Es
