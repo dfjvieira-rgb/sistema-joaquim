@@ -2,189 +2,126 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | MENTORIA INTEGRADA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MENTORIA OAB | ESTRATÉGIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
+        :root { --primary: #2563eb; --gold: #d4af37; --bg: #0f172a; --fgv-border: #1e293b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #333; min-height: 100vh; padding: 10px; }
         
-        /* Layout Principal */
-        .main-container { flex: 1; display: flex; overflow: hidden; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; position: relative; transition: flex 0.3s; }
-        .viewer-section.expanded { flex: 10; }
-
-        /* Toolbar */
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
-        .btn-symbol { height: 38px; min-width: 42px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        /* Container Estilo FGV */
+        .m-container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 95vh; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
         
-        /* Editor Style */
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-        .line-nums { width: 35px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 20px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
-
-        /* MENTORIA MASTER STYLE */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .m-content { background: white; width: 95%; max-width: 800px; height: 85vh; border-radius: 12px; display: flex; flex-direction: column; color: #333; overflow: hidden; }
-        .m-header { background: #000; color: var(--gold); padding: 15px; font-weight: 800; text-align: center; border-bottom: 3px solid var(--gold); }
-        .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; flex: 1; overflow-y: auto; background: #f8fafc; }
-        .m-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; }
-        .m-card h4 { font-size: 0.7rem; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-        .m-input { width: 100%; border: none; outline: none; font-size: 14px; line-height: 1.5; resize: none; flex: 1; min-height: 120px; color: #1e293b; }
+        /* Navegação por Abas */
+        .m-nav { display: flex; background: #f1f5f9; border-bottom: 1px solid #ddd; }
+        .m-nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: 700; font-size: 0.7rem; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; }
+        .m-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
         
-        /* PDF Viewport */
-        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        canvas { max-width: 100%; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); background: #fff; }
+        .m-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .pane { display: none; flex: 1; flex-direction: column; }
+        .pane.active { display: flex; }
 
-        .btn-check { display: block; width: 100%; text-align: left; padding: 8px; margin-bottom: 5px; background: #f1f5f9; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 13px; cursor: pointer; }
-        .btn-check:hover { background: #e2e8f0; }
-
-        @media (max-width: 1024px) { .viewer-section { display: none; } .viewer-section.active { display: flex; position: fixed; inset:0; z-index:4000; } }
+        /* Card Estilo Folha de Respostas */
+        .fgv-card { border: 2px solid var(--fgv-border); margin-bottom: 20px; position: relative; padding: 20px 15px 15px; flex: 1; display: flex; flex-direction: column; }
+        .fgv-tag { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 8px; font-size: 10px; font-weight: 900; border: 1px solid var(--fgv-border); color: #000; }
+        
+        .fgv-input { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #1e3a8a; flex: 1; resize: none; font-family: inherit; background-image: linear-gradient(transparent, transparent 27px, #f1f5f9 28px); background-size: 100% 28px; }
+        
+        .status { padding: 10px; font-size: 10px; text-align: center; background: #f8fafc; color: #94a3b8; font-weight: bold; border-top: 1px solid #eee; }
+        
+        /* Dicas Rápidas */
+        .quick-tips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .tip-box { background: #fffbeb; border: 1px solid #fef3c7; padding: 8px; border-radius: 4px; font-size: 11px; color: #92400e; }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="logo">ARYANNA LINHARES | MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-weight: bold;">05:00:00</div>
-</header>
-
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select id="exam-select" onchange="window.loadPDF('prova')" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" title="Mentoria Aryanna" style="background:var(--gold); color:#000" onclick="window.openMentoria()">🏆</button>
-            <button class="btn-symbol" title="Estrutura Peça" style="background:#fef9c3;" onclick="window.openP()">⚖️</button>
-            <button class="btn-symbol" title="Post-it" style="background:#fff7ed;" onclick="window.openPost()">📌</button>
-            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.saveT()">💾</button>
+    <div class="m-container">
+        <div class="m-header">ARYANNA MASTER | MENTORIA & ESTRATÉGIA</div>
+        
+        <div class="m-nav">
+            <button class="active" onclick="tab(event, 't1')">📌 Teses de Ouro</button>
+            <button onclick="tab(event, 't2')">💡 Dicas Aula</button>
+            <button onclick="tab(event, 't3')">✅ Checklist</button>
         </div>
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="lines"></div>
-                <textarea id="main-editor" class="text-area" spellcheck="false" oninput="window.sync()"></textarea>
-            </div>
-        </div>
-    </section>
 
-    <section class="viewer-section" id="viewer">
-        <div class="toolbar" style="background:#1e293b; color:white;">
-            <button class="btn-symbol" style="background:transparent; color:#fff;" onclick="window.loadPDF('prova')">PROVA</button>
-            <button class="btn-symbol" style="background:transparent; color:#fff;" onclick="window.loadPDF('gabarito')">ESPELHO</button>
-            <button class="btn-symbol" style="background:var(--primary); color:white; margin-left:auto;" onclick="window.toggleExpand()">↔️ FOCO</button>
-        </div>
-        <div id="pdf-viewport"></div>
-    </section>
-</div>
-
-<div id="modal-mentoria" class="modal" onclick="if(event.target==this)this.style.display='none'">
-    <div class="m-content">
-        <div class="m-header">ARYANNA LINHARES - CADERNO DE ESTRATÉGIAS</div>
-        <div class="m-grid">
-            <div class="m-card">
-                <h4>📚 FOLHA DE TESES (Apostila)</h4>
-                <textarea id="m-teses" class="m-input" placeholder="Anote aqui as teses fundamentais..." oninput="window.saveM()"></textarea>
-            </div>
-            <div class="m-card">
-                <h4>💡 DICAS DA MESTRA (Exame 35)</h4>
-                <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Destaques RO Exame 35:</div>
-                <button class="btn-check" onclick="window.addTese('• DANO MORAL: Não basta o atraso, deve-se provar a lesão à honra (Art. 5º, X, CF).')">⚠️ Cilada: Dano Moral RO 35</button>
-                <button class="btn-check" onclick="window.addTese('• HONORÁRIOS: Pedir sucumbência recíproca (Art. 791-A CLT).')">⚖️ Sucumbência Recíproca</button>
-                <textarea id="m-dicas" class="m-input" oninput="window.saveM()"></textarea>
-            </div>
-            <div class="m-card" style="grid-column: span 2;">
-                <h4>✅ CHECKLIST FINAL (RO / RT / CONTESTAÇÃO)</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn-check" onclick="window.addTese('1. Endereçamento (Vara ou TRT?)\n2. Qualificação Completa\n3. Mérito com Fato, Fundamento e Pedido\n4. Requerimentos Finais (Honorários, Custas)')">📋 Checklist Geral</button>
-                    <button class="btn-check" onclick="window.addTese('RO 35: Preparo (Custas e Depósito) sob pena de deserção!')">🚨 Checklist RO (Preparo)</button>
+        <div class="m-content">
+            <div id="t1" class="pane active">
+                <div class="fgv-card">
+                    <div class="fgv-tag">FUNDAMENTAÇÃO E TESES PERSISTENTES</div>
+                    <textarea id="db-teses" class="fgv-input" placeholder="Ex: Art. 461 CLT para Equiparação..." oninput="save()"></textarea>
                 </div>
-                <textarea id="m-check" class="m-input" placeholder="Personalize seu checklist..." oninput="window.saveM()"></textarea>
+            </div>
+
+            <div id="t2" class="pane">
+                <div class="fgv-card">
+                    <div class="fgv-tag">DICAS DA ARYANNA & LEMBRETES</div>
+                    <textarea id="db-dicas" class="fgv-input" placeholder="Ex: Não esquecer de pedir honorários 15%..." oninput="save()"></textarea>
+                </div>
+                <div class="quick-tips">
+                    <div class="tip-box">🎯 <b>Foco:</b> Indicar Artigos e Súmulas.</div>
+                    <div class="tip-box">⚠️ <b>Cilada:</b> Valor da Causa na RT.</div>
+                </div>
+            </div>
+
+            <div id="t3" class="pane">
+                <div class="fgv-card">
+                    <div class="fgv-tag">CONFERÊNCIA FINAL (FGV)</div>
+                    <textarea id="db-check" class="fgv-input" placeholder="1. Endereçamento correto?&#10;2. Pediu Gratuidade?..." oninput="save()"></textarea>
+                </div>
             </div>
         </div>
-        <div style="padding:15px; background:#f1f5f9; text-align:right;">
-            <button class="btn-symbol" style="background:#333; color:#fff; width:100px;" onclick="document.getElementById('modal-mentoria').style.display='none'">FECHAR</button>
-        </div>
+
+        <div class="status" id="st">Sincronizado com Nuvem</div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        
+        const config = { 
+            apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+            authDomain: "masteroab-db5e1.firebaseapp.com", 
+            projectId: "masteroab-db5e1", 
+            databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+        };
+        
+        const app = initializeApp(config); 
+        const db = getDatabase(app);
+        const path = 'v5_mentoria_isolada'; // Caminho único para não misturar
 
-    let currentPDF = null;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        window.tab = (e, id) => {
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.m-nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); 
+            e.currentTarget.classList.add('active');
+        };
 
-    // BANCO EXAME 35 E APOSTILA
-    const REGRAS = {
-        "35": { p: "RECURSO ORDINÁRIO", f: "Art. 895, I, da CLT", e: "Vara do Trabalho de Origem" },
-        "40": { p: "RECLAMAÇÃO TRABALHISTA", f: "Art. 840, § 1º, da CLT", e: "90ª Vara do Trabalho de Osasco/SP" }
-    };
+        window.save = () => {
+            document.getElementById('st').innerText = "Salvando...";
+            clearTimeout(window.sv);
+            window.sv = setTimeout(() => {
+                set(ref(db, path), {
+                    t: document.getElementById('db-teses').value,
+                    d: document.getElementById('db-dicas').value,
+                    c: document.getElementById('db-check').value
+                }).then(() => { 
+                    document.getElementById('st').innerText = "✓ Conteúdo Salvo"; 
+                });
+            }, 800);
+        };
 
-    window.openMentoria = () => document.getElementById('modal-mentoria').style.display = 'flex';
-
-    window.addTese = (txt) => {
-        const editor = document.getElementById('main-editor');
-        editor.value += "\n" + txt + "\n";
-        window.sync();
-        alert("Tese/Checklist injetado na folha!");
-    };
-
-    window.loadPDF = async (tipo) => {
-        const ex = document.getElementById('exam-select').value;
-        const url = tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`;
-        const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "Carregando...";
-        try {
-            if (currentPDF) await currentPDF.destroy();
-            currentPDF = await pdfjsLib.getDocument(url).promise;
-            container.innerHTML = "";
-            for (let i = 1; i <= currentPDF.numPages; i++) {
-                const page = await currentPDF.getPage(i);
-                const viewport = page.getViewport({ scale: 1.2 });
-                const canvas = document.createElement('canvas');
-                container.appendChild(canvas);
-                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        onValue(ref(db, path), (s) => {
+            if(s.exists()){
+                const data = s.val();
+                if(!document.activeElement.classList.contains('fgv-input')){
+                    document.getElementById('db-teses').value = data.t || "";
+                    document.getElementById('db-dicas').value = data.d || "";
+                    document.getElementById('db-check').value = data.c || "";
+                }
             }
-        } catch (e) { container.innerHTML = "Documento não encontrado."; }
-    };
-
-    // SYNC DATABASE
-    window.saveM = () => {
-        set(ref(db, 'v5_mentoria'), {
-            t: document.getElementById('m-teses').value,
-            d: document.getElementById('m-dicas').value,
-            c: document.getElementById('m-check').value
         });
-    };
-    onValue(ref(db, 'v5_mentoria'), s => {
-        if(s.exists()){
-            document.getElementById('m-teses').value = s.val().t || "";
-            document.getElementById('m-dicas').value = s.val().d || "";
-            document.getElementById('m-check').value = s.val().c || "";
-        }
-    });
-
-    window.sync = () => { window.ed = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v5_caderno'), document.getElementById('main-editor').value); window.ed = false; }, 800); };
-    onValue(ref(db, 'v5_caderno'), s => { if(!window.ed) document.getElementById('main-editor').value = s.val() || ""; });
-
-    // INIT UI
-    const sel = document.getElementById('exam-select');
-    for(let i=44; i>=30; i--) {
-        let o = document.createElement('option'); o.value = i; o.innerText = `EXAME ${i}`;
-        if(i==35) o.selected = true; sel.appendChild(o);
-    }
-    let l = ""; for(let i=1; i<=200; i++) l += i + "<br>"; document.getElementById('lines').innerHTML = l;
-    window.loadPDF('prova');
-</script>
+    </script>
 </body>
 </html>
