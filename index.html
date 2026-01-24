@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | AUTO-GABARITO</title>
+    <title>ARYANNA MASTER PRO | GABARITO OFICIAL FGV</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
@@ -15,7 +15,6 @@
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 8px; display: flex; gap: 4px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-tool { height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-size: 0.8rem; font-weight: 800; background: white; color: #334155; }
-        .btn-active { background: var(--primary); color: white; border: none; }
         .btn-gold { background: var(--gold); color: black; border: none; }
         .writing-area { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1500px; margin: 0 auto; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
@@ -23,24 +22,21 @@
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
         .viewer-section { flex: 1; display: flex; flex-direction: column; background: #334155; }
         #pdf-viewport { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; background: #525659; }
-        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 10px; max-width: 95%; }
+        canvas { max-width: 95%; margin-bottom: 10px; box-shadow: 0 0 10px #000; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: 800; color: var(--gold); font-size: 0.9rem;">ARYANNA MASTER PRO</div>
-    <select id="exam-select" onchange="window.trocarExameAutomatico()" class="btn-tool" style="width: 140px;"></select>
+    <div style="font-weight: 800; color: var(--gold);">ARYANNA MASTER PRO</div>
+    <select id="exam-select" onchange="window.trocarExame()" class="btn-tool"></select>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <button class="btn-tool" onclick="window.insert('Art. ')">Art.</button>
-            <button class="btn-tool" onclick="window.insert('§ ')">§</button>
-            <button class="btn-tool" onclick="window.insert('CLT')">CLT</button>
-            <button class="btn-tool btn-gold" onclick="window.injetarRegra()">🚀 INJETAR REGRA DO ESPELHO</button>
-            <button class="btn-tool" style="background: #059669; color: white; margin-left: auto;" onclick="window.save()">💾</button>
+            <button class="btn-tool btn-gold" onclick="window.injetarRegra()">🚀 INJETAR ESTRUTURA (ESPELHO FGV)</button>
+            <button class="btn-tool" style="background:#059669; color:white; margin-left:auto;" onclick="window.save()">💾 SALVAR</button>
         </div>
         <div class="writing-area">
             <div class="paper-sheet">
@@ -49,11 +45,10 @@
             </div>
         </div>
     </section>
-
     <section class="viewer-section">
-        <div class="toolbar" style="background: #1e293b; border: none;">
-            <button id="btn-p" class="btn-tool btn-active" onclick="window.loadPDF('prova')">PROVA</button>
-            <button id="btn-g" class="btn-tool" onclick="window.loadPDF('gabarito')">ESPELHO</button>
+        <div class="toolbar" style="background: #1e293b;">
+            <button class="btn-tool" onclick="window.loadPDF('prova')">PROVA</button>
+            <button class="btn-tool" onclick="window.loadPDF('gabarito')">ESPELHO OFICIAL</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
@@ -66,105 +61,75 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    // BASE DE DADOS "A RISCA" - EXTRAÍDA DOS ESPELHOS OFICIAIS FGV
-    const REGRAS_FGV = {
-        "44": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
-        "43": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
-        "42": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
-        "41": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
-        "40": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "90ª Vara do Trabalho de Osasco/SP" },
-        "39": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
-        "38": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
-        "37": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
-        "36": { peca: "MANDADO DE SEGURANÇA", fundo: "Art. 5º, LXIX, da CF/88 e Lei 12.016/09", end: "Desembargador Presidente do Egrégio Tribunal Regional do Trabalho" },
-        "35": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
-        "34": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
-        "33": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
-        "32": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
-        "31": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
-        "30": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." }
-    };
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    window.trocarExameAutomatico = () => {
-        window.loadPDF('prova');
-        // Resetar botões
-        document.getElementById('btn-p').classList.add('btn-active');
-        document.getElementById('btn-g').classList.remove('btn-active');
+    const BASE_FGV = {
+        "44": { tipo: "peticao", peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "43": { tipo: "recurso", peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "42": { tipo: "peticao", peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "41": { tipo: "peticao", peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "40": { tipo: "peticao", peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "90ª Vara do Trabalho de Osasco/SP" },
+        "39": { tipo: "recurso", peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "38": { tipo: "peticao", peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "37": { tipo: "peticao", peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "36": { tipo: "ms", peca: "MANDADO DE SEGURANÇA", fundo: "Art. 5º, LXIX, da CF/88 e Lei 12.016/09", end: "Tribunal Regional do Trabalho da ... Região" },
+        "35": { tipo: "recurso", peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "34": { tipo: "peticao", peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "33": { tipo: "peticao", peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "32": { tipo: "recurso", peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "31": { tipo: "peticao", peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "30": { tipo: "peticao", peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." }
     };
 
     window.injetarRegra = () => {
         const ex = document.getElementById('exam-select').value;
-        const r = REGRAS_FGV[ex];
-        if(!r) return;
-
-        const esqueleto = `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ${r.end.toUpperCase()}\n\n` +
-            `PROCESSO Nº ...\n\n` +
-            `NOME DA PARTE, já qualificada nos autos, vem, por intermédio de seu advogado, perante Vossa Excelência, apresentar\n\n` +
-            `${r.peca}\n\n` +
-            `com fulcro no ${r.fundo}, pelas razões a seguir expostas.\n\n` +
-            `I - PRELIMINARES\n\nII - MÉRITO\n\nIII - REQUERIMENTOS\n\nLocal e Data...\nAdvogado... OAB...`;
+        const r = BASE_FGV[ex];
+        let esc = "";
         
-        document.getElementById('editor').value = esqueleto;
-        window.save();
+        if(r.tipo === "recurso") {
+            esc = `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ${r.end.toUpperCase()}\n\nPROCESSO Nº ...\n\nNOME DA PARTE, já qualificada, vem apresentar\n\n${r.peca}\n\ncom fulcro no ${r.fundo}.\n\n(PEÇA DE INTERPOSIÇÃO)\n\n--------------------------\n\nEGRÉGIO TRIBUNAL REGIONAL DO TRABALHO\n\nRAZÕES DO RECURSO ORDINÁRIO`;
+        } else if(r.tipo === "ms") {
+            esc = `EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO ${r.end.toUpperCase()}\n\nNOME DO IMPETRANTE, por seu advogado, vem impetrar\n\n${r.peca}\n\ncom base no ${r.fundo}, contra ato do Juiz da ... Vara do Trabalho.`;
+        } else {
+            esc = `AO DOUTO JUÍZO DA ${r.end.toUpperCase()}\n\nPROCESSO Nº ... (se contestação)\n\nNOME DA PARTE, já qualificada, vem apresentar\n\n${r.peca}\n\ncom fulcro no ${r.fundo}.`;
+        }
+        document.getElementById('editor').value = esc; window.save();
     };
 
-    window.loadPDF = async (tipo) => {
+    window.trocarExame = () => window.loadPDF('prova');
+    window.loadPDF = async (t) => {
         const ex = document.getElementById('exam-select').value;
-        const file = tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`;
+        const file = t === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`;
         const container = document.getElementById('pdf-viewport');
-        
-        // UI Feedback
-        document.getElementById('btn-p').classList.toggle('btn-active', tipo === 'prova');
-        document.getElementById('btn-g').classList.toggle('btn-active', tipo === 'gabarito');
-        
-        container.innerHTML = "<p style='color:white; padding:20px;'>Carregando espelho oficial...</p>";
-        
+        container.innerHTML = "Carregando...";
         try {
             const pdf = await pdfjsLib.getDocument(file).promise;
             container.innerHTML = "";
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
-                const viewport = page.getViewport({ scale: 1.3 });
+                const viewport = page.getViewport({ scale: 1.2 });
                 const canvas = document.createElement('canvas');
                 container.appendChild(canvas);
                 await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
             }
-        } catch (e) { container.innerHTML = `<p style='color:orange; padding:20px;'>Aguardando arquivo: ${file}</p>`; }
-    };
-
-    window.insert = (t) => {
-        const el = document.getElementById('editor');
-        const s = el.selectionStart;
-        el.value = el.value.substring(0, s) + t + el.value.substring(el.selectionEnd);
-        el.focus();
+        } catch (e) { container.innerHTML = `<p style="padding:20px;">Arquivo ${file} não encontrado.</p>`; }
     };
 
     window.save = () => {
-        window.isTyping = true;
-        clearTimeout(window.saveTimer);
-        window.saveTimer = setTimeout(() => {
-            set(ref(db, 'v3_treino/folha'), document.getElementById('editor').value);
-            window.isTyping = false;
-        }, 1000);
+        set(ref(db, 'v3_treino/folha'), document.getElementById('editor').value);
     };
 
     onValue(ref(db, 'v3_treino/folha'), s => {
-        if(!window.isTyping) document.getElementById('editor').value = s.val() || "";
+        if(document.activeElement !== document.getElementById('editor')) 
+            document.getElementById('editor').value = s.val() || "";
     });
 
-    // Setup inicial
     const sel = document.getElementById('exam-select');
     for(let i=44; i>=30; i--) {
         let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
         sel.appendChild(opt);
     }
-
-    let nums = ""; for(let i=1; i<=150; i++) nums += i + "<br>";
-    document.getElementById('lines').innerHTML = nums;
-
-    window.trocarExameAutomatico();
+    let n = ""; for(let i=1; i<=100; i++) n += i + "<br>";
+    document.getElementById('lines').innerHTML = n;
+    window.trocarExame();
 </script>
 </body>
 </html>
