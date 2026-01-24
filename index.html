@@ -9,7 +9,6 @@
             --fgv-yellow: #fff9c4;
             --fgv-blue: #0d47a1;
             --paper-white: #ffffff;
-            --postit-blue: #b3e5fc;
         }
 
         body {
@@ -22,6 +21,7 @@
             align-items: center;
         }
 
+        /* Container Principal Mobile Friendly */
         .container {
             width: 100%;
             max-width: 800px;
@@ -31,27 +31,7 @@
             border-radius: 8px;
         }
 
-        /* Menu de Funcionalidades */
-        .dashboard-nav {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn-nav {
-            background-color: var(--fgv-blue);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8em;
-            text-transform: uppercase;
-        }
-
-        /* Seção de Inteligência */
+        /* Seção de Inteligência: Historinhas */
         .ai-selector {
             background-color: #e3f2fd;
             padding: 15px;
@@ -79,25 +59,14 @@
             line-height: 1.5em;
         }
 
-        .fgv-header {
-            text-align: center;
-            font-family: sans-serif;
-            font-weight: bold;
-            border-bottom: 2px solid #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-
-        .answer-area {
-            background: transparent;
-            border: none;
-            width: 100%;
-            height: 500px;
-            resize: none;
-            line-height: 1.5em;
-            outline: none;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
+        .line-number {
+            position: absolute;
+            left: 5px;
+            font-size: 0.8em;
+            color: #999;
+            text-align: right;
+            width: 25px;
+            user-select: none;
         }
 
         /* Post-its e Dicas */
@@ -109,37 +78,30 @@
         }
 
         .post-it {
-            background-color: var(--fgv-yellow);
-            padding: 15px;
+            background-color: #ffeb3b;
+            padding: 10px;
             box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
             transform: rotate(-1deg);
-            min-height: 120px;
+            min-height: 100px;
             font-size: 0.9em;
         }
 
-        .sosary-box {
-            background-color: var(--postit-blue);
+        .dica-mental {
+            background-color: #b3e5fc;
+            padding: 10px;
+            border-radius: 5px;
             border: 1px dashed #0288d1;
-            transform: rotate(1deg);
         }
 
-        /* Modais */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%; max-height: 70vh;
-            background: white; border: 2px solid var(--fgv-blue);
-            z-index: 1000; padding: 20px; overflow-y: auto;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        }
-
-        .btn-save {
-            background-color: #2e7d32;
+        button {
+            background-color: var(--fgv-blue);
             color: white;
-            font-weight: bold;
-            margin-top: 20px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
         }
 
         @media (max-width: 600px) {
@@ -150,113 +112,74 @@
 <body>
 
 <div class="container">
-    <div class="dashboard-nav">
-        <button class="btn-nav" onclick="abrirModal('pecas')">📁 Peças/PDFs</button>
-        <button class="btn-nav" onclick="abrirModal('questoes')">❓ Questões OAB</button>
-        <button class="btn-nav" onclick="abrirModal('teses')">📚 Teses/Assunto</button>
-        <button class="btn-nav" onclick="alert('SOSARY:\nS - Sujeitos\nO - Objeto\nS - Socorro (Art/Súmula)\nA - Artigo\nR - Rito\nY - Yeap (Conclusão)')">🆘 SOSARY</button>
-    </div>
-
     <h2>🧠 Inteligência de Identificação</h2>
     <div class="ai-selector">
-        <label><b>Historinha / Enunciado:</b></label>
-        <textarea id="storyInput" rows="4" placeholder="Cole o texto aqui..."></textarea>
+        <label><b>Cole o enunciado (Historinha) aqui:</b></label>
+        <textarea id="storyInput" rows="5" placeholder="Ex: João foi citado em uma ação de cobrança..."></textarea>
         <button onclick="identificarPeca()">Identificar Peça e Teses</button>
         <div id="resultadoIA" style="margin-top:10px; font-weight:bold; color: #0d47a1;"></div>
     </div>
 
     <hr>
 
+    <h2>📝 Simulador de Prova (FGV Style)</h2>
+    <div style="margin-bottom: 10px;">
+        <select id="tipoProva">
+            <option value="peca">Peça Prática (150 linhas)</option>
+            <option value="questao">Questão Discursiva (30 linhas)</option>
+        </select>
+    </div>
+
     <div class="answer-sheet" id="folhaResposta">
-        <div class="fgv-header">EXAME DE ORDEM UNIFICADO - FGV</div>
-        <textarea id="campoResposta" class="answer-area" placeholder="Inicie sua resposta aqui..."></textarea>
+        <textarea style="background:transparent; border:none; width:100%; height: 600px; resize:none; line-height: 1.5em; outline:none;" placeholder="Inicie sua resposta aqui..."></textarea>
     </div>
 
     <div class="post-it-area">
-        <div class="post-it" contenteditable="true" id="postItTeses">
+        <div class="post-it" contenteditable="true" id="postItDicas">
             📌 <b>Post-it de Teses:</b><br>
-            - Clique aqui para editar<br>
             - Art. <br>
+            - Súmula
         </div>
-        <div class="post-it sosary-box" id="boxDocumentos">
-            📄 <b>PDF/Documentos:</b><br>
-            Selecione uma peça acima para carregar o link.
+        <div class="dica-mental" id="dicaResolucao">
+            💡 <b>Dica de Resolução:</b><br>
+            Lembre-se sempre de endereçar ao juízo correto e verificar a tempestividade!
         </div>
     </div>
 
-    <button onclick="salvarProgresso()" class="btn-save">💾 Salvar Estudo desta Peça</button>
-</div>
-
-<div id="modalContainer" class="modal">
-    <h3 id="modalTitle">Opções</h3>
-    <div id="modalList"></div>
-    <button onclick="fecharModal()" style="background:#666">Fechar</button>
+    <button onclick="salvarProgresso()" style="background-color: #2e7d32; margin-top: 20px;">💾 Salvar Estudo desta Peça</button>
 </div>
 
 <script>
-    const database = {
-        pecas: [
-            { t: "XXXVIII - Apelação Cível", e: "João foi condenado ao pagamento...", pdf: "https://oab.fgv.br/", teses: "Art. 1.009 CPC; Cerceamento de defesa." },
-            { t: "XXXVII - Contestação (Trabalho)", e: "Empresa X foi citada em Reclamatória...", pdf: "https://oab.fgv.br/", teses: "Art. 847 CLT; Horas Extras." }
-        ],
-        questoes: [
-            { t: "Questão 1 - Dir. Penal", e: "Mário cometeu crime de furto...", pdf: "#", teses: "Art. 155 CP; Princípio da Insignificância." }
-        ],
-        teses: [
-            { t: "Cível: Alimentos", e: "Revisional de alimentos...", pdf: "#", teses: "Art. 1.694 CC; Binômio Necessidade-Possibilidade." }
-        ]
-    };
-
-    function abrirModal(tipo) {
-        const modal = document.getElementById('modalContainer');
-        const lista = document.getElementById('modalList');
-        document.getElementById('modalTitle').innerText = tipo.toUpperCase();
-        lista.innerHTML = "";
-        
-        database[tipo].forEach(item => {
-            let div = document.createElement('div');
-            div.style.padding = "10px"; div.style.borderBottom = "1px solid #ddd"; div.style.cursor = "pointer";
-            div.innerHTML = `<b>${item.t}</b>`;
-            div.onclick = () => {
-                document.getElementById('storyInput').value = item.e;
-                document.getElementById('postItTeses').innerHTML = `📌 <b>Teses:</b><br>${item.teses}`;
-                document.getElementById('boxDocumentos').innerHTML = `📄 <b>PDF:</b><br><a href="${item.pdf}" target="_blank">Abrir PDF Oficial</a>`;
-                fecharModal();
-            };
-            lista.appendChild(div);
-        });
-        modal.style.display = "block";
-    }
-
-    function fecharModal() { document.getElementById('modalContainer').style.display = "none"; }
-
+    // Função para simular a IA de identificação
     function identificarPeca() {
         const texto = document.getElementById('storyInput').value.toLowerCase();
-        let r = "Analisando... ";
-        if (texto.includes("sentença")) r = "⚖️ CABIMENTO: APELAÇÃO.";
-        else if (texto.includes("citada") || texto.includes("reclamada")) r = "📝 CABIMENTO: CONTESTAÇÃO.";
-        else r = "🔍 Sugestão: Analise o último ato processual.";
-        document.getElementById('resultadoIA').innerText = r;
+        let resposta = "Analisando elementos... ";
+
+        if (texto.includes("liminar") || texto.includes("urgência") || texto.includes("autoridade")) {
+            resposta = "🚨 Possível Mandado de Segurança ou Tutela de Urgência.";
+        } else if (texto.includes("sentença") || texto.includes("decisão terminativa")) {
+            resposta = "⚖️ Cabimento de Apelação ou Recurso Ordinário.";
+        } else {
+            resposta = "🔍 Analise o último ato processual para definir a peça.";
+        }
+        
+        document.getElementById('resultadoIA').innerText = resposta;
     }
 
+    // Salva o conteúdo localmente (LocalStorage)
     function salvarProgresso() {
-        const dados = {
-            resposta: document.getElementById('campoResposta').value,
-            postit: document.getElementById('postItTeses').innerHTML,
-            enunciado: document.getElementById('storyInput').value,
-            doc: document.getElementById('boxDocumentos').innerHTML
-        };
-        localStorage.setItem('oab_completo_v1', JSON.stringify(dados));
-        alert("Salvo com sucesso!");
+        const conteudo = document.querySelector('.answer-sheet textarea').value;
+        const postit = document.getElementById('postItDicas').innerHTML;
+        localStorage.setItem('ultimoEstudo', conteudo);
+        localStorage.setItem('ultimoPostIt', postit);
+        alert("Progresso salvo com sucesso!");
     }
 
+    // Carregar dados ao abrir
     window.onload = () => {
-        const salvo = JSON.parse(localStorage.getItem('oab_completo_v1'));
-        if(salvo) {
-            document.getElementById('campoResposta').value = salvo.resposta;
-            document.getElementById('postItTeses').innerHTML = salvo.postit;
-            document.getElementById('storyInput').value = salvo.enunciado;
-            document.getElementById('boxDocumentos').innerHTML = salvo.doc;
+        if(localStorage.getItem('ultimoEstudo')) {
+            document.querySelector('.answer-sheet textarea').value = localStorage.getItem('ultimoEstudo');
+            document.getElementById('postItDicas').innerHTML = localStorage.getItem('ultimoPostIt');
         }
     };
 </script>
