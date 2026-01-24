@@ -50,9 +50,12 @@
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 80vh; overflow-y: auto; }
-        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; cursor: pointer; text-align: left; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
-        .btn-peca span { font-size: 0.7rem; color: #64748b; font-weight: normal; }
-        .btn-peca:hover { background: #e0e7ff; border-color: var(--primary); }
+        
+        .historico-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .historico-item:hover { background: #f8fafc; }
+        .historico-info { flex: 1; cursor: pointer; }
+        .btn-delete-small { background: #fee2e2; color: #dc2626; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 1rem; margin-left: 10px; }
+        .btn-delete-small:hover { background: #fecaca; }
 
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
 
@@ -75,8 +78,8 @@
 </header>
 
 <div class="ia-lab" id="lab-box">
-    <input type="text" id="ai-input" placeholder="Cole o problema para análise IA...">
-    <button onclick="alert('Analisando teses...')" class="btn-header" style="background:var(--gold); color:black;">ANALISAR</button>
+    <input type="text" id="ai-input" placeholder="Análise de tese IA...">
+    <button onclick="alert('Analisando...')" class="btn-header" style="background:var(--gold); color:black;">ANALISAR</button>
 </div>
 
 <div class="main-container">
@@ -113,21 +116,22 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
+<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3>⚖️ ESTRUTURAS (PADRÃO ARYANNA)</h3><br>
-        <button class="btn-peca" onclick="injetar('RT')">Petição Inicial (RT) <span>Art. 840, §1º CLT</span></button>
-        <button class="btn-peca" onclick="injetar('CONT')">Contestação <span>Art. 847 CLT</span></button>
-        <button class="btn-peca" onclick="injetar('RO')">Recurso Ordinário <span>Art. 895, I CLT</span></button>
-        <button class="btn-peca" onclick="injetar('RR')">Recurso de Revista <span>Art. 896 CLT</span></button>
-        <button class="btn-peca" onclick="injetar('CONSIG')">Ação de Consignação <span>Art. 539 CPC</span></button>
-        <button class="btn-peca" onclick="injetar('MS')">Mandado de Segurança <span>Lei 12.016</span></button>
+        <h3>📚 MUSEU (HISTÓRICO)</h3><br>
+        <div id="lista-historico"></div>
     </div>
 </div>
 
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>📚 MUSEU DE PEÇAS</h3><br><div id="lista-historico"></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content">
+        <h3>⚖️ ESTRUTURAS</h3><br>
+        <button onclick="injetar('RT')" style="width:100%; padding:10px; margin-bottom:5px;">RT (Art. 840)</button>
+        <button onclick="injetar('CONT')" style="width:100%; padding:10px; margin-bottom:5px;">Contestação (Art. 847)</button>
+        <button onclick="injetar('RO')" style="width:100%; padding:10px;">Recurso Ordinário (Art. 895)</button>
+    </div>
 </div>
+
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="saveRascunho()"></textarea></div>
 </div>
@@ -136,16 +140,18 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
+    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get; window.update = update; window.remove = remove;
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 </script>
 
 <script>
     let exAtual = 40; let pdfDoc = null; let scale = 1.2; let tempoSegundos = 18000; let timerInterval = null;
+    let pecaSendoEditadaId = null;
+
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     async function carregarPDF(tipo) {
@@ -159,8 +165,7 @@
     }
 
     async function renderAllPages() {
-        const container = document.getElementById('pdf-viewport');
-        container.innerHTML = ""; 
+        const container = document.getElementById('pdf-viewport'); container.innerHTML = ""; 
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
             const viewport = page.getViewport({ scale: scale });
@@ -177,52 +182,97 @@
     function abrirEvolucao() { document.getElementById('modal-evolucao').style.display='flex'; carregarHistorico(); }
     function abrirPecas() { document.getElementById('modal-pecas').style.display='flex'; }
     function abrirPostIt() { document.getElementById('modal-rascunho').style.display='flex'; }
-    function limparFolha() { if(confirm("Apagar tudo?")) { document.getElementById('texto-final').value = ''; autoSave(); } }
+    
+    function limparFolha() { 
+        if(confirm("Iniciar novo treino? Limpa a folha e desvincula do Museu.")) { 
+            document.getElementById('texto-final').value = ''; 
+            pecaSendoEditadaId = null; 
+            autoSave(); 
+        } 
+    }
+
+    async function finalizarEArquivar() {
+        const textoAtual = document.getElementById('texto-final').value;
+        if(!textoAtual.trim()) return alert("Folha vazia!");
+
+        if (pecaSendoEditadaId) {
+            if(confirm("Salvar alterações nesta peça existente?")) {
+                const updates = {};
+                updates[`/historico_treinos/${pecaSendoEditadaId}/texto`] = textoAtual;
+                updates[`/historico_treinos/${pecaSendoEditadaId}/data_edicao`] = new Date().toLocaleString();
+                await window.update(window.ref(window.db), updates);
+                alert("Alterações salvas!");
+            }
+        } else {
+            const t = prompt("Título para nova peça:");
+            if(t) {
+                const refPeca = window.push(window.ref(window.db, 'historico_treinos'));
+                await window.set(refPeca, { titulo: t, texto: textoAtual, data: new Date().toLocaleString() });
+                pecaSendoEditadaId = refPeca.key;
+                alert("Nova peça arquivada!");
+            }
+        }
+    }
+
+    async function carregarHistorico() {
+        const list = document.getElementById('lista-historico'); list.innerHTML = "Carregando...";
+        const snap = await window.get(window.ref(window.db, 'historico_treinos')); list.innerHTML = "";
+        if(snap.exists()) {
+            const dados = snap.val();
+            Object.keys(dados).forEach(key => {
+                const item = dados[key];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'historico-item';
+                itemDiv.innerHTML = `
+                    <div class="historico-info">
+                        <strong>${item.titulo}</strong><br>
+                        <small>${item.data}</small>
+                    </div>
+                    <button class="btn-delete-small" onclick="excluirPeca('${key}', event)">🗑️</button>
+                `;
+                itemDiv.onclick = () => restaurarPeca(key, item.texto);
+                list.appendChild(itemDiv);
+            });
+        } else { list.innerHTML = "Museu vazio."; }
+    }
+
+    function restaurarPeca(id, texto) {
+        if(confirm("Restaurar para edição?")) {
+            document.getElementById('texto-final').value = texto;
+            pecaSendoEditadaId = id;
+            autoSave();
+            document.getElementById('modal-evolucao').style.display = 'none';
+        }
+    }
+
+    async function excluirPeca(id, event) {
+        event.stopPropagation(); // Impede de disparar o clique de restaurar
+        if(confirm("Tem certeza que deseja EXCLUIR permanentemente esta peça do Museu?")) {
+            await window.remove(window.ref(window.db, `/historico_treinos/${id}`));
+            if(pecaSendoEditadaId === id) pecaSendoEditadaId = null; // Desvincula se for a atual
+            carregarHistorico(); // Atualiza a lista
+        }
+    }
 
     function injetar(tipo) {
         const estruturas = {
-            'RT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., RECLAMADA..., Art. 840, §1º CLT...',
-            'CONT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nCONTESTAÇÃO, Art. 847 CLT...',
-            'RO': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO, Art. 895, I, CLT...',
-            'RR': 'AO DOUTO JUIZ PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\n\nPROCESSO Nº ...\n\n(FOLHA DE ROSTO)\nNOME DO RECORRENTE, qualificado, vem interpor RECURSO DE REVISTA, com fulcro no Art. 896 da CLT. Seguem razões anexas.\n\n(FOLHA DE RAZÕES)\nAO EGRÉGIO TRIBUNAL SUPERIOR DO TRABALHO\nRAZÕES DO RECURSO DE REVISTA\n\n1. PRELIMINAR DE TRANSCENDÊNCIA (Art. 896-A CLT)\n2. PRESSUPOSTOS INTRÍNSECOS\n3. MÉRITO / REFORMA\n\nLocal, data.\nAdvogado... OAB...',
-            'CONSIG': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO, Art. 539 CPC...',
-            'MS': 'AO DOUTO JUÍZO DO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\n\nMANDADO DE SEGURANÇA, Lei 12.016...'
+            'RT': 'AO DOUTO JUÍZO... RT (Art. 840 CLT)...',
+            'CONT': 'AO DOUTO JUÍZO... CONTESTAÇÃO (Art. 847 CLT)...',
+            'RO': 'AO DOUTO JUÍZO... RECURSO ORDINÁRIO (Art. 895 CLT)...'
         };
         document.getElementById('texto-final').value = estruturas[tipo];
+        pecaSendoEditadaId = null;
         autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
     }
 
-    function toggleSimulado() { 
-        if(!timerInterval) { 
-            timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = formatarTempo(tempoSegundos); }, 1000); 
-            document.getElementById('btn-simulado').innerText = "⏸";
-        } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; }
-    }
+    function toggleSimulado() { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = formatarTempo(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } }
     function resetTimer() { clearInterval(timerInterval); timerInterval = null; tempoSegundos = 18000; document.getElementById('timer-display').innerText = "05:00:00"; }
     function formatarTempo(s) { const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const seg = s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; }
     function autoSave() { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { window.set(window.ref(window.db, 'v3_treino/peca'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); }
     function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
     function mudarExame(v) { exAtual = v; carregarPDF('prova'); }
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
-
-    async function finalizarEArquivar() {
-        const t = prompt("Título para o Museu:");
-        if(t) {
-            await window.push(window.ref(window.db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
-            alert("Salvo no Museu!"); document.getElementById('texto-final').value = ""; autoSave();
-        }
-    }
-    async function carregarHistorico() {
-        const list = document.getElementById('lista-historico'); list.innerHTML = "Abrindo o Museu...";
-        const snap = await window.get(window.ref(window.db, 'historico_treinos')); list.innerHTML = "";
-        if(snap.exists()) snap.forEach(c => {
-            const item = c.val(); const d = document.createElement('div'); d.style = "padding:12px; border-bottom:1px solid #eee; cursor:pointer;";
-            d.innerHTML = `<strong>${item.titulo}</strong><br><small>${item.data}</small>`;
-            d.onclick = () => { if(confirm("Restaurar?")) { document.getElementById('texto-final').value = item.texto; autoSave(); document.getElementById('modal-evolucao').style.display='none'; }};
-            list.appendChild(d);
-        });
-    }
 
     window.onload = () => {
         let h = ""; for(let i=1; i<=150; i++) h += i + "<br>";
