@@ -2,189 +2,267 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ELITE OAB 2026 | AMBIENTE CONSOLIDADO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Indie+Flower&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ARYANNA MASTER PRO | 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Indie+Flower&family=Courier+Prime&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #cbd5e1; --sidebar-bg: #ffffff; --header-bg: #0f172a;
-            --accent: #d4af37; --text-main: #1e293b; --success: #10b981;
-            --border: #94a3b8; --danger: #ef4444; --notebook: #fff9db;
-            --pen-blue: #1e3a8a;
+            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
+            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4; --pen-blue: #1e3a8a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: var(--header-bg); padding: 10px 20px; color: white; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .logo { font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; }
+        header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 0.9rem; }
+        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
-        .main-wrapper { flex: 1; display: flex; overflow: hidden; }
+        .ia-lab { background: #1e3a8a; padding: 10px 20px; display: none; gap: 10px; align-items: center; border-bottom: 1px solid #3b82f6; }
+        .ia-lab input { flex: 1; background: #0f172a; border: 1px solid #3b82f6; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; outline: none; }
 
-        /* SIDEBAR (RITUAL E POST-ITS) */
-        aside.sidebar { width: 260px; background: var(--sidebar-bg); border-right: 2px solid var(--border); display: flex; flex-direction: column; }
-        .tabs-nav { display: flex; border-bottom: 1px solid var(--border); }
-        .t-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-size: 0.6rem; font-weight: 700; color: #64748b; cursor: pointer; }
-        .t-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
-        .scroll-area { flex: 1; overflow-y: auto; padding: 10px; }
-        .card-elite { background: #f8fafc; border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 0.75rem; cursor: pointer; }
+        .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR E TOP BAR */
-        .editor-container { flex: 2; display: flex; flex-direction: column; position: relative; }
-        .top-bar { background: #fff; padding: 8px 16px; border-bottom: 2px solid var(--border); display: flex; gap: 8px; align-items: center; }
-        .ui-select { border: 2px solid var(--border); padding: 6px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; }
-        .btn-action { background: #fff; border: 2px solid var(--header-bg); padding: 6px 12px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
-        .btn-danger { border-color: var(--danger); color: var(--danger); }
+        /* EDITOR SECTION */
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
+        
+        .btn-symbol { height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 10px; font-size: 1.1rem; transition: 0.2s; font-weight: 800; }
+        .btn-save { background: var(--success); color: white; margin-left: auto; }
+        .btn-simulado { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* FOLHA FGV */
-        .sheet-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; background: #475569; }
-        .fgv-page { width: 100%; max-width: 800px; background: white; min-height: 1400px; display: flex; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
-        .line-numbers { width: 45px; background: #f8fafc; border-right: 1px solid #cbd5e1; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 26px; line-height: 28px; font-weight: bold; }
-        .writer { flex: 1; border: none; outline: none; resize: none; padding: 26px 35px; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; }
+        /* FOLHA DE RESPOSTAS FGV */
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; background: #64748b; }
+        .postit-espelho { width: 100%; max-width: 800px; background: var(--fgv-yellow); padding: 15px; border-left: 10px solid #f59e0b; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; margin-bottom: 20px; border-radius: 4px; display: none; }
+        
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
+        
+        /* LETRA PADRÃO FGV (INTER COM PAUTAS) */
+        .text-area { 
+            flex: 1; border: none; outline: none; padding: 15px 25px; 
+            font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; 
+            line-height: 28px; color: var(--pen-blue); 
+            background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); 
+            background-size: 100% 28px; resize: none; 
+        }
 
-        /* MODAIS */
-        #modal-pecas, #modal-rascunho { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 500px; border-radius: 8px; padding: 20px; max-height: 85vh; display: flex; flex-direction: column; }
-        .timeline-scroll { flex: 1; overflow-y: auto; }
-        .timeline-group { margin-bottom: 20px; border-left: 2px dashed var(--accent); padding-left: 15px; }
-        .group-label { font-size: 0.65rem; font-weight: 900; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .peca-item { padding: 12px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
-        .notebook { background: var(--notebook); width: 90%; max-width: 450px; height: 70vh; border-radius: 4px; border-left: 15px solid #be185d; padding: 25px; display: flex; flex-direction: column; }
+        /* VIEWER */
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
+        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .tab.active { background: #fff; color: var(--primary); }
+        iframe { flex: 1; border: none; background: #fff; }
 
-        .pdf-view { flex: 1.5; background: #fff; border-left: 2px solid var(--header-bg); display: flex; flex-direction: column; }
-        .pdf-tabs { display: flex; background: #e2e8f0; }
-        .tab-p { flex: 1; padding: 10px; border: none; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
-        .tab-p.active { background: #fff; color: var(--accent); border-top: 3px solid var(--accent); }
-        iframe { flex: 1; border: none; }
+        /* MODAIS E CRONOGRAMA */
+        #modal-pecas, #modal-rascunho { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 20px; max-height: 80vh; overflow-y: auto; color: #1e293b; }
+        .timeline-group { margin-bottom: 15px; border-left: 2px solid var(--gold); padding-left: 12px; }
+        .group-label { font-size: 0.65rem; font-weight: 900; color: var(--gold); text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .peca-item { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #0f172a; }
+        .peca-item:hover { background: #f0f4ff; border-color: var(--primary); }
+        
+        .notebook { background: var(--notebook); width: 90%; max-width: 450px; height: 60vh; border-radius: 4px; border-left: 15px solid #be185d; padding: 25px; display: flex; flex-direction: column; box-shadow: 10px 10px 0 rgba(0,0,0,0.2); }
+        .notebook-area { flex: 1; background: transparent; border: none; font-family: 'Indie Flower', cursive; font-size: 1.4rem; line-height: 1.6; color: #1e293b; resize: none; outline: none; }
+
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+        @media (max-width: 1024px) {
+            .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
+            .viewer-section.active { display: flex; }
+            #mobile-btn { display: flex; }
+            .toolbar { gap: 4px; }
+            .btn-symbol { font-size: 0.9rem; padding: 0 6px; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">FGV | SIMULADOR CONSOLIDADO</div>
-    <div id="sync-status" style="font-size: 0.6rem; font-weight: 800; color: var(--accent);">SYNC OK</div>
+    <div class="logo">ARYANNA MASTER 2026</div>
+    <div id="timer-display">05:00:00</div>
+    <button class="btn-simulado" onclick="ativarSimulado()">🏁 INICIAR</button>
 </header>
+
+<div class="ia-lab" id="lab-box">
+    <input type="text" id="ai-input" placeholder="Cole o enunciado aqui...">
+    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;">ANALISAR</button>
+</div>
 
 <div id="modal-pecas" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3 style="margin-bottom:15px;">ESTRUTURAS (CRONOLÓGICO)</h3>
-        <div class="timeline-scroll">
-            <div class="timeline-group">
-                <span class="group-label">Conhecimento</span>
-                <div class="peca-item" onclick="apply('RT')"><h4>Reclamação Trabalhista</h4><span>Art. 840 CLT</span></div>
-                <div class="peca-item" onclick="apply('CONT')"><h4>Contestação</h4><span>Art. 847 CLT</span></div>
-            </div>
-            <div class="timeline-group">
-                <span class="group-label">Recursos</span>
-                <div class="peca-item" onclick="apply('RO_INT')"><h4>Recurso Ordinário</h4><span>Art. 895 CLT</span></div>
-            </div>
-            <div class="timeline-group">
-                <span class="group-label">Execução</span>
-                <div class="peca-item" onclick="apply('AG_PET')"><h4>Agravo de Petição</h4><span>Art. 897, 'a' CLT</span></div>
-                <div class="peca-item" onclick="apply('EMB_EXEC')"><h4>Embargos à Execução</h4><span>Art. 884 CLT</span></div>
-            </div>
+        <h3 style="margin-bottom:15px; border-bottom: 2px solid #eee;">LINHA DO TEMPO</h3>
+        <div class="timeline-group">
+            <span class="group-label">1. Petição Inicial</span>
+            <div class="peca-item" onclick="applyEstrutura('RT')">Reclamação Trabalhista</div>
+        </div>
+        <div class="timeline-group">
+            <span class="group-label">2. Defesa</span>
+            <div class="peca-item" onclick="applyEstrutura('CONT')">Contestação</div>
+        </div>
+        <div class="timeline-group">
+            <span class="group-label">3. Recursos</span>
+            <div class="peca-item" onclick="applyEstrutura('RO')">Recurso Ordinário (Art. 895)</div>
+        </div>
+        <div class="timeline-group">
+            <span class="group-label">4. Execução</span>
+            <div class="peca-item" onclick="applyEstrutura('AG_PET')">Agravo de Petição (Art. 897, a)</div>
         </div>
     </div>
 </div>
 
 <div id="modal-rascunho" onclick="if(event.target==this) this.style.display='none'">
     <div class="notebook">
-        <h3 style="font-family:'Indie Flower'; color:#be185d; margin-bottom:10px;">Não Confunda!</h3>
-        <textarea id="notebook-writer" style="flex:1; background:transparent; border:none; font-family:'Indie Flower'; font-size:1.4rem; resize:none;" oninput="saveRascunho()"></textarea>
+        <h3 style="font-family:'Indie Flower'; color:#be185d; margin-bottom:10px; font-size: 1.8rem;">Não Confunda!</h3>
+        <textarea id="notebook-writer" class="notebook-area" oninput="saveRascunho()" placeholder="Dicas da Aryanna..."></textarea>
     </div>
 </div>
 
-<div class="main-wrapper">
-    <aside class="sidebar">
-        <nav class="tabs-nav">
-            <button class="t-btn active" onclick="nav('ritual', this)">🎓 Ritual</button>
-            <button class="t-btn" onclick="nav('postits', this)">📌 Post-its</button>
-        </nav>
-        <div id="side-list" class="scroll-area"></div>
-        <button class="btn-action" style="margin:10px;" onclick="saveTese()">Fixar Tese</button>
-    </aside>
-
-    <section class="editor-container">
-        <div class="top-bar">
-            <select class="ui-select" id="exam-sel" onchange="updateExam(this.value)"></select>
-            <button class="btn-action" onclick="document.getElementById('modal-pecas').style.display='flex'">⚖️ ESTRUTURAS</button>
-            <button class="btn-action btn-danger" onclick="document.getElementById('modal-rascunho').style.display='flex'">🚨 NÃO CONFUNDA</button>
+<div class="main-container">
+    <section class="editor-section">
+        <div class="toolbar">
+            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.7rem;"></select>
+            
+            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.7rem;">
+                <option value="peca">PEÇA (150L)</option>
+                <option value="quest">QUESTÕES (30L)</option>
+            </select>
+            
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()">🧠</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="document.getElementById('modal-pecas').style.display='flex'">⚖️</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="document.getElementById('modal-rascunho').style.display='flex'">🚨</button>
+            <button class="btn-symbol" style="background:#f1f5f9; color:#475569" onclick="carregarPostit('teses')">📌</button>
+            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarPostit('historico')">📚</button>
+            
+            <button class="btn-symbol btn-save" onclick="salvarHistorico()">💾</button>
         </div>
-        <div class="sheet-container">
-            <div class="fgv-page">
-                <div class="line-numbers" id="num-col"></div>
-                <textarea id="main-editor" class="writer" spellcheck="false" oninput="pushData()"></textarea>
+
+        <div class="paper-wrapper">
+            <div id="postit-dicas" class="postit-espelho">
+                <strong id="postit-titulo">📝 POST-IT:</strong>
+                <div id="dica-content" style="margin-top:5px; white-space: pre-wrap; font-size: 0.85rem;"></div>
+            </div>
+            <div class="paper-sheet">
+                <div class="line-nums" id="line-nums"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
             </div>
         </div>
     </section>
 
-    <section class="pdf-view">
-        <div class="pdf-tabs">
-            <button class="tab-p active" id="t-prova" onclick="setDoc('prova')">PROVA</button>
-            <button class="tab-p" id="t-gab" onclick="setDoc('gabarito')">GABARITO</button>
-            <button class="tab-p" id="t-ary" onclick="setDoc('ary')">APOSTILA</button>
+    <section class="viewer-section" id="viewer">
+        <div class="tabs">
+            <button class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
+            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
+            <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
         </div>
-        <iframe id="pdf-frame"></iframe>
+        <iframe id="pdf-frame" src=""></iframe>
     </section>
 </div>
 
+<button id="mobile-btn" onclick="toggleMobile()">📑</button>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push;
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
 
-    onValue(ref(db, 'treino_atual/global'), (s) => { if(!window.typing) document.getElementById('main-editor').value = s.val() || ""; });
-    onValue(ref(db, 'rascunho_dicas/global'), (s) => { document.getElementById('notebook-writer').value = s.val() || ""; });
+    // Sync do Editor e Rascunho
+    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('notebook-writer').value = s.val() || ""; });
 </script>
 
 <script>
-    let exam = 42; let doc = 'prova';
+    let exAtual = 42; let modoAtivo = 'peca'; let tempo = 18000;
     const ESTRUTURAS = {
-        "RT": "AO JUÍZO DA ___ VARA DO TRABALHO...\n\nRECLAMAÇÃO TRABALHISTA...",
-        "CONT": "AO JUÍZO DA ___ VARA DO TRABALHO...\n\nCONTESTAÇÃO...",
-        "AG_PET": "AO JUÍZO DA ___ VARA DO TRABALHO...\n\nAGRAVO DE PETIÇÃO...",
-        "EMB_EXEC": "AO JUÍZO DA ___ VARA DO TRABALHO...\n\nEMBARGOS À EXECUÇÃO..."
+        "RT": "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nRECLAMANTE, qualificação completa (Art. 840, §1º CLT)...",
+        "CONT": "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\nPROCESSO Nº: ___\nRECLAMADA, já qualificada (Art. 847 CLT)...",
+        "RO": "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\nPROCESSO Nº: ___\nNOME, já qualificado, interpor RECURSO ORDINÁRIO (Art. 895, I, CLT)...",
+        "AG_PET": "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\nPROCESSO Nº: ___\nInterpor AGRAVO DE PETIÇÃO (Art. 897, 'a', CLT)..."
     };
 
-    function apply(k) { document.getElementById('main-editor').value = ESTRUTURAS[k] || ""; pushData(); document.getElementById('modal-pecas').style.display='none'; }
-    function nav(t, b) {
-        document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('active')); b.classList.add('active');
-        const area = document.getElementById('side-list');
-        if(t === 'ritual') area.innerHTML = `<div class="card-elite">1. Endereçamento<br>2. Preâmbulo<br>3. Preliminares<br>4. Mérito (F-F-C)</div>`;
-        else window.onValue(window.ref(window.db, 'postits'), (s) => {
-            area.innerHTML = ""; const data = s.val() || {};
-            Object.keys(data).forEach(id => { area.innerHTML += `<div class="card-elite"><b>${data[id].titulo}</b></div>`; });
-        });
+    function applyEstrutura(key) {
+        document.getElementById('texto-final').value = ESTRUTURAS[key] || "";
+        autoSave();
+        document.getElementById('modal-pecas').style.display = 'none';
     }
 
-    function saveRascunho() { window.set(window.ref(window.db, 'rascunho_dicas/global'), document.getElementById('notebook-writer').value); }
-    function saveTese() { const t = prompt("Título:"); if(t) window.push(window.ref(window.db, 'postits'), { titulo: t, texto: document.getElementById('main-editor').value }); }
-    function updateExam(v) { exam = v; loadPdf(); }
-    function setDoc(d) { doc = d; loadPdf(); }
-    function loadPdf() {
+    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('notebook-writer').value); }
+    
+    function toggleCerebro() { const lab = document.getElementById('lab-box'); lab.style.display = lab.style.display === 'flex' ? 'none' : 'flex'; }
+    
+    function analisarHistorinha() {
+        const t = document.getElementById('ai-input').value.toLowerCase();
+        let r = "🎯 PEÇA: ";
+        if(t.includes("sentença")) r += "RECURSO ORDINÁRIO (Art. 895, I, CLT)";
+        else if(t.includes("notificado")) r += "CONTESTAÇÃO (Art. 847, CLT)";
+        else r = "Não identifiquei claramente. Busque por palavras-chave como 'Sentença', 'Decisão' ou 'Citação'.";
+        document.getElementById('postit-titulo').innerText = "🧠 CÉREBRO ANALISOU:";
+        document.getElementById('dica-content').innerText = r;
+        document.getElementById('postit-dicas').style.display = 'block';
+    }
+
+    function mudarModo(m) { modoAtivo = m; gerarLinhas(m === 'peca' ? 150 : 30); }
+    function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
+    
+    function mudarDoc(tipo, btn) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if(btn) btn.classList.add('active');
         const f = document.getElementById('pdf-frame');
-        document.querySelectorAll('.tab-p').forEach(t => t.classList.remove('active'));
-        if(doc == 'prova') f.src = `ro${exam}.pdf`;
-        else if(doc == 'gabarito') f.src = `ro${exam}-gabarito.pdf`;
+        if(tipo === 'prova') f.src = `ro${exAtual}.pdf`;
+        else if(tipo === 'gabarito') f.src = `ro${exAtual}-gabarito.pdf`;
         else f.src = `Aryanna Linhares.pdf`;
     }
 
-    function pushData() {
-        window.typing = true; clearTimeout(window.st);
-        window.st = setTimeout(() => {
-            window.set(window.ref(window.db, 'treino_atual/global'), document.getElementById('main-editor').value);
-            window.typing = false;
-        }, 800);
+    function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab.active')); }
+
+    async function carregarPostit(caminho) {
+        const snapshot = await window.get(window.ref(window.db, caminho));
+        let data = snapshot.val();
+        let txt = data ? Object.values(data).map(i => `• ${i.titulo || i.data}: ${i.texto.substring(0,60)}...`).join('\n\n') : "Nenhum registro encontrado.";
+        document.getElementById('postit-titulo').innerText = caminho.toUpperCase() + ":";
+        document.getElementById('dica-content').innerText = txt;
+        document.getElementById('postit-dicas').style.display = 'block';
     }
 
+    function ativarSimulado() {
+        if(confirm("Iniciar cronômetro de 5 horas e limpar folha?")) {
+            document.getElementById('texto-final').value = '';
+            setInterval(() => {
+                tempo--;
+                let h = Math.floor(tempo/3600), m = Math.floor((tempo%3600)/60), s = tempo%60;
+                document.getElementById('timer-display').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+    }
+
+    function autoSave() {
+        window.isEditing = true; clearTimeout(window.sv);
+        window.sv = setTimeout(() => {
+            window.set(window.ref(window.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value);
+            window.isEditing = false;
+        }, 1000);
+    }
+
+    function salvarHistorico() {
+        const t = prompt("Título do treino para salvar no banco:");
+        if(t) window.push(window.ref(window.db, 'historico'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
+    }
+
+    function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
+
     window.onload = () => {
-        const s = document.getElementById('exam-sel');
-        for(let i=45; i>=35; i--) { const o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; if(i==42) o.selected=true; s.appendChild(o); }
-        let l = ""; for(let i=1; i<=150; i++) l += i + "<br>"; document.getElementById('num-col').innerHTML = l;
-        loadPdf(); nav('ritual', document.querySelector('.t-btn'));
+        gerarLinhas(150);
+        const sel = document.getElementById('exam-select');
+        for(let i=45; i>=35; i--) {
+            let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
+            if(i==42) opt.selected = true;
+            sel.appendChild(opt);
+        }
+        mudarDoc('prova');
     };
 </script>
 </body>
