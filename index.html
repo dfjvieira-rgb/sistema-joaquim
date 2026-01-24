@@ -1,246 +1,81 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Indie+Flower&family=Courier+Prime&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4; --pen-blue: #1e3a8a;
-            --rascunho-bg: #fefce8;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; height: 45px; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        
-        .timer-group { display: flex; align-items: center; gap: 8px; }
-        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 2px 10px; border-radius: 4px; border: 1px solid #333; }
-        
-        .btn-header { border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
-
-        /* IA LAB GAVETA */
-        .ia-lab { background: #1e3a8a; padding: 10px 15px; display: none; gap: 10px; align-items: center; border-bottom: 2px solid var(--primary); }
-        .ia-lab input { flex: 1; background: #0f172a; border: 1px solid #3b82f6; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; outline: none; }
-
-        .main-container { flex: 1; display: flex; overflow: hidden; }
-
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
-        
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
-        .btn-symbol { height: 35px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s; font-weight: 800; }
-        .btn-sos { background: #fee2e2; color: var(--danger); }
-        .btn-postit { background: #fef9c3; color: #854d0e; }
-        .btn-save { background: var(--success); color: white; margin-left: auto; }
-
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; background: #64748b; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.3); position: relative; }
-        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
-        
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
-
-        /* MODAIS REESTRUTURADOS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 800px; height: 85vh; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; }
-        .modal-header { background: var(--gold); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; color: #000; font-weight: 800; }
-        
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
-        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
-        .tab.active { background: #fff; color: var(--primary); }
-        
-        .zoom-controls { background: #1e293b; padding: 8px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.7rem; color: var(--gold); }
-        .zoom-controls input { flex: 1; accent-color: var(--gold); }
-
-        iframe { flex: 1; border: none; background: #fff; }
-
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-
-        @media (max-width: 1024px) {
-            .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
-            .viewer-section.active { display: flex; }
-            #mobile-btn { display: flex; }
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div class="timer-group">
-        <div id="timer-display">05:00:00</div>
-        <button id="btn-simulado" class="btn-header" style="background:var(--danger); color:white;" onclick="toggleSimulado()">🏁 INICIAR</button>
-        <button class="btn-header" style="background:#4b5563; color:white;" onclick="resetCompleto()">🔄</button>
-    </div>
-</header>
-
-<div class="ia-lab" id="lab-box">
-    <input type="text" id="ai-input" placeholder="Cole a historinha aqui para identificar a peça...">
-    <button onclick="identificarPecaAI()" class="btn-header" style="background:var(--gold); color:black;">IDENTIFICAR</button>
-</div>
-
-<div id="modal-rascunho" class="modal">
-    <div class="modal-content" style="background: var(--rascunho-bg);">
-        <div class="modal-header">
-            <span>📌 POST-IT & RASCUNHO FGV</span>
-            <button onclick="document.getElementById('modal-rascunho').style.display='none'" style="background:black; color:white; border:none; padding:5px 10px; cursor:pointer;">FECHAR</button>
-        </div>
-        <div style="flex:1; display:flex; overflow-y:auto;">
-            <div class="line-nums" id="line-nums-rascunho"></div>
-            <textarea id="rascunho-editor" class="text-area" style="background-color: var(--rascunho-bg);" oninput="saveRascunho()"></textarea>
-        </div>
-    </div>
-</div>
-
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="max-width: 500px; height: auto; padding: 20px;">
-        <h3 style="color:var(--primary); margin-bottom:15px;">MUSEU DE PEÇAS (EVOLUÇÃO)</h3>
-        <div id="lista-historico" style="max-height: 400px; overflow-y:auto;"></div>
-    </div>
-</div>
-
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="max-width: 400px; height: auto; padding: 20px;">
-        <h3>ESCOLHER ESTRUTURA</h3><br>
-        <div onclick="injetarEstrutura('RT')" style="padding:15px; border:1px solid #ddd; margin-bottom:10px; border-radius:8px; cursor:pointer;"><strong>RECLAMAÇÃO TRABALHISTA</strong></div>
-        <div onclick="injetarEstrutura('CONT')" style="padding:15px; border:1px solid #ddd; border-radius:8px; cursor:pointer;"><strong>CONTESTAÇÃO</strong></div>
-    </div>
-</div>
-
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="font-size:0.7rem;"></select>
-            
-            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()" title="IA Lab">🧠</button>
-            <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="document.getElementById('modal-evolucao').style.display='flex'; carregarHistorico();" title="Evolução">📚</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="document.getElementById('modal-pecas').style.display='flex'" title="Estruturas">⚖️</button>
-            <button class="btn-symbol btn-postit" onclick="document.getElementById('modal-rascunho').style.display='flex'" title="Abrir Post-it">📌</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="limparFolha()" title="Limpar">🗑️</button>
-            
-            <button class="btn-symbol btn-save" onclick="finalizarEArquivar()" title="Arquivar">💾</button>
-        </div>
-
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section" id="viewer">
-        <div class="tabs">
-            <button class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
-            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
-            <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
-        </div>
-        <div class="zoom-controls">
-            <span>ZOOM NÍTIDO:</span>
-            <input type="range" id="pdf-zoom" min="60" max="200" value="100" onchange="aplicarZoomNativo(this.value)">
-            <span id="zoom-val">100%</span>
-        </div>
-        <iframe id="pdf-frame" src=""></iframe>
-    </section>
-</div>
-
-<button id="mobile-btn" onclick="toggleMobile()">📑</button>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
-
-    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
-</script>
-
 <script>
-    let exAtual = 40; let tempoSegundos = 5 * 60 * 60; let timerInterval = null;
+    // Variável para controle de edição de arquivo
+    let pecaEmEdicaoOriginal = null;
 
-    function identificarPecaAI() {
-        const input = document.getElementById('ai-input').value.toLowerCase();
-        let resultado = "";
-        if(input.includes("sentença")) resultado = "🎯 PEÇA IDENTIFICADA: RECURSO ORDINÁRIO (Art. 895, I, CLT)";
-        else if(input.includes("notificação")) resultado = "🎯 PEÇA IDENTIFICADA: CONTESTAÇÃO (Art. 847, CLT)";
-        else resultado = "🎯 PEÇA IDENTIFICADA: RECLAMAÇÃO TRABALHISTA (Art. 840, CLT)";
-        
-        // Injeta no Post-it automaticamente
-        const rasc = document.getElementById('rascunho-editor');
-        rasc.value = resultado + "\n\n" + rasc.value;
-        saveRascunho();
-        alert("Identificação salva no seu Post-it (Botão 📌)!");
-    }
-
-    function aplicarZoomNativo(val) {
-        document.getElementById('zoom-val').innerText = val + '%';
-        const f = document.getElementById('pdf-frame');
-        f.src = f.src.split('#')[0] + `#toolbar=0&navpanes=0&scrollbar=1&view=FitH&zoom=${val}`;
-    }
-
-    function toggleCerebro() { const lb = document.getElementById('lab-box'); lb.style.display = lb.style.display === 'flex' ? 'none' : 'flex'; }
-    function autoSave() { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { window.set(window.ref(window.db, 'v3_treino/peca'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); }
-    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
-    
     async function finalizarEArquivar() {
-        const t = prompt("Título do treino:");
-        if(t) {
-            await window.push(window.ref(window.db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleDateString() });
-            alert("Arquivado!"); resetCompleto();
+        const textoAtual = document.getElementById('texto-final').value;
+        if (!textoAtual.trim()) {
+            alert("A folha está vazia! Escreva algo antes de arquivar.");
+            return;
+        }
+
+        const titulo = prompt("Título para arquivar (ex: RT Exame 40 - Versão 2):", pecaEmEdicaoOriginal || "");
+        
+        if(titulo) {
+            const data = new Date().toLocaleDateString('pt-BR');
+            const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            
+            await window.push(window.ref(window.db, 'historico_treinos'), {
+                titulo: titulo,
+                texto: textoAtual,
+                data: `${data} às ${hora}`,
+                exame: exAtual
+            });
+            
+            alert("Peça arquivada com sucesso no Museu!");
+            pecaEmEdicaoOriginal = null; // Reseta o marcador de edição
+            resetCompleto();
         }
     }
 
     async function carregarHistorico() {
         const list = document.getElementById('lista-historico');
-        list.innerHTML = "Buscando...";
-        const snap = await window.get(window.ref(window.db, 'historico_treinos'));
-        list.innerHTML = "";
-        if(snap.exists()) {
-            snap.forEach(c => {
-                const item = c.val();
-                const d = document.createElement('div');
-                d.style = "padding:10px; border-bottom:1px solid #eee; cursor:pointer;";
-                d.innerHTML = `<strong>${item.titulo}</strong> - ${item.data}`;
-                d.onclick = () => { document.getElementById('texto-final').value = item.texto; autoSave(); document.getElementById('modal-evolucao').style.display='none'; };
-                list.appendChild(d);
-            });
+        list.innerHTML = "<p style='padding:20px; text-align:center;'>Abrindo o cofre de arquivos...</p>";
+        
+        try {
+            const snap = await window.get(window.ref(window.db, 'historico_treinos'));
+            list.innerHTML = "";
+            
+            if(snap.exists()) {
+                // Criar array para mostrar os mais recentes primeiro
+                let treinos = [];
+                snap.forEach(c => { treinos.unshift({key: c.key, ...c.val()}); });
+
+                treinos.forEach(item => {
+                    const d = document.createElement('div');
+                    d.style = "padding:15px; border:1px solid #e2e8f0; margin-bottom:10px; border-radius:10px; background:#fff; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+                    
+                    d.innerHTML = `
+                        <div style="flex:1">
+                            <strong style="color:var(--pen-blue); font-size:1rem;">${item.titulo}</strong><br>
+                            <small style="color:#64748b;">💾 ${item.data}</small>
+                        </div>
+                        <button style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.7rem;">
+                            RESTAURAR 🔄
+                        </button>
+                    `;
+                    
+                    d.onclick = () => {
+                        const textoNaFolha = document.getElementById('texto-final').value;
+                        if(textoNaFolha.trim() !== "" && !confirm("A folha atual contém texto. Deseja substituí-lo por esta versão do museu?")) {
+                            return;
+                        }
+                        
+                        // AÇÃO DE RESTAURAR
+                        document.getElementById('texto-final').value = item.texto;
+                        pecaEmEdicaoOriginal = item.titulo; // Marca que estamos editando esta peça
+                        autoSave();
+                        
+                        document.getElementById('modal-evolucao').style.display = 'none';
+                        alert("Peça restaurada! Agora você pode continuar editando.");
+                    };
+                    list.appendChild(d);
+                });
+            } else {
+                list.innerHTML = "<div style='text-align:center; padding:40px; color:#94a3b8;'>O museu está vazio. <br><br> Escreva sua peça e clique em 💾 para começar sua coleção de treinos!</div>";
+            }
+        } catch (e) {
+            list.innerHTML = "Erro ao carregar arquivos.";
         }
     }
-
-    function injetarEstrutura(tipo) {
-        const est = { 'RT': "AO DOUTO JUÍZO... ART. 840 CLT...", 'CONT': "AO DOUTO JUÍZO... ART. 847 CLT..." };
-        document.getElementById('texto-final').value = est[tipo]; autoSave();
-        document.getElementById('modal-pecas').style.display = 'none';
-    }
-
-    function toggleSimulado() {
-        if(!timerInterval) {
-            document.getElementById('btn-simulado').innerText = "⏹ PARAR";
-            timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = formatarTempo(tempoSegundos); }, 1000);
-        } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁 INICIAR"; }
-    }
-
-    function resetCompleto() { clearInterval(timerInterval); timerInterval = null; tempoSegundos = 18000; document.getElementById('timer-display').innerText = "05:00:00"; document.getElementById('texto-final').value = ""; autoSave(); }
-    function formatarTempo(s) { const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const seg = s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; }
-    function mudarDoc(tipo, btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); const zoom = document.getElementById('pdf-zoom').value; const arquivo = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; document.getElementById('pdf-frame').src = `${arquivo}#toolbar=0&navpanes=0&scrollbar=1&view=FitH&zoom=${zoom}`; }
-    function limparFolha() { if(confirm("Apagar?")) { document.getElementById('texto-final').value = ''; autoSave(); } }
-    function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab.active')); }
-    function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
-
-    window.onload = () => {
-        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>";
-        document.getElementById('line-nums-main').innerHTML = h; document.getElementById('line-nums-rascunho').innerHTML = h;
-        const sel = document.getElementById('exam-select');
-        for(let i=45; i>=35; i--) { let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`; if(i==40) opt.selected = true; sel.appendChild(opt); }
-        mudarDoc('prova', document.querySelector('.tab.active'));
-    };
 </script>
-</body>
-</html>
