@@ -3,112 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>MASTER PRO | ARYANNA 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <title>MASTER OAB 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --gold: #d4af37; --bg: #0a0c10; --card: #161a22; --accent: #3b82f6; --danger: #ef4444; --success: #10b981; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root {
+            --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
+            --warning: #f59e0b; --bg: #0f172a; --card: #1e293b;
+            --fgv-blue: #004a8d; --gold: #d4af37; --pdf-bg: #333;
+            --questoes: #8b5cf6;
+        }
 
-        /* CABEÇALHO PREMIUM */
-        header { padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; background: #000; border-bottom: 2px solid var(--gold); }
-        .brand { font-weight: 800; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-        #timer-display { font-size: 1.2rem; font-weight: 300; color: white; cursor: pointer; border: 1px solid #333; padding: 2px 10px; border-radius: 5px; }
-        .cloud-status { font-size: 0.6rem; color: var(--success); font-weight: 800; text-transform: uppercase; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background-color: var(--bg); color: white; 
+            height: 100vh; display: flex; flex-direction: column; 
+            overflow: hidden; position: fixed; width: 100%;
+        }
 
-        /* GRID DE EXAMES (HISTÓRICO DE PROVAS) */
-        .exam-bar { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px; background: #111; scrollbar-width: none; }
-        .exam-bar::-webkit-scrollbar { display: none; }
-        .btn-ex { font-size: 0.7rem; font-weight: 700; color: #555; background: none; border: none; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-        .btn-ex.active { color: var(--gold); transform: scale(1.1); }
+        /* HEADER ESTILO APP */
+        header { 
+            background: var(--card); padding: 12px 15px; border-bottom: 2px solid var(--gold);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+            padding-top: env(safe-area-inset-top);
+        }
+        #timer-display { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: var(--warning); }
 
-        /* WORKSPACE */
-        .workspace { flex: 1; display: flex; overflow: hidden; }
+        /* SELETORES EM LINHA */
+        .smart-selectors { background: #000; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #333; }
+        .select-field { 
+            flex: 1; padding: 12px; border-radius: 10px; background: #1a1a1a; color: white; 
+            border: 1px solid #444; font-weight: bold; font-size: 0.75rem; appearance: none;
+        }
 
-        /* COLUNA RESPOSTA (FOLHA FGV) */
-        .col-paper { flex: 1.2; display: flex; flex-direction: column; background: white; position: relative; }
-        .paper-header { padding: 8px 15px; background: #f1f5f9; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; }
-        .paper-header select { border: 1px solid #cbd5e1; background: white; padding: 5px; font-size: 0.65rem; font-weight: 800; border-radius: 4px; }
-        .paper-body { flex: 1; display: flex; overflow-y: auto; }
-        .lines { width: 35px; background: #f8fafc; border-right: 1px solid #e2e8f0; text-align: center; color: #cbd5e1; font-size: 11px; line-height: 28px; padding-top: 15px; }
-        .textarea-fgv { flex: 1; border: none; outline: none; padding: 15px 20px; font-family: 'Caveat', cursive; font-size: 24px; line-height: 28px; background-image: linear-gradient(transparent, transparent 27px, #f1f5f9 28px); background-size: 100% 28px; background-attachment: local; color: #1e293b; }
+        /* ÁREA DE TREINO */
+        .workspace { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .col-res { flex: 1; display: flex; flex-direction: column; background: white; }
+        .col-pdf { flex: 1.8; display: flex; flex-direction: column; background: var(--pdf-bg); }
 
-        /* COLUNA PDF E RECURSOS */
-        .col-resources { flex: 1.5; display: flex; flex-direction: column; background: #222; position: relative; border-left: 2px solid #000; }
-        .tab-bar { display: flex; background: #000; height: 45px; }
-        .tab { flex: 1; border: none; background: #111; color: #666; font-size: 0.7rem; font-weight: 800; cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab.active { background: #fff; color: #004a8d; border-bottom: 2px solid var(--gold); }
-        iframe { flex: 1; border: none; background: #444; }
+        .fgv-header { 
+            background: #f8fafc; color: #1e293b; padding: 8px 12px; 
+            display: flex; align-items: center; border-bottom: 2px solid #000; gap: 8px;
+        }
+        .input-treino-titulo { 
+            flex: 1; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; 
+            font-weight: bold; color: var(--fgv-blue); font-size: 0.8rem;
+        }
 
-        /* BOTÕES FLUTUANTES (GATILHOS DE PEÇA E SOS) */
-        .fab-container { position: absolute; bottom: 25px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .btn-fab { width: 45px; height: 45px; border-radius: 12px; background: var(--card); border: 1.5px solid var(--gold); color: white; font-weight: 800; font-size: 0.65rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-fab:hover { background: var(--gold); color: black; }
-        .btn-sos { background: var(--danger); border-color: white; }
+        .paper { flex: 1; display: flex; overflow-y: auto; background: white; }
+        .line-nums { width: 30px; background: #f1f5f9; border-right: 1px solid #e2e8f0; text-align: center; font-size: 10px; line-height: 25px; color: #94a3b8; padding-top: 5px; flex-shrink: 0; }
+        .textarea-fgv { 
+            flex: 1; border: none; outline: none; resize: none; padding: 0 12px; 
+            font-family: 'Caveat', cursive; font-size: 22px; line-height: 25px; 
+            background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #e2e8f0 25px); 
+            background-size: 100% 25px; color: #1e293b;
+        }
 
-        /* MODAL */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal { background: white; color: #1e293b; width: 100%; max-width: 600px; border-radius: 12px; overflow: hidden; }
-        .modal-h { padding: 15px; background: #004a8d; color: white; font-weight: 800; display: flex; justify-content: space-between; }
-        .modal-b { padding: 20px; max-height: 75vh; overflow-y: auto; }
+        /* BARRA INFERIOR (TAB BAR) */
+        .nav-bottom { 
+            background: var(--card); display: flex; border-top: 1px solid #334155;
+            padding-bottom: env(safe-area-inset-bottom); flex-shrink: 0;
+        }
+        .nav-item { 
+            flex: 1; padding: 12px 5px; border: none; background: none; color: #94a3b8;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+        }
+        .nav-item.active { color: var(--gold); }
+        .nav-icon { font-size: 1.2rem; }
+        .nav-label { font-size: 0.65rem; font-weight: bold; }
 
-        /* POST-IT */
-        .postit { position: absolute; bottom: 20px; right: 20px; width: 210px; background: #fef08a; border-radius: 8px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: rotate(1deg); border-bottom: 3px solid #eab308; }
-        .postit textarea { width: 100%; height: 85px; background: transparent; border: none; outline: none; font-family: 'Caveat', cursive; font-size: 1.2rem; color: #854d0e; resize: none; }
+        /* MODAIS ESTILO APP (VEM DE BAIXO) */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: none; align-items: flex-end; }
+        .modal-card { 
+            background: white; width: 100%; border-radius: 20px 20px 0 0; 
+            max-height: 85vh; display: flex; flex-direction: column; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        #mobile-nav { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--gold); border: none; width: 60px; height: 60px; border-radius: 50%; font-weight: 900; box-shadow: 0 0 20px var(--gold); }
+        .modal-h { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; color: #000; }
+        .modal-body { flex: 1; overflow-y: auto; padding: 15px; color: #333; }
+
+        #mobile-switch { 
+            display: none; position: fixed; bottom: 85px; right: 20px; z-index: 5000; 
+            background: var(--fgv-blue); color: white; border: 2px solid var(--gold);
+            width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
 
         @media (max-width: 1024px) {
-            .col-resources { position: absolute; inset: 0; z-index: 500; display: none; }
-            .col-resources.active { display: flex; }
-            #mobile-nav { display: block; }
+            .col-pdf { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 5; display: none; }
+            .col-pdf.active { display: flex; }
+            #mobile-switch { display: flex; align-items: center; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="brand">ARYANNA MASTER PRO <span class="cloud-status">● FIREBASE SYNC</span></div>
-    <div id="timer-display" onclick="toggleTimer()">05:00:00</div>
-    <button onclick="saveArchive()" style="background:var(--success); color:white; border:none; padding:6px 15px; border-radius:5px; font-weight:800; font-size:0.7rem; cursor:pointer">ARQUIVAR ESTUDO</button>
+    <div style="font-weight:bold; color:var(--gold);">ARYANNA MASTER</div>
+    <div id="timer-display">05:00:00</div>
+    <div id="sync-dot" style="width:10px; height:10px; background:var(--success); border-radius:50%;"></div>
 </header>
 
-<div class="exam-bar" id="exam-grid"></div>
+<div class="smart-selectors">
+    <select id="exam-select" class="select-field" onchange="selecionarExame(this.value)">
+        <option value="">📅 EXAME</option>
+    </select>
+    <select id="pecas-dropdown" class="select-field" onchange="selecionarEstrutura(this.value)">
+        <option value="">⚖️ PEÇA</option>
+        <option value="rt">RECLAMAÇÃO</option>
+        <option value="cont">CONTESTAÇÃO</option>
+        <option value="ro">RECURSO ORD.</option>
+        <option value="ap">AGRAVO PET.</option>
+    </select>
+</div>
 
 <main class="workspace">
-    <section class="col-paper">
-        <div class="paper-header">
-            <select id="mode-selector" onchange="changeMode(this.value)">
-                <option value="peca">PEÇA PRÁTICO-PROFISSIONAL (150 LINHAS)</option>
-                <option value="quest">QUESTÕES DISCURSIVAS (120 LINHAS)</option>
-            </select>
+    <section class="col-res">
+        <div class="fgv-header">
+            <input type="text" id="titulo-treino-atual" class="input-treino-titulo" placeholder="Nome do treino...">
+            <span id="lin-count" style="font-size: 10px; font-weight:bold; background:#000; color:#fff; padding:4px 8px; border-radius:5px;">0/150</span>
+            <button onclick="arquivarTreino()" style="background:var(--success); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; font-size:0.7rem;">SALVAR</button>
         </div>
-        <div class="paper-body">
-            <div class="lines" id="line-nums"></div>
-            <textarea id="editor" class="textarea-fgv" spellcheck="false" oninput="handleTyping()" placeholder="Inicie sua fundamentação..."></textarea>
-        </div>
-
-        <div class="fab-container">
-            <button class="btn-fab" onclick="applyStruct('rt')">RT</button>
-            <button class="btn-fab" onclick="applyStruct('cont')">CT</button>
-            <button class="btn-fab" onclick="applyStruct('ro')">RO</button>
-            <button class="btn-fab" onclick="applyStruct('ap')">AP</button>
-            <button class="btn-fab btn-sos" onclick="showSOS()">SOS</button>
-            <button class="btn-fab" onclick="showHistory()" style="background:white; color:black">HIST</button>
+        <div class="paper">
+            <div class="line-nums" id="line-nums-main"></div>
+            <textarea id="texto-final" class="textarea-fgv" oninput="handleInput()"></textarea>
         </div>
     </section>
 
-    <section class="col-resources" id="res-area">
-        <div class="tab-bar">
-            <button class="tab active" id="tab-p" onclick="setDoc('prova')">ENUNCIADO</button>
-            <button class="tab" id="tab-g" onclick="setDoc('gab')">GABARITO</button>
-            <button class="tab" id="tab-v" onclick="setDoc('vade')">VADE MECUM</button>
+    <section class="col-pdf" id="section-pdf">
+        <div style="display:flex; background:#111; height:45px; border-bottom:1px solid var(--gold);">
+            <button id="tab-p" style="flex:1; border:none; background:white; color:var(--fgv-blue); font-weight:bold;" onclick="mudarDoc('prova')">PROVA</button>
+            <button id="tab-g" style="flex:1; border:none; background:#222; color:#777; font-weight:bold;" onclick="mudarDoc('gabarito')">GABARITO</button>
         </div>
-        <iframe id="pdf-frame"></iframe>
-        
-        <div class="postit">
-            <div style="font-size:0.6rem; font-weight:800; color:#854d0e; margin-bottom:4px">📌 TESES / ARTIGOS SALVOS</div>
-            <textarea id="postit-text" oninput="savePostit()" placeholder="Ex: Art. 840 CLT..."></textarea>
-        </div>
+        <iframe id="f-pdf"></iframe>
     </section>
+</main>
+
+<button id="mobile-switch" onclick="document.getElementById('section-pdf').classList.toggle('active')">📑 PDF</button>
+
+<nav class="nav-bottom">
+    <button class="nav-item active" onclick="setModo('peca')">
+        <span class="nav-icon">🏋️</span><span class="nav-label">PEÇA</span>
+    </button>
+    <button class="nav-item" onclick="setModo('questoes')">
+        <span class="nav-icon">📝</span><span class="nav-label">QUESTÕES</span>
+    </button>
+    <button class="nav-item" onclick="abrirBanco('postits')">
+        <span class="nav-icon">📌</span><span class="nav-label">TESES</span>
+    </button>
+    <button class="nav-item" onclick="abrirBanco('historico')">
+        <span class="nav-icon">📚</span><span class="nav-label">HISTÓRICO</span>
+    </button>
+</nav>
+
+<div id="modal-geral" class="overlay" onclick="fecharModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-h">
+            <strong id="modal-titulo">BANCO</strong>
+            <button onclick="fecharModal()" style="border:none; background:#eee; padding:8px 15px; border-radius:10px; font-weight:bold;">FECHAR</button>
+        </div>
+        <div id="modal-lista" class="modal-body"></div>
+        <div style="padding:15px; border-top:1px solid #eee;">
+            <button onclick="prepararNovo()" id="btn-novo" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:12px; font-weight:bold;">+ NOVO REGISTRO</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        projectId: "masteroab-db5e1",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push; window.get = get;
+
+    onValue(ref(db, 'treino_atual/global'), (s) => {
+        if(!window.isEditing) {
+            document.getElementById('texto-final').value = s.val() || "";
+            atualizarContador();
+        }
+    });
+</script>
+
+<script>
+    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let modoAtual = 'peca';
+    
+    function setModo(modo) {
+        modoAtual = modo;
+        document.querySelectorAll('.nav-item').forEach((el, idx) => {
+            el.classList.toggle('active', (idx === 0 && modo === 'peca') || (idx === 1 && modo === 'questoes'));
+        });
+        document.getElementById('pecas-dropdown').style.visibility = (modo === 'peca') ? 'visible' : 'hidden';
+        gerarLinhas(modo === 'peca' ? 150 : 120);
+        document.getElementById('titulo-treino-atual').value = `${modo.toUpperCase()} - EXAME ${exAtual}`;
+    }
+
+    function selecionarExame(v) { if(!v) return; exAtual = v; mudarDoc('prova'); setModo(modoAtual); }
+
+    function mudarDoc(tipo) {
+        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : `ro${exAtual}-gabarito.pdf`;
+        document.getElementById('tab-p').style.background = tipo === 'prova' ? 'white' : '#222';
+        document.getElementById('tab-p').style.color = tipo === 'prova' ? 'var(--fgv-blue)' : '#777';
+        document.getElementById('tab-g').style.background = tipo === 'gabarito' ? 'white' : '#222';
+        document.getElementById('tab-g').style.color = tipo === 'gabarito' ? 'var(--fgv-blue)' : '#777';
+    }
+
+    function handleInput() {
+        const dot = document.getElementById('sync-dot');
+        dot.style.background = "var(--warning)";
+        atualizarContador();
+        clearTimeout(window.syncTimeout);
+        window.syncTimeout = setTimeout(() => {
+            window.set(window.ref(window.db, 'treino_atual/global'), document.getElementById('texto-final').value);
+            dot.style.background = "var(--success)";
+        }, 800);
+    }
+
+    function atualizarContador() {
+        const lines = document.getElementById('texto-final').value.split('\n').length;
+        document.getElementById('lin-count').innerText = `${lines}/${modoAtual === 'peca' ? 150 : 120}`;
+    }
+
+    function abrirBanco(tipo) {
+        window.bancoAtivo = tipo;
+        document.getElementById('modal-titulo').innerText = tipo.toUpperCase();
+        document.getElementById('modal-geral').style.display = 'flex';
+        document.getElementById('btn-novo').style.display = tipo === 'historico' ? 'none' : 'block';
+        const lista = document.getElementById('modal-lista');
+        lista.innerHTML = 'Carregando...';
+        window.get(window.ref(window.db, tipo)).then(s => {
+            lista.innerHTML = '';
+            const data = s.val() || {};
+            Object.keys(data).reverse().forEach(id => {
+                const item = data[id];
+                const d = document.createElement('div');
+                d.style = "padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
+                d.innerHTML = `<strong>${item.titulo || item.nome}</strong> <button onclick="usarItem('${id}')" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold;">ABRIR</button>`;
+                lista.appendChild(d);
+            });
+        });
+    }
+
+    function usarItem(id) {
+        window.get(window.ref(window.db, `${window.bancoAtivo}/${id}`)).then(s => {
+            const item = s.val();
+            if(window.bancoAtivo === 'historico') document.getElementById('texto-final').value = item.texto;
+            else document.getElementById('texto-final').value += "\n" + item.texto;
+            handleInput(); fecharModal();
+        });
+    }
+
+    function arquivarTreino() {
+        const txt = document.getElementById('texto-final').value;
+        const tit = document.getElementById('titulo-treino-atual').value;
+        window.push(window.ref(window.db, 'historico'), { titulo: tit, texto: txt, data: new Date().toLocaleString() }).then(() => alert("Salvo!"));
+    }
+
+    function fecharModal() { document.getElementById('modal-geral').style.display = 'none'; }
+    function gerarLinhas(qtd) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; document.getElementById('line-nums-main').innerHTML = h; }
+    function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimer(); }, 1000); } }
+    function updateTimer() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+
+    window.onload = () => {
+        const sel = document.getElementById('exam-select');
+        for(let i=45; i>=35; i--) {
+            const opt = document.createElement('option');
+            opt.value = i; opt.innerText = `EXAME ${i}`;
+            if(i === 42) opt.selected = true;
+            sel.appendChild(opt);
+        }
+        setModo('peca');
+    };
+</script>
+</body>
+</html>
