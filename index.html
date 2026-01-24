@@ -3,226 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema OAB - Foco FGV</title>
+    <title>Ambiente de Estudos OAB - FGV Style</title>
     <style>
         :root {
+            --fgv-yellow: #fff9c4;
             --fgv-blue: #0d47a1;
-            --fgv-gold: #ffc107;
             --paper-white: #ffffff;
-            --line-color: #e0e0e0;
+            --postit-blue: #b3e5fc;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 8px;
         }
 
         /* Menu de Funcionalidades */
         .dashboard-nav {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .nav-card {
-            background: white;
+        .btn-nav {
+            background-color: var(--fgv-blue);
+            color: white;
+            border: none;
             padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 5px;
             cursor: pointer;
-            border-bottom: 3px solid var(--fgv-blue);
-            font-size: 0.9em;
             font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
         }
 
-        /* Área do Enunciado (Historinha) */
-        .historinha-box {
-            background: #fff3e0;
-            border: 1px solid #ffb74d;
+        /* Seção de Inteligência */
+        .ai-selector {
+            background-color: #e3f2fd;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-style: italic;
+            border-left: 5px solid var(--fgv-blue);
+            margin-bottom: 20px;
         }
 
-        /* Folha de Resposta FGV */
-        .fgv-sheet-container {
-            background: white;
-            border: 2px solid #333;
+        textarea {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             padding: 10px;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        /* Folha de Resposta Estilo FGV */
+        .answer-sheet {
+            background-color: var(--paper-white);
+            border: 2px solid #333;
+            padding: 40px 20px;
             position: relative;
+            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 100% 1.5em;
+            line-height: 1.5em;
         }
 
         .fgv-header {
             text-align: center;
+            font-family: sans-serif;
+            font-weight: bold;
             border-bottom: 2px solid #333;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-        }
-
-        .answer-area {
-            width: 100%;
-            height: 450px;
-            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-            background-size: 100% 1.5em;
-            line-height: 1.5em;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            padding-top: 0;
-        }
-
-        /* Post-its e SOSARY */
-        .sticky-notes {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            overflow-x: auto;
+            margin-bottom: 20px;
             padding-bottom: 10px;
         }
 
-        .post-it {
-            min-width: 140px;
-            padding: 10px;
-            background: #ffffa5;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            font-size: 0.85em;
-        }
-
-        .sosary-badge { background: #ffcdd2; border-left: 4px solid #d32f2f; }
-        .tese-badge { background: #c8e6c9; border-left: 4px solid #388e3c; }
-
-        .btn-save {
-            background: #2e7d32;
-            color: white;
-            width: 100%;
-            padding: 15px;
+        .answer-area {
+            background: transparent;
             border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 15px;
+            width: 100%;
+            height: 500px;
+            resize: none;
+            line-height: 1.5em;
+            outline: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
         }
 
-        /* Modal para Banco de Questões */
-        #modalQuestioes {
+        /* Post-its e Dicas */
+        .post-it-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .post-it {
+            background-color: var(--fgv-yellow);
+            padding: 15px;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+            transform: rotate(-1deg);
+            min-height: 120px;
+            font-size: 0.9em;
+        }
+
+        .sosary-box {
+            background-color: var(--postit-blue);
+            border: 1px dashed #0288d1;
+            transform: rotate(1deg);
+        }
+
+        /* Modais */
+        .modal {
             display: none;
             position: fixed;
-            top: 10%; left: 5%; width: 90%; height: 80%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; max-height: 70vh;
             background: white; border: 2px solid var(--fgv-blue);
             z-index: 1000; padding: 20px; overflow-y: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-save {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .post-it-area { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div class="dashboard-nav">
-    <div class="nav-card" onclick="abrirBanco('peca')">📁 Peças Anteriores</div>
-    <div class="nav-card" onclick="abrirBanco('questao')">❓ Questões OAB</div>
-    <div class="nav-card" onclick="mostrarSOSARY()">🆘 SOSARY (Dicas)</div>
-    <div class="nav-card" onclick="mostrarTeses()">📚 Teses p/ Assunto</div>
-</div>
-
-<div id="historinhaContainer" class="historinha-box">
-    <b>Enunciado Atual:</b><br>
-    <span id="textoEnunciado">Selecione uma peça ou questão acima para começar o simulado.</span>
-</div>
-
-<div class="fgv-sheet-container">
-    <div class="fgv-header">
-        <b>EXAME DE ORDEM UNIFICADO - CADERNO DE RESPOSTAS</b>
+<div class="container">
+    <div class="dashboard-nav">
+        <button class="btn-nav" onclick="abrirModal('pecas')">📁 Peças/PDFs</button>
+        <button class="btn-nav" onclick="abrirModal('questoes')">❓ Questões OAB</button>
+        <button class="btn-nav" onclick="abrirModal('teses')">📚 Teses/Assunto</button>
+        <button class="btn-nav" onclick="alert('SOSARY:\nS - Sujeitos\nO - Objeto\nS - Socorro (Art/Súmula)\nA - Artigo\nR - Rito\nY - Yeap (Conclusão)')">🆘 SOSARY</button>
     </div>
-    <textarea id="campoResposta" class="answer-area" placeholder="Escreva sua peça aqui..."></textarea>
+
+    <h2>🧠 Inteligência de Identificação</h2>
+    <div class="ai-selector">
+        <label><b>Historinha / Enunciado:</b></label>
+        <textarea id="storyInput" rows="4" placeholder="Cole o texto aqui..."></textarea>
+        <button onclick="identificarPeca()">Identificar Peça e Teses</button>
+        <div id="resultadoIA" style="margin-top:10px; font-weight:bold; color: #0d47a1;"></div>
+    </div>
+
+    <hr>
+
+    <div class="answer-sheet" id="folhaResposta">
+        <div class="fgv-header">EXAME DE ORDEM UNIFICADO - FGV</div>
+        <textarea id="campoResposta" class="answer-area" placeholder="Inicie sua resposta aqui..."></textarea>
+    </div>
+
+    <div class="post-it-area">
+        <div class="post-it" contenteditable="true" id="postItTeses">
+            📌 <b>Post-it de Teses:</b><br>
+            - Clique aqui para editar<br>
+            - Art. <br>
+        </div>
+        <div class="post-it sosary-box" id="boxDocumentos">
+            📄 <b>PDF/Documentos:</b><br>
+            Selecione uma peça acima para carregar o link.
+        </div>
+    </div>
+
+    <button onclick="salvarProgresso()" class="btn-save">💾 Salvar Estudo desta Peça</button>
 </div>
 
-<div class="sticky-notes">
-    <div class="post-it sosary-badge" id="boxSOSARY">
-        <b>SOSARY:</b><br>
-        S - Sujeito<br>O - Objeto<br>S - Socorro (Art.)
-    </div>
-    <div class="post-it tese-badge" id="boxTeses">
-        <b>Teses do Caso:</b><br>
-        Clique em "Teses" para carregar.
-    </div>
-</div>
-
-<button class="btn-save" onclick="salvarTudo()">💾 SALVAR ESTUDO E POST-ITS</button>
-
-<div id="modalQuestioes">
-    <h3 id="modalTitle">Selecionar Exercício</h3>
-    <div id="listaItens"></div>
-    <button onclick="fecharModal()" style="margin-top:20px;">Fechar</button>
+<div id="modalContainer" class="modal">
+    <h3 id="modalTitle">Opções</h3>
+    <div id="modalList"></div>
+    <button onclick="fecharModal()" style="background:#666">Fechar</button>
 </div>
 
 <script>
-    const bancoDados = {
-        peca: [
-            { id: 1, titulo: "Apelação Cível - Exame XXXV", enunciado: "Historinha: João perdeu a ação de cobrança em 1ª instância...", dicas: "Art. 1.009 CPC", teses: "Preliminar de Cerceamento de Defesa." },
-            { id: 2, titulo: "Habeas Corpus - Exame XXXVIII", enunciado: "Historinha: Maria está presa preventivamente sem fundamentação...", dicas: "Art. 5º, LXVIII CF", teses: "Ausência dos requisitos do Art. 312 CPP." }
+    const database = {
+        pecas: [
+            { t: "XXXVIII - Apelação Cível", e: "João foi condenado ao pagamento...", pdf: "https://oab.fgv.br/", teses: "Art. 1.009 CPC; Cerceamento de defesa." },
+            { t: "XXXVII - Contestação (Trabalho)", e: "Empresa X foi citada em Reclamatória...", pdf: "https://oab.fgv.br/", teses: "Art. 847 CLT; Horas Extras." }
         ],
-        questao: [
-            { id: 3, titulo: "Questão 1 - Dir. Trabalho", enunciado: "Sobre o regime de sobrejornada do bancário...", dicas: "Súmula 102 TST", teses: "Cargo de confiança vs Horas Extras." }
+        questoes: [
+            { t: "Questão 1 - Dir. Penal", e: "Mário cometeu crime de furto...", pdf: "#", teses: "Art. 155 CP; Princípio da Insignificância." }
+        ],
+        teses: [
+            { t: "Cível: Alimentos", e: "Revisional de alimentos...", pdf: "#", teses: "Art. 1.694 CC; Binômio Necessidade-Possibilidade." }
         ]
     };
 
-    function abrirBanco(tipo) {
-        const modal = document.getElementById('modalQuestioes');
-        const lista = document.getElementById('listaItens');
-        document.getElementById('modalTitle').innerText = tipo === 'peca' ? "Peças Anteriores" : "Questões Anteriores";
-        
+    function abrirModal(tipo) {
+        const modal = document.getElementById('modalContainer');
+        const lista = document.getElementById('modalList');
+        document.getElementById('modalTitle').innerText = tipo.toUpperCase();
         lista.innerHTML = "";
-        bancoDados[tipo].forEach(item => {
+        
+        database[tipo].forEach(item => {
             let div = document.createElement('div');
-            div.style.padding = "10px";
-            div.style.borderBottom = "1px solid #ddd";
-            div.style.cursor = "pointer";
-            div.innerHTML = `<b>${item.titulo}</b>`;
-            div.onclick = () => carregarExercicio(item);
+            div.style.padding = "10px"; div.style.borderBottom = "1px solid #ddd"; div.style.cursor = "pointer";
+            div.innerHTML = `<b>${item.t}</b>`;
+            div.onclick = () => {
+                document.getElementById('storyInput').value = item.e;
+                document.getElementById('postItTeses').innerHTML = `📌 <b>Teses:</b><br>${item.teses}`;
+                document.getElementById('boxDocumentos').innerHTML = `📄 <b>PDF:</b><br><a href="${item.pdf}" target="_blank">Abrir PDF Oficial</a>`;
+                fecharModal();
+            };
             lista.appendChild(div);
         });
         modal.style.display = "block";
     }
 
-    function carregarExercicio(item) {
-        document.getElementById('textoEnunciado').innerText = item.enunciado;
-        document.getElementById('boxTeses').innerHTML = `<b>Teses do Caso:</b><br>${item.teses}`;
-        document.getElementById('boxSOSARY').innerHTML = `<b>Dicas SOS:</b><br>${item.dicas}`;
-        document.getElementById('campoResposta').value = ""; // Limpa para novo treino
-        fecharModal();
+    function fecharModal() { document.getElementById('modalContainer').style.display = "none"; }
+
+    function identificarPeca() {
+        const texto = document.getElementById('storyInput').value.toLowerCase();
+        let r = "Analisando... ";
+        if (texto.includes("sentença")) r = "⚖️ CABIMENTO: APELAÇÃO.";
+        else if (texto.includes("citada") || texto.includes("reclamada")) r = "📝 CABIMENTO: CONTESTAÇÃO.";
+        else r = "🔍 Sugestão: Analise o último ato processual.";
+        document.getElementById('resultadoIA').innerText = r;
     }
 
-    function fecharModal() {
-        document.getElementById('modalQuestioes').style.display = "none";
-    }
-
-    function salvarTudo() {
+    function salvarProgresso() {
         const dados = {
             resposta: document.getElementById('campoResposta').value,
-            enunciado: document.getElementById('textoEnunciado').innerText,
-            teses: document.getElementById('boxTeses').innerHTML
+            postit: document.getElementById('postItTeses').innerHTML,
+            enunciado: document.getElementById('storyInput').value,
+            doc: document.getElementById('boxDocumentos').innerHTML
         };
-        localStorage.setItem('estudoOAB_Salvo', JSON.stringify(dados));
-        alert("Estudo salvo com sucesso para consulta posterior!");
+        localStorage.setItem('oab_completo_v1', JSON.stringify(dados));
+        alert("Salvo com sucesso!");
     }
 
-    function mostrarSOSARY() {
-        alert("S.O.S.A.R.Y: \nS - Sujeitos\nO - Objeto\nS - Sorte\nA - Artigo\nR - Rito\nY - Yeap (Conclusão)");
-    }
-
-    // Carregar último estado
     window.onload = () => {
-        const salvo = JSON.parse(localStorage.getItem('estudoOAB_Salvo'));
+        const salvo = JSON.parse(localStorage.getItem('oab_completo_v1'));
         if(salvo) {
             document.getElementById('campoResposta').value = salvo.resposta;
-            document.getElementById('textoEnunciado').innerText = salvo.enunciado;
-            document.getElementById('boxTeses').innerHTML = salvo.teses;
+            document.getElementById('postItTeses').innerHTML = salvo.postit;
+            document.getElementById('storyInput').value = salvo.enunciado;
+            document.getElementById('boxDocumentos').innerHTML = salvo.doc;
         }
-    }
+    };
 </script>
 
 </body>
