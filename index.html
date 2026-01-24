@@ -17,63 +17,67 @@
 
         header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .logo { font-weight: 800; color: var(--gold); }
-        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
+        /* EDITOR */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
         
-        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
-        .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 38px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
+        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
 
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        
-        /* MODAIS DE FOLHAS FGV (POST-ITS E DICAS) */
-        .modal-fgv { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; padding: 20px; justify-content: center; }
-        .modal-content { background: var(--fgv-yellow); width: 100%; max-width: 800px; height: 90vh; display: flex; flex-direction: column; border: 3px solid var(--gold); color: #854d0e; }
-        
-        .modal-header { padding: 10px; background: #fff; border-bottom: 2px solid var(--gold); display: flex; gap: 10px; }
-        .modal-list { height: 120px; overflow-y: auto; background: rgba(255,255,255,0.5); padding: 5px; font-size: 0.8rem; border-bottom: 1px solid #d4af37; }
-        .item-row { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; cursor: pointer; }
 
-        /* FOLHA PADRÃO */
+        /* BOXES INTEGRADAS (SEM POPUP) */
+        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--danger); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; margin-bottom: 10px; }
+        .panel-header { font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        
+        .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.7); outline: none; margin-bottom: 8px; font-family: 'Courier Prime', monospace; }
+        
+        .list-area { max-height: 150px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.3); border-radius: 4px; }
+        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; }
+
+        /* FOLHA DE RESPOSTA */
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* VIEWER */
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
-        iframe { flex: 1; border: none; background: #fff; }
-
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-
-        @media (max-width: 1024px) {
-            .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
-            .viewer-section.active { display: flex; }
-            #mobile-btn { display: flex; }
-        }
+        .viewer-section { flex: 1.2; background: #334155; display: flex; flex-direction: column; }
+        iframe { flex: 1; border: none; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display">05:00:00</div>
-    <button style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="ativarSimulado()">🏁 SIMULADOR</button>
+    <div id="timer-display" style="color:var(--warning); font-family:monospace;">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.75rem;"></select>
-            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="abrirFolhaIA()">🧠</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="abrirFolhaEspecial('postits')">📌</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="abrirFolhaEspecial('dicas')">📝</button>
-            <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 SALVAR PEÇA</button>
+            <button class="btn-symbol" style="background:#e0e7ff;" onclick="togglePanel('box-ia')">🧠</button>
+            <button class="btn-symbol" style="background:#fef9c3;" onclick="togglePanel('box-teses')">📌</button>
+            <button class="btn-symbol" style="background:#fee2e2;" onclick="togglePanel('box-dicas')">📝</button>
+            <button style="margin-left:auto; background:var(--success); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="salvarTreinoTotal()">💾 SALVAR PEÇA</button>
         </div>
 
         <div class="paper-wrapper">
+            <div id="box-dicas" class="fgv-panel">
+                <div class="panel-header"><span>📝 NÃO CONFUNDA! (CADERNO TÉCNICO)</span><span onclick="togglePanel('box-dicas')" style="cursor:pointer">×</span></div>
+                
+                <div id="dicas-list" class="list-area"></div>
+
+                <input type="text" id="dica-titulo" class="fgv-input" placeholder="Ex: Extinção com vs Sem Resolução">
+                <textarea id="dica-texto" class="fgv-input" rows="4" placeholder="Explique a diferença aqui (estilo folha FGV)..."></textarea>
+                <input type="hidden" id="dica-id">
+                
+                <div style="display:flex; gap:5px;">
+                    <button onclick="dbSalvarDica()" style="flex:1; background:var(--primary); color:white; border:none; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer;">GRAVAR DICA</button>
+                    <button onclick="limparDica()" style="background:#94a3b8; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">NOVA</button>
+                </div>
+            </div>
+
             <div class="paper-sheet">
                 <div class="line-nums" id="line-nums-main"></div>
                 <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
@@ -81,119 +85,77 @@
         </div>
     </section>
 
-    <div id="modal-fgv" class="modal-fgv">
-        <div class="modal-content">
-            <div class="modal-header">
-                <input type="text" id="modal-titulo-input" placeholder="Título da Anotação..." style="flex:1; padding:8px; border:1px solid var(--gold);">
-                <button onclick="salvarItemModal()" style="background:var(--success); color:white; border:none; padding:8px 15px; border-radius:4px; font-weight:bold;">GRAVAR</button>
-                <button onclick="fecharModal()" style="background:var(--danger); color:white; border:none; padding:8px; border-radius:4px;">X</button>
-            </div>
-            <div id="modal-list" class="modal-list"></div>
-            <div class="paper-sheet" style="flex:1; width:100%; min-height:auto; overflow-y:auto;">
-                <div class="line-nums" id="line-nums-modal"></div>
-                <textarea id="texto-modal" class="text-area"></textarea>
-            </div>
-        </div>
-    </div>
-
-    <section class="viewer-section" id="viewer">
-        <iframe id="pdf-frame" src=""></iframe>
+    <section class="viewer-section">
+        <iframe id="pdf-frame" src="ro42.pdf"></iframe>
     </section>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app); 
-    window.db_ops = { ref, set, push, get, remove, update, db };
+    window.db_ops = { ref, set, push, remove, update, db };
 
-    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    // Sincronização em tempo real das Dicas
+    onValue(ref(db, 'dicas_tecnicas'), (snap) => {
+        const container = document.getElementById('dicas-list');
+        container.innerHTML = "";
+        const data = snap.val();
+        if(data) {
+            Object.keys(data).forEach(k => {
+                container.innerHTML += `
+                <div class="list-item">
+                    <span onclick="carregarDica('${k}')" style="cursor:pointer; flex:1;"><b>${data[k].titulo}</b></span>
+                    <span onclick="excluirDica('${k}')" style="color:var(--danger); cursor:pointer; margin-left:10px;">✖</span>
+                </div>`;
+            });
+        } else { container.innerHTML = "<small style='padding:10px; display:block;'>Nenhuma dica salva.</small>"; }
+    });
 </script>
 
 <script>
-    let exAtual = 42; let tipoAtual = ''; let idEditando = null;
-
-    function abrirFolhaEspecial(tipo) {
-        tipoAtual = tipo;
-        idEditando = null;
-        document.getElementById('modal-fgv').style.display = 'flex';
-        document.getElementById('texto-modal').value = '';
-        document.getElementById('modal-titulo-input').value = '';
-        carregarListaModal();
+    function togglePanel(id) {
+        const p = document.getElementById(id);
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
     }
 
-    function carregarListaModal() {
-        const lista = document.getElementById('modal-list');
-        lista.innerHTML = "Carregando...";
-        onValue(window.db_ops.ref(window.db_ops.db, tipoAtual), (snap) => {
-            lista.innerHTML = "";
-            const data = snap.val();
-            if(data) {
-                Object.keys(data).forEach(k => {
-                    lista.innerHTML += `<div class="item-row">
-                        <span onclick="editarItem('${k}')" style="flex:1"><b>${data[k].titulo}</b></span>
-                        <span onclick="excluirItem('${k}')" style="color:red">✖</span>
-                    </div>`;
-                });
-            }
-        }, { onlyOnce: true });
-    }
+    async function dbSalvarDica() {
+        const t = document.getElementById('dica-titulo').value;
+        const x = document.getElementById('dica-texto').value;
+        const id = document.getElementById('dica-id').value;
+        if(!t || !x) return alert("Preencha título e conteúdo.");
 
-    async function salvarItemModal() {
-        const tit = document.getElementById('modal-titulo-input').value;
-        const txt = document.getElementById('texto-modal').value;
-        if(!tit || !txt) return alert("Preencha Título e Texto.");
-        
-        if(idEditando) {
-            await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `${tipoAtual}/${idEditando}`), { titulo: tit, texto: txt });
+        if(id) {
+            await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `dicas_tecnicas/${id}`), { titulo: t, texto: x });
         } else {
-            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, tipoAtual), { titulo: tit, texto: txt });
+            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'dicas_tecnicas'), { titulo: t, texto: x });
         }
-        idEditando = null;
-        document.getElementById('texto-modal').value = '';
-        document.getElementById('modal-titulo-input').value = '';
-        carregarListaModal();
+        limparDica();
     }
 
-    window.editarItem = async (id) => {
-        idEditando = id;
-        const snap = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `${tipoAtual}/${id}`));
-        const data = snap.val();
-        document.getElementById('modal-titulo-input').value = data.titulo;
-        document.getElementById('texto-modal').value = data.texto;
-    };
+    async function carregarDica(id) {
+        const snap = await fetch(`https://masteroab-db5e1-default-rtdb.firebaseio.com/dicas_tecnicas/${id}.json`).then(r => r.json());
+        document.getElementById('dica-titulo').value = snap.titulo;
+        document.getElementById('dica-texto').value = snap.texto;
+        document.getElementById('dica-id').value = id;
+    }
 
-    window.excluirItem = async (id) => {
-        if(confirm("Excluir?")) {
-            await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `${tipoAtual}/${id}`));
-            carregarListaModal();
+    async function excluirDica(id) {
+        if(confirm("Excluir esta explicação técnica?")) {
+            await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `dicas_tecnicas/${id}`));
+            limparDica();
         }
-    };
+    }
 
-    function fecharModal() { document.getElementById('modal-fgv').style.display = 'none'; }
+    function limparDica() {
+        document.getElementById('dica-titulo').value = "";
+        document.getElementById('dica-texto').value = "";
+        document.getElementById('dica-id').value = "";
+    }
 
     function gerarLinhas(id, n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById(id).innerHTML = h; }
-    
-    window.onload = () => {
-        gerarLinhas('line-nums-main', 150);
-        gerarLinhas('line-nums-modal', 150);
-        const sel = document.getElementById('exam-select');
-        for(let i=44; i>=35; i--) { 
-            let opt = document.createElement('option'); opt.value = i; 
-            opt.innerText = `EXAME ${i}`; if(i==42) opt.selected = true; 
-            sel.appendChild(opt); 
-        }
-        document.getElementById('pdf-frame').src = `ro42.pdf`;
-    };
-
-    function autoSave() {
-        window.isEditing = true; clearTimeout(window.sv);
-        window.sv = setTimeout(() => { 
-            window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/peca`), document.getElementById('texto-final').value); 
-            window.isEditing = false; 
-        }, 1000);
-    }
+    window.onload = () => { gerarLinhas('line-nums-main', 150); };
 </script>
 </body>
 </html>
