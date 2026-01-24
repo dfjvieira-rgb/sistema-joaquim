@@ -55,11 +55,11 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
-            <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
+            <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper" id="scroll-area">
             <div class="paper-sheet">
@@ -76,7 +76,7 @@
             <button class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
         </div>
         <div class="zoom-controls">
-            <span>ZOOM PDF:</span>
+            <span>ZOOM:</span>
             <input type="range" min="0.8" max="2.5" step="0.1" value="1.3" id="zoom-range" oninput="window.ajustarZoom(this.value)">
             <span id="zoom-val">130%</span>
         </div>
@@ -115,6 +115,11 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     const bancoPecas = {
+        "45": { titulo: "Simulado 45", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA..." },
+        "44": { titulo: "Simulado 44", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO..." },
+        "43": { titulo: "Simulado 43", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO..." },
+        "42": { titulo: "Simulado 42", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPETIÇÃO INICIAL..." },
+        "41": { titulo: "Simulado 41", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO..." },
         "40": { titulo: "RT Espólio (Romeu Diamante)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, rep. por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)\n4. VERBAS RESCISÓRIAS..." },
         "39": { titulo: "Contestação (Calçados Teresina)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nPROCESSO Nº 0001234-55.2023.5.22.0090\n\nSOCIEDADE EMPRESÁRIA CALÇADOS LTDA...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR\n2. MÉRITO..." },
         "38": { titulo: "Recurso Ordinário (Supermercado)", corpo: "AO DOUTO JUÍZO DA 80ª VARA DO TRABALHO DE NATAL/RN\n\nSUPERMERCADO COMPRE BEM...\n\nRAZÕES DE RECURSO ORDINÁRIO..." },
@@ -123,7 +128,12 @@
         "35": { titulo: "Consignação em Pagamento", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SALVADOR/BA\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO..." }
     };
 
-    window.mudarExame = (v) => { window.carregarPDF('prova'); };
+    // FUNÇÃO TURBINADA: Agora ela gera tudo ao mudar o seletor
+    window.mudarExame = (v) => { 
+        window.carregarPDF('prova');
+        const info = bancoPecas[v] || { titulo: "Petição", corpo: "AO DOUTO JUÍZO..." };
+        window.gerarCaderno(info.corpo); // A mágica acontece aqui
+    };
 
     window.gerarCaderno = function(corpoPeca) {
         const divisor = "\n" + "-".repeat(45) + " RESPOSTA OAB " + "-".repeat(45) + "\n";
@@ -135,14 +145,12 @@
     };
 
     window.abrirPecas = () => {
-        // A SOLUÇÃO: Ler o seletor na hora do clique
-        const exameSelecionado = document.getElementById('exam-select').value;
-        const info = bancoPecas[exameSelecionado] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ..." };
-        
-        document.getElementById('titulo-modal').innerText = `EXAME ${exameSelecionado}`;
+        const exameSel = document.getElementById('exam-select').value;
+        const info = bancoPecas[exameSel] || { titulo: "Petição", corpo: "AO DOUTO JUÍZO..." };
+        document.getElementById('titulo-modal').innerText = `EXAME ${exameSel}`;
         document.getElementById('lista-pecas').innerHTML = `
             <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">
-                📝 GERAR CADERNO COMPLETO:<br><small>${info.titulo}</small>
+                📝 REGERAR CADERNO COMPLETO:<br><small>${info.titulo}</small>
             </button>`;
         document.getElementById('modal-pecas').style.display = 'flex';
     };
@@ -168,6 +176,7 @@
     window.ajustarZoom = (v) => { scale = parseFloat(v); window.renderAll(); document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%"; };
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
+    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
     window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     
