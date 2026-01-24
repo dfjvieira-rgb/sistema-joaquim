@@ -35,6 +35,22 @@
         canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
+        
+        /* ESTILOS EXCLUSIVOS DA NOVA MENTORIA */
+        .mentoria-content { max-width: 800px !important; padding: 0 !important; overflow: hidden; display: flex; flex-direction: column; }
+        .mentoria-nav { display: flex; background: #f1f5f9; border-bottom: 1px solid #ddd; }
+        .mentoria-nav button { flex: 1; padding: 12px; border: none; background: none; font-weight: 700; color: #64748b; cursor: pointer; font-size: 0.7rem; border-bottom: 3px solid transparent; }
+        .mentoria-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+        .mentoria-body { padding: 20px; overflow-y: auto; flex: 1; color: #334155; }
+        .mentoria-pane { display: none; }
+        .mentoria-pane.active { display: block; }
+        .mentoria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+        .m-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; border-top: 3px solid var(--primary); }
+        .m-box h4 { font-size: 0.75rem; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
+        .artigo-item { font-size: 0.75rem; margin-bottom: 6px; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
+        .artigo-num { font-weight: 800; color: var(--danger); }
+        .badge-alerta { background: #fff1f2; border: 1px solid #fecaca; color: #991b1b; padding: 10px; border-radius: 6px; font-size: 0.75rem; margin-bottom: 15px; }
+
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
         @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
     </style>
@@ -54,6 +70,7 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.75rem; border:1px solid #ddd;"></select>
+            <button class="btn-symbol" title="Mentoria" style="background:var(--gold); color:#000" onclick="window.abrirMentoria()">🏆</button>
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
@@ -78,179 +95,57 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content">
-        <h3 id="titulo-modal">⚖️ ESTRUTURAS OAB</h3><br>
-        <div id="lista-pecas"></div>
+<div id="modal-mentoria" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content mentoria-content">
+        <div class="mentoria-nav">
+            <button class="m-nav-btn active" onclick="window.switchMentoriaTab(event, 'm-dash')">DASHBOARD</button>
+            <button class="m-nav-btn" onclick="window.switchMentoriaTab(event, 'm-arts')">TOP ARTIGOS</button>
+            <button class="m-nav-btn" onclick="window.switchMentoriaTab(event, 'm-cils')">CILADAS</button>
+        </div>
+        <div class="mentoria-body">
+            <div id="m-dash" class="mentoria-pane active">
+                <div class="badge-alerta">🎯 <strong>Checklist Rápido:</strong> Verifique se indicou o valor da causa e os honorários (Art. 791-A CLT).</div>
+                <div class="mentoria-grid">
+                    <div class="m-box">
+                        <h4>Fases da Peça</h4>
+                        <div class="artigo-item">1. Endereçamento</div>
+                        <div class="artigo-item">2. Qualificação</div>
+                        <div class="artigo-item">3. Preliminares / Prejudiciais</div>
+                        <div class="artigo-item">4. Mérito (Fato/Fundamento/Pedido)</div>
+                        <div class="artigo-item">5. Requerimentos Finais</div>
+                    </div>
+                    <div class="m-box">
+                        <h4>Dica Master</h4>
+                        <p style="font-size:0.75rem">No mobile? Use o 📌 Post-it para rascunhar as teses antes de escrever na folha definitiva.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="m-arts" class="mentoria-pane">
+                <div class="mentoria-grid">
+                    <div class="m-box">
+                        <h4>Geral CLT</h4>
+                        <div class="artigo-item"><span class="artigo-num">Art. 840, §1º:</span> Requisitos da Inicial.</div>
+                        <div class="artigo-item"><span class="artigo-num">Art. 3º:</span> Requisitos do Vínculo.</div>
+                        <div class="artigo-item"><span class="artigo-num">Art. 461:</span> Equiparação Salarial.</div>
+                    </div>
+                    <div class="m-box">
+                        <h4>Recursos</h4>
+                        <div class="artigo-item"><span class="artigo-num">Art. 895, I:</span> RO (8 dias).</div>
+                        <div class="artigo-item"><span class="artigo-num">Art. 897, a:</span> Agravo de Petição.</div>
+                        <div class="artigo-item"><span class="artigo-num">Art. 897-A:</span> Embargos de Declaração.</div>
+                    </div>
+                </div>
+            </div>
+            <div id="m-cils" class="mentoria-pane">
+                <div class="m-box" style="border-top-color: var(--danger)">
+                    <h4>Atenção Máxima</h4>
+                    <p style="font-size:0.75rem; margin-bottom:10px;"><strong>Consignação:</strong> Quando o patrão quer pagar mas o empregado sumiu ou recusa. (Art. 539 CPC).</p>
+                    <p style="font-size:0.75rem;"><strong>Rescisória:</strong> Atacar decisão transitada em julgado. Endereço ao TRT. Depósito de 20%.</p>
+                </div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('modal-mentoria').style.display='none'" style="width:100%; padding:15px; background:var(--bg-site); color:white; border:none; border-radius:0 0 12px 12px; font-weight:bold; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div>
-</div>
-
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg)">
-        <h3>📌 POST-IT & DICAS</h3><br>
-        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea>
-    </div>
-</div>
-
-<button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-
-    let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    // BANCO DE DATA COMPLETO: EXAMES 45 AO 01
-    const bancoPecas = {
-        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
-        "44": { titulo: "Contestação (Inépcia)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: INÉPCIA\n2. MÉRITO: VALE-TRANSPORTE" },
-        "43": { titulo: "RO (Cerceamento)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. PRELIMINAR: CERCEAMENTO\n2. MÉRITO: ADICIONAL NOTURNO" },
-        "42": { titulo: "Consignação (Dúvida)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO" },
-        "41": { titulo: "RT (Vínculo)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. VÍNCULO (Art. 3º CLT)\n2. DANOS MORAIS" },
-        "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE\n2. PRIORIDADE\n3. VÍNCULO" },
-        "39": { titulo: "Contestação (Calçados)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nCONTESTAÇÃO\n\n1. INCOMPETÊNCIA TERRITORIAL\n2. CARGO DE CONFIANÇA" },
-        "38": { titulo: "RO (Supermercado)", corpo: "AO DOUTO JUÍZO DA 80ª VARA DO TRABALHO DE NATAL/RN\n\nRECURSO ORDINÁRIO" },
-        "37": { titulo: "RT (Periculosidade)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE VITÓRIA/ES\n\nRECLAMAÇÃO TRABALHISTA" },
-        "36": { titulo: "Contestação (Sucessão)", corpo: "AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE MANAUS/AM\n\nCONTESTAÇÃO" },
-        "35": { titulo: "Consignação (Salvador)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SALVADOR/BA\n\nAÇÃO DE CONSIGNAÇÃO" },
-        "34": { titulo: "RT (Doméstico)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA (LC 150/15)" },
-        "33": { titulo: "Contestação (CIPA)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "32": { titulo: "RO (Insalubridade)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO" },
-        "31": { titulo: "RT (Pejotização)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "30": { titulo: "Contestação (Sobreaviso)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "29": { titulo: "Contestação + Reconvenção", corpo: "AO DOUTO JUÍZO DA 100ª VARA DO TRABALHO DE SÃO PAULO/SP\n\nCONTESTAÇÃO COM RECONVENÇÃO" },
-        "28": { titulo: "RO (Equiparação)", corpo: "AO DOUTO JUÍZO DA 2ª VARA DO TRABALHO DE ARACAJU/SE\n\nRECURSO ORDINÁRIO" },
-        "27": { titulo: "RT (Rescisão Indireta)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE PALMAS/TO\n\nRECLAMAÇÃO TRABALHISTA" },
-        "26": { titulo: "Contestação (Massa Falida)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "25": { titulo: "RO (Advogados)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO" },
-        "24": { titulo: "RT (Acidente)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "23": { titulo: "Contestação (Estágio)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "22": { titulo: "RO (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO" },
-        "21": { titulo: "RT (Externo)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "20": { titulo: "Contestação (Comissões)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "19": { titulo: "Ação Rescisória", corpo: "AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nAÇÃO RESCISÓRIA" },
-        "18": { titulo: "Mandado de Segurança", corpo: "AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nMANDADO DE SEGURANÇA" },
-        "17": { titulo: "RT (Pre-Aposentadoria)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "16": { titulo: "Embargos de Terceiro", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nEMBARGOS DE TERCEIRO" },
-        "15": { titulo: "Contestação (Quitação)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO" },
-        "14": { titulo: "RT (Rito Sumaríssimo)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA (SUMARÍSSIMO)\n\n1. LIQUIDAÇÃO DE PEDIDOS (Art. 852-B CLT)\n2. ADICIONAL DE PERICULOSIDADE" },
-        "13": { titulo: "Contestação (Terceirização)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: ILEGITIMIDADE\n2. MÉRITO: RESPONSABILIDADE SUBSIDIÁRIA (Súmula 331 TST)" },
-        "12": { titulo: "RO (Justa Causa)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: CONFIGURAÇÃO DE JUSTA CAUSA\n2. MÉRITO: ESTABILIDADE ACIDENTÁRIA" },
-        "11": { titulo: "RT (Substituição)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. SALÁRIO SUBSTITUIÇÃO (Súmula 159 TST)\n2. EQUIPARAÇÃO" },
-        "10": { titulo: "Contestação (Vale-Refeição)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. MÉRITO: NATUREZA INDENIZATÓRIA (PAT)\n2. MÉRITO: PRESCRIÇÃO TOTAL" },
-        "09": { titulo: "RO (Horas In Itinere)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: HORAS IN ITINERE\n2. MÉRITO: TURNOS REVEZAMENTO" },
-        "08": { titulo: "RT (Vendedor)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ESTORNO DE COMISSÕES\n2. DEVOLUÇÃO DE DESCONTOS" },
-        "07": { titulo: "Contestação (Gratificações)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. MÉRITO: SUPRESSÃO DE GRATIFICAÇÃO (Súmula 372 TST)\n2. MÉRITO: CARGO CONFIANÇA" },
-        "06": { titulo: "RO (Dano Moral)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: DANO MORAL (QUANTUM)\n2. MÉRITO: DISPENSA DISCRIMINATÓRIA" },
-        "05": { titulo: "RT (Menor de Idade)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. PRESCRIÇÃO (Art. 440 CLT)\n2. TRABALHO NOTURNO PROIBIDO" },
-        "04": { titulo: "Contestação (FGTS)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRESCRIÇÃO FGTS (Súmula 362 TST)\n2. MÉRITO: SOBREAVISO" },
-        "03": { titulo: "RO (Incompetência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. PRELIMINAR: INCOMPETÊNCIA JUSTIÇA TRABALHO\n2. MÉRITO: MULTA 477" },
-        "02": { titulo: "RT (Atleta Profissional)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. CONTRATO ATLETA (Lei 9.615)\n2. DIREITO DE IMAGEM" },
-        "01": { titulo: "Consignação em Pagamento", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\n1. RECUSA NO RECEBIMENTO DAS VERBAS\n2. DEPÓSITO JUDICIAL\n3. QUITAÇÃO" }
-    };
-
-    window.mudarExame = (v) => { 
-        window.carregarPDF('prova');
-        const info = bancoPecas[v] || { titulo: `Exame ${v}`, corpo: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPEÇA...\n\n1. MÉRITO\n2. PEDIDOS` };
-        window.gerarCaderno(info.corpo);
-    };
-
-    window.gerarCaderno = function(corpoPeca) {
-        const divisor = "\n" + "-".repeat(40) + " RESPOSTA OAB " + "-".repeat(40) + "\n";
-        const total = corpoPeca + "\n\n\n" + divisor + "QUESTÃO 1\nA)\nB)\n" + divisor + "QUESTÃO 2\nA)\nB)\n" + divisor + "QUESTÃO 3\nA)\nB)\n" + divisor + "QUESTÃO 4\nA)\nB)";
-        document.getElementById('texto-final').value = total;
-        window.autoSave();
-        document.getElementById('modal-pecas').style.display = 'none';
-        document.getElementById('scroll-area').scrollTop = 0;
-    };
-
-    window.abrirPecas = () => {
-        const ex = document.getElementById('exam-select').value;
-        const info = bancoPecas[ex] || { titulo: "Estrutura", corpo: "AO DOUTO JUÍZO..." };
-        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
-        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">📝 INJETAR ESTRUTURA:<br><small>${info.titulo}</small></button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
-
-    window.carregarPDF = async (tipo) => {
-        const ex = document.getElementById('exam-select').value;
-        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        try { pdfDoc = await pdfjsLib.getDocument(arq).promise; window.renderAll(); } catch(e) { console.warn("Aguardando PDF: " + arq); }
-    };
-
-    window.renderAll = async () => {
-        const container = document.getElementById('pdf-viewport'); container.innerHTML = "";
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-            const page = await pdfDoc.getPage(i);
-            const viewport = page.getViewport({ scale: scale });
-            const canvas = document.createElement('canvas');
-            container.appendChild(canvas);
-            canvas.height = viewport.height; canvas.width = viewport.width;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-        }
-    };
-
-    window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
-    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
-    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-    
-    window.finalizarEArquivar = async () => {
-        const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
-    };
-
-    window.abrirEvolucao = async () => {
-        const snap = await get(ref(db, 'historico_treinos'));
-        const list = document.getElementById('lista-historico'); list.innerHTML = "";
-        if(snap.exists()) {
-            Object.keys(snap.val()).forEach(k => {
-                const item = snap.val()[k];
-                const d = document.createElement('div');
-                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
-                list.appendChild(d);
-            });
-        }
-        document.getElementById('modal-evolucao').style.display = 'flex';
-    };
-
-    window.restaurar = async (k) => {
-        const s = await get(ref(db, `historico_treinos/${k}`));
-        document.getElementById('texto-final').value = s.val().texto;
-        window.autoSave(); document.getElementById('modal-evolucao').style.display = 'none';
-    };
-
-    window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
-    window.toggleSimulado = () => { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } };
-    window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
-    window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
-
-    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
-
-    let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = h;
-
-    const sel = document.getElementById('exam-select');
-    for(let i=45; i>=1; i--) {
-        let opt = document.createElement('option');
-        let num = i < 10 ? "0" + i : i;
-        opt.value = num;
-        opt.innerText = `EXAME ${num}`;
-        if(i==40) opt.selected = true;
-        sel.appendChild(opt);
-    }
-    window.carregarPDF('prova');
-</script>
-</body>
-</html>
+<div id="modal-pecas" class="modal" onclick="if
