@@ -17,145 +17,25 @@
 
         header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .logo { font-weight: 800; color: var(--gold); }
+        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
-        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
+        .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 38px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
 
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-
-        /* BOXES INTEGRADAS (SEM POPUP) */
-        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--danger); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; margin-bottom: 10px; }
-        .panel-header { font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         
+        /* PAINÉIS INTEGRADOS */
+        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; }
+        .panel-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; padding-bottom: 5px; }
         .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.7); outline: none; margin-bottom: 8px; font-family: 'Courier Prime', monospace; }
-        
-        .list-area { max-height: 150px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.3); border-radius: 4px; }
-        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .list-area { max-height: 150px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.3); border-radius: 4px; border: 1px solid #ddd; }
+        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; align-items: center; }
 
-        /* FOLHA DE RESPOSTA */
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
-
-        .viewer-section { flex: 1.2; background: #334155; display: flex; flex-direction: column; }
-        iframe { flex: 1; border: none; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-family:monospace;">05:00:00</div>
-</header>
-
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <button class="btn-symbol" style="background:#e0e7ff;" onclick="togglePanel('box-ia')">🧠</button>
-            <button class="btn-symbol" style="background:#fef9c3;" onclick="togglePanel('box-teses')">📌</button>
-            <button class="btn-symbol" style="background:#fee2e2;" onclick="togglePanel('box-dicas')">📝</button>
-            <button style="margin-left:auto; background:var(--success); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="salvarTreinoTotal()">💾 SALVAR PEÇA</button>
-        </div>
-
-        <div class="paper-wrapper">
-            <div id="box-dicas" class="fgv-panel">
-                <div class="panel-header"><span>📝 NÃO CONFUNDA! (CADERNO TÉCNICO)</span><span onclick="togglePanel('box-dicas')" style="cursor:pointer">×</span></div>
-                
-                <div id="dicas-list" class="list-area"></div>
-
-                <input type="text" id="dica-titulo" class="fgv-input" placeholder="Ex: Extinção com vs Sem Resolução">
-                <textarea id="dica-texto" class="fgv-input" rows="4" placeholder="Explique a diferença aqui (estilo folha FGV)..."></textarea>
-                <input type="hidden" id="dica-id">
-                
-                <div style="display:flex; gap:5px;">
-                    <button onclick="dbSalvarDica()" style="flex:1; background:var(--primary); color:white; border:none; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer;">GRAVAR DICA</button>
-                    <button onclick="limparDica()" style="background:#94a3b8; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">NOVA</button>
-                </div>
-            </div>
-
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section">
-        <iframe id="pdf-frame" src="ro42.pdf"></iframe>
-    </section>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app); 
-    window.db_ops = { ref, set, push, remove, update, db };
-
-    // Sincronização em tempo real das Dicas
-    onValue(ref(db, 'dicas_tecnicas'), (snap) => {
-        const container = document.getElementById('dicas-list');
-        container.innerHTML = "";
-        const data = snap.val();
-        if(data) {
-            Object.keys(data).forEach(k => {
-                container.innerHTML += `
-                <div class="list-item">
-                    <span onclick="carregarDica('${k}')" style="cursor:pointer; flex:1;"><b>${data[k].titulo}</b></span>
-                    <span onclick="excluirDica('${k}')" style="color:var(--danger); cursor:pointer; margin-left:10px;">✖</span>
-                </div>`;
-            });
-        } else { container.innerHTML = "<small style='padding:10px; display:block;'>Nenhuma dica salva.</small>"; }
-    });
-</script>
-
-<script>
-    function togglePanel(id) {
-        const p = document.getElementById(id);
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    }
-
-    async function dbSalvarDica() {
-        const t = document.getElementById('dica-titulo').value;
-        const x = document.getElementById('dica-texto').value;
-        const id = document.getElementById('dica-id').value;
-        if(!t || !x) return alert("Preencha título e conteúdo.");
-
-        if(id) {
-            await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `dicas_tecnicas/${id}`), { titulo: t, texto: x });
-        } else {
-            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'dicas_tecnicas'), { titulo: t, texto: x });
-        }
-        limparDica();
-    }
-
-    async function carregarDica(id) {
-        const snap = await fetch(`https://masteroab-db5e1-default-rtdb.firebaseio.com/dicas_tecnicas/${id}.json`).then(r => r.json());
-        document.getElementById('dica-titulo').value = snap.titulo;
-        document.getElementById('dica-texto').value = snap.texto;
-        document.getElementById('dica-id').value = id;
-    }
-
-    async function excluirDica(id) {
-        if(confirm("Excluir esta explicação técnica?")) {
-            await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `dicas_tecnicas/${id}`));
-            limparDica();
-        }
-    }
-
-    function limparDica() {
-        document.getElementById('dica-titulo').value = "";
-        document.getElementById('dica-texto').value = "";
-        document.getElementById('dica-id').value = "";
-    }
-
-    function gerarLinhas(id, n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById(id).innerHTML = h; }
-    window.onload = () => { gerarLinhas('line-nums-main', 150); };
-</script>
-</body>
-</html>
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155
