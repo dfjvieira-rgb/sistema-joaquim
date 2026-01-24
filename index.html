@@ -27,6 +27,14 @@
         .btn-ex { padding: 8px 0; border: none; background: #222; color: #888; font-size: 0.7rem; cursor: pointer; }
         .btn-ex.active { background: var(--success); color: white; font-weight: bold; }
 
+        /* MENU DE PEÇAS E MODOS */
+        .pecas-menu { background: var(--card); padding: 5px; display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid var(--gold); flex-shrink: 0; }
+        .btn-peca { padding: 6px 12px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.65rem; cursor: pointer; white-space: nowrap; }
+        
+        .pratica-bar { background: #2d3748; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #4a5568; flex-shrink: 0; }
+        .btn-pratica { flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; opacity: 0.5; }
+        .btn-pratica.active { opacity: 1; transform: scale(1.02); }
+
         .workspace { flex: 1; display: flex; overflow: hidden; background: #000; position: relative; }
         .col-res { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 2px solid #000; }
         .col-pdf { flex: 1.8; display: flex; flex-direction: column; background: var(--pdf-bg); }
@@ -36,30 +44,37 @@
         .tab-btn.active { background: white; color: var(--fgv-blue); }
         iframe { width: 100%; height: 100%; border: none; background: #525659; }
 
-        .fgv-header { background: #f0f0f0; color: #000; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; }
+        .fgv-header { background: #f0f0f0; color: #000; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; height: 40px; }
+        .input-titulo-banco { border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; width: 180px; font-weight: bold; }
+
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; -webkit-overflow-scrolling: touch; }
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #ddd; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-family: 'Caveat', cursive; font-size: 20px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); background-size: 100% 25px; color: #001f3f; width: 100%; }
 
+        /* MODAIS E SUBMENUS */
+        .submenu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .submenu-card { background: var(--card); width: 100%; max-width: 300px; border-radius: 12px; border: 1px solid var(--gold); overflow: hidden; }
+        .submenu-item { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; font-weight: bold; text-align: center; color: white; }
+        
         .overlay-consulta { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; flex-direction: column; padding: 10px; }
         .consulta-card { width: 100%; max-width: 800px; margin: auto; background: white; border-radius: 12px; overflow: hidden; height: 85vh; display: flex; flex-direction: column; }
         .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .consulta-b { flex: 1; overflow-y: auto; color: #333; }
-        .hist-item { padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         
-        .tag { font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; margin-right: 5px; color: white; }
-        .tag-tese { background: var(--warning); color: black; }
-        .tag-peca { background: var(--primary); }
-        .tag-treino { background: var(--success); }
+        .hist-filters { display: flex; background: #eee; padding: 5px; gap: 5px; border-bottom: 1px solid #ddd; }
+        .btn-filter { flex: 1; padding: 8px; border: none; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #ddd; color: #666; }
+        .btn-filter.active { background: var(--fgv-blue); color: white; }
 
         .mode-tese-header { background: var(--warning) !important; color: black !important; }
         .mode-tese-paper { background-color: var(--postit-bg) !important; }
         .mode-peca-header { background: var(--fgv-blue) !important; color: white !important; }
         .mode-peca-paper { background-color: var(--peca-bg) !important; }
 
+        #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; font-weight: bold; }
+
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 5; display: none; }
             .col-pdf.active { display: flex; }
+            #mobile-switch { display: block; }
         }
     </style>
 </head>
@@ -72,24 +87,49 @@
 </header>
 
 <div class="laws-bar">
-    <button class="law-link" onclick="abrirBanco('postits')">📌 BANCO TESES</button>
-    <button class="law-link" onclick="abrirBanco('identificacao')">⚖️ BANCO PEÇAS</button>
-    <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 HISTÓRICO GERAL</button>
+    <button class="law-link" onclick="abrirSubmenu('postits')">📌 TESES ▼</button>
+    <button class="law-link" onclick="abrirSubmenu('identificacao')">⚖️ PEÇAS ▼</button>
+    <button class="law-link" onclick="abrirHistoricoComFiltro('todos')" style="background:var(--gold); color:black; margin-left: auto;">📚 HISTÓRICO</button>
 </div>
 
 <div class="exam-grid" id="exam-grid"></div>
 
+<div class="pecas-menu">
+    <button class="btn-peca" onclick="aplicarEstruct('rt')">RT</button>
+    <button class="btn-peca" onclick="aplicarEstruct('cont')">CONT</button>
+    <button class="btn-peca" onclick="aplicarEstruct('ro')">RO</button>
+    <button class="btn-peca" onclick="aplicarEstruct('ap')">AP</button>
+</div>
+
+<div class="pratica-bar">
+    <button class="btn-pratica active" id="btn-modo-peca" style="background:#6366f1;" onclick="modoTreino('peca')">🏋️ PEÇA (150L)</button>
+    <button class="btn-pratica" id="btn-modo-questoes" style="background:#8b5cf6;" onclick="modoTreino('questoes')">📝 QUESTÕES (120L)</button>
+</div>
+
+<div id="modal-submenu" class="submenu-overlay" onclick="fecharModal('modal-submenu')">
+    <div class="submenu-card" onclick="event.stopPropagation()">
+        <div class="submenu-header" style="background:var(--gold); color:black; padding:10px; text-align:center; font-weight:bold;" id="submenu-titulo">OPÇÕES</div>
+        <div class="submenu-item" id="btn-sub-novo" style="color:var(--success)">✚ CRIAR NOVO AGORA</div>
+        <div class="submenu-item" id="btn-sub-gerenciar">📋 GERENCIAR MEU BANCO</div>
+        <div class="submenu-item" id="btn-sub-hist" style="background:#222; font-size:0.7rem;">🕒 VER NO HISTÓRICO</div>
+        <div class="submenu-item" onclick="fecharModal('modal-submenu')" style="color:var(--danger)">CANCELAR</div>
+    </div>
+</div>
+
 <main class="workspace">
     <section class="col-res">
         <div class="fgv-header" id="editor-header">
-            <span id="label-folha">TREINO ATUAL</span>
-            <div id="controles-editor" style="display:flex; gap:5px;">
-                <button onclick="arquivar('treino')" style="background:var(--gold); padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">ARQUIVAR TREINO</button>
+            <span id="label-folha">FOLHA FGV</span>
+            <input type="text" id="banco-titulo-input" class="input-titulo-banco" style="display:none;" placeholder="Título...">
+            
+            <div id="controles-editor">
+                <button onclick="arquivarTreino()" style="background:var(--gold); padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem; cursor:pointer">ARQUIVAR</button>
             </div>
+
             <div id="controles-banco" style="display:none; gap:5px;">
-                <button onclick="salvarNoBanco(false)" style="background:var(--success); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR NO BANCO</button>
-                <button onclick="salvarNoBanco(true)" style="background:var(--primary); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR + INJETAR</button>
-                <button onclick="cancelarEdicaoBanco()" style="background:var(--danger); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">X</button>
+                <button onclick="salvarBancoFinal(false)" style="background:var(--success); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR</button>
+                <button onclick="salvarBancoFinal(true)" style="background:var(--primary); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR+INJETAR</button>
+                <button onclick="cancelarEdicao()" style="background:var(--danger); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">X</button>
             </div>
         </div>
         <div class="paper">
@@ -108,18 +148,25 @@
     </section>
 </main>
 
-<div id="janela-banco" class="overlay-consulta" style="display:none;">
-    <div class="consulta-card">
-        <div class="consulta-h" id="banco-titulo">BANCO <button onclick="fecharModal('janela-banco')">✕</button></div>
-        <div id="lista-banco" class="consulta-b"></div>
-        <button id="btn-novo-banco" style="padding:15px; background:var(--success); color:white; border:none; font-weight:bold; cursor:pointer">+ CRIAR NA FOLHA FGV</button>
-    </div>
-</div>
+<button id="mobile-switch" onclick="document.getElementById('section-pdf').classList.toggle('active')">PDF / FOLHA</button>
 
 <div id="janela-historico" class="overlay-consulta" style="display:none;">
     <div class="consulta-card">
         <div class="consulta-h">HISTÓRICO DE ESTUDOS <button onclick="fecharModal('janela-historico')">✕</button></div>
+        <div class="hist-filters">
+            <button class="btn-filter" id="f-todos" onclick="filtrarHist('todos')">TODOS</button>
+            <button class="btn-filter" id="f-treino" onclick="filtrarHist('treino')">TREINOS</button>
+            <button class="btn-filter" id="f-postits" onclick="filtrarHist('postits')">TESES</button>
+            <button class="btn-filter" id="f-identificacao" onclick="filtrarHist('identificacao')">PEÇAS</button>
+        </div>
         <div id="lista-historico" class="consulta-b"></div>
+    </div>
+</div>
+
+<div id="modal-listagem" class="overlay-consulta" style="display:none;">
+    <div class="consulta-card">
+        <div class="consulta-h"><span id="txt-listagem-titulo">BANCO</span> <button onclick="fecharModal('modal-listagem')">✕</button></div>
+        <div id="lista-corpo" class="consulta-b"></div>
     </div>
 </div>
 
@@ -151,147 +198,143 @@
 </script>
 
 <script>
-    let timeLeft = 18000; let timerInterval = null; let exAtual = 42;
-    window.isEditingBanco = false; window.bufferTexto = ""; 
-    window.idEditando = null; window.bancoEditando = ""; window.nomeEditando = "";
+    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let modoAtual = 'peca';
+    window.isEditingBanco = false; window.bufferTexto = ""; window.idEditando = null; window.bancoAtual = ""; window.filtroHist = "todos";
 
     function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    function resetFolha() {
-        window.isEditingBanco = false;
-        const head = document.getElementById('editor-header');
+    function modoTreino(tipo) {
+        modoAtual = tipo;
         const area = document.getElementById('texto-final');
-        head.classList.remove('mode-tese-header', 'mode-peca-header');
-        area.classList.remove('mode-tese-paper', 'mode-peca-paper');
-        document.getElementById('controles-editor').style.display = 'flex';
-        document.getElementById('controles-banco').style.display = 'none';
-        document.getElementById('label-folha').innerText = "TREINO ATUAL";
-        gerarLinhas(150, document.getElementById('line-nums-main'));
-    }
-
-    function abrirBanco(tipo) {
-        window.bancoEditando = tipo;
-        const lista = document.getElementById('lista-banco');
-        document.getElementById('banco-titulo').innerText = tipo === 'postits' ? 'BANCO DE TESES' : 'IDENTIFICAÇÃO DE PEÇAS';
-        document.getElementById('btn-novo-banco').onclick = () => novoNoBanco();
-        lista.innerHTML = '<p style="padding:20px;">Carregando banco...</p>';
-        document.getElementById('janela-banco').style.display = 'flex';
-
-        window.get(window.ref(window.db, tipo)).then((s) => {
-            const data = s.val() || {};
-            lista.innerHTML = '';
-            for(let id in data) {
-                const div = document.createElement('div');
-                div.className = 'hist-item';
-                div.innerHTML = `<div><b>${data[id].nome}</b></div>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="editarNoBanco('${id}', '${data[id].nome}', '${btoa(unescape(encodeURIComponent(data[id].texto)))}')" style="background:var(--warning); border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer">EDITAR NA FOLHA</button>
-                    </div>`;
-                lista.appendChild(div);
-            }
-        });
-    }
-
-    function editarNoBanco(id, nome, textoB64) {
-        window.bufferTexto = document.getElementById('texto-final').value;
-        window.isEditingBanco = true;
-        window.idEditando = id;
-        window.nomeEditando = nome;
-        const area = document.getElementById('texto-final');
-        const isTese = window.bancoEditando === 'postits';
+        const lineContainer = document.getElementById('line-nums-main');
+        document.getElementById('btn-modo-peca').classList.toggle('active', tipo === 'peca');
+        document.getElementById('btn-modo-questoes').classList.toggle('active', tipo === 'questoes');
         
-        document.getElementById('editor-header').className = 'fgv-header ' + (isTese ? 'mode-tese-header' : 'mode-peca-header');
-        area.className = 'textarea-fgv ' + (isTese ? 'mode-tese-paper' : 'mode-peca-paper');
-        document.getElementById('controles-editor').style.display = 'none';
-        document.getElementById('controles-banco').style.display = 'flex';
-        document.getElementById('label-folha').innerText = "EDITANDO: " + nome;
-        area.value = decodeURIComponent(escape(atob(textoB64)));
-        fecharModal('janela-banco');
-    }
-
-    function novoNoBanco() {
-        let nome = prompt("Título do novo registro:");
-        if(!nome) return;
-        window.bufferTexto = document.getElementById('texto-final').value;
-        window.isEditingBanco = true;
-        window.idEditando = null;
-        window.nomeEditando = nome;
-        editarNoBanco(null, nome, btoa(""));
-    }
-
-    function salvarNoBanco(injetar) {
-        const txt = document.getElementById('texto-final').value;
-        const path = window.bancoEditando + '/';
-        const logTipo = window.bancoEditando === 'postits' ? 'tese' : 'peca';
-
-        if(window.idEditando) {
-            window.update(window.ref(window.db, path + window.idEditando), { texto: txt });
+        if(tipo === 'peca') {
+            document.getElementById('label-folha').innerText = "PEÇA (150L)";
+            gerarLinhas(150, lineContainer);
         } else {
-            window.push(window.ref(window.db, window.bancoEditando), { nome: window.nomeEditando, texto: txt });
+            document.getElementById('label-folha').innerText = "DISC. (120L)";
+            gerarLinhas(120, lineContainer);
         }
-        
-        // AUTO-ARQUIVAR NO HISTÓRICO (A inteligência sugerida)
-        arquivar(logTipo, window.nomeEditando, txt);
-
-        const volta = injetar ? (window.bufferTexto + "\n" + txt) : window.bufferTexto;
-        resetFolha();
-        document.getElementById('texto-final').value = volta;
-        saveTudo();
-        alert("Salvo no Banco e no Histórico!");
     }
 
-    function arquivar(tipo, nomeManual, textoManual) {
-        const txt = textoManual || document.getElementById('texto-final').value;
-        const titulo = nomeManual ? `[BANCO] ${nomeManual}` : `TREINO Exame ${exAtual}`;
-        window.push(window.ref(window.db, 'historico'), {
-            titulo: titulo,
-            texto: txt,
-            data: new Date().toLocaleString(),
-            tipo: tipo // 'treino', 'tese', 'peca'
-        });
-        if(!nomeManual) alert("Treino arquivado!");
+    function abrirSubmenu(tipo) {
+        window.bancoAtual = tipo;
+        document.getElementById('submenu-titulo').innerText = tipo === 'postits' ? 'BANCO DE TESES' : 'IDENTIFICAÇÃO DE PEÇAS';
+        document.getElementById('btn-sub-novo').onclick = () => { fecharModal('modal-submenu'); prepararEdicao(null, '', '', tipo); };
+        document.getElementById('btn-sub-gerenciar').onclick = () => { fecharModal('modal-submenu'); abrirListagem(tipo); };
+        document.getElementById('btn-sub-hist').onclick = () => { fecharModal('modal-submenu'); abrirHistoricoComFiltro(tipo); };
+        document.getElementById('modal-submenu').style.display = 'flex';
     }
 
-    function abrirHistorico() {
+    function abrirHistoricoComFiltro(tipo) { window.filtroHist = tipo; document.getElementById('janela-historico').style.display = 'flex'; renderizarHistorico(); }
+    
+    function filtrarHist(tipo) { window.filtroHist = tipo; renderizarHistorico(); }
+
+    function renderizarHistorico() {
         const lista = document.getElementById('lista-historico');
-        lista.innerHTML = '<p style="padding:20px;">Lendo histórico...</p>';
-        document.getElementById('janela-historico').style.display = 'flex';
-        window.get(window.ref(window.db, 'historico')).then((s) => {
-            const data = s.val() || {};
-            lista.innerHTML = '';
+        document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+        document.getElementById('f-' + window.filtroHist).classList.add('active');
+        lista.innerHTML = '<p style="padding:20px;">Carregando histórico...</p>';
+        window.get(window.ref(window.db, 'historico')).then(s => {
+            const data = s.val() || {}; lista.innerHTML = '';
             Object.keys(data).reverse().forEach(id => {
                 const item = data[id];
-                const tagClass = item.tipo === 'tese' ? 'tag-tese' : (item.tipo === 'peca' ? 'tag-peca' : 'tag-treino');
+                if(window.filtroHist !== 'todos' && item.tipo !== window.filtroHist) return;
                 const div = document.createElement('div');
-                div.className = 'hist-item';
-                div.innerHTML = `
-                    <div><span class="tag ${tagClass}">${item.tipo.toUpperCase()}</span> <b>${item.titulo}</b><br><small>${item.data}</small></div>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="recuperarHist('${id}', false)" style="background:var(--primary); color:white; border:none; padding:5px; border-radius:4px; font-size:0.6rem; cursor:pointer">ABRIR</button>
-                        <button onclick="recuperarHist('${id}', true)" style="background:var(--success); color:white; border:none; padding:5px; border-radius:4px; font-size:0.6rem; cursor:pointer">INJETAR</button>
-                    </div>`;
+                div.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:black;";
+                div.innerHTML = `<div><b>${item.titulo}</b><br><small>${item.data}</small></div>
+                <button onclick="recuperarHist('${id}')" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer">ABRIR</button>`;
                 lista.appendChild(div);
             });
         });
     }
 
-    function recuperarHist(id, injetar) {
+    function aplicarEstruct(tipo) {
+        if(modoAtual !== 'peca') return;
+        const m = { 
+            rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", 
+            cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", 
+            ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", 
+            ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." 
+        };
+        document.getElementById('texto-final').value = m[tipo]; saveTudo();
+    }
+
+    function prepararEdicao(id, nome, textoB64, tipo) {
+        window.bufferTexto = document.getElementById('texto-final').value;
+        window.isEditingBanco = true; window.idEditando = id; window.bancoAtual = tipo;
+        fecharModal('modal-listagem');
+        const head = document.getElementById('editor-header');
+        const area = document.getElementById('texto-final');
+        const inputTit = document.getElementById('banco-titulo-input');
+        head.className = 'fgv-header ' + (tipo === 'postits' ? 'mode-tese-header' : 'mode-peca-header');
+        area.className = 'textarea-fgv ' + (tipo === 'postits' ? 'mode-tese-paper' : 'mode-peca-paper');
+        document.getElementById('label-folha').style.display = 'none';
+        inputTit.style.display = 'block'; inputTit.value = nome; inputTit.focus();
+        document.getElementById('controles-editor').style.display = 'none';
+        document.getElementById('controles-banco').style.display = 'flex';
+        area.value = id ? decodeURIComponent(escape(atob(textoB64))) : "";
+    }
+
+    function salvarBancoFinal(injetar) {
+        const titulo = document.getElementById('banco-titulo-input').value;
+        const texto = document.getElementById('texto-final').value;
+        if(!titulo) return alert("Título obrigatório!");
+        const path = window.bancoAtual + '/';
+        if(window.idEditando) { window.update(window.ref(window.db, path+window.idEditando), {nome:titulo, texto:texto}); }
+        else { window.push(window.ref(window.db, window.bancoAtual), {nome:titulo, texto:texto}); }
+        window.push(window.ref(window.db, 'historico'), { titulo, texto, data: new Date().toLocaleString(), tipo: window.bancoAtual });
+        const volta = injetar ? (window.bufferTexto + "\n" + texto) : window.bufferTexto;
+        modoNormal(); document.getElementById('texto-final').value = volta; saveTudo();
+    }
+
+    function modoNormal() {
+        window.isEditingBanco = false;
+        document.getElementById('editor-header').className = 'fgv-header';
+        document.getElementById('texto-final').className = 'textarea-fgv';
+        document.getElementById('label-folha').style.display = 'block';
+        document.getElementById('banco-titulo-input').style.display = 'none';
+        document.getElementById('controles-editor').style.display = 'flex';
+        document.getElementById('controles-banco').style.display = 'none';
+        modoTreino(modoAtual);
+    }
+
+    function arquivarTreino() {
+        window.push(window.ref(window.db, 'historico'), {
+            titulo: `${modoAtual.toUpperCase()} - Exame ${exAtual}`,
+            texto: document.getElementById('texto-final').value,
+            data: new Date().toLocaleString(),
+            tipo: 'treino'
+        });
+        alert("Treino Arquivado!");
+    }
+
+    function recuperarHist(id) {
         window.get(window.ref(window.db, 'historico/' + id)).then(s => {
-            const item = s.val();
-            if(injetar) {
-                document.getElementById('texto-final').value += "\n" + item.texto;
-            } else {
-                if(confirm("Isso substituirá o texto atual da folha. Continuar?")) {
-                    resetFolha();
-                    document.getElementById('texto-final').value = item.texto;
-                }
-            }
-            saveTudo();
-            fecharModal('janela-historico');
+            modoNormal(); document.getElementById('texto-final').value = s.val().texto;
+            saveTudo(); fecharModal('janela-historico');
         });
     }
 
-    function cancelarEdicaoBanco() { resetFolha(); document.getElementById('texto-final').value = window.bufferTexto; }
+    function abrirListagem(tipo) {
+        const corpo = document.getElementById('lista-corpo');
+        document.getElementById('txt-listagem-titulo').innerText = tipo === 'postits' ? 'MINHAS TESES' : 'MINHAS PEÇAS';
+        document.getElementById('modal-listagem').style.display = 'flex';
+        window.get(window.ref(window.db, tipo)).then(s => {
+            const data = s.val() || {}; corpo.innerHTML = '';
+            for(let id in data) {
+                const div = document.createElement('div');
+                div.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:black;";
+                div.innerHTML = `<b>${data[id].nome}</b> 
+                <button onclick="prepararEdicao('${id}', '${data[id].nome}', '${btoa(unescape(encodeURIComponent(data[id].texto)))}', '${tipo}')" style="background:var(--warning); border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer">EDITAR</button>`;
+                corpo.appendChild(div);
+            }
+        });
+    }
+
+    function cancelarEdicao() { modoNormal(); document.getElementById('texto-final').value = window.bufferTexto; }
     function handleInput() { if(!window.isEditingBanco) saveTudo(); }
     function saveTudo() { window.set(window.ref(window.db, 'treino_atual/global'), document.getElementById('texto-final').value); }
     function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
@@ -299,13 +342,7 @@
     function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function mudarDoc(tipo) { document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
 
-    const grid = document.getElementById('exam-grid');
-    for(let i=35; i<=45; i++){
-        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc('prova'); };
-        grid.appendChild(b);
-    }
-    window.onload = () => { resetFolha(); mudarDoc('prova'); };
+    window.onload = () => { modoTreino('peca'); mudarDoc('prova'); };
 </script>
 </body>
 </html>
