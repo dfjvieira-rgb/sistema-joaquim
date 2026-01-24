@@ -103,7 +103,7 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal-peca">⚖️ IDENTIFICAÇÃO</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal-peca">⚖️ IDENTIFICAÇÃO E TESES</h3><br><div id="lista-pecas"></div></div></div>
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div></div>
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:350px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
@@ -120,19 +120,37 @@
     let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // 1. BANCO DE DADOS INTELIGENTE POR EXAME
+    // 1. BANCO DE DADOS CIRÚRGICO (TESES + IDENTIFICAÇÃO)
     const bancoExames = {
-        "45": { peca: "Reclamação Trabalhista", art: "Art. 840, §1º CLT", local: "Vara do Trabalho de...", corpo: "1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
-        "44": { peca: "Contestação", art: "Art. 847 CLT", local: "Vara do Trabalho de...", corpo: "1. PRELIMINAR: INÉPCIA\n2. MÉRITO: VALE-TRANSPORTE" },
-        "40": { peca: "Reclamação Trabalhista", art: "Art. 840, §1º CLT", local: "90ª Vara do Trabalho de Osasco/SP", corpo: "1. VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n2. GRATUIDADE (Art. 790 CLT)\n3. DANOS MORAIS (Art. 223-G CLT)" },
-        "default": { peca: "Petiçao Padrão", art: "Art. ... CLT", local: "... Vara do Trabalho de ...", corpo: "1. MÉRITO\n2. HONORÁRIOS" }
+        "40": { 
+            peca: "Reclamação Trabalhista", 
+            art: "Art. 840, § 1º da CLT", 
+            local: "90ª VARA DO TRABALHO DE OSASCO/SP", 
+            teses: "1. VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n2. JUSTIÇA GRATUITA (Art. 790, § 3º CLT)\n3. DANOS MORAIS (Art. 223-G CLT)\n4. HONORÁRIOS (Art. 791-A CLT)" 
+        },
+        "41": { 
+            peca: "Contestação", 
+            art: "Art. 847 da CLT", 
+            local: "Vara do Trabalho de...", 
+            teses: "1. PRELIMINAR DE INÉPCIA\n2. MÉRITO: INDEVIDO ADICIONAL DE PERICULOSIDADE\n3. MÉRITO: COMPENSAÇÃO DE JORNADA" 
+        },
+        "default": { 
+            peca: "Estrutura Padrão", 
+            art: "Art. ... da CLT", 
+            local: "... VARA DO TRABALHO DE ...", 
+            teses: "1. MÉRITO\n2. PEDIDOS\n3. REQUERIMENTOS" 
+        }
     };
 
+    // 2. FUNÇÃO INJETAR (PEÇA + 4 QUESTÕES FGV)
     window.injetarPecaMaster = (ex) => {
         const d = bancoExames[ex] || bancoExames["default"];
         const divisor = "\n" + "-".repeat(15) + " FOLHA DE RESPOSTAS (FGV) " + "-".repeat(15) + "\n";
-        const total = `AO DOUTO JUÍZO DA ${d.local}\n\nRECLAMANTE, qualificação completa, vem propor\n\n${d.peca.toUpperCase()}\n\ncom fulcro no ${d.art}.\n\nTESES PRINCIPAIS:\n${d.corpo}\n\n` + divisor + "QUESTÃO 1: \nA) \nB) \n\nQUESTÃO 2: \nA) \nB) \n\nQUESTÃO 3: \nA) \nB) \n\nQUESTÃO 4: \nA) \nB)";
-        document.getElementById('texto-final').value = total;
+        
+        const esqueleto = `AO DOUTO JUÍZO DA ${d.local}\n\nRECLAMANTE (NOME), qualificação, vem por seu advogado propor\n\n${d.peca.toUpperCase()}\n\ncom fulcro no ${d.art}.\n\n--- TESES DA PEÇA ---\n${d.teses}\n\nVALOR DA CAUSA: R$ ...\n\n` + 
+        divisor + "QUESTÃO 1: \nA) \nB) \n" + divisor + "QUESTÃO 2: \nA) \nB) \n" + divisor + "QUESTÃO 3: \nA) \nB) \n" + divisor + "QUESTÃO 4: \nA) \nB)";
+        
+        document.getElementById('texto-final').value = esqueleto;
         window.autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
     };
@@ -143,19 +161,19 @@
         const container = document.getElementById('lista-pecas');
         container.innerHTML = `
             <div class="btn-model-item" onclick="window.injetarPecaMaster('${ex}')">
-                <strong>${d.peca} (EXAME ${ex})</strong>
+                <strong>INJETAR: ${d.peca} (EXAME ${ex})</strong>
                 <span>Endereçamento: ${d.local}</span>
                 <span>Fundamento: ${d.art}</span>
             </div>
             <div class="btn-model-item" onclick="window.injetarPecaMaster('default')">
-                <strong>Estrutura Genérica</strong>
-                <span>Use para qualquer exame não listado</span>
+                <strong>Injetar Estrutura Genérica</strong>
+                <span>Para outros exames</span>
             </div>
         `;
         document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    // 2. MOTOR PDF & ZOOM
+    // 3. MOTOR PDF & ZOOM HD
     window.applyZoom = (val) => {
         document.getElementById('pdf-inner-zoom').style.transform = `scale(${val/100})`;
         document.getElementById('zoom-text').innerText = val + "%";
@@ -182,7 +200,7 @@
         }
     }
 
-    // 3. FIREBASE & GESTÃO
+    // 4. FIREBASE & GESTÃO
     window.autoSave = () => { window.isEditing = true; set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); setTimeout(()=>window.isEditing=false, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
