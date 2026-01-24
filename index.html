@@ -15,52 +15,56 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        .timer-group { display: flex; align-items: center; gap: 8px; }
-        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
-        .main-container { flex: 1; display: flex; overflow: hidden; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
+        
+        .main-container { flex: 1; display: flex; overflow: hidden; transition: all 0.3s ease; }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; transition: all 0.3s ease; }
+        .editor-section.hidden { flex: 0; display: none; }
+
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; transition: all 0.3s ease; position: relative; }
+        .viewer-section.expanded { flex: 10; }
+
+        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-symbol { height: 38px; min-width: 42px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 20px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
+
+        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; scroll-behavior: smooth; }
+        canvas { max-width: 100%; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); background: #fff; transition: width 0.2s; }
+
+        /* Controles de Leitura PDF */
+        .pdf-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
+        .btn-float { width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 92%; max-width: 600px; border-radius: 12px; overflow: hidden; color: #333; display: flex; flex-direction: column; max-height: 90vh; }
-        .m-header { background: #000; color: var(--gold); padding: 15px; font-weight: 800; text-align: center; border-bottom: 4px solid var(--gold); }
-        .m-tabs { display: flex; background: #f1f5f9; }
-        .m-tab-btn { flex: 1; padding: 12px; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.7rem; border-bottom: 3px solid transparent; }
-        .m-tab-btn.active { border-bottom-color: var(--primary); color: var(--primary); background: #fff; }
         .m-body { padding: 15px; overflow-y: auto; flex: 1; }
-        .m-pane { display: none; }
-        .m-pane.active { display: block; }
-        .fgv-box { border: 2px solid #333; padding: 10px; margin-bottom: 15px; position: relative; }
-        .fgv-label { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 5px; font-size: 9px; font-weight: 900; border: 1px solid #333; }
-        .fgv-txt { width: 100%; border: none; outline: none; min-height: 100px; font-family: inherit; font-size: 14px; }
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
-        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; scroll-behavior: smooth; }
-        canvas { max-width: 100%; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); background: #fff; }
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: white; z-index: 6000; align-items: center; justify-content: center; font-size: 1.5rem; border: 2px solid var(--gold); }
-        @media (max-width: 1024px) { .viewer-section { display: none; position: fixed; inset: 0; z-index: 4000; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
+        .fgv-txt { width: 100%; border: none; outline: none; min-height: 100px; font-family: inherit; font-size: 14px; color: #000; }
+
+        @media (max-width: 1024px) { 
+            .viewer-section { position: fixed; inset: 0; z-index: 4000; display: none; } 
+            .viewer-section.active { display: flex; } 
+            #mobile-btn { display: flex; }
+        }
+        #mobile-btn { display: none; position: fixed; bottom: 20px; left: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: white; z-index: 6000; align-items: center; justify-content: center; font-size: 1.5rem; border: 2px solid var(--gold); }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div class="timer-group">
-        <div id="timer-display">05:00:00</div>
-        <button onclick="window.toggleTimer()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🏁</button>
-    </div>
+    <div id="timer-display" style="font-family: monospace; color: var(--warning);">05:00:00</div>
 </header>
 
 <div class="main-container">
-    <section class="editor-section">
+    <section class="editor-section" id="editor-area">
         <div class="toolbar">
             <select id="exam-select" onchange="window.loadPDF('prova')" class="btn-symbol" style="width:auto; font-size:0.7rem; border:1px solid #ccc;"></select>
-            <button class="btn-symbol" title="Mentoria" style="background:var(--gold); color:#000" onclick="window.openM()">🏆</button>
-            <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.openP()">⚖️</button>
-            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.openPost()">📌</button>
+            <button class="btn-symbol" title="Mentoria" style="background:var(--gold);" onclick="window.openM()">🏆</button>
+            <button class="btn-symbol" title="Estruturas" style="background:#fef9c3;" onclick="window.openP()">⚖️</button>
+            <button class="btn-symbol" title="Post-it" style="background:#fff7ed;" onclick="window.openPost()">📌</button>
             <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.saveT()">💾</button>
         </div>
         <div class="paper-wrapper">
@@ -72,44 +76,29 @@
     </section>
 
     <section class="viewer-section" id="viewer">
-        <div class="m-tabs" style="background:#1e293b">
-            <button id="btn-p" class="m-tab-btn active" style="color:#fff" onclick="window.loadPDF('prova')">PROVA</button>
-            <button id="btn-g" class="m-tab-btn" style="color:#fff" onclick="window.loadPDF('gabarito')">GABARITO</button>
-            <button id="btn-v" class="m-tab-btn" style="color:var(--gold)" onclick="window.loadPDF('vade')">VADE</button>
+        <div class="toolbar" style="background:#1e293b; color:white; border-bottom: 2px solid var(--gold);">
+            <button class="btn-symbol" style="background:transparent; color:white; font-size:0.8rem;" onclick="window.loadPDF('prova')">PROVA</button>
+            <button class="btn-symbol" style="background:transparent; color:white; font-size:0.8rem;" onclick="window.loadPDF('gabarito')">GABARITO</button>
+            <button class="btn-symbol" title="Expandir Leitura" style="background:var(--primary); color:white; margin-left:auto;" onclick="window.toggleExpand()">↔️ EXPANDIR</button>
         </div>
+        
         <div id="pdf-viewport"></div>
+
+        <div class="pdf-controls">
+            <button class="btn-float" onclick="window.changeZoom(0.1)">➕</button>
+            <button class="btn-float" onclick="window.changeZoom(-0.1)">➖</button>
+        </div>
     </section>
 </div>
 
 <div id="modal-mentoria" class="modal" onclick="if(event.target==this)this.style.display='none'">
-    <div class="modal-content">
-        <div class="m-header">MENTORIA MASTER - ESTRATÉGIAS FGV</div>
-        <div class="m-tabs">
-            <button class="m-tab-btn active" onclick="window.switchM(event, 'm1')">TESES GERAIS</button>
-            <button class="m-tab-btn" onclick="window.switchM(event, 'm2')">DICAS ARYANNA</button>
-        </div>
-        <div class="m-body">
-            <div id="m1" class="m-pane active">
-                <div class="fgv-box"><div class="fgv-label">TESES E FUNDAMENTOS</div>
-                <textarea id="m-teses" class="fgv-txt" oninput="window.saveMentoria()"></textarea></div>
-            </div>
-            <div id="m2" class="m-pane">
-                <div class="fgv-box"><div class="fgv-label">PONTOS DE ATENÇÃO</div>
-                <textarea id="m-dicas" class="fgv-txt" oninput="window.saveMentoria()"></textarea></div>
-            </div>
-        </div>
-    </div>
+    <div class="modal-content"><div class="m-body"><textarea id="m-teses" class="fgv-txt" placeholder="Teses..." oninput="window.saveMentoria()"></textarea></div></div>
 </div>
-
 <div id="modal-post" class="modal" onclick="if(event.target==this)this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg); padding:15px; max-width:400px;">
-        <h4 style="margin-bottom:10px">📌 POST-IT RÁPIDO</h4>
-        <textarea id="post-editor" class="fgv-txt" style="background:var(--rascunho-bg); height:300px; border:1px solid #ccc;" oninput="window.savePost()"></textarea>
-    </div>
+    <div class="modal-content" style="background:var(--rascunho-bg); padding:15px;"><textarea id="post-editor" class="fgv-txt" style="height:300px;" oninput="window.savePost()"></textarea></div>
 </div>
-
 <div id="modal-pecas" class="modal" onclick="if(event.target==this)this.style.display='none'">
-    <div class="modal-content" style="padding:20px"><h3 id="p-title"></h3><br><div id="p-list"></div></div>
+    <div class="modal-content" style="padding:20px"><h3 id="p-title"></h3><div id="p-list"></div></div>
 </div>
 
 <button id="mobile-btn" onclick="document.getElementById('viewer').classList.toggle('active')">📑</button>
@@ -122,93 +111,75 @@
     const app = initializeApp(config); const db = getDatabase(app);
 
     let currentPDF = null;
-    let isRendering = false;
+    let pdfZoom = 1.2;
+    let currentType = 'prova';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // REGRA DE OURO - DATABASE FGV (A RISCA)
-    const REGRAS = {
-        "44": { p: "CONTESTAÇÃO", f: "Art. 847 da CLT", e: "Vara do Trabalho de ..." },
-        "40": { p: "RECLAMAÇÃO TRABALHISTA", f: "Art. 840, §1º da CLT", e: "90ª Vara do Trabalho de Osasco/SP" },
-        "36": { p: "MANDADO DE SEGURANÇA", f: "Art. 5º, LXIX da CF e Lei 12.016/09", e: "Tribunal Regional do Trabalho da ... Região" }
+    // EXPANSÃO DE TELA
+    window.toggleExpand = () => {
+        const viewer = document.getElementById('viewer');
+        const editor = document.getElementById('editor-area');
+        viewer.classList.toggle('expanded');
+        editor.classList.toggle('hidden');
+        window.renderPDF(); // Re-renderiza para ajustar largura
+    };
+
+    window.changeZoom = (val) => {
+        pdfZoom += val;
+        window.renderPDF();
     };
 
     window.loadPDF = async (tipo) => {
-        if (isRendering) return;
+        currentType = tipo;
         const ex = document.getElementById('exam-select').value;
-        const url = tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : tipo === 'vade' ? `Aryanna Linhares.pdf` : `ro${ex}.pdf`;
-        
-        const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "<p style='color:white'>Carregando documento com segurança...</p>";
-        
+        const url = tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`;
         try {
-            if (currentPDF) { await currentPDF.destroy(); }
+            if (currentPDF) await currentPDF.destroy();
             currentPDF = await pdfjsLib.getDocument(url).promise;
-            container.innerHTML = "";
-            isRendering = true;
-            
-            // Renderização Inteligente (Uma página por vez para não travar)
-            for (let i = 1; i <= currentPDF.numPages; i++) {
-                const page = await currentPDF.getPage(i);
-                const scale = window.innerWidth < 768 ? 0.9 : 1.3;
-                const viewport = page.getViewport({ scale });
-                
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                container.appendChild(canvas);
-                
-                await page.render({ canvasContext: context, viewport }).promise;
-                // Pequena pausa para o processador respirar
-                await new Promise(r => requestAnimationFrame(r));
-            }
-            isRendering = false;
-        } catch (e) { 
-            container.innerHTML = `<p style='color:orange'>Arquivo não localizado: ${url}</p>`;
-            isRendering = false;
+            window.renderPDF();
+        } catch (e) { document.getElementById('pdf-viewport').innerHTML = "Arquivo não encontrado."; }
+    };
+
+    window.renderPDF = async () => {
+        const container = document.getElementById('pdf-viewport');
+        container.innerHTML = "";
+        for (let i = 1; i <= currentPDF.numPages; i++) {
+            const page = await currentPDF.getPage(i);
+            const viewport = page.getViewport({ scale: pdfZoom });
+            const canvas = document.createElement('canvas');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            container.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
         }
     };
 
-    window.openP = () => {
-        const ex = document.getElementById('exam-select').value;
-        const r = REGRAS[ex] || { p: "PEÇA", f: "FUNDAMENTO", e: "JUIZ" };
-        document.getElementById('p-title').innerText = `REGRA OFICIAL - EXAME ${ex}`;
-        document.getElementById('p-list').innerHTML = `
-            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:10px; font-size:0.9rem">
-                <b>Peça:</b> ${r.p}<br><b>Fundamento:</b> ${r.f}<br><b>Endereçamento:</b> ${r.e}
-            </div>
-            <button onclick="window.inject('${r.p}', '${r.f}', '${r.e}')" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">🚀 INJETAR NA FOLHA</button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
-
-    window.inject = (p, f, e) => {
-        const txt = `EXCELENTÍSSIMO SENHOR DOUTOR ${e.toUpperCase()}\n\nNOME DA PARTE, já qualificada, vem apresentar\n\n${p}\n\ncom fundamento no ${f}.\n\n--------------------------------------------\n\n`;
-        document.getElementById('main-editor').value = txt;
-        window.sync();
-        document.getElementById('modal-pecas').style.display = 'none';
-    };
-
-    // Firebase Sync
-    window.sync = () => { window.editing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v4_caderno'), document.getElementById('main-editor').value); window.editing = false; }, 800); };
-    onValue(ref(db, 'v4_caderno'), s => { if(!window.editing) document.getElementById('main-editor').value = s.val() || ""; });
-    
+    // FUNÇÕES DE BASE (Mantidas)
+    window.sync = () => { window.ed = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v4_caderno'), document.getElementById('main-editor').value); window.ed = false; }, 800); };
+    onValue(ref(db, 'v4_caderno'), s => { if(!window.ed) document.getElementById('main-editor').value = s.val() || ""; });
     window.savePost = () => set(ref(db, 'v4_postit'), document.getElementById('post-editor').value);
     onValue(ref(db, 'v4_postit'), s => document.getElementById('post-editor').value = s.val() || "");
-
     window.openM = () => document.getElementById('modal-mentoria').style.display = 'flex';
     window.openPost = () => document.getElementById('modal-post').style.display = 'flex';
-    window.switchM = (e, id) => {
-        document.querySelectorAll('.m-pane').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+    
+    window.openP = () => {
+        const ex = document.getElementById('exam-select').value;
+        document.getElementById('p-title').innerText = `ESTRUTURA EXAME ${ex}`;
+        document.getElementById('p-list').innerHTML = `<button onclick="window.inject()" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:8px;">INJETAR</button>`;
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+    window.inject = () => {
+        document.getElementById('main-editor').value = "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ...\n\n";
+        window.sync(); document.getElementById('modal-pecas').style.display = 'none';
     };
 
-    // Init UI
+    // INIT
     const sel = document.getElementById('exam-select');
     for(let i=44; i>=30; i--) {
         let o = document.createElement('option'); o.value = i; o.innerText = `EXAME ${i}`;
-        if(i==36) o.selected = true; sel.appendChild(o);
+        if(i==40) o.selected = true; sel.appendChild(o);
     }
-    let l = ""; for(let i=1; i<=200; i++) l += i + "<br>"; document.getElementById('lines').innerHTML = l;
+    let l = ""; for(let i=1; i<=150; i++) l += i + "<br>"; document.getElementById('lines').innerHTML = l;
     window.loadPDF('prova');
 </script>
 </body>
