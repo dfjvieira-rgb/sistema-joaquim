@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
             --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4; --pen-blue: #1e3a8a;
+            --rascunho-bg: #fefce8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -17,12 +19,11 @@
 
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; height: 45px; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        
-        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 2px 10px; border-radius: 4px; border: 1px solid #333; }
+        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR */
+        /* EDITOR E TOOLBAR */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
         .btn-symbol { height: 35px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
@@ -32,19 +33,23 @@
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* VIEWER */
+        /* VIEWER DE PDF (O NOVO MOTOR) */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         
-        iframe { flex: 1; border: none; width: 100%; height: 100%; background: white; }
+        .zoom-controls { background: #1e293b; padding: 8px 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #444; color: var(--gold); font-size: 0.7rem; }
+        .zoom-controls input { flex: 1; accent-color: var(--gold); }
+
+        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; }
+        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin: 15px 0; max-width: 100%; }
 
         /* MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; }
 
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; border: 2px solid var(--gold); }
 
         @media (max-width: 1024px) {
             .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
@@ -64,9 +69,9 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
-            <button class="btn-symbol" style="background:#f0fdf4;" onclick="document.getElementById('modal-evolucao').style.display='flex'; carregarHistorico();">📚</button>
-            <button class="btn-symbol" style="background:#fef9c3;" onclick="document.getElementById('modal-rascunho').style.display='flex'">📌</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="finalizarEArquivar()">💾 SALVAR</button>
+            <button class="btn-symbol" onclick="document.getElementById('modal-evolucao').style.display='flex'; carregarHistorico();">📚</button>
+            <button class="btn-symbol" onclick="document.getElementById('modal-rascunho').style.display='flex'">📌</button>
+            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper">
             <div class="paper-sheet">
@@ -78,25 +83,37 @@
 
     <section class="viewer-section" id="viewer">
         <div class="tabs">
-            <button class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
-            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
-            <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
+            <button class="tab active" onclick="carregarPDF('prova')">PROVA</button>
+            <button class="tab" onclick="carregarPDF('gabarito')">GABARITO</button>
+            <button class="tab" style="color:var(--gold)" onclick="carregarPDF('vade')">VADE</button>
         </div>
-        <iframe id="pdf-frame" src=""></iframe>
+        <div class="zoom-controls">
+            <span>ZOOM NÍTIDO:</span>
+            <input type="range" id="zoom-range" min="0.5" max="3" step="0.1" value="1.2" oninput="ajustarZoom(this.value)">
+            <span id="zoom-val">120%</span>
+        </div>
+        <div id="pdf-viewport">
+            <canvas id="pdf-canvas"></canvas>
+            <div style="padding: 10px; display: flex; gap: 20px;">
+                <button onclick="mudarPagina(-1)" style="padding:5px 15px; border-radius:5px; border:none; background:var(--gold); font-weight:bold; cursor:pointer;">⬅ ANT</button>
+                <span id="page-info" style="color:white; font-weight:bold; padding-top:5px;">Pág: 1 / --</span>
+                <button onclick="mudarPagina(1)" style="padding:5px 15px; border-radius:5px; border:none; background:var(--gold); font-weight:bold; cursor:pointer;">PROX ➡</button>
+            </div>
+        </div>
     </section>
+</div>
+
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content" style="max-width: 700px; height: 70vh; display:flex; flex-direction:column; background:var(--rascunho-bg);">
+        <h3 style="color: #854d0e;">📌 RASCUNHO / POST-IT</h3><br>
+        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); border:1px solid #ddd;" oninput="saveRascunho()"></textarea>
+    </div>
 </div>
 
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3>📚 MUSEU DE PEÇAS</h3><br>
+        <h3>📚 MUSEU (RESTAURAR)</h3><br>
         <div id="lista-historico" style="max-height: 300px; overflow-y: auto;"></div>
-    </div>
-</div>
-
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="max-width: 600px;">
-        <h3>📌 RASCUNHO / POST-IT</h3><br>
-        <textarea id="rascunho-editor" style="width: 100%; height: 200px; padding: 10px; border: 1px solid #ddd;" oninput="saveRascunho()"></textarea>
     </div>
 </div>
 
@@ -115,28 +132,67 @@
 
 <script>
     let exAtual = 40;
+    let pdfDoc = null;
+    let pageNum = 1;
+    let scale = 1.2;
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
 
-    function mudarDoc(tipo, btn) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    async function carregarPDF(tipo) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        const arquivo = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        // Voltamos ao padrão estável: o navegador gerencia o zoom do PDF
-        document.getElementById('pdf-frame').src = arquivo;
+        const tabs = document.querySelectorAll('.tab');
+        if(tipo === 'prova') tabs[0].classList.add('active');
+        if(tipo === 'gabarito') tabs[1].classList.add('active');
+        if(tipo === 'vade') tabs[2].classList.add('active');
+
+        const arq = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+        
+        try {
+            pdfDoc = await pdfjsLib.getDocument(arq).promise;
+            pageNum = 1;
+            renderPage();
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao carregar PDF. Verifique se o arquivo existe na pasta.");
+        }
     }
 
+    async function renderPage() {
+        const page = await pdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale: scale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        document.getElementById('page-info').innerText = `Pág: ${pageNum} / ${pdfDoc.numPages}`;
+        document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%";
+    }
+
+    function ajustarZoom(val) { scale = parseFloat(val); renderPage(); }
+    function mudarPagina(delta) { 
+        if (!pdfDoc || pageNum + delta < 1 || pageNum + delta > pdfDoc.numPages) return;
+        pageNum += delta; renderPage(); 
+    }
+
+    // FIREBASE E EDITOR (MANTIDOS)
+    function autoSave() { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { window.set(window.ref(window.db, 'v3_treino/peca'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); }
+    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
+    function mudarExame(v) { exAtual = v; carregarPDF('prova'); }
+    function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
+
     async function finalizarEArquivar() {
-        const t = prompt("Nome da peça:");
+        const t = prompt("Título para o Museu:");
         if(t) {
-            await window.push(window.ref(window.db, 'historico_treinos'), { 
-                titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString()
-            });
-            alert("Arquivado!");
+            await window.push(window.ref(window.db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
+            alert("Peça enviada para o Museu de Evolução!");
+            document.getElementById('texto-final').value = ""; autoSave();
         }
     }
 
     async function carregarHistorico() {
-        const list = document.getElementById('lista-historico');
-        list.innerHTML = "Carregando...";
+        const list = document.getElementById('lista-historico'); list.innerHTML = "Abrindo o museu...";
         const snap = await window.get(window.ref(window.db, 'historico_treinos'));
         list.innerHTML = "";
         if(snap.exists()) {
@@ -145,16 +201,11 @@
                 const d = document.createElement('div');
                 d.style = "padding:10px; border-bottom:1px solid #eee; cursor:pointer;";
                 d.innerHTML = `<strong>${item.titulo}</strong><br><small>${item.data}</small>`;
-                d.onclick = () => { document.getElementById('texto-final').value = item.texto; autoSave(); document.getElementById('modal-evolucao').style.display='none'; };
+                d.onclick = () => { if(confirm("Restaurar esta peça?")) { document.getElementById('texto-final').value = item.texto; autoSave(); document.getElementById('modal-evolucao').style.display='none'; }};
                 list.appendChild(d);
             });
         }
     }
-
-    function autoSave() { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { window.set(window.ref(window.db, 'v3_treino/peca'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); }
-    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
-    function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab.active')); }
-    function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
 
     window.onload = () => {
         let h = ""; for(let i=1; i<=150; i++) h += i + "<br>";
@@ -164,7 +215,7 @@
             let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`; 
             if(i==40) opt.selected = true; sel.appendChild(opt); 
         }
-        mudarDoc('prova', document.querySelector('.tab.active'));
+        carregarPDF('prova');
     };
 </script>
 </body>
