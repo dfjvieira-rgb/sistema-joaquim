@@ -21,7 +21,6 @@
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
@@ -30,7 +29,7 @@
 
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        /* JANELAS FGV (IA E POST-IT) */
+        /* JANELAS FGV */
         .fgv-box { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; }
         .fgv-box-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; padding-bottom: 5px; }
         
@@ -40,12 +39,10 @@
         .tese-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.4); padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.8rem; }
         .ia-res-item { background: #fff; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
 
-        /* FOLHA DE RESPOSTA */
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* VIEWER */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
@@ -80,7 +77,7 @@
             <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleBox('box-ia')">🧠</button>
             <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="toggleBox('box-teses')">📌</button>
             <button class="btn-symbol" style="background:#f1f5f9; color:#475569;" onclick="mudarDoc('prova')">📄</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: Olhe o último parágrafo do enunciado!')">💡</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: Olhe o último ato processual!')">💡</button>
             <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarHistorico()">📚</button>
             <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 SALVAR PEÇA</button>
         </div>
@@ -126,7 +123,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app); window.db_ops = { ref, set, push, get, remove, update, db };
+    const app = initializeApp(config); const db = getDatabase(app); 
+    window.db_ops = { ref, set, push, get, remove, update, db };
 
     onValue(ref(db, 'teses'), (snap) => {
         const list = document.getElementById('db-list'); list.innerHTML = "";
@@ -159,10 +157,19 @@
         const resT = document.getElementById('ia-res-teses');
         resT.innerHTML = "";
         resP.innerText = input.includes("sentença") ? "🎯 PEÇA: RECURSO ORDINÁRIO" : input.includes("citação") ? "🎯 PEÇA: CONTESTAÇÃO" : "⚠️ Verifique o enunciado.";
-        dic.forEach(d => { if(input.includes(d.t)) resT.innerHTML += `<div class="ia-res-item"><span>${d.tit}</span><button onclick="importarTese('${d.tit}','${d.f}')" class="btn-fgv-action" style="width:auto;padding:4px 8px;background:var(--success)">IMPORTAR</button></div>`; });
+        dic.forEach(d => { 
+            if(input.includes(d.t)) {
+                resT.innerHTML += `<div class="ia-res-item"><span>${d.tit}</span><button onclick="importarTese('${d.tit}','${d.f}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer">IMPORTAR</button></div>`;
+            }
+        });
     }
 
-    async function importarTese(t, f) { await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'teses'), { titulo: t, texto: f }); }
+    async function importarTese(t, f) { 
+        if(window.db_ops) {
+            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'teses'), { titulo: t, texto: f });
+            alert("Tese Importada para o Post-it! 📌");
+        }
+    }
 
     async function dbSalvarTese() {
         const t = document.getElementById('t-tit').value, x = document.getElementById('t-txt').value, k = document.getElementById('t-key').value;
