@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | MENTORIA 2026</title>
+    <title>ARYANNA MASTER PRO | MENTORIA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    
     <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
-        }
+        :root { --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626; --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        .timer-group { display: flex; align-items: center; gap: 8px; }
         #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
-        .btn-header { border: none; padding: 6px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
         .main-container { flex: 1; display: flex; overflow: hidden; }
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-symbol { height: 38px; min-width: 42px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; scroll-behavior: smooth; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 3000px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
@@ -33,51 +27,49 @@
         .tab.active { background: #fff; color: var(--primary); }
         #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
         canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 550px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
-        .card-mentoria { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        .card-mentoria h4 { color: var(--primary); margin-bottom: 5px; font-size: 0.9rem; }
-        .card-mentoria p { font-size: 0.8rem; line-height: 1.4; color: #475569; }
-        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-right: 5px; background: #dbeafe; color: #1e40af; }
+
+        /* MODAL MENTORIA (FOCO TOTAL) */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; padding: 10px; }
+        .modal-content { background: white; width: 100%; max-width: 800px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 90vh; overflow-y: auto; }
+        .mentoria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 15px; }
+        .mentoria-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; }
+        .mentoria-box h4 { color: var(--primary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+        .artigo-item { font-size: 0.7rem; margin-bottom: 6px; line-height: 1.3; color: #334155; }
+        .artigo-num { font-weight: 800; color: var(--danger); }
+        .alert-cilada { background: #fff1f2; border: 1px solid #fecaca; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 0.75rem; color: #991b1b; }
+        .btn-atacar { background: var(--primary); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; cursor: pointer; font-weight: bold; float: right; }
+        
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
+        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } .mentoria-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div class="timer-group">
-        <div id="timer-display">05:00:00</div>
-        <button id="btn-simulado" class="btn-header" style="background:var(--danger); color:white;" onclick="window.toggleSimulado()">🏁</button>
-        <button class="btn-header" style="background:#4b5563; color:white;" onclick="window.resetTimer()">🔄</button>
-    </div>
+    <div id="timer-display">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.75rem; border:1px solid #ddd;"></select>
-            <button class="btn-symbol" title="Mentoria Estratégica" style="background:#fff1f2; color:var(--danger)" onclick="window.abrirMentoria()">🏆</button>
-            <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" title="Central de Mentoria" style="background:var(--gold); color:#000" onclick="window.abrirMentoria()">🏆</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
-        <div class="paper-wrapper" id="scroll-area">
+        <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="line-nums-main"></div>
                 <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
             </div>
         </div>
     </section>
-
     <section class="viewer-section" id="viewer">
         <div class="tabs">
             <button class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
             <button class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
@@ -85,115 +77,79 @@
 
 <div id="modal-mentoria" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3 style="color:var(--danger)">🏆 CENTRAL DE ESTRATÉGIA ARYANNA</h3>
-        <p style="font-size:0.75rem; margin-bottom:15px; color:#666;">Foco total em aprovação com tempo reduzido.</p>
+        <h2 style="color:var(--primary); text-align:center; font-size:1.2rem;">🏆 MENTORIA ESTRATÉGICA</h2>
         
-        <div class="card-mentoria">
-            <h4>🎯 Simulado de Elite (Top 5)</h4>
-            <p>
-                <button onclick="window.atacarExame('40')" class="tag" style="cursor:pointer">Exame 40 (Espólio)</button>
-                <button onclick="window.atacarExame('39')" class="tag" style="cursor:pointer">Exame 39 (Contestação)</button>
-                <button onclick="window.atacarExame('42')" class="tag" style="cursor:pointer">Exame 42 (Consignação)</button>
-                <button onclick="window.atacarExame('38')" class="tag" style="cursor:pointer">Exame 38 (R.O.)</button>
-                <button onclick="window.atacarExame('31')" class="tag" style="cursor:pointer">Exame 31 (Pejotização)</button>
-            </p>
+        <div class="alert-cilada">
+            <strong>🚨 FOCO NAS CILADAS (RITOS ESPECIAIS):</strong><br>
+            • <strong>CONSIGNAÇÃO (EX. 42):</strong> Empresa vs Empregado. Peça depósito (5 dias) e extinção da obrigação (Art. 539 CPC).<br>
+            • <strong>RESCISÓRIA (EX. 19):</strong> Endereçamento ao <strong>TRT/TST</strong>. Depósito de 20% (Art. 836 CLT). Prazo de 2 anos.
         </div>
 
-        <div class="card-mentoria">
-            <h4>📅 Cronograma de Prioridade</h4>
-            <p><strong>Grupo de Ouro:</strong> Exames 35 ao 45 (100% atualizados).<br>
-            <strong>Trio de Ferro:</strong> RT, Contestação e RO (Peças de 80% das provas).<br>
-            <strong>Atenção:</strong> Exames abaixo do 23 podem ter teses desatualizadas.</p>
+        <div class="mentoria-grid">
+            <div class="mentoria-box">
+                <h4>📌 TOP ARTIGOS: INICIAL / DEFESA</h4>
+                <div class="artigo-item"><span class="artigo-num">Art. 840, §1º CLT:</span> Requisitos da inicial.</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 319 CPC:</span> Requisitos subsidiários.</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 337 CPC:</span> Preliminares (Inépcia/Ilegit.).</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 800 CLT:</span> Incompetência (5 dias).</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 487, II CPC:</span> Prescrição (Mérito).</div>
+            </div>
+            <div class="mentoria-box">
+                <h4>⚖️ TOP ARTIGOS: MÉRITO / RECURSOS</h4>
+                <div class="artigo-item"><span class="artigo-num">Art. 3º CLT:</span> Relação de emprego (P-O-N-S).</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 62 CLT:</span> Sem controle de jornada.</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 71, §4º CLT:</span> Intervalo (Natureza indeniz.).</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 895, I CLT:</span> Recurso Ordinário (8 dias).</div>
+                <div class="artigo-item"><span class="artigo-num">Art. 791-A CLT:</span> Honorários (Obrigatório).</div>
+            </div>
+            <div class="mentoria-box">
+                <h4>🎯 SIMULADO DE ELITE</h4>
+                <div class="artigo-item">Exame 40 (RT Espólio) <button class="btn-atacar" onclick="window.atacarExame('40')">ATACAR</button></div>
+                <div class="artigo-item">Exame 39 (Contestação) <button class="btn-atacar" onclick="window.atacarExame('39')">ATACAR</button></div>
+                <div class="artigo-item">Exame 42 (Consignação) <button class="btn-atacar" onclick="window.atacarExame('42')">ATACAR</button></div>
+                <div class="artigo-item">Exame 19 (Rescisória) <button class="btn-atacar" onclick="window.atacarExame('19')">ATACAR</button></div>
+            </div>
+            <div class="mentoria-box" style="border:1px solid var(--success);">
+                <h4>✅ CHECKLIST DE SEGURANÇA</h4>
+                <div class="artigo-item">☐ Valor da Causa indicado?</div>
+                <div class="artigo-item">☐ Honorários e Justiça Gratuita?</div>
+                <div class="artigo-item">☐ Artigos citados em cada tópico?</div>
+                <div class="artigo-item">☐ Local, Data, Advogado, OAB?</div>
+            </div>
         </div>
-
-        <div class="card-mentoria">
-            <h4>📜 Artigos de Ouro (Iniciais/Defesa)</h4>
-            <p>• <strong>Art. 840, §1 CLT:</strong> Requisitos da Inicial.<br>
-               • <strong>Art. 800 CLT:</strong> Exceção de Incompetência.<br>
-               • <strong>Art. 62 CLT:</strong> Exceções de Jornada.<br>
-               • <strong>Art. 791-A CLT:</strong> Honorários Sucumbenciais.</p>
-        </div>
-
-        <button onclick="document.getElementById('modal-mentoria').style.display='none'" style="width:100%; padding:12px; background:var(--bg-site); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">FECHAR E ESTUDAR</button>
+        <button onclick="document.getElementById('modal-mentoria').style.display='none'" style="width:100%; padding:12px; margin-top:15px; background:var(--bg-site); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content">
-        <h3 id="titulo-modal">⚖️ ESTRUTURAS OAB</h3><br>
-        <div id="lista-pecas"></div>
-    </div>
-</div>
-
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div>
-</div>
-
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg)">
-        <h3>📌 MEU POST-IT PESSOAL</h3><br>
-        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea>
-    </div>
-</div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><div id="lista-pecas"></div></div></div>
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT</h3><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px;" oninput="window.saveRascunho()"></textarea></div></div>
 
 <button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
+    let pdfDoc = null; let scale = 1.3;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     const bancoPecas = {
-        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
-        "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, rep por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA (Art. 840, §1 CLT)\n\n1. PRIORIDADE (Art. 1048 CPC)\n2. VÍNCULO (Art. 3 CLT)\n3. NULIDADE PJ (Art. 9 CLT)\n4. VERBAS RESCISÓRIAS" },
-        "39": { titulo: "Contestação (Teresina)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: INCOMPETÊNCIA TERRITORIAL (Art. 800 CLT)\n2. MÉRITO: CARGO CONFIANÇA (Art. 62, II CLT)" },
-        "38": { titulo: "RO (Natal)", corpo: "AO DOUTO JUÍZO DA 80ª VARA DO TRABALHO DE NATAL/RN\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: ESTABILIDADE GESTANTE\n2. MÉRITO: PERICULOSIDADE" },
-        "31": { titulo: "RT (Pejotização)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "42": { titulo: "Consignação em Pagamento", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO" }
+        "40": { titulo: "RT Espólio", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE..." },
+        "42": { titulo: "Consignação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO" },
+        "19": { titulo: "Rescisória", corpo: "AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO" }
     };
 
     window.abrirMentoria = () => document.getElementById('modal-mentoria').style.display = 'flex';
+    window.atacarExame = (ex) => { document.getElementById('exam-select').value = ex; window.mudarExame(ex); document.getElementById('modal-mentoria').style.display='none'; };
     
-    window.atacarExame = (ex) => {
-        document.getElementById('exam-select').value = ex;
-        window.mudarExame(ex);
-        document.getElementById('modal-mentoria').style.display = 'none';
-        alert("Exame " + ex + " carregado! Agora vá no ícone da balança ⚖️ para injetar a estrutura.");
-    };
-
-    window.mudarExame = (v) => { 
-        window.carregarPDF('prova');
-        const info = bancoPecas[v] || { titulo: `Exame ${v}`, corpo: `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPEÇA...\n\n1. MÉRITO\n2. PEDIDOS` };
-        window.gerarCaderno(info.corpo);
-    };
-
-    window.gerarCaderno = function(corpoPeca) {
-        const divisor = "\n" + "-".repeat(40) + " RESPOSTA OAB " + "-".repeat(40) + "\n";
-        document.getElementById('texto-final').value = corpoPeca + "\n\n\n" + divisor + "QUESTÃO 1\nA)\nB)\n" + divisor + "QUESTÃO 2\nA)\nB)\n" + divisor + "QUESTÃO 3\nA)\nB)\n" + divisor + "QUESTÃO 4\nA)\nB)";
-        window.autoSave();
-        document.getElementById('modal-pecas').style.display = 'none';
-        document.getElementById('scroll-area').scrollTop = 0;
-    };
-
-    window.abrirPecas = () => {
-        const ex = document.getElementById('exam-select').value;
-        const info = bancoPecas[ex] || { titulo: "Estrutura", corpo: "AO DOUTO JUÍZO..." };
-        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
-        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">📝 INJETAR ESTRUTURA:<br><small>${info.titulo}</small></button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
-
+    window.mudarExame = (v) => { window.carregarPDF('prova'); window.autoSave(); };
     window.carregarPDF = async (tipo) => {
         const ex = document.getElementById('exam-select').value;
-        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        try { pdfDoc = await pdfjsLib.getDocument(arq).promise; window.renderAll(); } catch(e) { console.warn("PDF: " + arq); }
+        const arq = tipo === 'prova' ? `ro${ex}.pdf` : `ro${ex}-gabarito.pdf`;
+        try { pdfDoc = await pdfjsLib.getDocument(arq).promise; window.renderAll(); } catch(e) {}
     };
-
     window.renderAll = async () => {
         const container = document.getElementById('pdf-viewport'); container.innerHTML = "";
         for (let i = 1; i <= pdfDoc.numPages; i++) {
@@ -209,55 +165,25 @@
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
+    window.abrirPecas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const info = bancoPecas[ex] || { titulo: "Peça", corpo: "AO DOUTO JUÍZO..." };
+        document.getElementById('lista-pecas').innerHTML = `<button onclick="document.getElementById('texto-final').value=\`${info.corpo}\`; window.autoSave(); document.getElementById('modal-pecas').style.display='none';" style="width:100%; padding:15px; border-radius:8px; cursor:pointer; background:var(--primary); color:white; border:none;">Injetar: ${info.titulo}</button>`;
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-    
-    window.finalizarEArquivar = async () => {
-        const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
-    };
-
-    window.abrirEvolucao = async () => {
-        const snap = await get(ref(db, 'historico_treinos'));
-        const list = document.getElementById('lista-historico'); list.innerHTML = "";
-        if(snap.exists()) {
-            Object.keys(snap.val()).forEach(k => {
-                const item = snap.val()[k];
-                const d = document.createElement('div');
-                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
-                list.appendChild(d);
-            });
-        }
-        document.getElementById('modal-evolucao').style.display = 'flex';
-    };
-
-    window.restaurar = async (k) => {
-        const s = await get(ref(db, `historico_treinos/${k}`));
-        document.getElementById('texto-final').value = s.val().texto;
-        window.autoSave(); document.getElementById('modal-evolucao').style.display = 'none';
-    };
-
-    window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
-    window.toggleSimulado = () => { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } };
-    window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
-    window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
+    window.finalizarEArquivar = async () => { const t = prompt("Nome:"); if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, exame: document.getElementById('exam-select').value }); alert("Salvo!"); } };
 
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
-    let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = h;
-
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
         let opt = document.createElement('option');
-        let num = i < 10 ? "0" + i : i;
-        opt.value = num;
-        opt.innerText = `EXAME ${num}`;
-        if(i==40) opt.selected = true;
-        sel.appendChild(opt);
+        opt.value = i < 10 ? "0" + i : i; opt.innerText = `EXAME ${opt.value}`;
+        if(i==40) opt.selected = true; sel.appendChild(opt);
     }
+    document.getElementById('line-nums-main').innerHTML = Array.from({length: 300}, (_, i) => i + 1).join('<br>');
     window.carregarPDF('prova');
 </script>
 </body>
