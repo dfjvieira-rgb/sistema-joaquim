@@ -18,10 +18,11 @@
 
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; height: 45px; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
+        
+        .timer-group { display: flex; align-items: center; gap: 8px; }
         #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 2px 10px; border-radius: 4px; border: 1px solid #333; }
-
-        .ia-lab { background: #1e3a8a; padding: 8px 15px; display: none; gap: 10px; align-items: center; border-bottom: 1px solid #3b82f6; }
-        .ia-lab input { flex: 1; background: #0f172a; border: 1px solid #3b82f6; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; outline: none; }
+        
+        .btn-header { border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
@@ -43,24 +44,18 @@
             background-size: 100% 28px; resize: none; 
         }
 
-        #modal-pecas, #modal-rascunho { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 20px; max-height: 80vh; overflow-y: auto; color: #1e293b; }
+        #modal-rascunho { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
+        .fgv-rascunho-container { background: var(--rascunho-bg); width: 95%; max-width: 850px; height: 90vh; display: flex; flex-direction: column; border-radius: 4px; border: 2px solid var(--gold); }
         
-        .fgv-rascunho-container { background: var(--rascunho-bg); width: 95%; max-width: 850px; height: 90vh; display: flex; flex-direction: column; border-radius: 4px; overflow: hidden; border: 2px solid var(--gold); }
-        .rascunho-header { background: var(--gold); color: #000; padding: 10px 20px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
-        .sheet-rascunho { flex: 1; display: flex; background: white; overflow-y: auto; }
-
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; position: relative; }
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         
-        /* CONTROLE DE ZOOM DO PDF */
-        .zoom-controls { background: #1e293b; padding: 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.7rem; border-bottom: 1px solid #444; }
-        .zoom-controls input { cursor: pointer; flex: 1; }
+        .zoom-controls { background: #1e293b; padding: 8px 15px; display: flex; align-items: center; gap: 15px; font-size: 0.75rem; border-bottom: 1px solid #444; color: var(--gold); font-weight: bold; }
+        .zoom-controls input { flex: 1; accent-color: var(--gold); cursor: pointer; }
 
-        .pdf-container { flex: 1; overflow: auto; background: #525659; display: flex; justify-content: center; }
-        iframe { border: none; background: #fff; width: 100%; height: 100%; transition: transform 0.2s ease; transform-origin: top center; }
+        iframe { flex: 1; border: none; background: #fff; width: 100%; }
 
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
 
@@ -75,42 +70,22 @@
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display">05:00:00</div>
-    <button id="btn-simulado" style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="toggleSimulado()">🏁 INICIAR</button>
-</header>
-
-<div class="ia-lab" id="lab-box">
-    <input type="text" id="ai-input" placeholder="Análise de enunciado...">
-    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">ANALISAR</button>
-</div>
-
-<div id="modal-pecas" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content">
-        <h3 style="margin-bottom:15px; border-bottom: 2px solid #eee;">LINHA DO TEMPO</h3>
-        <div style="border-left: 2px solid var(--gold); padding-left: 12px; margin-bottom: 10px;">
-            <span style="font-size:0.6rem; font-weight:900; color:var(--gold); text-transform:uppercase;">1. Inicial</span>
-            <div style="padding:10px; border:1px solid #eee; cursor:pointer; margin-top:5px;" onclick="applyEstrutura('RT')">Reclamação Trabalhista</div>
-        </div>
-        <div style="border-left: 2px solid var(--gold); padding-left: 12px; margin-bottom: 10px;">
-            <span style="font-size:0.6rem; font-weight:900; color:var(--gold); text-transform:uppercase;">2. Recursos</span>
-            <div style="padding:10px; border:1px solid #eee; cursor:pointer; margin-top:5px;" onclick="applyEstrutura('RO')">Recurso Ordinário</div>
-        </div>
-        <div style="border-left: 2px solid var(--gold); padding-left: 12px; margin-bottom: 10px;">
-            <span style="font-size:0.6rem; font-weight:900; color:var(--gold); text-transform:uppercase;">3. Execução</span>
-            <div style="padding:10px; border:1px solid #eee; cursor:pointer; margin-top:5px;" onclick="applyEstrutura('AG_PET')">Agravo de Petição</div>
-        </div>
+    <div class="timer-group">
+        <div id="timer-display">05:00:00</div>
+        <button id="btn-simulado" class="btn-header" style="background:var(--danger); color:white;" onclick="toggleSimulado()">🏁 INICIAR</button>
+        <button class="btn-header" style="background:#4b5563; color:white;" onclick="resetCompleto()">🔄</button>
     </div>
-</div>
+</header>
 
 <div id="modal-rascunho">
     <div class="fgv-rascunho-container">
-        <div class="rascunho-header">
+        <div style="background:var(--gold); padding:10px; font-weight:800; display:flex; justify-content:space-between; color:#000;">
             <span>RASCUNHO / POST-ITS (FGV)</span>
-            <button onclick="document.getElementById('modal-rascunho').style.display='none'" style="background:black; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px;">FECHAR [X]</button>
+            <button onclick="document.getElementById('modal-rascunho').style.display='none'" style="background:#000; color:#fff; border:none; padding:2px 8px; cursor:pointer;">X</button>
         </div>
-        <div class="sheet-rascunho">
+        <div style="flex:1; display:flex; background:#fff; overflow-y:auto;">
             <div class="line-nums" id="line-nums-rascunho"></div>
-            <textarea id="rascunho-editor" class="text-area" style="background-color: var(--rascunho-bg);" spellcheck="false" oninput="saveRascunho()"></textarea>
+            <textarea id="rascunho-editor" class="text-area" style="background-color: var(--rascunho-bg);" oninput="saveRascunho()"></textarea>
         </div>
     </div>
 </div>
@@ -118,13 +93,11 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.7rem;"></select>
-            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.7rem;">
+            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="font-size:0.7rem;"></select>
+            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="font-size:0.7rem;">
                 <option value="peca">PEÇA (150L)</option>
                 <option value="quest">QUESTÕES (30L)</option>
             </select>
-            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()">🧠</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="document.getElementById('modal-pecas').style.display='flex'">⚖️</button>
             <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="document.getElementById('modal-rascunho').style.display='flex'">📌</button>
             <button class="btn-symbol btn-save" onclick="salvarHistorico()">💾</button>
         </div>
@@ -139,18 +112,16 @@
 
     <section class="viewer-section" id="viewer">
         <div class="tabs">
-            <button class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
-            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
-            <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
+            <button id="tab-prova" class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
+            <button id="tab-gabarito" class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
+            <button id="tab-vade" class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
         </div>
         <div class="zoom-controls">
-            <span>ZOOM PROVA:</span>
-            <input type="range" id="pdf-zoom" min="50" max="150" value="100" oninput="ajustarZoom(this.value)">
+            <span>ZOOM NÍTIDO:</span>
+            <input type="range" id="pdf-zoom" min="60" max="200" value="100" onchange="aplicarZoomNativo(this.value)">
             <span id="zoom-val">100%</span>
         </div>
-        <div class="pdf-container">
-            <iframe id="pdf-frame" src=""></iframe>
-        </div>
+        <iframe id="pdf-frame" src=""></iframe>
     </section>
 </div>
 
@@ -158,33 +129,27 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
+    window.db = db; window.ref = ref; window.set = set; window.push = push;
 
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 </script>
 
 <script>
-    let exAtual = 42; let modoAtivo = 'peca'; 
+    let exAtual = 42; 
+    let tipoAtual = 'prova';
     let tempoSegundos = 5 * 60 * 60;
     let timerInterval = null;
 
-    function ajustarZoom(val) {
-        document.getElementById('pdf-frame').style.transform = `scale(${val/100})`;
+    // NOVO ZOOM NATIVO (Não embaça)
+    function aplicarZoomNativo(val) {
         document.getElementById('zoom-val').innerText = val + '%';
-        // Ajusta a altura proporcionalmente para não cortar o PDF ao dar zoom
-        document.getElementById('pdf-frame').style.height = (10000 / val) + '%'; 
-        document.getElementById('pdf-frame').style.width = (10000 / val) + '%';
-    }
-
-    function formatarTempo(s) {
-        const h = Math.floor(s / 3600);
-        const m = Math.floor((s % 3600) / 60);
-        const seg = s % 60;
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
+        const f = document.getElementById('pdf-frame');
+        const urlBase = f.src.split('#')[0];
+        f.src = `${urlBase}#toolbar=0&navpanes=0&scrollbar=1&view=FitH&zoom=${val}`;
     }
 
     function toggleSimulado() {
@@ -194,11 +159,7 @@
             timerInterval = setInterval(() => {
                 tempoSegundos--;
                 document.getElementById('timer-display').innerText = formatarTempo(tempoSegundos);
-                if(tempoSegundos <= 0) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    alert("Tempo esgotado!");
-                }
+                if(tempoSegundos <= 0) { clearInterval(timerInterval); alert("Tempo esgotado!"); }
             }, 1000);
         } else {
             clearInterval(timerInterval);
@@ -208,53 +169,70 @@
         }
     }
 
-    function applyEstrutura(k) {
-        const est = { "RT": "AO JUÍZO DA ___ VARA...", "RO": "AO JUÍZO DA... PROCESSO...", "AG_PET": "AO JUÍZO... AGRAVO DE PETIÇÃO..." };
-        document.getElementById('texto-final').value = est[k] || "";
-        autoSave(); document.getElementById('modal-pecas').style.display = 'none';
+    function resetCompleto() {
+        if(confirm("Reiniciar cronômetro e limpar folha?")) {
+            clearInterval(timerInterval); timerInterval = null;
+            tempoSegundos = 5 * 60 * 60;
+            document.getElementById('timer-display').innerText = "05:00:00";
+            document.getElementById('btn-simulado').innerText = "🏁 INICIAR";
+            document.getElementById('btn-simulado').style.background = "var(--danger)";
+            document.getElementById('texto-final').value = "";
+            autoSave();
+        }
     }
 
-    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
+    function formatarTempo(s) {
+        const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const seg = s%60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
+    }
+
+    function mudarDoc(tipo, btn) {
+        tipoAtual = tipo;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        const zoom = document.getElementById('pdf-zoom').value;
+        const f = document.getElementById('pdf-frame');
+        
+        let arquivo = "";
+        if(tipo === 'prova') arquivo = `ro${exAtual}.pdf`;
+        else if(tipo === 'gabarito') arquivo = `ro${exAtual}-gabarito.pdf`;
+        else arquivo = `Aryanna Linhares.pdf`;
+
+        f.src = `${arquivo}#toolbar=0&navpanes=0&scrollbar=1&view=FitH&zoom=${zoom}`;
+    }
+
+    function mudarExame(v) { 
+        exAtual = v; 
+        mudarDoc(tipoAtual, document.querySelector('.tab.active')); 
+    }
+
     function autoSave() {
         window.isEditing = true; clearTimeout(window.sv);
         window.sv = setTimeout(() => {
-            window.set(window.ref(window.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value);
+            window.set(window.ref(window.db, `v3_treino/peca`), document.getElementById('texto-final').value);
             window.isEditing = false;
         }, 1000);
     }
 
-    function gerarLinhas(id, n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById(id).innerHTML = h; }
-    function toggleCerebro() { const lb = document.getElementById('lab-box'); lb.style.display = lb.style.display === 'flex' ? 'none' : 'flex'; }
-    function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab.active')); }
-    
-    function mudarDoc(tipo, btn) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); if(btn) btn.classList.add('active');
-        const f = document.getElementById('pdf-frame');
-        // Redefine o zoom ao trocar de documento para evitar bugs
-        document.getElementById('pdf-zoom').value = 100;
-        ajustarZoom(100);
-        
-        const params = "#toolbar=0&navpanes=0&scrollbar=1&view=FitH";
-        if(tipo === 'prova') f.src = `ro${exAtual}.pdf${params}`;
-        else if(tipo === 'gabarito') f.src = `ro${exAtual}-gabarito.pdf${params}`;
-        else f.src = `Aryanna Linhares.pdf${params}`;
-    }
+    function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
 
     window.onload = () => {
-        gerarLinhas('line-nums-main', 150);
-        gerarLinhas('line-nums-rascunho', 150);
+        const lineMain = document.getElementById('line-nums-main');
+        const lineRasc = document.getElementById('line-nums-rascunho');
+        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>";
+        lineMain.innerHTML = h; lineRasc.innerHTML = h;
+
         const sel = document.getElementById('exam-select');
         for(let i=45; i>=35; i--) {
             let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
             if(i==42) opt.selected = true;
             sel.appendChild(opt);
         }
-        mudarDoc('prova');
+        mudarDoc('prova', document.getElementById('tab-prova'));
     };
 
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
     function salvarHistorico() { const t = prompt("Título:"); if(t) window.push(window.ref(window.db, 'historico'), { titulo: t, texto: document.getElementById('texto-final').value }); }
-    function analisarHistorinha() { alert('Analisando via IA...'); } 
 </script>
 </body>
 </html>
