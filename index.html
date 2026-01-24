@@ -2,107 +2,57 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARYANNA MASTER PRO | FIXED</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARYANNA RAIZ | MOBILE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-        /* BARRA DE COMANDO FIXA (ESTILO APP) */
-        .master-toolbar { 
-            background: #1e293b; 
-            padding: 5px; 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 5px; 
-            border-bottom: 2px solid var(--gold);
-            z-index: 9999;
-        }
-
-        .btn-top { 
-            height: 45px; 
-            border: none; 
-            border-radius: 6px; 
-            font-weight: 800; 
-            font-size: 0.65rem; 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-        }
-        .btn-save { background: var(--primary); }
-        .btn-post { background: var(--warning); color: #000; }
-        .btn-check { background: var(--success); }
-        .btn-pdf { background: #475569; }
-
-        /* SELETORES */
-        .sub-bar { 
-            background: #fff; 
-            padding: 5px; 
-            display: flex; 
-            gap: 5px; 
-        }
-        select { 
-            flex: 1; 
-            height: 35px; 
-            font-size: 0.7rem; 
-            font-weight: bold; 
-            border: 1px solid #ccc; 
-            border-radius: 4px;
-        }
-
-        .main-content { flex: 1; display: flex; overflow: hidden; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; margin: 0; padding: 0; color: #fff; }
         
-        /* ÁREA DA FOLHA */
-        .editor-container { flex: 1; overflow-y: auto; background: #cbd5e1; padding: 10px; position: relative; }
-        .paper-sheet { 
-            width: 100%; 
-            max-width: 800px; 
-            margin: 0 auto;
-            min-height: 1200px; 
-            background: #fff; 
-            display: flex; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .line-nums { width: 35px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; font-size: 11px; color: #94a3b8; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 17px; line-height: 28px; background-image: linear-gradient(transparent, transparent 27px, #eee 28px); background-size: 100% 28px; resize: none; }
+        /* BARRA DE COMANDO SEMPRE VISÍVEL */
+        .nav-header { background: #1e293b; padding: 10px; border-bottom: 3px solid #d4af37; position: sticky; top: 0; z-index: 1000; }
+        .button-group { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+        
+        .btn { flex: 1; min-width: 80px; height: 45px; border-radius: 8px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; color: white; text-transform: uppercase; }
+        .btn-save { background: #2563eb; }
+        .btn-note { background: #f59e0b; color: #000; }
+        .btn-pdf { background: #475569; }
+        .btn-finish { background: #059669; }
+        
+        .selectors { display: flex; gap: 5px; }
+        select { flex: 1; height: 38px; border-radius: 5px; font-weight: bold; background: #fff; font-size: 12px; }
 
-        /* PDF MODAL (PARA NÃO SUMIR) */
-        #pdf-overlay { 
-            position: fixed; top: 105px; left: 0; width: 100%; height: calc(100% - 105px); 
-            background: #fff; z-index: 999; display: none; 
-        }
-        .pdf-header { background: #0f172a; padding: 10px; display: flex; gap: 5px; }
-        .close-pdf { background: var(--danger); color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; }
+        /* ÁREA DE CONTEÚDO */
+        .content { padding: 10px; }
+        
+        /* POST-ITS (Aparecem em cima da folha se ativos) */
+        .panel { background: #fff9c4; color: #000; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: none; border-left: 8px solid #f59e0b; }
+        .panel-list { max-height: 100px; overflow-y: auto; font-size: 12px; margin-bottom: 5px; background: rgba(0,0,0,0.05); padding: 5px; }
 
-        /* POST-IT OVERLAY */
-        .postit-overlay { 
-            position: fixed; top: 110px; right: 10px; width: 250px; 
-            background: var(--warning); padding: 10px; border-radius: 8px; 
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5); display: none; z-index: 1000;
-        }
+        /* A FOLHA FGV */
+        .paper { background: #fff; color: #334155; display: flex; box-shadow: 0 5px 15px rgba(0,0,0,0.5); min-height: 1000px; width: 100%; border-radius: 4px; overflow: hidden; }
+        .lines { width: 35px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; font-size: 11px; color: #94a3b8; padding-top: 15px; line-height: 28px; }
+        .textarea { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 17px; line-height: 28px; background-image: linear-gradient(transparent, transparent 27px, #eee 28px); background-size: 100% 28px; resize: none; overflow-y: hidden; }
+
+        /* O VISUALIZADOR DE PDF */
+        .pdf-box { margin-top: 20px; background: #1e293b; border-radius: 8px; padding: 5px; }
+        .pdf-tabs { display: flex; gap: 2px; margin-bottom: 5px; }
+        .tab { flex: 1; padding: 10px; font-size: 10px; border: none; background: #334155; color: #fff; font-weight: bold; border-radius: 4px; }
+        .tab.active { background: #d4af37; color: #000; }
+        iframe { width: 100%; height: 500px; background: #fff; border-radius: 4px; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="master-toolbar">
-        <button class="btn-top btn-save" onclick="salvarModelo()">💾<br>SALVAR</button>
-        <button class="btn-top btn-pdf" onclick="abrirPDF()">📄<br>PDF/VADE</button>
-        <button class="btn-top btn-post" onclick="togglePostit()">📌<br>POST-IT</button>
-        <button class="btn-top btn-check" onclick="finalizar()">✅<br>FIM</button>
+<div class="nav-header">
+    <div class="button-group">
+        <button class="btn btn-save" onclick="salvarModelo()">Salvar Peça</button>
+        <button class="btn btn-note" onclick="togglePanel()">Post-its</button>
+        <button class="btn btn-pdf" onclick="window.scrollTo(0, document.body.scrollHeight)">Ver PDF</button>
+        <button class="btn btn-finish" onclick="finalizar()">Finalizar</button>
     </div>
-
-    <div class="sub-bar">
-        <select id="exame" onchange="mudarExame(this.value)"></select>
-        <select id="peca-tipo" onchange="carregarEstrutura(this.value)">
+    <div class="selectors">
+        <select id="selExame" onchange="atualizarExame(this.value)"></select>
+        <select id="selPeca" onchange="carregarPeca(this.value)">
             <option value="">📂 ESTRUTURAS</option>
             <option value="rt">RT Ordinária</option>
             <option value="contestacao">Contestação</option>
@@ -110,31 +60,29 @@
             <option value="ap">Agravo de Petição</option>
         </select>
     </div>
+</div>
 
-    <div class="main-content">
-        <div class="editor-container">
-            <div class="paper-sheet">
-                <div class="line-nums" id="lines"></div>
-                <textarea id="editor" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
-            </div>
+<div class="content">
+    <div id="postitPanel" class="panel">
+        <div id="listaNotas" class="panel-list"></div>
+        <input type="text" id="inputNota" placeholder="Nova dica..." style="width:75%; height:30px;">
+        <button onclick="addNota()" style="width:20%; height:34px; background:#000; color:#fff; border:none;">ADD</button>
+    </div>
+
+    <div class="paper">
+        <div id="lineNums" class="lines"></div>
+        <textarea id="mainEditor" class="textarea" spellcheck="false" oninput="autoSave(); ajustarAltura(this)"></textarea>
+    </div>
+
+    <div class="pdf-box">
+        <div class="pdf-tabs">
+            <button class="tab active" id="t-prova" onclick="trocarPDF('prova')">PROVA</button>
+            <button class="tab" id="t-gab" onclick="trocarPDF('gab')">GABARITO</button>
+            <button class="tab" id="t-ary" onclick="trocarPDF('ary')" style="background:#d4af37; color:#000;">VADE ARY</button>
         </div>
+        <iframe id="pdfFrame"></iframe>
     </div>
-
-    <div id="pdf-overlay">
-        <div class="pdf-header">
-            <button class="close-pdf" onclick="fecharPDF()">FECHAR X</button>
-            <button class="btn-top btn-pdf" style="flex:1" onclick="loadPDF('prova')">PROVA</button>
-            <button class="btn-top btn-pdf" style="flex:1" onclick="loadPDF('gab')">GAB</button>
-            <button class="btn-top btn-pdf" style="flex:1; background:var(--gold); color:000;" onclick="loadPDF('ary')">VADE</button>
-        </div>
-        <iframe id="pdf-frame" style="width:100%; height:100%; border:none;"></iframe>
-    </div>
-
-    <div id="postit-box" class="postit-overlay">
-        <div id="lista-notas" style="max-height: 200px; overflow-y: auto; background: rgba(255,255,255,0.3); margin-bottom: 5px; font-size: 0.7rem; color: #000;"></div>
-        <input type="text" id="nota-input" placeholder="Nova dica/tese..." style="width:100%; margin-bottom:5px;">
-        <button onclick="salvarNota()" style="width:100%; background:#000; color:#fff; border:none; padding:5px;">SALVAR NOTA</button>
-    </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -143,67 +91,70 @@
     const app = initializeApp(config); const db = getDatabase(app);
     window.db_ops = { ref, set, push, get, db };
 
-    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.editando) document.getElementById('editor').value = s.val() || ""; });
+    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('mainEditor').value = s.val() || ""; ajustarAltura(document.getElementById('mainEditor')); });
     onValue(ref(db, 'notas_fgv'), (s) => renderNotas(s.val()));
 </script>
 
 <script>
-    let exameAtivo = 42; let pecaAtiva = "";
+    let exame = 42; let peca = "";
 
-    function abrirPDF() { document.getElementById('pdf-overlay').style.display = 'block'; loadPDF('prova'); }
-    function fecharPDF() { document.getElementById('pdf-overlay').style.display = 'none'; }
-    function togglePostit() { 
-        const b = document.getElementById('postit-box');
-        b.style.display = b.style.display === 'block' ? 'none' : 'block';
+    function trocarPDF(tipo) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        const f = document.getElementById('pdfFrame');
+        if(tipo === 'prova') { f.src = `ro${exame}.pdf`; document.getElementById('t-prova').classList.add('active'); }
+        if(tipo === 'gab') { f.src = `ro${exame}-gabarito.pdf`; document.getElementById('t-gab').classList.add('active'); }
+        if(tipo === 'ary') { f.src = `Aryanna Linhares.pdf`; document.getElementById('t-ary').classList.add('active'); }
     }
 
-    function loadPDF(tipo) {
-        const f = document.getElementById('pdf-frame');
-        if(tipo === 'prova') f.src = `ro${exameAtivo}.pdf`;
-        if(tipo === 'gab') f.src = `ro${exameAtivo}-gabarito.pdf`;
-        if(tipo === 'ary') f.src = `Aryanna Linhares.pdf`;
-    }
-
-    async function carregarEstrutura(k) {
-        if(!k) return; pecaAtiva = k;
+    async function carregarPeca(k) {
+        if(!k) return; peca = k;
         const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${k}`));
-        document.getElementById('editor').value = s.exists() ? s.val() : "Estrutura de " + k.toUpperCase();
+        document.getElementById('mainEditor').value = s.exists() ? s.val() : "ESTRUTURA: " + k.toUpperCase();
+        ajustarAltura(document.getElementById('mainEditor'));
     }
 
     async function salvarModelo() {
-        if(!pecaAtiva) return alert("Selecione uma peça!");
-        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${pecaAtiva}`), document.getElementById('editor').value);
-        alert("Estrutura Salva!");
+        if(!peca) return alert("Selecione a peça!");
+        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${peca}`), document.getElementById('mainEditor').value);
+        alert("Salvo!");
     }
 
-    async function salvarNota() {
-        const t = document.getElementById('nota-input').value;
-        if(t) await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'notas_fgv'), { texto: t });
-        document.getElementById('nota-input').value = "";
+    function togglePanel() { 
+        const p = document.getElementById('postitPanel');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    }
+
+    async function addNota() {
+        const v = document.getElementById('inputNota').value;
+        if(v) await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'notas_fgv'), { texto: v });
+        document.getElementById('inputNota').value = "";
     }
 
     function renderNotas(d) {
-        const c = document.getElementById('lista-notas'); c.innerHTML = "";
+        const c = document.getElementById('listaNotas'); c.innerHTML = "";
         if(d) Object.keys(d).forEach(k => { c.innerHTML += `<div>• ${d[k].texto}</div>`; });
     }
 
+    function ajustarAltura(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px'; }
+
     function autoSave() {
-        window.editando = true; clearTimeout(window.sv);
+        window.isEditing = true; clearTimeout(window.sv);
         window.sv = setTimeout(() => {
-            window.db_ops.set(window.db_ops.ref(window.db_ops.db, 'v3_treino/peca'), document.getElementById('editor').value);
-            window.editando = false;
+            window.db_ops.set(window.db_ops.ref(window.db_ops.db, 'v3_treino/peca'), document.getElementById('mainEditor').value);
+            window.isEditing = false;
         }, 800);
     }
 
-    function mudarExame(v) { exameAtivo = v; if(document.getElementById('pdf-overlay').style.display === 'block') loadPDF('prova'); }
+    function atualizarExame(v) { exame = v; trocarPDF('prova'); }
 
     window.onload = () => {
-        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>"; document.getElementById('lines').innerHTML = h;
-        const s = document.getElementById('exame');
-        for(let i=44; i>=35; i--) { 
-            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; 
-            if(i==42) o.selected=true; s.appendChild(o); 
+        let l = ""; for(let i=1; i<=150; i++) l += i + "<br>"; document.getElementById('lineNums').innerHTML = l;
+        const s = document.getElementById('selExame');
+        for(let i=44; i>=35; i--) {
+            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`;
+            if(i==42) o.selected=true; s.appendChild(o);
         }
+        trocarPDF('prova');
     };
 </script>
 </body>
