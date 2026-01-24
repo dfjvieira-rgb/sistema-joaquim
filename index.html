@@ -55,11 +55,11 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
-            <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
-            <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
+            <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper" id="scroll-area">
             <div class="paper-sheet">
@@ -111,33 +111,19 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    let exAtual = "40"; let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
+    let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     const bancoPecas = {
-        "40": { 
-            titulo: "RT Espólio (Romeu Diamante)", 
-            corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, rep. por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)\n4. VERBAS RESCISÓRIAS..."
-        },
-        "39": { 
-            titulo: "Contestação (Calçados Teresina)", 
-            corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nPROCESSO Nº 0001234-55.2023.5.22.0090\n\nSOCIEDADE EMPRESÁRIA CALÇADOS LTDA...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR (Incompetência Relativa)\n2. MÉRITO (Adicional Periculosidade / Horas Extras)..."
-        },
-        "38": { 
-            titulo: "Recurso Ordinário (Supermercado)", 
-            corpo: "AO DOUTO JUÍZO DA 80ª VARA DO TRABALHO DE NATAL/RN\n\nPROCESSO Nº ...\n\nSUPERMERCADO COMPRE BEM...\n\nRAZÕES DE RECURSO ORDINÁRIO\n\n1. PRELIMINAR (Cerceamento de Defesa)\n2. MÉRITO (Estabilidade Gestante / Danos Morais)..."
-        },
-        "37": { titulo: "RT (Motorista Arnaldo)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE VITÓRIA/ES\n\nRECLAMAÇÃO TRABALHISTA\n\n1. PERICULOSIDADE\n2. INTERVALO INTRAJORNADA..." },
-        "36": { titulo: "Contestação (Limpa Tudo)", corpo: "AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE MANAUS/AM\n\nCONTESTAÇÃO\n\n1. PREJUDICIAL (Prescrição)\n2. MÉRITO (Equiparação Salarial)..." },
-        "35": { titulo: "Ação de Consignação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SALVADOR/BA\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO..." }
+        "40": { titulo: "RT Espólio (Romeu Diamante)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, rep. por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)\n4. VERBAS RESCISÓRIAS..." },
+        "39": { titulo: "Contestação (Calçados Teresina)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nPROCESSO Nº 0001234-55.2023.5.22.0090\n\nSOCIEDADE EMPRESÁRIA CALÇADOS LTDA...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR\n2. MÉRITO..." },
+        "38": { titulo: "Recurso Ordinário (Supermercado)", corpo: "AO DOUTO JUÍZO DA 80ª VARA DO TRABALHO DE NATAL/RN\n\nSUPERMERCADO COMPRE BEM...\n\nRAZÕES DE RECURSO ORDINÁRIO..." },
+        "37": { titulo: "RT (Motorista Arnaldo)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE VITÓRIA/ES\n\nRECLAMAÇÃO TRABALHISTA..." },
+        "36": { titulo: "Contestação (Limpa Tudo)", corpo: "AO DOUTO JUÍZO DA 50ª VARA DO TRABALHO DE MANAUS/AM\n\nCONTESTAÇÃO..." },
+        "35": { titulo: "Consignação em Pagamento", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SALVADOR/BA\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO..." }
     };
 
-    window.mudarExame = (v) => { 
-        exAtual = v; 
-        window.carregarPDF('prova');
-        // A mágica: Atualiza o título do modal imediatamente ao mudar o exame
-        document.getElementById('titulo-modal').innerText = `EXAME ${v}`;
-    };
+    window.mudarExame = (v) => { window.carregarPDF('prova'); };
 
     window.gerarCaderno = function(corpoPeca) {
         const divisor = "\n" + "-".repeat(45) + " RESPOSTA OAB " + "-".repeat(45) + "\n";
@@ -149,8 +135,11 @@
     };
 
     window.abrirPecas = () => {
-        const info = bancoPecas[exAtual] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ..." };
-        document.getElementById('titulo-modal').innerText = `EXAME ${exAtual}`;
+        // A SOLUÇÃO: Ler o seletor na hora do clique
+        const exameSelecionado = document.getElementById('exam-select').value;
+        const info = bancoPecas[exameSelecionado] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ..." };
+        
+        document.getElementById('titulo-modal').innerText = `EXAME ${exameSelecionado}`;
         document.getElementById('lista-pecas').innerHTML = `
             <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">
                 📝 GERAR CADERNO COMPLETO:<br><small>${info.titulo}</small>
@@ -159,8 +148,8 @@
     };
 
     window.carregarPDF = async (tipo) => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        const arq = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+        const exameSel = document.getElementById('exam-select').value;
+        const arq = tipo === 'prova' ? `ro${exameSel}.pdf` : tipo === 'gabarito' ? `ro${exameSel}-gabarito.pdf` : `Aryanna Linhares.pdf`;
         try { pdfDoc = await pdfjsLib.getDocument(arq).promise; window.renderAll(); } catch(e) { console.error(e); }
     };
 
@@ -177,19 +166,15 @@
     };
 
     window.ajustarZoom = (v) => { scale = parseFloat(v); window.renderAll(); document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%"; };
-
-    window.autoSave = () => {
-        window.isEditing = true; clearTimeout(window.sv);
-        window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
-    };
-
+    window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     
     window.finalizarEArquivar = async () => {
         const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: exAtual }); alert("Arquivado!"); }
+        const e = document.getElementById('exam-select').value;
+        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: e }); alert("Arquivado!"); }
     };
 
     window.abrirEvolucao = async () => {
