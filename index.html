@@ -32,7 +32,7 @@
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
 
-        /* VIEWER */
+        /* VIEWER & ZOOM */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; position: relative; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; z-index: 100; }
         .tab { padding: 8px 12px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
@@ -48,12 +48,12 @@
 
         /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
-        .btn-model-item { width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; text-align: left; cursor: pointer; transition: 0.2s; }
+        .modal-content { background: white; width: 95%; max-width: 550px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
+        .btn-model-item { width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; text-align: left; cursor: pointer; }
         .btn-model-item:hover { border-color: var(--primary); background: #eff6ff; }
-        .btn-model-item strong { display: block; color: var(--primary); margin-bottom: 4px; }
-        .btn-model-item span { font-size: 0.75rem; color: #64748b; line-height: 1.4; }
-        
+        .btn-model-item strong { display: block; color: var(--primary); font-size: 1rem; }
+        .btn-model-item span { font-size: 0.8rem; color: #64748b; }
+
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
         @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
     </style>
@@ -72,7 +72,6 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.7rem; border:1px solid #ddd;"></select>
-            <button class="btn-symbol" title="Mentoria" style="background:var(--gold); color:#000" onclick="window.open('mentoria.html', '_blank')">🏆</button>
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
@@ -103,8 +102,8 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal-peca">⚖️ IDENTIFICAÇÃO E TESES</h3><br><div id="lista-pecas"></div></div></div>
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>⚖️ BANCO DE DADOS DA PEÇA</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div></div>
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:350px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
 <button id="mobile-btn" onclick="document.getElementById('viewer').classList.toggle('active')">📑</button>
@@ -120,60 +119,74 @@
     let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // 1. BANCO DE DADOS CIRÚRGICO (TESES + IDENTIFICAÇÃO)
-    const bancoExames = {
-        "40": { 
-            peca: "Reclamação Trabalhista", 
-            art: "Art. 840, § 1º da CLT", 
-            local: "90ª VARA DO TRABALHO DE OSASCO/SP", 
-            teses: "1. VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n2. JUSTIÇA GRATUITA (Art. 790, § 3º CLT)\n3. DANOS MORAIS (Art. 223-G CLT)\n4. HONORÁRIOS (Art. 791-A CLT)" 
+    // BANCO DE DADOS DE PEÇAS ESPECÍFICAS (MAPA DA MINA)
+    const bancoMaster = {
+        "40": {
+            titulo: "Reclamação Trabalhista (Romeu)",
+            endereco: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE OSASCO/SP",
+            fundamento: "Art. 840, § 1º da CLT",
+            teses: "1. VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n2. VERBAS RESCISÓRIAS\n3. MULTA DO ART. 477 DA CLT\n4. DANOS MORAIS (Art. 223-G CLT)"
         },
-        "41": { 
-            peca: "Contestação", 
-            art: "Art. 847 da CLT", 
-            local: "Vara do Trabalho de...", 
-            teses: "1. PRELIMINAR DE INÉPCIA\n2. MÉRITO: INDEVIDO ADICIONAL DE PERICULOSIDADE\n3. MÉRITO: COMPENSAÇÃO DE JORNADA" 
+        "41": {
+            titulo: "Contestação (Empresa X)",
+            endereco: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...",
+            fundamento: "Art. 847 da CLT",
+            teses: "1. PRELIMINAR: INÉPCIA DA INICIAL\n2. PREJUDICIAL: PRESCRIÇÃO QUINQUENAL\n3. MÉRITO: INDEVIDO ADICIONAL DE PERICULOSIDADE"
         },
-        "default": { 
-            peca: "Estrutura Padrão", 
-            art: "Art. ... da CLT", 
-            local: "... VARA DO TRABALHO DE ...", 
-            teses: "1. MÉRITO\n2. PEDIDOS\n3. REQUERIMENTOS" 
+        "42": {
+            titulo: "Recurso Ordinário",
+            endereco: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...",
+            fundamento: "Art. 895, I da CLT",
+            teses: "1. PRELIMINAR: CERCEAMENTO DE DEFESA\n2. MÉRITO: EQUIPARAÇÃO SALARIAL\n3. PEDIDO DE REFORMA"
+        },
+        "GENERICA": {
+            titulo: "Estrutura Padrão",
+            endereco: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...",
+            fundamento: "Art. ... da CLT",
+            teses: "1. MÉRITO\n2. PEDIDOS\n3. REQUERIMENTOS"
         }
     };
 
-    // 2. FUNÇÃO INJETAR (PEÇA + 4 QUESTÕES FGV)
-    window.injetarPecaMaster = (ex) => {
-        const d = bancoExames[ex] || bancoExames["default"];
+    window.injetarPecaCerta = (id) => {
+        const p = bancoMaster[id] || bancoMaster["GENERICA"];
         const divisor = "\n" + "-".repeat(15) + " FOLHA DE RESPOSTAS (FGV) " + "-".repeat(15) + "\n";
         
-        const esqueleto = `AO DOUTO JUÍZO DA ${d.local}\n\nRECLAMANTE (NOME), qualificação, vem por seu advogado propor\n\n${d.peca.toUpperCase()}\n\ncom fulcro no ${d.art}.\n\n--- TESES DA PEÇA ---\n${d.teses}\n\nVALOR DA CAUSA: R$ ...\n\n` + 
-        divisor + "QUESTÃO 1: \nA) \nB) \n" + divisor + "QUESTÃO 2: \nA) \nB) \n" + divisor + "QUESTÃO 3: \nA) \nB) \n" + divisor + "QUESTÃO 4: \nA) \nB)";
+        const texto = `${p.endereco}\n\nNOME, qualificação, vem propor\n\n${p.titulo.toUpperCase()}\n\ncom fulcro no ${p.fundamento}.\n\nTESES DA PEÇA:\n${p.teses}\n\n` + 
+        divisor + "QUESTÃO 1:\nA)\nB)\n" + divisor + "QUESTÃO 2:\nA)\nB)\n" + divisor + "QUESTÃO 3:\nA)\nB)\n" + divisor + "QUESTÃO 4:\nA)\nB)";
         
-        document.getElementById('texto-final').value = esqueleto;
+        document.getElementById('texto-final').value = texto;
         window.autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
     };
 
     window.abrirPecas = () => {
-        const ex = document.getElementById('exam-select').value;
-        const d = bancoExames[ex] || bancoExames["default"];
+        const exAtivo = document.getElementById('exam-select').value;
         const container = document.getElementById('lista-pecas');
-        container.innerHTML = `
-            <div class="btn-model-item" onclick="window.injetarPecaMaster('${ex}')">
-                <strong>INJETAR: ${d.peca} (EXAME ${ex})</strong>
-                <span>Endereçamento: ${d.local}</span>
-                <span>Fundamento: ${d.art}</span>
-            </div>
-            <div class="btn-model-item" onclick="window.injetarPecaMaster('default')">
-                <strong>Injetar Estrutura Genérica</strong>
-                <span>Para outros exames</span>
-            </div>
-        `;
+        container.innerHTML = "";
+        
+        // Adiciona a peça específica do exame atual primeiro
+        if (bancoMaster[exAtivo]) {
+            const b = document.createElement('div');
+            b.className = "btn-model-item";
+            b.onclick = () => window.injetarPecaCerta(exAtivo);
+            b.innerHTML = `<strong>🏆 PEÇA DO EXAME ${exAtivo}</strong><span>${bancoMaster[exAtivo].titulo}</span>`;
+            container.appendChild(b);
+        }
+
+        // Adiciona as genéricas/outras
+        Object.keys(bancoMaster).forEach(k => {
+            if (k !== exAtivo) {
+                const b = document.createElement('div');
+                b.className = "btn-model-item";
+                b.onclick = () => window.injetarPecaCerta(k);
+                b.innerHTML = `<strong>${bancoMaster[k].titulo}</strong><span>Fundamento: ${bancoMaster[k].fundamento}</span>`;
+                container.appendChild(b);
+            }
+        });
         document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    // 3. MOTOR PDF & ZOOM HD
+    // MOTOR PDF & ZOOM
     window.applyZoom = (val) => {
         document.getElementById('pdf-inner-zoom').style.transform = `scale(${val/100})`;
         document.getElementById('zoom-text').innerText = val + "%";
@@ -200,15 +213,14 @@
         }
     }
 
-    // 4. FIREBASE & GESTÃO
+    // FIREBASE
     window.autoSave = () => { window.isEditing = true; set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); setTimeout(()=>window.isEditing=false, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
     window.limparFolha = () => { if(confirm("Limpar tudo?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
-    
     window.finalizarEArquivar = async () => {
         const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
+        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Salvo no Museu!"); }
     };
 
     window.abrirEvolucao = async () => {
@@ -241,7 +253,7 @@
 
     let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
     document.getElementById('line-nums-main').innerHTML = h;
-    window.mudarExame = () => { window.carregarPDF('prova'); };
+    window.mudarExame = () => window.carregarPDF('prova');
     window.carregarPDF('prova');
     window.applyZoom(130);
 
