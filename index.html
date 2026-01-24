@@ -1,228 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    
-    <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        .timer-group { display: flex; align-items: center; gap: 8px; }
-        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
-        .btn-header { border: none; padding: 6px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
-        .main-container { flex: 1; display: flex; overflow: hidden; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
-        .btn-symbol { height: 35px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; scroll-behavior: smooth; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2800px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
-        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
-        .tab.active { background: #fff; color: var(--primary); }
-        .zoom-controls { background: #1e293b; padding: 8px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.7rem; border-bottom: 1px solid #444; color: var(--gold); }
-        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
-        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 25px; color: #1e293b; }
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div class="timer-group">
-        <div id="timer-display">05:00:00</div>
-        <button id="btn-simulado" class="btn-header" style="background:var(--danger); color:white;" onclick="toggleSimulado()">🏁</button>
-        <button class="btn-header" style="background:#4b5563; color:white;" onclick="resetTimer()">🔄</button>
-    </div>
-</header>
-
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
-            <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
-        </div>
-        <div class="paper-wrapper" id="scroll-area">
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section" id="viewer">
-        <div class="tabs">
-            <button class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
-            <button class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
-        </div>
-        <div class="zoom-controls">
-            <span>ZOOM:</span>
-            <input type="range" min="0.8" max="2.5" step="0.1" value="1.3" id="zoom-range" oninput="window.ajustarZoom(this.value)">
-            <span id="zoom-val">130%</span>
-        </div>
-        <div id="pdf-viewport"></div>
-    </section>
-</div>
-
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content">
-        <h3 id="titulo-modal">⚖️ ESTRUTURAS</h3><br>
-        <div id="lista-pecas"></div>
-    </div>
-</div>
-
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div>
-</div>
-
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg)">
-        <h3>📌 POST-IT</h3><br>
-        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea>
-    </div>
-</div>
-
-<button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-
-    // Variáveis de Controle
-    let exAtual = 40; let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
+// BANCO DE DADOS INTELIGENTE (PERSONALIZADO POR EXAME)
     const bancoPecas = {
-        "40": { titulo: "RT Espólio (Romeu Diamante)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, representado por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)" }
-    };
-
-    // FUNÇÕES EXPOSTAS AO WINDOW
-    window.autoSave = () => {
-        window.isEditing = true; clearTimeout(window.sv);
-        window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
-    };
-
-    window.carregarPDF = async (tipo) => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        const arq = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        try { 
-            pdfDoc = await pdfjsLib.getDocument(arq).promise; 
-            window.renderAll();
-        } catch(e) { console.error("Erro PDF:", e); }
-    };
-
-    window.renderAll = async () => {
-        const container = document.getElementById('pdf-viewport'); container.innerHTML = "";
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-            const page = await pdfDoc.getPage(i);
-            const viewport = page.getViewport({ scale: scale });
-            const canvas = document.createElement('canvas');
-            container.appendChild(canvas);
-            canvas.height = viewport.height; canvas.width = viewport.width;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+        "40": { 
+            titulo: "RT Espólio (Romeu Diamante)", 
+            corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\n" +
+                   "ESPÓLIO DE ROMEU DIAMANTE, representado por sua inventariante JULIETA SAFIRA, nacionalidade..., estado civil..., CPF..., residente e domiciliada na..., por seu advogado infra-assinado, vem, perante Vossa Excelência, propor:\n\n" +
+                   "RECLAMAÇÃO TRABALHISTA\n\n" +
+                   "em face de [NOME DA EMPRESA], qualificação..., pelos fatos e fundamentos a seguir expostos:\n\n" +
+                   "1. DA GRATUIDADE DE JUSTIÇA (Art. 790, § 3º, CLT)\n" +
+                   "A inventariante é dona de casa e o espólio deixou bens de pequeno valor...\n\n" +
+                   "2. DA PRIORIDADE NA TRAMITAÇÃO (Art. 1048, CPC)\n" +
+                   "Trata-se de inventariante idosa, contando com mais de 60 anos...\n\n" +
+                   "3. DO VÍNCULO EMPREGATÍCIO (Art. 3º e 29 da CLT)\n" +
+                   "O de cujus trabalhou para a Reclamada no período de...\n\n" +
+                   "4. DAS VERBAS RESCISÓRIAS\n" +
+                   "Saldo salarial, 13º salário proporcional e férias proporcionais..."
+        },
+        "39": {
+            titulo: "Peça Prática Exame 39",
+            corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n[ESTRUTURA ESPECÍFICA DO EXAME 39]..."
         }
-        document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%";
+        // Podemos adicionar do 35 ao 45 aqui com essa mesma precisão
     };
 
-    window.ajustarZoom = (v) => { scale = parseFloat(v); window.renderAll(); };
+    window.gerarCaderno = (corpoPeca) => {
+        const linhaSimulada = "_".repeat(50);
+        const separador = (titulo) => `\n\n${linhaSimulada}\n   ${titulo}\n${linhaSimulada}\n\n`;
 
-    window.abrirPecas = () => {
-        const info = bancoPecas[exAtual] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ..." };
-        document.getElementById('titulo-modal').innerText = `Exame ${exAtual}`;
-        document.getElementById('lista-pecas').innerHTML = `
-            <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">
-                📝 GERAR CADERNO: ${info.titulo}
-            </button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
+        // Montagem Cirúrgica: Peça + Questões (Padrão FGV)
+        const cadernoCompleto = 
+            corpoPeca + 
+            "\n\n" + ".".repeat(30) + " FINAL DA PEÇA (LINHA 150) " + ".".repeat(30) + "\n\n" +
+            separador("QUESTÃO 1") + "A)\n\nB)\n" +
+            separador("QUESTÃO 2") + "A)\n\nB)\n" +
+            separador("QUESTÃO 3") + "A)\n\nB)\n" +
+            separador("QUESTÃO 4") + "A)\n\nB)\n";
 
-    window.gerarCaderno = (corpo) => {
-        const divisor = "\n\n" + "-".repeat(20) + " RESPOSTA OAB " + "-".repeat(20) + "\n";
-        const total = corpo + "\n\n" + divisor + "QUESTÃO 1\na)\nb)\n" + divisor + "QUESTÃO 2\na)\nb)\n" + divisor + "QUESTÃO 3\na)\nb)\n" + divisor + "QUESTÃO 4\na)\nb)";
-        document.getElementById('texto-final').value = total;
+        document.getElementById('texto-final').value = cadernoCompleto;
         window.autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
-        document.getElementById('scroll-area').scrollTop = 0;
+        document.getElementById('scroll-area').scrollTop = 0; // Volta para o início para começar a escrever
     };
-
-    window.mudarExame = (v) => { exAtual = v; window.carregarPDF('prova'); };
-    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
-    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    
-    window.abrirEvolucao = async () => {
-        const snap = await get(ref(db, 'historico_treinos'));
-        const list = document.getElementById('lista-historico'); list.innerHTML = "";
-        if(snap.exists()) {
-            Object.keys(snap.val()).forEach(k => {
-                const item = snap.val()[k];
-                const d = document.createElement('div');
-                d.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong></div><button onclick="window.delTreino('${k}')">🗑️</button>`;
-                list.appendChild(d);
-            });
-        }
-        document.getElementById('modal-evolucao').style.display = 'flex';
-    };
-
-    window.restaurar = async (k) => {
-        const s = await get(ref(db, `historico_treinos/${k}`));
-        document.getElementById('texto-final').value = s.val().texto;
-        window.autoSave(); document.getElementById('modal-evolucao').style.display = 'none';
-    };
-
-    window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
-
-    window.finalizarEArquivar = async () => {
-        const t = prompt("Nome do Treino:");
-        if(t) {
-            await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
-            alert("Salvo!");
-        }
-    };
-
-    window.toggleSimulado = () => {
-        if(!timerInterval) {
-            timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); }, 1000);
-            document.getElementById('btn-simulado').innerText = "⏸";
-        } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; }
-    };
-    window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
-    window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
-
-    // Inicialização
-    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
-
-    let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = h;
-    const sel = document.getElementById('exam-select');
-    for(let i=45; i>=35; i--) { let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`; if(i==40) opt.selected = true; sel.appendChild(opt); }
-    
-    window.carregarPDF('prova');
-</script>
-</body>
-</html>
