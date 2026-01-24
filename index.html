@@ -55,11 +55,11 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
-            <button class="btn-symbol" title="Meus Treinos" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
-            <button class="btn-symbol" title="Estrutura da Peça" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" title="Post-it e Dicas" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" title="Limpar Folha" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" title="Salvar Treino" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
+            <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper" id="scroll-area">
             <div class="paper-sheet">
@@ -86,8 +86,8 @@
 
 <div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3 id="titulo-modal-pecas">⚖️ ESTRUTURAS OAB</h3><br>
-        <div id="lista-pecas-contextual"></div>
+        <h3 id="titulo-modal">⚖️ ESTRUTURAS OAB</h3><br>
+        <div id="lista-pecas"></div>
     </div>
 </div>
 
@@ -114,7 +114,6 @@
     let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // BANCO DE DADOS DINÂMICO
     const bancoPecas = {
         "40": { titulo: "RT Espólio (Romeu Diamante)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, rep. por JULIETA SAFIRA...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)\n4. VERBAS RESCISÓRIAS..." },
         "39": { titulo: "Contestação (Calçados Teresina)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nPROCESSO Nº 0001234-55.2023.5.22.0090\n\nSOCIEDADE EMPRESÁRIA CALÇADOS LTDA...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR\n2. MÉRITO..." },
@@ -124,26 +123,7 @@
         "35": { titulo: "Consignação em Pagamento", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE SALVADOR/BA\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO..." }
     };
 
-    // A SOLUÇÃO: Função que força a reconstrução do botão no modal
-    window.mudarExame = (v) => { 
-        window.carregarPDF('prova');
-        // Limpa o modal para forçar o sistema a ler o novo valor no próximo clique no ⚖️
-        document.getElementById('lista-pecas-contextual').innerHTML = ""; 
-    };
-
-    window.abrirPecas = () => {
-        const exameSelecionado = document.getElementById('exam-select').value;
-        const info = bancoPecas[exameSelecionado] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ..." };
-        
-        document.getElementById('titulo-modal-pecas').innerText = `EXAME ${exameSelecionado}`;
-        document.getElementById('lista-pecas-contextual').innerHTML = `
-            <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer; font-size:1rem;">
-                📝 GERAR CADERNO COMPLETO:<br>
-                <span style="font-weight:400; font-size:0.8rem;">${info.titulo}</span>
-            </button>
-        `;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
+    window.mudarExame = (v) => { window.carregarPDF('prova'); };
 
     window.gerarCaderno = function(corpoPeca) {
         const divisor = "\n" + "-".repeat(45) + " RESPOSTA OAB " + "-".repeat(45) + "\n";
@@ -152,6 +132,19 @@
         window.autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
         document.getElementById('scroll-area').scrollTop = 0;
+    };
+
+    window.abrirPecas = () => {
+        // A SOLUÇÃO: Ler o seletor na hora do clique
+        const exameSelecionado = document.getElementById('exam-select').value;
+        const info = bancoPecas[exameSelecionado] || { titulo: "Petição Inicial", corpo: "AO DOUTO JUÍZO DA ..." };
+        
+        document.getElementById('titulo-modal').innerText = `EXAME ${exameSelecionado}`;
+        document.getElementById('lista-pecas').innerHTML = `
+            <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">
+                📝 GERAR CADERNO COMPLETO:<br><small>${info.titulo}</small>
+            </button>`;
+        document.getElementById('modal-pecas').style.display = 'flex';
     };
 
     window.carregarPDF = async (tipo) => {
@@ -170,20 +163,18 @@
             canvas.height = viewport.height; canvas.width = viewport.width;
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
         }
-        document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%";
     };
 
-    window.ajustarZoom = (v) => { scale = parseFloat(v); window.renderAll(); };
+    window.ajustarZoom = (v) => { scale = parseFloat(v); window.renderAll(); document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%"; };
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.limparFolha = () => { if(confirm("Limpar caderno?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
+    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     
     window.finalizarEArquivar = async () => {
-        const t = prompt("Título do Treino:");
+        const t = prompt("Nome do Treino:");
         const e = document.getElementById('exam-select').value;
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: e }); alert("Salvo no Museu!"); }
+        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: e }); alert("Arquivado!"); }
     };
 
     window.abrirEvolucao = async () => {
@@ -193,8 +184,8 @@
             Object.keys(snap.val()).forEach(k => {
                 const item = snap.val()[k];
                 const d = document.createElement('div');
-                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; color:#1e293b"><strong>${item.titulo}</strong> <small>(${item.exame})</small></div><button onclick="window.delTreino('${k}')" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
+                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
+                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong> (${item.exame})</div><button onclick="window.delTreino('${k}')">🗑️</button>`;
                 list.appendChild(d);
             });
         }
@@ -212,7 +203,6 @@
     window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
     window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
 
-    // INICIALIZAÇÃO E FIREBASE
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
