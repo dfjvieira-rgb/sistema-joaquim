@@ -2,196 +2,208 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | MOBILE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARYANNA MASTER PRO | FIXED</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4; --rascunho: #fefce8;
+            --bg-site: #0f172a; --gold: #d4af37;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        header { background: #1e293b; padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 0.9rem; }
+        /* BARRA DE COMANDO FIXA (ESTILO APP) */
+        .master-toolbar { 
+            background: #1e293b; 
+            padding: 5px; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 5px; 
+            border-bottom: 2px solid var(--gold);
+            z-index: 9999;
+        }
 
-        /* TOOLBARS OTIMIZADAS */
-        .controls { background: #fff; display: flex; flex-direction: column; border-bottom: 1px solid #94a3b8; }
-        .row { display: flex; gap: 4px; padding: 4px 8px; align-items: center; }
+        .btn-top { 
+            height: 45px; 
+            border: none; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            font-size: 0.65rem; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .btn-save { background: var(--primary); }
+        .btn-post { background: var(--warning); color: #000; }
+        .btn-check { background: var(--success); }
+        .btn-pdf { background: #475569; }
+
+        /* SELETORES */
+        .sub-bar { 
+            background: #fff; 
+            padding: 5px; 
+            display: flex; 
+            gap: 5px; 
+        }
+        select { 
+            flex: 1; 
+            height: 35px; 
+            font-size: 0.7rem; 
+            font-weight: bold; 
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+        }
+
+        .main-content { flex: 1; display: flex; overflow: hidden; flex-direction: column; }
         
-        .btn-action { flex: 1; height: 38px; border-radius: 6px; border: none; font-weight: bold; font-size: 0.7rem; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .select-field { flex: 1; height: 38px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.7rem; font-weight: bold; background: #fff; color: #334155; }
-        
-        .btn-blue { background: var(--primary); }
-        .btn-green { background: var(--success); }
-        .btn-gold { background: var(--gold); color: #000; }
-        .btn-icon { width: 38px; background: #f1f5f9; color: #334155; border: 1px solid #ccc; font-size: 1.1rem; }
+        /* ÁREA DA FOLHA */
+        .editor-container { flex: 1; overflow-y: auto; background: #cbd5e1; padding: 10px; position: relative; }
+        .paper-sheet { 
+            width: 100%; 
+            max-width: 800px; 
+            margin: 0 auto;
+            min-height: 1200px; 
+            background: #fff; 
+            display: flex; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .line-nums { width: 35px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; font-size: 11px; color: #94a3b8; padding-top: 15px; line-height: 28px; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 17px; line-height: 28px; background-image: linear-gradient(transparent, transparent 27px, #eee 28px); background-size: 100% 28px; resize: none; }
 
-        .main-container { flex: 1; display: flex; overflow: hidden; }
+        /* PDF MODAL (PARA NÃO SUMIR) */
+        #pdf-overlay { 
+            position: fixed; top: 105px; left: 0; width: 100%; height: calc(100% - 105px); 
+            background: #fff; z-index: 999; display: none; 
+        }
+        .pdf-header { background: #0f172a; padding: 10px; display: flex; gap: 5px; }
+        .close-pdf { background: var(--danger); color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; }
 
-        /* EDITOR */
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; border-right: 1px solid #334155; }
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        
-        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 8px solid var(--warning); padding: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: #854d0e; display: none; border-radius: 4px; }
-        .list-area { max-height: 100px; overflow-y: auto; margin-bottom: 8px; background: rgba(255,255,255,0.4); border: 1px solid #ddd; }
-        .list-item { padding: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.75rem; color: #000; }
-
-        .paper-sheet { width: 100%; max-width: 800px; min-height: 1200px; display: flex; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-        .line-nums { width: 30px; background: #f8fafc; border-right: 1px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 10px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 16px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
-
-        /* PDF VIEWER */
-        .viewer-section { flex: 1; display: flex; flex-direction: column; background: #0f172a; }
-        .pdf-tabs { display: flex; background: #1e293b; padding: 4px 4px 0; gap: 2px; }
-        .pdf-tab { flex: 1; padding: 10px 4px; border: none; border-radius: 4px 4px 0 0; font-size: 0.6rem; font-weight: 800; background: #334155; color: #94a3b8; }
-        .pdf-tab.active { background: #fff; color: var(--primary); }
-        .pdf-tab.ary { background: var(--gold); color: #000; }
-        iframe { flex: 1; border: none; background: #fff; }
+        /* POST-IT OVERLAY */
+        .postit-overlay { 
+            position: fixed; top: 110px; right: 10px; width: 250px; 
+            background: var(--warning); padding: 10px; border-radius: 8px; 
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5); display: none; z-index: 1000;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">ARYANNA MASTER PRO</div>
-    <div id="status" style="font-size:0.6rem; color:var(--success)">SINCRO OK</div>
-</header>
+    <div class="master-toolbar">
+        <button class="btn-top btn-save" onclick="salvarModelo()">💾<br>SALVAR</button>
+        <button class="btn-top btn-pdf" onclick="abrirPDF()">📄<br>PDF/VADE</button>
+        <button class="btn-top btn-post" onclick="togglePostit()">📌<br>POST-IT</button>
+        <button class="btn-top btn-check" onclick="finalizar()">✅<br>FIM</button>
+    </div>
 
-<div class="controls">
-    <div class="row">
-        <select class="select-field" id="exam-select" onchange="mudarExame(this.value)"></select>
-        <select class="select-field" id="mode-select" onchange="mudarModo(this.value)">
-            <option value="peca">📄 PEÇA</option>
-            <option value="quest">📝 QUESTÕES</option>
-        </select>
-        <select class="select-field" id="struct-select" onchange="carregarModelo(this.value)" style="border-color: var(--gold)">
-            <option value="">📂 40 ESTRUTURAS</option>
-            <option value="rt">RT Ordinário</option>
+    <div class="sub-bar">
+        <select id="exame" onchange="mudarExame(this.value)"></select>
+        <select id="peca-tipo" onchange="carregarEstrutura(this.value)">
+            <option value="">📂 ESTRUTURAS</option>
+            <option value="rt">RT Ordinária</option>
             <option value="contestacao">Contestação</option>
             <option value="ro">Recurso Ordinário</option>
             <option value="ap">Agravo de Petição</option>
         </select>
     </div>
-    <div class="row">
-        <button class="btn-action btn-blue" onclick="salvarModelo()">💾 SALVAR ESTRUTURA</button>
-        <button class="btn-icon" onclick="togglePanel('box-teses')">📌</button>
-        <button class="btn-icon" onclick="togglePanel('box-dicas')">📝</button>
-        <button class="btn-action btn-green" onclick="arquivarTreino()">✅ FINALIZAR</button>
-    </div>
-</div>
 
-<div class="main-container">
-    <section class="editor-section">
-        <div class="paper-wrapper">
-            <div id="box-dicas" class="fgv-panel" style="border-left-color: var(--danger);">
-                <div id="dicas-list" class="list-area"></div>
-                <input type="text" id="dica-tit" placeholder="Dica..." style="width:100%; margin-bottom:4px; font-size:0.7rem;">
-                <button onclick="dbSalvar('dicas', 'dica')" style="width:100%; background:var(--danger); color:#fff; border:none; padding:5px; font-size:0.7rem;">GRAVAR</button>
-            </div>
-            <div id="box-teses" class="fgv-panel" style="border-left-color: var(--success);">
-                <div id="teses-list" class="list-area"></div>
-                <input type="text" id="tese-tit" placeholder="Tese..." style="width:100%; margin-bottom:4px; font-size:0.7rem;">
-                <button onclick="dbSalvar('teses', 'tese')" style="width:100%; background:var(--success); color:#fff; border:none; padding:5px; font-size:0.7rem;">GRAVAR</button>
-            </div>
+    <div class="main-content">
+        <div class="editor-container">
             <div class="paper-sheet">
-                <div class="line-nums" id="line-nums"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
+                <div class="line-nums" id="lines"></div>
+                <textarea id="editor" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="viewer-section">
-        <div class="pdf-tabs">
-            <button class="pdf-tab active" id="t-prova" onclick="trocarPDF('prova')">PROVA</button>
-            <button class="pdf-tab" id="t-gab" onclick="trocarPDF('gab')">GABARITO</button>
-            <button class="pdf-tab ary" id="t-ary" onclick="trocarPDF('ary')">VADE ARY</button>
+    <div id="pdf-overlay">
+        <div class="pdf-header">
+            <button class="close-pdf" onclick="fecharPDF()">FECHAR X</button>
+            <button class="btn-top btn-pdf" style="flex:1" onclick="loadPDF('prova')">PROVA</button>
+            <button class="btn-top btn-pdf" style="flex:1" onclick="loadPDF('gab')">GAB</button>
+            <button class="btn-top btn-pdf" style="flex:1; background:var(--gold); color:000;" onclick="loadPDF('ary')">VADE</button>
         </div>
-        <iframe id="pdf-frame"></iframe>
-    </section>
-</div>
+        <iframe id="pdf-frame" style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <div id="postit-box" class="postit-overlay">
+        <div id="lista-notas" style="max-height: 200px; overflow-y: auto; background: rgba(255,255,255,0.3); margin-bottom: 5px; font-size: 0.7rem; color: #000;"></div>
+        <input type="text" id="nota-input" placeholder="Nova dica/tese..." style="width:100%; margin-bottom:5px;">
+        <button onclick="salvarNota()" style="width:100%; background:#000; color:#fff; border:none; padding:5px;">SALVAR NOTA</button>
+    </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
-    window.db_ops = { ref, set, push, remove, get, db };
-    onValue(ref(db, 'teses'), (s) => renderLista(s.val(), 'teses-list', 'teses'));
-    onValue(ref(db, 'dicas'), (s) => renderLista(s.val(), 'dicas-list', 'dicas'));
-    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.editing) document.getElementById('texto-final').value = s.val() || ""; });
+    window.db_ops = { ref, set, push, get, db };
+
+    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.editando) document.getElementById('editor').value = s.val() || ""; });
+    onValue(ref(db, 'notas_fgv'), (s) => renderNotas(s.val()));
 </script>
 
 <script>
-    let ex = 42; let modo = 'peca'; let pecaAtiva = "";
+    let exameAtivo = 42; let pecaAtiva = "";
 
-    function trocarPDF(tipo) {
-        document.querySelectorAll('.pdf-tab').forEach(t => t.classList.remove('active'));
-        const f = document.getElementById('pdf-frame');
-        if(tipo === 'prova') { f.src = `ro${ex}.pdf`; document.getElementById('t-prova').classList.add('active'); }
-        if(tipo === 'gab') { f.src = `ro${ex}-gabarito.pdf`; document.getElementById('t-gab').classList.add('active'); }
-        if(tipo === 'ary') { f.src = `Aryanna Linhares.pdf`; document.getElementById('t-ary').classList.add('active'); }
+    function abrirPDF() { document.getElementById('pdf-overlay').style.display = 'block'; loadPDF('prova'); }
+    function fecharPDF() { document.getElementById('pdf-overlay').style.display = 'none'; }
+    function togglePostit() { 
+        const b = document.getElementById('postit-box');
+        b.style.display = b.style.display === 'block' ? 'none' : 'block';
     }
 
-    async function carregarModelo(k) {
+    function loadPDF(tipo) {
+        const f = document.getElementById('pdf-frame');
+        if(tipo === 'prova') f.src = `ro${exameAtivo}.pdf`;
+        if(tipo === 'gab') f.src = `ro${exameAtivo}-gabarito.pdf`;
+        if(tipo === 'ary') f.src = `Aryanna Linhares.pdf`;
+    }
+
+    async function carregarEstrutura(k) {
         if(!k) return; pecaAtiva = k;
         const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${k}`));
-        document.getElementById('texto-final').value = s.exists() ? s.val() : "Inicie sua estrutura de " + k.toUpperCase();
-        autoSave();
+        document.getElementById('editor').value = s.exists() ? s.val() : "Estrutura de " + k.toUpperCase();
     }
 
     async function salvarModelo() {
-        if(!pecaAtiva) return alert("Escolha uma peça!");
-        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${pecaAtiva}`), document.getElementById('texto-final').value);
-        alert("Modelo salvo!");
+        if(!pecaAtiva) return alert("Selecione uma peça!");
+        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${pecaAtiva}`), document.getElementById('editor').value);
+        alert("Estrutura Salva!");
     }
 
-    function mudarExame(v) { ex = v; trocarPDF('prova'); }
-    function togglePanel(id) { 
-        const el = document.getElementById(id); 
-        const d = el.style.display; 
-        document.querySelectorAll('.fgv-panel').forEach(p => p.style.display = 'none');
-        el.style.display = d === 'block' ? 'none' : 'block';
+    async function salvarNota() {
+        const t = document.getElementById('nota-input').value;
+        if(t) await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'notas_fgv'), { texto: t });
+        document.getElementById('nota-input').value = "";
     }
 
-    async function dbSalvar(p, pre) {
-        const t = document.getElementById(`${pre}-tit`).value;
-        if(!t) return;
-        await window.db_ops.push(window.db_ops.ref(window.db_ops.db, p), { titulo: t, data: new Date().toLocaleString() });
-        document.getElementById(`${pre}-tit`).value = "";
+    function renderNotas(d) {
+        const c = document.getElementById('lista-notas'); c.innerHTML = "";
+        if(d) Object.keys(d).forEach(k => { c.innerHTML += `<div>• ${d[k].texto}</div>`; });
     }
-
-    function renderLista(d, c, p) {
-        const el = document.getElementById(c); el.innerHTML = "";
-        if(d) Object.keys(d).forEach(k => {
-            el.innerHTML += `<div class="list-item"><span>${d[k].titulo}</span><span onclick="excluir('${k}','${p}')" style="color:red">✖</span></div>`;
-        });
-    }
-
-    window.excluir = (id, p) => { if(confirm("Apagar?")) window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `${p}/${id}`)); };
 
     function autoSave() {
-        window.editing = true; clearTimeout(window.sv);
+        window.editando = true; clearTimeout(window.sv);
         window.sv = setTimeout(() => {
-            window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modo}`), document.getElementById('texto-final').value);
-            window.editing = false;
+            window.db_ops.set(window.db_ops.ref(window.db_ops.db, 'v3_treino/peca'), document.getElementById('editor').value);
+            window.editando = false;
         }, 800);
     }
 
-    function gerarLinhas(n) { 
-        let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; 
-        document.getElementById('line-nums').innerHTML = h; 
-    }
-
-    function mudarModo(v) { modo = v; gerarLinhas(v==='peca'?150:30); }
+    function mudarExame(v) { exameAtivo = v; if(document.getElementById('pdf-overlay').style.display === 'block') loadPDF('prova'); }
 
     window.onload = () => {
-        gerarLinhas(150);
-        const s = document.getElementById('exam-select');
-        for(let i=44; i>=35; i--) { let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; if(i==42) o.selected=true; s.appendChild(o); }
-        trocarPDF('prova');
+        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>"; document.getElementById('lines').innerHTML = h;
+        const s = document.getElementById('exame');
+        for(let i=44; i>=35; i--) { 
+            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; 
+            if(i==42) o.selected=true; s.appendChild(o); 
+        }
     };
 </script>
 </body>
