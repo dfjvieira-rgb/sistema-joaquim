@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
+    <title>SISTEMA MASTER OAB 2026 - CLOUD SYNC</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
@@ -16,53 +16,39 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { 
-            background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold);
-            display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0;
-        }
+        header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         #timer-display { font-family: monospace; font-size: 1.6rem; font-weight: bold; color: var(--warning); }
+        #cloud-status { font-size: 0.6rem; color: var(--success); margin-left: 10px; }
 
         .laws-bar { background: #000; padding: 4px; display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid #333; flex-shrink: 0; }
-        .law-link { background: #333; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-decoration: none; white-space: nowrap; border: 1px solid #444; cursor: pointer; }
+        .law-link { background: #333; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; border: 1px solid #444; white-space: nowrap; }
 
-        .exam-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; background: #000; padding: 1px; border-bottom: 1px solid #333; flex-shrink: 0; }
+        .exam-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; background: #000; padding: 1px; border-bottom: 1px solid #333; flex-shrink: 0; }
         .btn-ex { padding: 6px 0; border: none; background: #222; color: #888; font-size: 0.7rem; cursor: pointer; }
         .btn-ex.active { background: var(--success); color: white; font-weight: bold; }
 
         .pecas-menu { background: var(--card); padding: 5px; display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid var(--gold); flex-shrink: 0; }
-        .btn-peca { padding: 6px 12px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.65rem; cursor: pointer; white-space: nowrap; }
+        .btn-peca { padding: 6px 12px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.65rem; cursor: pointer; }
 
         .pratica-bar { background: #2d3748; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #4a5568; flex-shrink: 0; }
-        .btn-pratica { flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
-        .bg-pratica { background: #6366f1; }
-        .bg-discursiva { background: #8b5cf6; }
+        .btn-pratica { flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; opacity: 0.5; }
+        .btn-pratica.active { opacity: 1; }
 
         .workspace { flex: 1; display: flex; overflow: hidden; background: #000; }
-
-        /* PDF FIXO NA DIREITA COM MAIS ESPAÇO (65% da tela) */
-        .col-res { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 2px solid #000; }
+        .col-res { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         .col-pdf { flex: 1.8; display: flex; flex-direction: column; background: var(--pdf-bg); }
 
         .pdf-tabs { display: flex; background: #111; padding: 2px; gap: 2px; height: 35px; }
         .tab-btn { flex: 1; border: none; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #222; color: #777; }
         .tab-btn.active { background: white; color: var(--fgv-blue); }
-        
-        iframe { width: 100%; height: 100%; border: none; background: #525659; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        .fgv-header { background: #f0f0f0; color: #000; padding: 4px 10px; font-size: 0.55rem; font-weight: bold; border-bottom: 1px solid #000; display: flex; justify-content: space-between; align-items: center; }
-        .btn-save-folha { background: var(--success); color: white; border: none; padding: 3px 8px; border-radius: 3px; font-size: 0.55rem; cursor: pointer; }
-
+        .fgv-header { background: #f0f0f0; color: #000; padding: 4px 10px; font-size: 0.55rem; font-weight: bold; border-bottom: 1px solid #000; display: flex; justify-content: space-between; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; }
-        .line-nums { width: 25px; background: #fdfdfd; border-right: 1px solid #ddd; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; font-family: sans-serif; }
-        
-        .textarea-fgv { 
-            flex: 1; border: none; outline: none; resize: none; padding: 0 10px; 
-            font-family: 'Caveat', cursive; font-size: 20px; line-height: 25px; 
-            background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
-            background-size: 100% 25px; color: #001f3f; overflow-y: hidden;
-        }
+        .line-nums { width: 25px; background: #fdfdfd; border-right: 1px solid #ddd; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
+        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-family: 'Caveat', cursive; font-size: 20px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); background-size: 100% 25px; color: #001f3f; }
 
-        #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; font-weight: bold; }
+        #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
         .overlay-consulta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; flex-direction: column; }
         .consulta-card { width: 95%; max-width: 800px; margin: auto; background: white; border-radius: 8px; overflow: hidden; height: 90vh; display: flex; flex-direction: column; }
@@ -81,7 +67,7 @@
 <body>
 
 <header>
-    <div style="font-weight:bold; color:var(--gold); font-size: 0.9rem;">ARYANNA MASTER 2026</div>
+    <div style="font-weight:bold; color:var(--gold); font-size: 0.9rem;">ARYANNA MASTER 2026 <span id="cloud-status">☁️ Conectado</span></div>
     <div id="timer-display">05:00:00</div>
     <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:4px 10px; border-radius:4px; font-size: 0.7rem;">INICIAR</button>
 </header>
@@ -102,22 +88,19 @@
 </div>
 
 <div class="pratica-bar">
-    <button class="btn-pratica bg-pratica" id="btn-modo-peca" onclick="modoTreino('peca')">🏋️ PEÇA</button>
-    <button class="btn-pratica bg-discursiva" id="btn-modo-questoes" onclick="modoTreino('questoes')">📝 QUESTÕES</button>
+    <button class="btn-pratica active" id="btn-modo-peca" onclick="modoTreino('peca')">🏋️ PEÇA</button>
+    <button class="btn-pratica" id="btn-modo-questoes" onclick="modoTreino('questoes')">📝 QUESTÕES</button>
 </div>
 
 <main class="workspace">
     <section class="col-res">
         <div class="fgv-header">
-            <span id="label-folha">FOLHA FGV</span>
-            <div>
-                <button onclick="arquivarTreino()" style="background:var(--gold); padding:3px 6px; border:none; font-size:0.55rem; border-radius:3px; margin-right:4px; cursor:pointer">ARQUIVAR</button>
-                <button class="btn-save-folha" onclick="saveManual()">SALVAR</button>
-            </div>
+            <span id="label-folha">CARREGANDO NUVEM...</span>
+            <button onclick="arquivarTreino()" style="background:var(--gold); padding:2px 8px; border:none; border-radius:3px; cursor:pointer">ARQUIVAR</button>
         </div>
-        <div class="paper" id="main-paper-container">
+        <div class="paper">
             <div class="line-nums" id="line-nums-main"></div>
-            <textarea id="texto-final" class="textarea-fgv" oninput="saveAuto()"></textarea>
+            <textarea id="texto-final" class="textarea-fgv" oninput="pushToCloud()"></textarea>
         </div>
     </section>
 
@@ -146,147 +129,149 @@
 
 <div id="janela-postits" class="overlay-consulta" onclick="this.style.display='none'">
     <div class="consulta-card" onclick="event.stopPropagation()">
-        <div class="consulta-h">POST-ITS / TESES <button onclick="document.getElementById('janela-postits').style.display='none'">X</button></div>
+        <div class="consulta-h">BANCO DE TESES/POST-ITS <button onclick="document.getElementById('janela-postits').style.display='none'">X</button></div>
         <div id="lista-postits" class="consulta-b"></div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta">
     <div class="consulta-card" style="height:auto;" onclick="event.stopPropagation()">
-        <div class="consulta-h">NOVO REGISTRO <button onclick="fecharModalCadastro()">X</button></div>
+        <div class="consulta-h">CADASTRAR TESE <button onclick="fecharModalCadastro()">X</button></div>
         <div class="consulta-b" style="padding:15px;">
-            <input type="text" id="cad-nome" placeholder="Título" style="width:100%; padding:10px; margin-bottom:10px;">
-            <textarea id="cad-texto" rows="6" placeholder="Texto..." style="width:100%; padding:10px;"></textarea>
-            <button onclick="salvarNovoPostit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:5px; font-weight:bold; width:100%">SALVAR NO BANCO</button>
+            <input type="text" id="cad-nome" placeholder="Título da Tese" style="width:100%; padding:10px; margin-bottom:10px;">
+            <textarea id="cad-texto" rows="6" placeholder="Texto da Tese..." style="width:100%; padding:10px;"></textarea>
+            <button onclick="salvarNovoPostit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:5px; font-weight:bold; width:100%">SALVAR NA NUVEM</button>
         </div>
     </div>
 </div>
 
-<script>
-    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; let modoAtual = 'peca';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const grid = document.getElementById('exam-grid');
-    for(let i=35; i<=44; i++){
-        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc(docAtual); };
-        grid.appendChild(b);
-    }
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        projectId: "masteroab-db5e1",
+        storageBucket: "masteroab-db5e1.firebasestorage.app",
+        messagingSenderId: "620234160245",
+        appId: "1:620234160245:web:d0ef18660600087f9ba03c",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
+    };
 
-    function modoTreino(tipo) {
-        modoAtual = tipo;
-        const area = document.getElementById('texto-final');
-        const lineContainer = document.getElementById('line-nums-main');
-        document.getElementById('btn-modo-peca').style.opacity = tipo === 'peca' ? '1' : '0.5';
-        document.getElementById('btn-modo-questoes').style.opacity = tipo === 'questoes' ? '1' : '0.5';
-        if(tipo === 'peca') {
-            document.getElementById('label-folha').innerText = "PEÇA (150L)";
-            area.style.height = "3750px"; gerarLinhas(150, lineContainer);
-            area.value = localStorage.getItem('save_2026_peca') || "";
-        } else {
-            document.getElementById('label-folha').innerText = "DISC. (120L)";
-            area.style.height = "3000px"; gerarLinhas(120, lineContainer);
-            area.value = localStorage.getItem('save_2026_questoes') || "Q1:\n\n\nQ2:";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Variáveis de controle
+    window.modoAtual = 'peca';
+    window.exAtual = 42;
+    window.pushToCloud = function() {
+        const txt = document.getElementById('texto-final').value;
+        set(ref(db, 'treino_atual/' + window.modoAtual), txt);
+    };
+
+    // Sincronização em tempo real (Escuta a nuvem)
+    onValue(ref(db, 'treino_atual'), (snapshot) => {
+        const data = snapshot.val();
+        if(data) {
+            const area = document.getElementById('texto-final');
+            if(document.activeElement !== area) { // Só atualiza se o usuário não estiver digitando agora
+                area.value = data[window.modoAtual] || "";
+            }
         }
-    }
+        document.getElementById('label-folha').innerText = window.modoAtual.toUpperCase() + " SYNC OK";
+    });
 
-    function arquivarTreino() {
-        const texto = document.getElementById('texto-final').value;
-        if(texto.length < 5) return alert("Vazio.");
-        const titulo = `${modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleDateString()}`;
-        let historico = JSON.parse(localStorage.getItem('master_historico')) || [];
-        historico.unshift({ titulo, texto, modo: modoAtual });
-        localStorage.setItem('master_historico', JSON.stringify(historico));
-        alert("Arquivado!");
-    }
-
-    function abrirHistorico() {
-        const hist = JSON.parse(localStorage.getItem('master_historico')) || [];
-        const lista = document.getElementById('lista-historico');
-        lista.innerHTML = '';
-        hist.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'hist-item';
-            div.innerHTML = `<span style="font-size:0.8rem; color:black">${item.titulo}</span> <div><button onclick="verHist(${index})" style="background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:3px">VER</button> <button onclick="delHist(${index})" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:3px; margin-left:4px">X</button></div>`;
-            lista.appendChild(div);
-        });
-        document.getElementById('view-historico').style.display = 'none';
-        document.getElementById('lista-historico').style.display = 'block';
-        document.getElementById('janela-historico').style.display = 'flex';
-    }
-
-    function verHist(index) {
-        const item = JSON.parse(localStorage.getItem('master_historico'))[index];
-        document.getElementById('lista-historico').style.display = 'none';
-        document.getElementById('view-historico').style.display = 'flex';
-        document.getElementById('view-hist-titulo').innerText = item.titulo;
-        document.getElementById('texto-hist-view').value = item.texto;
-        gerarLinhas(item.modo === 'peca' ? 150 : 120, document.getElementById('line-nums-hist'));
-    }
-
-    function fecharViewHist() { document.getElementById('view-historico').style.display = 'none'; document.getElementById('lista-historico').style.display = 'block'; }
-
-    function delHist(index) {
-        if(confirm("Excluir?")) {
-            let hist = JSON.parse(localStorage.getItem('master_historico'));
-            hist.splice(index, 1); localStorage.setItem('master_historico', JSON.stringify(hist));
-            abrirHistorico();
-        }
-    }
-
-    function saveAuto() { localStorage.setItem(modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', document.getElementById('texto-final').value); }
-    function saveManual() { saveAuto(); const b = document.querySelector('.btn-save-folha'); b.innerText = "OK!"; setTimeout(()=>b.innerText="SALVAR",2000); }
-
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
-    function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
-    function salvarNovoPostit() {
+    // Post-its na nuvem
+    window.salvarNovoPostit = function() {
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
         if(!nome || !texto) return;
-        let db = JSON.parse(localStorage.getItem('db_master')) || {};
-        db[Date.now()] = { nome, texto };
-        localStorage.setItem('db_master', JSON.stringify(db));
+        push(ref(db, 'postits'), { nome, texto });
         fecharModalCadastro();
-    }
+    };
 
-    function abrirBancoPostits() {
-        const db = JSON.parse(localStorage.getItem('db_master')) || {};
-        const lista = document.getElementById('lista-postits');
-        lista.innerHTML = '';
-        for(let id in db) {
-            const div = document.createElement('div');
-            div.className = 'hist-item';
-            div.innerHTML = `<span style="color:black">📌 ${db[id].nome}</span> <button onclick="copiarPostit('${id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:3px">COPIAR</button>`;
-            lista.appendChild(div);
-        }
+    window.abrirBancoPostits = function() {
+        onValue(ref(db, 'postits'), (snapshot) => {
+            const data = snapshot.val();
+            const lista = document.getElementById('lista-postits');
+            lista.innerHTML = '';
+            for(let id in data) {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                div.innerHTML = `<span style="color:black">📌 ${data[id].nome}</span> <button onclick="copiarPostit('${id}', '${btoa(data[id].texto)}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:3px">COPIAR</button>`;
+                lista.appendChild(div);
+            }
+        }, { onlyOnce: true });
         document.getElementById('janela-postits').style.display = 'flex';
-    }
+    };
 
-    function copiarPostit(id) {
-        const db = JSON.parse(localStorage.getItem('db_master'));
-        document.getElementById('texto-final').value += "\n" + db[id].texto;
-        document.getElementById('janela-postits').style.display = 'none';
-        saveAuto();
+    // Histórico na nuvem
+    window.arquivarTreino = function() {
+        const texto = document.getElementById('texto-final').value;
+        const titulo = `${window.modoAtual.toUpperCase()} - Exame ${window.exAtual} - ${new Date().toLocaleDateString()}`;
+        push(ref(db, 'historico'), { titulo, texto, modo: window.modoAtual });
+        alert("Arquivado na Nuvem!");
+    };
+</script>
+
+<script>
+    // Lógica de Interface (Timer, PDFs, Linhas)
+    let timeLeft = 18000; let timerInterval = null; 
+    
+    function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
+    
+    function modoTreino(tipo) {
+        window.modoAtual = tipo;
+        const area = document.getElementById('texto-final');
+        const lPeca = document.getElementById('btn-modo-peca');
+        const lQuest = document.getElementById('btn-modo-questoes');
+        
+        if(tipo === 'peca') {
+            lPeca.classList.add('active'); lQuest.classList.remove('active');
+            gerarLinhas(150, document.getElementById('line-nums-main'));
+            area.style.height = "3750px";
+        } else {
+            lQuest.classList.add('active'); lPeca.classList.remove('active');
+            gerarLinhas(120, document.getElementById('line-nums-main'));
+            area.style.height = "3000px";
+        }
+        // Ao trocar de modo, o Firebase já vai sensibilizar pelo onValue acima
     }
 
     function mudarDoc(tipo) {
-        docAtual = tipo;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active');
-        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${window.exAtual}.pdf` : tipo === 'gabarito' ? `ro${window.exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
     }
 
-    function aplicarEstruct(tipo) {
-        if(modoAtual !== 'peca') return;
-        const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." };
-        document.getElementById('texto-final').value = m[tipo]; saveAuto();
+    const grid = document.getElementById('exam-grid');
+    for(let i=35; i<=45; i++){
+        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
+        b.onclick = () => { 
+            document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); 
+            b.classList.add('active'); window.exAtual = i; mudarDoc('prova'); 
+        };
+        grid.appendChild(b);
     }
 
-    function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
+    function copiarPostit(id, textB64) {
+        document.getElementById('texto-final').value += "\n" + atob(textB64);
+        window.pushToCloud();
+        document.getElementById('janela-postits').style.display = 'none';
+    }
+
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+    function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
     function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); } }
     function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
+    function aplicarEstruct(t) { 
+        const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...", cont: "AO JUÍZO DA... VARA DO TRABALHO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...", ap: "AO JUÍZO DA... VARA DO TRABALHO..." };
+        document.getElementById('texto-final').value = m[t]; window.pushToCloud();
+    }
 
-    window.onload = () => { gerarLinhas(150, document.getElementById('line-nums-main')); modoTreino('peca'); mudarDoc('prova'); };
+    window.onload = () => { modoTreino('peca'); mudarDoc('prova'); };
 </script>
 </body>
 </html>
