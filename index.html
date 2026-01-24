@@ -55,6 +55,8 @@
 
         input, textarea.form-control { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-family: sans-serif; font-size: 1rem; }
         .card-lab { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; }
+        .card-actions { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-mini { padding: 6px 10px; border-radius: 5px; border: none; font-size: 0.7rem; font-weight: bold; cursor: pointer; color: white; }
 
         @media (max-width: 600px) {
             .editor-toolbar { padding: 8px; }
@@ -100,10 +102,11 @@
         </div>
         <div id="modal-body" class="modal-body">
             <div id="lab-form" style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:20px;">
-                <input type="text" id="lab-titulo" placeholder="Nome do Exame (Ex: OAB 42 - Trabalho)">
-                <textarea id="lab-historinha" class="form-control" rows="3" placeholder="Cole a historinha (enunciado) aqui..."></textarea>
-                <textarea id="lab-espelho" class="form-control" rows="3" placeholder="Cole o Espelho/Gabarito oficial aqui..."></textarea>
-                <button onclick="salvarNoLaboratorio()" style="width:100%; padding:12px; background:var(--ai-glow); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO LABORATÓRIO</button>
+                <input type="hidden" id="edit-id">
+                <input type="text" id="lab-titulo" placeholder="Título (Ex: OAB 42 - Trabalho)">
+                <textarea id="lab-historinha" class="form-control" rows="3" placeholder="Enunciado ou Tese..."></textarea>
+                <textarea id="lab-espelho" class="form-control" rows="3" placeholder="Espelho / Fundamentação..."></textarea>
+                <button id="btn-salvar-form" onclick="salvarNoBanco()" style="width:100%; padding:12px; background:var(--ai-glow); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR NO BANCO</button>
             </div>
             <hr>
             <div id="lab-lista"></div>
@@ -113,35 +116,27 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, push, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get; window.remove = remove;
+    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get; window.remove = remove; window.update = update;
 </script>
 
 <script>
     let categoriaAtiva = 'laboratorio';
 
-    // GERENCIAMENTO DE MODAIS
-    function fecharModal() { document.getElementById('modal-ui').style.display = 'none'; }
+    function fecharModal() { document.getElementById('modal-ui').style.display = 'none'; limparCampos(); }
     
     function abrirLaboratorio() {
         categoriaAtiva = 'laboratorio';
-        document.getElementById('modal-title').innerText = "🧠 Laboratório de Identificação";
-        document.getElementById('lab-form').style.display = 'block';
-        document.getElementById('modal-ui').style.display = 'flex';
-        carregarLista();
+        configurarModal("🧠 Laboratório de Identificação", "Cole a historinha aqui...", "Cole o Espelho/Gabarito oficial aqui...");
     }
 
     function abrirTeses() {
         categoriaAtiva = 'teses';
-        document.getElementById('modal-title').innerText = "📌 Minhas Teses por Assunto";
-        document.getElementById('lab-form').style.display = 'block'; // Reutiliza form
-        document.getElementById('lab-espelho').placeholder = "Texto da Tese / Artigos...";
-        document.getElementById('modal-ui').style.display = 'flex';
-        carregarLista();
+        configurarModal("📌 Minhas Teses por Assunto", "Descreva o fato/assunto...", "Texto da Tese / Artigos...");
     }
 
     function abrirHistorico() {
@@ -152,17 +147,32 @@
         carregarLista();
     }
 
-    // CRUD FIREBASE
-    async function salvarNoLaboratorio() {
-        const titulo = document.getElementById('lab-titulo').value;
-        const historinha = document.getElementById('lab-historinha').value;
-        const espelho = document.getElementById('lab-espelho').value;
+    function configurarModal(titulo, placeholderHist, placeholderEsp) {
+        document.getElementById('modal-title').innerText = titulo;
+        document.getElementById('lab-historinha').placeholder = placeholderHist;
+        document.getElementById('lab-espelho').placeholder = placeholderEsp;
+        document.getElementById('lab-form').style.display = 'block';
+        document.getElementById('modal-ui').style.display = 'flex';
+        carregarLista();
+    }
 
-        if(!titulo || !historinha) return alert("Preencha ao menos Título e Historinha!");
+    // MANUTENÇÃO (SALVAR / ATUALIZAR)
+    async function salvarNoBanco() {
+        const id = document.getElementById('edit-id').value;
+        const dados = {
+            titulo: document.getElementById('lab-titulo').value,
+            historinha: document.getElementById('lab-historinha').value,
+            espelho: document.getElementById('lab-espelho').value,
+            data: new Date().toLocaleDateString()
+        };
 
-        await window.push(window.ref(window.db, categoriaAtiva), {
-            titulo, historinha, espelho, data: new Date().toLocaleDateString()
-        });
+        if(!dados.titulo || !dados.historinha) return alert("Preencha Título e Conteúdo!");
+
+        if(id) {
+            await window.update(window.ref(window.db, `${categoriaAtiva}/${id}`), dados);
+        } else {
+            await window.push(window.ref(window.db, categoriaAtiva), dados);
+        }
 
         limparCampos();
         carregarLista();
@@ -173,28 +183,39 @@
         listaDiv.innerHTML = "Carregando...";
         const snapshot = await window.get(window.ref(window.db, categoriaAtiva));
         listaDiv.innerHTML = "";
-        
         const data = snapshot.val() || {};
+        
         Object.keys(data).reverse().forEach(id => {
             const item = data[id];
             const card = document.createElement('div');
             card.className = 'card-lab';
             card.innerHTML = `
                 <strong>${item.titulo}</strong>
-                <p style="font-size:0.7rem; color:#64748b;">${item.data} - ${categoriaAtiva}</p>
-                <div style="margin-top:10px; display:flex; gap:5px;">
-                    <button onclick="carregarEstudo('${id}')" style="flex:1; padding:8px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">ESTUDAR ESTA</button>
-                    <button onclick="excluirItem('${id}')" style="padding:8px; background:var(--danger); color:white; border:none; border-radius:5px; cursor:pointer;">✖</button>
+                <p style="font-size:0.7rem; color:#64748b;">${item.data}</p>
+                <div class="card-actions">
+                    <button class="btn-mini" style="background:var(--primary); flex:2;" onclick="carregarEstudo('${id}')">USAR</button>
+                    <button class="btn-mini" style="background:var(--warning);" onclick="prepararEdicao('${id}')">✎</button>
+                    <button class="btn-mini" style="background:var(--danger);" onclick="excluirItem('${id}')">✖</button>
                 </div>
             `;
             listaDiv.appendChild(card);
         });
     }
 
+    async function prepararEdicao(id) {
+        const snap = await window.get(window.ref(window.db, `${categoriaAtiva}/${id}`));
+        const item = snap.val();
+        document.getElementById('edit-id').value = id;
+        document.getElementById('lab-titulo').value = item.titulo;
+        document.getElementById('lab-historinha').value = item.historinha;
+        document.getElementById('lab-espelho').value = item.espelho;
+        document.getElementById('btn-salvar-form').innerText = "ATUALIZAR REGISTRO";
+        document.getElementById('btn-salvar-form').style.background = "var(--warning)";
+    }
+
     async function carregarEstudo(id) {
         const snapshot = await window.get(window.ref(window.db, `${categoriaAtiva}/${id}`));
         const item = snapshot.val();
-        
         if(categoriaAtiva === 'laboratorio') {
             document.getElementById('texto-folha').value = `/* HISTORINHA: ${item.titulo} */\n\n${item.historinha}\n\n------------------------------\nRESPOSTA:\n`;
             document.getElementById('conteudo-espelho').innerText = item.espelho || "Sem espelho cadastrado.";
@@ -202,9 +223,8 @@
         } else if(categoriaAtiva === 'teses') {
             document.getElementById('texto-folha').value += `\n\n[TESE: ${item.titulo}]\n${item.espelho}`;
         } else {
-            document.getElementById('texto-folha').value = item.historinha; // No histórico, historinha é o texto salvo
+            document.getElementById('texto-folha').value = item.historinha;
         }
-        
         fecharModal();
     }
 
@@ -216,21 +236,21 @@
     }
 
     async function salvarTreinoAtual() {
-        const titulo = prompt("Título para salvar este treino (Histórico):");
+        const titulo = prompt("Título para salvar este treino:");
         if(!titulo) return;
         await window.push(window.ref(window.db, 'historico'), {
-            titulo: titulo,
-            historinha: document.getElementById('texto-folha').value,
-            data: new Date().toLocaleString()
+            titulo: titulo, historinha: document.getElementById('texto-folha').value, data: new Date().toLocaleString()
         });
-        alert("Treino salvo com sucesso!");
+        alert("Treino salvo!");
     }
 
-    // UTILITARIOS
     function limparCampos() {
+        document.getElementById('edit-id').value = '';
         document.getElementById('lab-titulo').value = '';
         document.getElementById('lab-historinha').value = '';
         document.getElementById('lab-espelho').value = '';
+        document.getElementById('btn-salvar-form').innerText = "SALVAR NO BANCO";
+        document.getElementById('btn-salvar-form').style.background = "var(--ai-glow)";
     }
 
     function gerarLinhas(n) {
@@ -239,8 +259,6 @@
     }
 
     window.onload = () => gerarLinhas(150);
-    function fecharModal() { document.getElementById('modal-ui').style.display = 'none'; }
 </script>
-
 </body>
 </html>
