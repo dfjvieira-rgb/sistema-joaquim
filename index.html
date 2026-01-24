@@ -3,195 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | DATABASE 30-44</title>
+    <title>ARYANNA MASTER PRO | AUTO-GABARITO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a;
-        }
+        :root { --primary: #2563eb; --gold: #d4af37; --bg: #0f172a; --paper: #fff; --pen: #1e3a8a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        header { background: #1e293b; padding: 10px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 50px;}
         .main-container { flex: 1; display: flex; overflow: hidden; }
-        
-        /* EDITOR & TOOLBAR */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 4px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
-        .btn-symbol { height: 32px; min-width: 35px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; background: white; color: #334155; }
-        .btn-accent { background: var(--primary); color: white; border: none; }
+        .toolbar { background: #fff; padding: 8px; display: flex; gap: 4px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
+        .btn-tool { height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-size: 0.8rem; font-weight: 800; background: white; color: #334155; }
+        .btn-active { background: var(--primary); color: white; border: none; }
         .btn-gold { background: var(--gold); color: black; border: none; }
-
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-        
-        .fgv-postit-container { background: #fef9c3; border-bottom: 2px dashed #d4af37; padding: 10px; }
-        .fgv-postit-textarea { width: 100%; background: transparent; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; padding: 8px; font-family: 'Courier Prime', monospace; font-size: 14px; color: #92400e; resize: none; min-height: 60px; outline: none; }
-
-        .writing-area { display: flex; flex: 1; }
+        .writing-area { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1500px; margin: 0 auto; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
-
-        /* VIEWER */
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
-        .tab { padding: 8px 12px; border: none; border-radius: 6px 6px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.65rem; cursor: pointer; }
-        .tab.active { background: #fff; color: var(--primary); font-weight: bold; }
-        
-        #pdf-viewport { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 10px 0; background: #525659; }
-        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 550px; border-radius: 12px; padding: 25px; color: #1e293b; max-height: 80vh; overflow-y: auto; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
+        .viewer-section { flex: 1; display: flex; flex-direction: column; background: #334155; }
+        #pdf-viewport { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; background: #525659; }
+        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 10px; max-width: 95%; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">ARYANNA MASTER PRO - DATABASE 30-44</div>
-    <div id="timer-display" style="color:var(--warning); font-family:monospace;">05:00:00</div>
+    <div style="font-weight: 800; color: var(--gold); font-size: 0.9rem;">ARYANNA MASTER PRO</div>
+    <select id="exam-select" onchange="window.trocarExameAutomatico()" class="btn-tool" style="width: 140px;"></select>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto;"></select>
-            <button class="btn-symbol" onclick="window.insertText('Art. ')">Art.</button>
-            <button class="btn-symbol" onclick="window.insertText('§ ')">§</button>
-            <button class="btn-symbol" onclick="window.insertText('CLT')">CLT</button>
-            <button class="btn-symbol btn-gold" title="Ver Gabarito" onclick="window.abrirGabaritoOficial()">📜</button>
-            <button id="btn-split" class="btn-symbol btn-accent" title="Comparar" onclick="window.toggleSplit()">🌗</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.autoSave()">💾</button>
+            <button class="btn-tool" onclick="window.insert('Art. ')">Art.</button>
+            <button class="btn-tool" onclick="window.insert('§ ')">§</button>
+            <button class="btn-tool" onclick="window.insert('CLT')">CLT</button>
+            <button class="btn-tool btn-gold" onclick="window.injetarRegra()">🚀 INJETAR REGRA DO ESPELHO</button>
+            <button class="btn-tool" style="background: #059669; color: white; margin-left: auto;" onclick="window.save()">💾</button>
         </div>
-
-        <div class="paper-wrapper">
+        <div class="writing-area">
             <div class="paper-sheet">
-                <div class="fgv-postit-container">
-                    <textarea id="rascunho-editor" class="fgv-postit-textarea" placeholder="Dicas e OJs da Aryanna..." oninput="window.saveRascunho()"></textarea>
-                </div>
-                <div class="writing-area">
-                    <div class="line-nums" id="line-nums-main"></div>
-                    <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
-                </div>
+                <div class="line-nums" id="lines"></div>
+                <textarea id="editor" class="text-area" spellcheck="false" oninput="window.save()"></textarea>
             </div>
         </div>
     </section>
 
     <section class="viewer-section">
-        <div class="tabs">
-            <button id="tab-p" class="tab active" onclick="window.loadMode('prova')">PROVA</button>
-            <button id="tab-g" class="tab" onclick="window.loadMode('gabarito')">GABARITO</button>
-            <button id="tab-v" class="tab" style="color:var(--gold)" onclick="window.loadMode('vade')">APOSTILA</button>
+        <div class="toolbar" style="background: #1e293b; border: none;">
+            <button id="btn-p" class="btn-tool btn-active" onclick="window.loadPDF('prova')">PROVA</button>
+            <button id="btn-g" class="btn-tool" onclick="window.loadPDF('gabarito')">ESPELHO</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
 </div>
 
-<div id="modal-gabarito" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content">
-        <h3 id="gab-titulo" style="border-bottom:2px solid var(--gold); padding-bottom:10px;">ESTRUTURA DA PEÇA</h3>
-        <div id="gab-corpo" style="margin-top:20px; font-size:1rem; line-height:1.6; color:#333;"></div>
-        <button class="btn-symbol btn-accent" style="width:100%; height:45px; margin-top:20px;" onclick="window.injetarGabaritoNoTexto()">🚀 INJETAR ESTRUTURA NA FOLHA</button>
-    </div>
-</div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    const checklistFGV = {
-        "44": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Inépcia da inicial", "Prescrição quinquenal", "Vale-transporte (Súmula 460 STJ)"] },
-        "43": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I da CLT", end: "Vara de Origem / TRT", teses: ["Cerceamento de defesa", "Cargo de confiança (Art. 62, II CLT)", "Adicional noturno"] },
-        "42": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, §1º da CLT", end: "Vara do Trabalho de...", teses: ["Vínculo empregatício", "Estabilidade gestante", "Dano moral"] },
-        "41": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Prescrição bienal", "Justa causa", "Honorários de sucumbência"] },
-        "40": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, §1º da CLT", end: "90ª Vara de Osasco/SP", teses: ["Prioridade processual", "Periculosidade", "Unicidade contratual"] },
-        "39": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I da CLT", end: "Vara de Origem / TRT", teses: ["Nulidade por negativa de prestação", "Equiparação salarial", "Horas extras"] },
-        "38": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Acordo extrajudicial", "Compensação de jornada", "Indenização por dano material"] },
-        "37": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, §1º da CLT", end: "Vara do Trabalho de...", teses: ["Rescisão indireta", "Adicional de insalubridade", "Multa 467"] },
-        "36": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Ilegitimidade passiva", "Grupo econômico", "Sobreaviso"] },
-        "35": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I da CLT", end: "Vara de Origem / TRT", teses: ["Cerfceamento (testemunha)", "Pensão mensal", "Estabilidade acidentária"] },
-        "34": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Prescrição", "Gratificação de função", "Descontos salariais"] },
-        "33": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, §1º da CLT", end: "Vara do Trabalho de...", teses: ["Doença ocupacional", "Horas extras (Minutos que antecedem)", "FGV + 40%"] },
-        "32": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I da CLT", end: "Vara de Origem / TRT", teses: ["Nulidade de sentença", "Adicional de transferência", "Base de cálculo horas extras"] },
-        "31": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de...", teses: ["Impugnação gratuidade justiça", "Litigância de má-fé", "Justa causa (Embriaguez)"] },
-        "30": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, §1º da CLT", end: "Vara do Trabalho de...", teses: ["Reconhecimento de grupo econômico", "Diferenças de comissões", "Multa 477"] }
+    // BASE DE DADOS "A RISCA" - EXTRAÍDA DOS ESPELHOS OFICIAIS FGV
+    const REGRAS_FGV = {
+        "44": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "43": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "42": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "41": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "40": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "90ª Vara do Trabalho de Osasco/SP" },
+        "39": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "38": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "37": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "36": { peca: "MANDADO DE SEGURANÇA", fundo: "Art. 5º, LXIX, da CF/88 e Lei 12.016/09", end: "Desembargador Presidente do Egrégio Tribunal Regional do Trabalho" },
+        "35": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "34": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "33": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." },
+        "32": { peca: "RECURSO ORDINÁRIO", fundo: "Art. 895, I, da CLT", end: "Vara do Trabalho de Origem" },
+        "31": { peca: "CONTESTAÇÃO", fundo: "Art. 847 da CLT", end: "Vara do Trabalho de ..." },
+        "30": { peca: "RECLAMAÇÃO TRABALHISTA", fundo: "Art. 840, § 1º, da CLT", end: "Vara do Trabalho de ..." }
     };
 
-    window.currentGabData = null;
-    let isSplit = false;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    window.insertText = (t) => {
-        const el = document.getElementById('texto-final');
-        const start = el.selectionStart;
-        el.value = el.value.substring(0, start) + t + el.value.substring(el.selectionEnd);
-        el.focus(); el.setSelectionRange(start + t.length, start + t.length);
-        window.autoSave();
+    window.trocarExameAutomatico = () => {
+        window.loadPDF('prova');
+        // Resetar botões
+        document.getElementById('btn-p').classList.add('btn-active');
+        document.getElementById('btn-g').classList.remove('btn-active');
     };
 
-    window.toggleSplit = () => { isSplit = !isSplit; window.mudarExame(); };
-    window.loadMode = (m) => { isSplit = false; window.mudarExame(null, m); };
-
-    window.mudarExame = async (val, forceMode) => {
+    window.injetarRegra = () => {
         const ex = document.getElementById('exam-select').value;
+        const r = REGRAS_FGV[ex];
+        if(!r) return;
+
+        const esqueleto = `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ${r.end.toUpperCase()}\n\n` +
+            `PROCESSO Nº ...\n\n` +
+            `NOME DA PARTE, já qualificada nos autos, vem, por intermédio de seu advogado, perante Vossa Excelência, apresentar\n\n` +
+            `${r.peca}\n\n` +
+            `com fulcro no ${r.fundo}, pelas razões a seguir expostas.\n\n` +
+            `I - PRELIMINARES\n\nII - MÉRITO\n\nIII - REQUERIMENTOS\n\nLocal e Data...\nAdvogado... OAB...`;
+        
+        document.getElementById('editor').value = esqueleto;
+        window.save();
+    };
+
+    window.loadPDF = async (tipo) => {
+        const ex = document.getElementById('exam-select').value;
+        const file = tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`;
         const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "Carregando PDFs...";
-        let files = isSplit ? [`ro${ex}.pdf`, `ro${ex}-gabarito.pdf`] : 
-                    [(forceMode === 'vade' ? 'Aryanna Linhares.pdf' : (forceMode === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`))];
-        container.innerHTML = "";
-        for (const f of files) {
-            try {
-                const pdf = await pdfjsLib.getDocument(f).promise;
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const viewport = page.getViewport({ scale: 1.2 });
-                    const canvas = document.createElement('canvas');
-                    container.appendChild(canvas);
-                    canvas.height = viewport.height; canvas.width = viewport.width;
-                    await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-                }
-            } catch (e) { container.innerHTML += `<div style="padding:20px; color:white">Não localizado: ${f}</div>`; }
-        }
+        
+        // UI Feedback
+        document.getElementById('btn-p').classList.toggle('btn-active', tipo === 'prova');
+        document.getElementById('btn-g').classList.toggle('btn-active', tipo === 'gabarito');
+        
+        container.innerHTML = "<p style='color:white; padding:20px;'>Carregando espelho oficial...</p>";
+        
+        try {
+            const pdf = await pdfjsLib.getDocument(file).promise;
+            container.innerHTML = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({ scale: 1.3 });
+                const canvas = document.createElement('canvas');
+                container.appendChild(canvas);
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+            }
+        } catch (e) { container.innerHTML = `<p style='color:orange; padding:20px;'>Aguardando arquivo: ${file}</p>`; }
     };
 
-    window.abrirGabaritoOficial = () => {
-        const ex = document.getElementById('exam-select').value;
-        const info = checklistFGV[ex] || { peca: "A definir", fundo: "...", end: "...", teses: [] };
-        window.currentGabData = info;
-        document.getElementById('gab-titulo').innerText = `CHECKLIST EXAME ${ex}`;
-        document.getElementById('gab-corpo').innerHTML = `<b>Peça:</b> ${info.peca}<br><b>Fundamento:</b> ${info.fundo}<br><br><b>Teses Principais:</b><ul>${info.teses.map(t => `<li>${t}</li>`).join('')}</ul>`;
-        document.getElementById('modal-gabarito').style.display = 'flex';
+    window.insert = (t) => {
+        const el = document.getElementById('editor');
+        const s = el.selectionStart;
+        el.value = el.value.substring(0, s) + t + el.value.substring(el.selectionEnd);
+        el.focus();
     };
 
-    window.injetarGabaritoNoTexto = () => {
-        const g = window.currentGabData;
-        if(!g) return;
-        const esqueleto = `AO DOUTO JUÍZO DA ${g.end.toUpperCase()}\n\nPROCESSO Nº ...\n\nNOME DA PARTE, já qualificada, vem apresentar\n\n${g.peca}\n\ncom fundamento no ${g.fundo}.\n\nI - PRELIMINARES\n...\n\nII - MÉRITO\n${g.teses.map(t => `- ${t}`).join('\n')}\n\nIII - REQUERIMENTOS\n\nLocal e Data...\nAdvogado... OAB...`;
-        document.getElementById('texto-final').value = esqueleto;
-        window.autoSave(); document.getElementById('modal-gabarito').style.display = 'none';
+    window.save = () => {
+        window.isTyping = true;
+        clearTimeout(window.saveTimer);
+        window.saveTimer = setTimeout(() => {
+            set(ref(db, 'v3_treino/folha'), document.getElementById('editor').value);
+            window.isTyping = false;
+        }, 1000);
     };
 
-    window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
-    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
+    onValue(ref(db, 'v3_treino/folha'), s => {
+        if(!window.isTyping) document.getElementById('editor').value = s.val() || "";
+    });
 
-    let lines = ""; for(let i=1; i<=300; i++) lines += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = lines;
-
+    // Setup inicial
     const sel = document.getElementById('exam-select');
-    for(let i=45; i>=30; i--) {
+    for(let i=44; i>=30; i--) {
         let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
-        if(i==35) opt.selected = true; sel.appendChild(opt);
+        sel.appendChild(opt);
     }
-    window.mudarExame();
+
+    let nums = ""; for(let i=1; i<=150; i++) nums += i + "<br>";
+    document.getElementById('lines').innerHTML = nums;
+
+    window.trocarExameAutomatico();
 </script>
 </body>
 </html>
