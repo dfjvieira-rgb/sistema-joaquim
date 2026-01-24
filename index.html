@@ -28,18 +28,17 @@
         .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
         .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 38px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
 
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        /* JANELAS PADRÃO FGV (POST-ITS / IA) */
+        /* JANELAS FGV (IA E POST-IT) */
         .fgv-box { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; }
         .fgv-box-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; padding-bottom: 5px; }
         
-        .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif; outline: none; margin-bottom: 8px; font-size: 0.9rem; }
-        .btn-fgv-action { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 5px; }
+        .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.7); outline: none; margin-bottom: 8px; font-size: 0.9rem; }
+        .btn-fgv-action { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* LISTA DE TESES */
-        .tese-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.4); padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .tese-actions { display: flex; gap: 12px; font-size: 1rem; }
+        .tese-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.4); padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.8rem; }
+        .ia-res-item { background: #fff; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
 
         /* FOLHA DE RESPOSTA */
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
@@ -53,7 +52,7 @@
         .tab.active { background: #fff; color: var(--primary); }
         iframe { flex: 1; border: none; background: #fff; }
 
-        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; border: 2px solid var(--gold); align-items: center; justify-content: center; font-size: 1.5rem; }
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
 
         @media (max-width: 1024px) {
             .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
@@ -73,42 +72,35 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.75rem; padding: 0 5px;"></select>
+            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.75rem;"></select>
             <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.75rem;">
                 <option value="peca">PEÇA (150L)</option>
                 <option value="quest">QUESTÕES (30L)</option>
             </select>
-            
-            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleBox('box-ia')" title="Identificar Peça">🧠</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="toggleBox('box-teses')" title="Post-its">📌</button>
-            <button class="btn-symbol" style="background:#f1f5f9; color:#475569;" onclick="mudarDoc('prova')" title="Ver PDF">📄</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: O último ato processual define a peça!')">💡</button>
-            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarHistorico()" title="Histórico">📚</button>
-            
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleBox('box-ia')">🧠</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="toggleBox('box-teses')">📌</button>
+            <button class="btn-symbol" style="background:#f1f5f9; color:#475569;" onclick="mudarDoc('prova')">📄</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: Olhe o último parágrafo do enunciado!')">💡</button>
+            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarHistorico()">📚</button>
             <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 SALVAR PEÇA</button>
         </div>
 
         <div class="paper-wrapper">
             <div id="box-ia" class="fgv-box">
-                <div class="fgv-box-header">
-                    <span>🧠 ANALISADOR DE ENUNCIADO</span>
-                    <span onclick="toggleBox('box-ia')" style="cursor:pointer">×</span>
-                </div>
-                <textarea id="ia-input" class="fgv-input" rows="4" placeholder="Cole aqui o enunciado da FGV para identificar a peça..."></textarea>
-                <button class="btn-fgv-action" onclick="analisarIA()">IDENTIFICAR PEÇA AGORA</button>
-                <div id="ia-res" style="margin-top:10px; font-weight:bold; color:var(--primary); background:rgba(255,255,255,0.5); padding:8px; border-radius:4px; display:none;"></div>
+                <div class="fgv-box-header"><span>🧠 ANALISADOR FGV</span><span onclick="toggleBox('box-ia')" style="cursor:pointer">×</span></div>
+                <textarea id="ia-input" class="fgv-input" rows="3" placeholder="Cole o enunciado aqui..."></textarea>
+                <button class="btn-fgv-action" onclick="analisarIACompleto()">IDENTIFICAR PEÇA E TESES</button>
+                <div id="ia-res-peca" style="margin-top:10px; font-weight:bold; color:var(--primary);"></div>
+                <div id="ia-res-teses" style="margin-top:5px;"></div>
             </div>
 
             <div id="box-teses" class="fgv-box">
-                <div class="fgv-box-header">
-                    <span>📌 GESTÃO DE TESES E NOTAS</span>
-                    <span onclick="toggleBox('box-teses')" style="cursor:pointer">×</span>
-                </div>
-                <input type="text" id="t-tit" class="fgv-input" placeholder="Título (Ex: Equiparação Salarial)">
-                <textarea id="t-txt" class="fgv-input" rows="2" placeholder="Fundamento Jurídico (Artigos/Súmulas)"></textarea>
+                <div class="fgv-box-header"><span>📌 GESTÃO DE TESES</span><span onclick="toggleBox('box-teses')" style="cursor:pointer">×</span></div>
+                <input type="text" id="t-tit" class="fgv-input" placeholder="Título">
+                <textarea id="t-txt" class="fgv-input" rows="2" placeholder="Fundamento"></textarea>
                 <input type="hidden" id="t-key">
-                <button class="btn-fgv-action" style="background:var(--success)" onclick="dbSalvarTese()">[+] SALVAR NO BANCO DE DADOS</button>
-                <div id="db-list" style="margin-top:12px; border-top: 1px dashed #d4af37; padding-top:10px;"></div>
+                <button class="btn-fgv-action" style="background:var(--success)" onclick="dbSalvarTese()">[+] SALVAR NO BANCO</button>
+                <div id="db-list" style="margin-top:10px;"></div>
             </div>
 
             <div class="paper-sheet">
@@ -121,7 +113,7 @@
     <section class="viewer-section" id="viewer">
         <div class="tabs">
             <button class="tab active" id="tab-prova" onclick="mudarDoc('prova', this)">PROVA</button>
-            <button class="tab" id="tab-gabarito" onclick="mudarDoc('gabarito', this)">GABARITO</button>
+            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
             <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
         </div>
         <iframe id="pdf-frame" src=""></iframe>
@@ -134,110 +126,75 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config);
-    const db = getDatabase(app);
-    window.db_ops = { ref, set, push, get, remove, update, db };
+    const app = initializeApp(config); const db = getDatabase(app); window.db_ops = { ref, set, push, get, remove, update, db };
 
-    // Listener de Teses
     onValue(ref(db, 'teses'), (snap) => {
-        const list = document.getElementById('db-list');
-        list.innerHTML = "";
+        const list = document.getElementById('db-list'); list.innerHTML = "";
         const data = snap.val();
         if(data) {
             Object.keys(data).forEach(k => {
-                list.innerHTML += `<div class="tese-item">
-                    <div><b>${data[k].titulo}</b>: ${data[k].texto}</div>
-                    <div class="tese-actions">
-                        <span style="color:blue; cursor:pointer" onclick="editarTese('${k}', '${data[k].titulo}', '${data[k].texto}')">✎</span>
-                        <span style="color:red; cursor:pointer" onclick="excluirTese('${k}')">✖</span>
-                    </div>
-                </div>`;
+                list.innerHTML += `<div class="tese-item"><div><b>${data[k].titulo}</b>: ${data[k].texto}</div>
+                <div style="display:flex;gap:10px"><span onclick="editarTese('${k}','${data[k].titulo}','${data[k].texto}')" style="color:blue;cursor:pointer">✎</span>
+                <span onclick="excluirTese('${k}')" style="color:red;cursor:pointer">✖</span></div></div>`;
             });
         }
     });
-
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 </script>
 
 <script>
     let exAtual = 42; let modoAtivo = 'peca'; let tempo = 18000;
+    const dic = [
+        { t: "hora extra", tit: "Horas Extras", f: "Art. 7, XIII, CF / Art. 58 CLT" },
+        { t: "insalubridade", tit: "Insalubridade", f: "Art. 192 CLT" },
+        { t: "periculosidade", tit: "Periculosidade", f: "Art. 193 CLT" },
+        { t: "equiparação", tit: "Equiparação Salarial", f: "Art. 461 CLT" }
+    ];
 
-    function toggleBox(id) {
-        const box = document.getElementById(id);
-        box.style.display = box.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function analisarIA() {
+    function toggleBox(id) { const b = document.getElementById(id); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
+    
+    function analisarIACompleto() {
         const input = document.getElementById('ia-input').value.toLowerCase();
-        const res = document.getElementById('ia-res');
-        res.style.display = 'block';
-        if(input.includes("sentença")) res.innerText = "🎯 PEÇA IDENTIFICADA: RECURSO ORDINÁRIO (Art. 895, I, CLT)";
-        else if(input.includes("notificação") || input.includes("citação")) res.innerText = "🎯 PEÇA IDENTIFICADA: CONTESTAÇÃO (Art. 847, CLT)";
-        else res.innerText = "⚠️ Identificação inconclusiva. Verifique palavras como 'Sentença', 'Acórdão' ou 'Citação'.";
+        const resP = document.getElementById('ia-res-peca');
+        const resT = document.getElementById('ia-res-teses');
+        resT.innerHTML = "";
+        resP.innerText = input.includes("sentença") ? "🎯 PEÇA: RECURSO ORDINÁRIO" : input.includes("citação") ? "🎯 PEÇA: CONTESTAÇÃO" : "⚠️ Verifique o enunciado.";
+        dic.forEach(d => { if(input.includes(d.t)) resT.innerHTML += `<div class="ia-res-item"><span>${d.tit}</span><button onclick="importarTese('${d.tit}','${d.f}')" class="btn-fgv-action" style="width:auto;padding:4px 8px;background:var(--success)">IMPORTAR</button></div>`; });
     }
+
+    async function importarTese(t, f) { await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'teses'), { titulo: t, texto: f }); }
 
     async function dbSalvarTese() {
-        const t = document.getElementById('t-tit').value;
-        const x = document.getElementById('t-txt').value;
-        const k = document.getElementById('t-key').value;
-        if(!t || !x) return alert("Preencha título e fundamento!");
+        const t = document.getElementById('t-tit').value, x = document.getElementById('t-txt').value, k = document.getElementById('t-key').value;
+        if(!t || !x) return;
         if(k) await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `teses/${k}`), { titulo: t, texto: x });
         else await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'teses'), { titulo: t, texto: x });
         document.getElementById('t-tit').value = ""; document.getElementById('t-txt').value = ""; document.getElementById('t-key').value = "";
     }
 
-    window.editarTese = (k, t, x) => {
-        document.getElementById('t-tit').value = t;
-        document.getElementById('t-txt').value = x;
-        document.getElementById('t-key').value = k;
-    };
-
-    window.excluirTese = async (k) => { if(confirm("Deseja excluir esta tese?")) await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `teses/${k}`)); };
-
-    async function carregarHistorico() {
-        const snap = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, 'historico'));
-        if(snap.exists()) alert(`Você tem ${Object.keys(snap.val()).length} treinos salvos.`);
-        else alert("Histórico vazio.");
-    }
-
-    function salvarTreinoTotal() {
-        const t = prompt("Nome deste treino para o histórico:");
-        if(t) window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'historico'), { titulo: `[EX ${exAtual}] ${t}`, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
-    }
+    window.editarTese = (k, t, x) => { document.getElementById('t-tit').value = t; document.getElementById('t-txt').value = x; document.getElementById('t-key').value = k; };
+    window.excluirTese = async (k) => { if(confirm("Excluir?")) await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `teses/${k}`)); };
 
     function mudarDoc(tipo, btn) {
         if(btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); }
-        const f = document.getElementById('pdf-frame');
-        if(tipo === 'prova') f.src = `ro${exAtual}.pdf`;
-        else if(tipo === 'gabarito') f.src = `ro${exAtual}-gabarito.pdf`;
-        else f.src = `Aryanna Linhares.pdf`;
+        document.getElementById('pdf-frame').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
     }
 
-    function mudarExame(v) { exAtual = v; mudarDoc('prova', document.getElementById('tab-prova')); }
+    function mudarExame(v) { exAtual = v; mudarDoc('prova'); }
     function mudarModo(m) { modoAtivo = m; gerarLinhas(m === 'peca' ? 150 : 30); }
     function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
-    
     function autoSave() {
         window.isEditing = true; clearTimeout(window.sv);
         window.sv = setTimeout(() => { window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
     }
 
-    function ativarSimulado() {
-        if(confirm("Iniciar cronômetro de 5 horas?")) {
-            setInterval(() => {
-                tempo--; let h=Math.floor(tempo/3600), m=Math.floor((tempo%3600)/60), s=tempo%60;
-                document.getElementById('timer-display').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            }, 1000);
-        }
-    }
+    async function carregarHistorico() { const snap = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, 'historico')); alert(snap.exists() ? "Treinos carregados." : "Vazio."); }
+    function salvarTreinoTotal() { const t = prompt("Nome:"); if(t) window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'historico'), { titulo: t, texto: document.getElementById('texto-final').value }); }
 
     window.onload = () => {
         gerarLinhas(150);
         const sel = document.getElementById('exam-select');
-        for(let i=44; i>=35; i--) {
-            let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
-            if(i==42) opt.selected = true; sel.appendChild(opt);
-        }
+        for(let i=44; i>=35; i--) { let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`; if(i==42) opt.selected = true; sel.appendChild(opt); }
         mudarDoc('prova');
     };
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
