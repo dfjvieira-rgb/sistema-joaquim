@@ -54,7 +54,9 @@
         .consulta-card { width: 100%; max-width: 800px; margin: auto; background: white; border-radius: 12px; overflow: hidden; height: 85vh; display: flex; flex-direction: column; }
         .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         .consulta-b { flex: 1; overflow-y: auto; color: #333; }
-        .hist-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .hist-item { padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; }
+        .hist-actions { display: flex; gap: 5px; justify-content: flex-end; }
+        .btn-action { padding: 6px 10px; border: none; border-radius: 4px; font-size: 0.65rem; font-weight: bold; cursor: pointer; color: white; }
 
         .line-counter { font-size: 0.6rem; background: #000; color: var(--gold); padding: 2px 6px; border-radius: 4px; margin-left: 10px; }
 
@@ -74,8 +76,8 @@
 </header>
 
 <div class="laws-bar">
-    <button class="law-link" onclick="abrirBancoPostits()">📌 POST-ITS</button>
-    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success)">➕ NOVO</button>
+    <button class="law-link" onclick="abrirBancoPostits()">📌 MEUS POST-ITS</button>
+    <button class="law-link" onclick="abrirModalCadastro()" style="background:var(--success)">➕ NOVA TESE</button>
     <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 HISTÓRICO</button>
 </div>
 
@@ -96,7 +98,7 @@
 <main class="workspace">
     <section class="col-res">
         <div class="fgv-header">
-            <span id="label-folha">CARREGANDO...</span>
+            <span id="label-folha">PRONTO</span>
             <span id="counter-display" class="line-counter">0/150 LINHAS</span>
             <button onclick="arquivarTreino()" style="background:var(--gold); padding:5px 12px; border:none; border-radius:4px; cursor:pointer; font-weight: bold; font-size: 0.6rem;">ARQUIVAR</button>
         </div>
@@ -118,34 +120,35 @@
 
 <button id="mobile-switch" onclick="switchMobile()">PDF / FOLHA</button>
 
-<div id="janela-historico" class="overlay-consulta" style="display:none;">
-    <div class="consulta-card">
-        <div class="consulta-h">MEUS TREINOS <button onclick="fecharModal('janela-historico')">✕</button></div>
-        <div id="lista-historico" class="consulta-b"></div>
-    </div>
-</div>
-
 <div id="janela-postits" class="overlay-consulta" style="display:none;">
     <div class="consulta-card">
-        <div class="consulta-h">BANCO DE TESES (POST-ITS) <button onclick="fecharModal('janela-postits')">✕</button></div>
+        <div class="consulta-h">BANCO DE TESES <button onclick="fecharModal('janela-postits')">✕</button></div>
         <div id="lista-postits" class="consulta-b"></div>
     </div>
 </div>
 
 <div id="modal-cadastro" class="overlay-consulta" style="display:none;">
-    <div class="consulta-card" style="height:auto;">
-        <div class="consulta-h">NOVO REGISTRO <button onclick="fecharModal('modal-cadastro')">✕</button></div>
+    <div class="consulta-card" style="height:auto; max-width: 500px;">
+        <div class="consulta-h"><span id="titulo-modal-cad">NOVA TESE</span> <button onclick="fecharModal('modal-cadastro')">✕</button></div>
         <div class="consulta-b" style="padding:20px;">
-            <input type="text" id="cad-nome" placeholder="Título da Tese" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
-            <textarea id="cad-texto" rows="6" placeholder="Fundamentação..." style="width:100%; padding:15px; border-radius:8px; border:1px solid #ddd;"></textarea>
-            <button onclick="salvarNovoPostit()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold; margin-top:10px;">SALVAR NA NUVEM</button>
+            <input type="hidden" id="edit-id">
+            <input type="text" id="cad-nome" placeholder="Título da Tese (Ex: Horas Extras)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:6px; border:1px solid #ddd;">
+            <textarea id="cad-texto" rows="8" placeholder="Fundamentação e Artigos..." style="width:100%; padding:12px; border-radius:6px; border:1px solid #ddd; font-family: 'Caveat', cursive; font-size: 1.2rem;"></textarea>
+            <button onclick="salvarTese()" id="btn-salvar-tese" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;">SALVAR NA NUVEM</button>
         </div>
+    </div>
+</div>
+
+<div id="janela-historico" class="overlay-consulta" style="display:none;">
+    <div class="consulta-card">
+        <div class="consulta-h">HISTÓRICO DE TREINOS <button onclick="fecharModal('janela-historico')">✕</button></div>
+        <div id="lista-historico" class="consulta-b"></div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
@@ -161,7 +164,7 @@
     const db = getDatabase(app);
 
     window.db = db; window.ref = ref; window.set = set; 
-    window.onValue = onValue; window.push = push; window.get = get;
+    window.onValue = onValue; window.push = push; window.get = get; window.remove = remove; window.update = update;
 
     onValue(ref(db, 'treino_atual'), (snapshot) => {
         const data = snapshot.val();
@@ -171,18 +174,103 @@
             atualizarContador();
         }
         document.getElementById('cloud-status').innerText = "☁️ SYNC OK";
-        document.getElementById('label-folha').innerText = window.modoAtual.toUpperCase() + " • ONLINE";
     });
 </script>
 
 <script>
-    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; window.modoAtual = 'peca';
+    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; window.modoAtual = 'peca';
 
-    // FUNÇÕES DE INPUT E CONTADOR
-    function handleInput() {
+    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+    function abrirModalCadastro() { 
+        document.getElementById('titulo-modal-cad').innerText = "NOVA TESE";
+        document.getElementById('edit-id').value = "";
+        document.getElementById('cad-nome').value = "";
+        document.getElementById('cad-texto').value = "";
+        document.getElementById('modal-cadastro').style.display = 'flex'; 
+    }
+
+    // --- GERENCIAMENTO DE POST-ITS (TESES) ---
+    
+    function abrirBancoPostits() {
+        const lista = document.getElementById('lista-postits');
+        lista.innerHTML = '<p style="padding:20px;">Carregando suas teses...</p>';
+        document.getElementById('janela-postits').style.display = 'flex';
+
+        window.get(window.ref(window.db, 'postits')).then((snapshot) => {
+            const data = snapshot.val() || {};
+            lista.innerHTML = '';
+            
+            for(let id in data) {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                const b64 = btoa(unescape(encodeURIComponent(data[id].texto)));
+                div.innerHTML = `
+                    <div style="font-weight:bold; color:#333;">📌 ${data[id].nome}</div>
+                    <div class="hist-actions">
+                        <button onclick="visualizarNaFolha('${b64}')" class="btn-action" style="background:var(--primary)">LER</button>
+                        <button onclick="inserirNaFolha('${b64}')" class="btn-action" style="background:var(--success)">INSERIR</button>
+                        <button onclick="prepararEdicao('${id}', '${data[id].nome}', '${b64}')" class="btn-action" style="background:var(--warning); color:black">EDITAR</button>
+                        <button onclick="excluirTese('${id}')" class="btn-action" style="background:var(--danger)">APAGAR</button>
+                    </div>`;
+                lista.appendChild(div);
+            }
+            if(Object.keys(data).length === 0) lista.innerHTML = '<p style="padding:20px;">Nenhuma tese salva.</p>';
+        });
+    }
+
+    function salvarTese() {
+        const id = document.getElementById('edit-id').value;
+        const nome = document.getElementById('cad-nome').value;
+        const texto = document.getElementById('cad-texto').value;
+
+        if(!nome || !texto) return alert("Preencha título e texto!");
+
+        if(id) {
+            window.update(window.ref(window.db, 'postits/' + id), { nome, texto });
+        } else {
+            window.push(window.ref(window.db, 'postits'), { nome, texto });
+        }
+
+        fecharModal('modal-cadastro');
+        alert("Tese salva com sucesso!");
+        if(document.getElementById('janela-postits').style.display === 'flex') abrirBancoPostits();
+    }
+
+    function prepararEdicao(id, nome, encodedTexto) {
+        const texto = decodeURIComponent(escape(atob(encodedTexto)));
+        document.getElementById('titulo-modal-cad').innerText = "EDITAR TESE";
+        document.getElementById('edit-id').value = id;
+        document.getElementById('cad-nome').value = nome;
+        document.getElementById('cad-texto').value = texto;
+        document.getElementById('modal-cadastro').style.display = 'flex';
+    }
+
+    function excluirTese(id) {
+        if(confirm("Tem certeza que deseja apagar esta tese permanentemente?")) {
+            window.remove(window.ref(window.db, 'postits/' + id));
+            abrirBancoPostits();
+        }
+    }
+
+    function visualizarNaFolha(encoded) {
+        if(confirm("Substituir a folha atual para ler esta tese?")) {
+            document.getElementById('texto-final').value = decodeURIComponent(escape(atob(encoded)));
+            fecharModal('janela-postits');
+            atualizarContador();
+        }
+    }
+
+    function inserirNaFolha(encoded) {
+        const texto = decodeURIComponent(escape(atob(encoded)));
+        document.getElementById('texto-final').value += "\n" + texto;
         saveTudo();
+        fecharModal('janela-postits');
         atualizarContador();
     }
+
+    // --- SISTEMA DE TREINO E HISTÓRICO ---
+
+    function handleInput() { saveTudo(); atualizarContador(); }
 
     function atualizarContador() {
         const text = document.getElementById('texto-final').value;
@@ -193,88 +281,45 @@
         display.style.color = lines > max ? 'var(--danger)' : 'var(--gold)';
     }
 
-    // MELHORIA POST-ITS: AGORA CARREGAM NA FOLHA
-    function abrirBancoPostits() {
-        const lista = document.getElementById('lista-postits');
-        lista.innerHTML = '<p style="padding:20px;">Acessando Banco de Teses...</p>';
-        document.getElementById('janela-postits').style.display = 'flex';
-
-        window.get(window.ref(window.db, 'postits')).then((snapshot) => {
-            const data = snapshot.val() || {};
-            const localDb = JSON.parse(localStorage.getItem('db_master')) || {};
-            const merged = {...localDb, ...data};
-            lista.innerHTML = '';
-            
-            for(let id in merged) {
-                const div = document.createElement('div');
-                div.className = 'hist-item';
-                const b64 = btoa(unescape(encodeURIComponent(merged[id].texto)));
-                div.innerHTML = `
-                    <div style="flex:1">📌 <b>${merged[id].nome}</b></div>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="visualizarPostitNaFolha('${b64}')" style="background:var(--primary); color:white; border:none; padding:8px; border-radius:4px; font-size:0.7rem;">LER NA FOLHA</button>
-                        <button onclick="inserirPostit('${b64}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:4px; font-size:0.7rem;">INSERIR</button>
-                    </div>`;
-                lista.appendChild(div);
-            }
-        });
+    function saveTudo() {
+        const txt = document.getElementById('texto-final').value;
+        localStorage.setItem('save_2026_' + window.modoAtual, txt);
+        if(window.db) window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
     }
 
-    function visualizarPostitNaFolha(encoded) {
-        if(confirm("Deseja abrir esta tese para leitura na folha? O texto atual da sua peça será substituído.")) {
-            const texto = decodeURIComponent(escape(atob(encoded)));
-            document.getElementById('texto-final').value = texto;
-            fecharModal('janela-postits');
-            atualizarContador();
-        }
+    function arquivarTreino() {
+        const texto = document.getElementById('texto-final').value;
+        if(texto.length < 10) return;
+        const titulo = `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleString()}`;
+        window.push(window.ref(window.db, 'historico'), { titulo, texto, modo: window.modoAtual });
+        alert("Treino arquivado!");
     }
 
-    function inserirPostit(encoded) {
-        const texto = decodeURIComponent(escape(atob(encoded)));
-        document.getElementById('texto-final').value += "\n" + texto;
-        saveTudo();
-        atualizarContador();
-        fecharModal('janela-postits');
-    }
-
-    // HISTÓRICO E ARQUIVAMENTO
     function abrirHistorico() {
         const lista = document.getElementById('lista-historico');
-        lista.innerHTML = '<p style="padding:20px;">Buscando treinos...</p>';
+        lista.innerHTML = '<p style="padding:20px;">Buscando histórico...</p>';
         document.getElementById('janela-historico').style.display = 'flex';
         window.get(window.ref(window.db, 'historico')).then((snapshot) => {
-            const cloud = snapshot.val() || {};
-            const local = JSON.parse(localStorage.getItem('master_historico')) || [];
+            const data = snapshot.val() || {};
             lista.innerHTML = '';
-            local.forEach((item, i) => {
+            const keys = Object.keys(data).reverse();
+            keys.forEach(id => {
                 const div = document.createElement('div');
                 div.className = 'hist-item';
-                div.innerHTML = `<span><b>[LOCAL]</b> ${item.titulo}</span> <button onclick="recuperarTreinoLocal(${i})" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px;">CARREGAR</button>`;
+                div.innerHTML = `<span><b>${data[id].titulo}</b></span> 
+                <div class="hist-actions">
+                    <button onclick="recuperarTreinoCloud('${id}')" class="btn-action" style="background:var(--success)">CARREGAR NA FOLHA</button>
+                    <button onclick="excluirTreino('${id}')" class="btn-action" style="background:var(--danger)">EXCLUIR</button>
+                </div>`;
                 lista.appendChild(div);
             });
-            for(let id in cloud) {
-                const div = document.createElement('div');
-                div.className = 'hist-item';
-                div.innerHTML = `<span><b>[NUVEM]</b> ${cloud[id].titulo}</span> <button onclick="recuperarTreinoCloud('${id}')" style="background:var(--success); color:white; border:none; padding:10px; border-radius:6px;">CARREGAR</button>`;
-                lista.appendChild(div);
-            }
         });
-    }
-
-    function recuperarTreinoLocal(i) {
-        const item = JSON.parse(localStorage.getItem('master_historico'))[i];
-        if(confirm("Carregar este treino na folha principal?")) {
-            modoTreino(item.modo);
-            document.getElementById('texto-final').value = item.texto;
-            saveTudo();
-            fecharModal('janela-historico');
-        }
     }
 
     function recuperarTreinoCloud(id) {
         window.get(window.ref(window.db, 'historico/' + id)).then(s => {
             const item = s.val();
-            if(confirm("Carregar este treino da nuvem?")) {
+            if(confirm("Carregar este treino? O texto atual da folha será substituído.")) {
                 modoTreino(item.modo);
                 document.getElementById('texto-final').value = item.texto;
                 saveTudo();
@@ -283,57 +328,36 @@
         });
     }
 
-    function arquivarTreino() {
-        const texto = document.getElementById('texto-final').value;
-        if(texto.length < 10) return alert("Escreva algo antes!");
-        const titulo = `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleDateString()}`;
-        window.push(window.ref(window.db, 'historico'), { titulo, texto, modo: window.modoAtual });
-        let hist = JSON.parse(localStorage.getItem('master_historico')) || [];
-        hist.unshift({ titulo, texto, modo: window.modoAtual });
-        localStorage.setItem('master_historico', JSON.stringify(hist));
-        alert("Arquivado!");
-    }
-
-    function saveTudo() {
-        const txt = document.getElementById('texto-final').value;
-        localStorage.setItem(window.modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', txt);
-        if(window.db) window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
+    function excluirTreino(id) {
+        if(confirm("Excluir este treino do histórico?")) {
+            window.remove(window.ref(window.db, 'historico/' + id));
+            abrirHistorico();
+        }
     }
 
     function modoTreino(tipo) {
         window.modoAtual = tipo;
-        const area = document.getElementById('texto-final');
         document.querySelectorAll('.btn-pratica').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-modo-' + (tipo === 'peca' ? 'peca' : 'questoes')).classList.add('active');
+        document.getElementById('btn-modo-' + tipo).classList.add('active');
         const container = document.getElementById('line-nums-main');
+        const area = document.getElementById('texto-final');
         if(tipo === 'peca') { area.style.height = "3750px"; gerarLinhas(150, container); }
         else { area.style.height = "3000px"; gerarLinhas(120, container); }
-        area.value = localStorage.getItem(tipo === 'peca' ? 'save_2026_peca' : 'save_2026_questoes') || "";
+        area.value = localStorage.getItem('save_2026_' + tipo) || "";
         atualizarContador();
     }
 
-    function salvarNovoPostit() {
-        const nome = document.getElementById('cad-nome').value;
-        const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return;
-        window.push(window.ref(window.db, 'postits'), { nome, texto });
-        fecharModal('modal-cadastro');
-        alert("Tese Salva!");
-    }
-
-    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
     function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); } }
     function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
-    function mudarDoc(tipo) { docAtual = tipo; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active'); document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
+    function mudarDoc(tipo) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
     function aplicarEstruct(t) { if(window.modoAtual !== 'peca') return; const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." }; document.getElementById('texto-final').value = m[t]; handleInput(); }
 
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=45; i++){
         const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc(docAtual); };
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc('prova'); };
         grid.appendChild(b);
     }
     window.onload = () => { modoTreino('peca'); mudarDoc('prova'); };
