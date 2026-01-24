@@ -2,122 +2,133 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARYANNA MASTER PRO | RESTAURADO 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SISTEMA MASTER OAB 2026 - MÉTODO ARYANNA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #ef4444;
-            --bg-site: #0f172a; --gold: #d4af37; --fgv-blue: #004a8d;
+            --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
+            --warning: #f59e0b; --bg: #111827; --card: #1f2937;
+            --fgv-blue: #004a8d; --gold: #d4af37; --fgv-yellow: #fff9c4;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 1rem; }
+        /* HEADER & TIMER */
+        header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        #timer-display { font-family: monospace; font-size: 1.5rem; font-weight: bold; color: var(--warning); }
 
-        .main-container { flex: 1; display: flex; overflow: hidden; }
+        /* BARRA DE LEIS (LINKS RÁPIDOS) */
+        .laws-bar { background: #000; padding: 5px; display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid #333; flex-shrink: 0; }
+        .law-link { background: #333; color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-decoration: none; border: 1px solid #444; white-space: nowrap; }
 
-        /* EDITOR (ESQUERDA) */
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; border-right: 2px solid #000; }
+        /* GRADE DE EXAMES (35-44) */
+        .exam-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; background: #000; flex-shrink: 0; }
+        .btn-ex { padding: 10px 0; border: none; background: #222; color: #888; font-size: 0.75rem; cursor: pointer; }
+        .btn-ex.active { background: var(--success); color: white; font-weight: bold; }
+
+        /* MENU DE PEÇAS & MODO DE TREINO */
+        .pecas-bar { background: var(--card); padding: 6px; display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid var(--gold); }
+        .btn-peca { padding: 8px 15px; border-radius: 4px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
+
+        .mode-bar { background: #2d3748; padding: 6px; display: flex; gap: 6px; border-bottom: 1px solid #4a5568; }
+        .btn-mode { flex: 1; padding: 10px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 0.75rem; opacity: 0.6; }
+        .btn-mode.active { opacity: 1; border: 1px solid white; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+        /* WORKSPACE */
+        .workspace { flex: 1; display: flex; overflow: hidden; background: #000; }
+
+        /* COLUNA RESPOSTA */
+        .col-res { flex: 1; display: flex; flex-direction: column; background: white; border-right: 2px solid #000; position: relative; }
+        .fgv-header { background: #f0f0f0; color: #000; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #000; }
         
-        .toolbar { background: #fff; padding: 8px; display: flex; gap: 8px; border-bottom: 1px solid #94a3b8; align-items: center; flex-wrap: wrap; }
-        .btn-symbol { width: 42px; height: 42px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #f8fafc; color: #334155; }
-        .select-field { height: 42px; padding: 0 10px; border-radius: 6px; border: 1px solid #ccc; font-weight: bold; font-size: 0.8rem; background: #fff; color: #334155; }
-        .btn-action { padding: 0 15px; height: 42px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 0.75rem; }
+        .paper { flex: 1; display: flex; overflow-y: auto; background: white; }
+        .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #ddd; text-align: center; font-size: 10px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
+        .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-family: 'Caveat', cursive; font-size: 20px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); background-size: 100% 25px; color: #001f3f; }
 
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* POST-ITS FIXOS */
-        .panel-overlay { width: 100%; max-width: 800px; background: #fff9c4; border-left: 10px solid var(--warning); padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: #854d0e; display: none; }
-        .list-area { max-height: 100px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.4); border: 1px solid #ddd; padding: 5px; font-size: 0.8rem; }
+        /* POST-ITS */
+        .postit-panel { position: absolute; top: 10px; right: 10px; width: 240px; background: var(--fgv-yellow); border-left: 6px solid var(--warning); padding: 12px; box-shadow: -2px 2px 15px rgba(0,0,0,0.3); z-index: 1000; color: #000; display: none; }
+        .note-list { max-height: 180px; overflow-y: auto; font-size: 0.75rem; margin-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.1); }
 
-        /* FOLHA ESTILO FGV */
-        .paper-sheet { width: 100%; max-width: 800px; min-height: 1500px; display: flex; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
-        .line-nums { width: 35px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 25px; flex-shrink: 0; }
-        .text-area { 
-            flex: 1; border: none; outline: none; padding: 0 15px; 
-            font-family: 'Caveat', cursive; font-size: 22px; line-height: 25px; 
-            color: #001f3f; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); 
-            background-size: 100% 25px; resize: none; 
-        }
+        /* COLUNA PDF */
+        .col-pdf { flex: 1.3; display: flex; flex-direction: column; background: #333; }
+        .pdf-tabs { display: flex; background: #111; padding: 4px 4px 0; gap: 2px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: #222; color: #777; }
+        .tab-btn.active { background: white; color: var(--fgv-blue); }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* PDF (DIREITA) */
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #333; }
-        .pdf-tabs { display: flex; background: #111; padding: 5px 5px 0; gap: 4px; }
-        .pdf-tab { padding: 10px 15px; background: #444; border: none; color: #aaa; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-        .pdf-tab.active { background: #fff; color: var(--fgv-blue); }
-        .pdf-tab.ary { background: var(--gold); color: #000; }
-        iframe { flex: 1; border: none; width: 100%; background: #525659; }
+        #mobile-switch { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 3000; background: var(--fgv-blue); color: white; border: 3px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; font-weight: bold; }
 
-        /* MOBILE AJUSTE */
-        @media (max-width: 800px) {
-            .main-container { flex-direction: column; }
-            .viewer-section { height: 40vh; flex: none; border-left: none; border-top: 2px solid var(--gold); }
-            .editor-section { flex: 1; }
+        @media (max-width: 1024px) {
+            .workspace { flex-direction: column; }
+            .col-pdf { display: none; height: 100%; width: 100%; }
+            .col-pdf.active { display: flex; position: fixed; top: 0; left: 0; z-index: 2000; }
+            #mobile-switch { display: block; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">SISTEMA ARYANNA | MASTER 2026</div>
-    <div id="status" style="font-size: 0.7rem; color: var(--warning);">SINCRO FIREBASE OK</div>
+    <div style="font-weight:bold; color:var(--gold); font-size: 0.9rem;">ARYANNA MASTER PRO</div>
+    <div id="timer-display">05:00:00</div>
+    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:5px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">INICIAR</button>
 </header>
 
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select class="select-field" id="ex-select" onchange="mudarExame(this.value)"></select>
-            
-            <select class="select-field" id="peca-select" onchange="carregarPecaMestre(this.value)" style="border: 2px solid var(--gold);">
-                <option value="">📂 40 ESTRUTURAS</option>
-                <option value="rt">Reclamação Trabalhista</option>
-                <option value="cont">Contestação</option>
-                <option value="ro">Recurso Ordinário</option>
-                <option value="ap">Agravo de Petição</option>
-            </select>
-
-            <button class="btn-symbol" title="Post-its" onclick="togglePanel('box-teses')">📌</button>
-            <button class="btn-symbol" title="Dicas" onclick="togglePanel('box-dicas')">📝</button>
-            
-            <button class="btn-action" style="background: var(--primary);" onclick="salvarPecaMestre()">💾 SALVAR PEÇA</button>
-            <button class="btn-action" style="background: var(--success); margin-left: auto;" onclick="arquivarTreino()">✅ FIM</button>
-        </div>
-
-        <div class="paper-wrapper">
-            <div id="box-dicas" class="panel-overlay">
-                <strong>DICAS / ERROS:</strong>
-                <div id="dicas-list" class="list-area"></div>
-                <input type="text" id="dica-in" placeholder="Nova dica..." style="width: 70%;">
-                <button onclick="dbAdd('dicas')" style="padding: 5px;">ADD</button>
-            </div>
-
-            <div id="box-teses" class="panel-overlay" style="border-left-color: var(--success);">
-                <strong>TESES SALVAS:</strong>
-                <div id="teses-list" class="list-area"></div>
-                <input type="text" id="tese-in" placeholder="Nova tese/artigo..." style="width: 70%;">
-                <button onclick="dbAdd('teses')" style="padding: 5px;">ADD</button>
-            </div>
-
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section">
-        <div class="pdf-tabs">
-            <button class="pdf-tab active" id="tab-prova" onclick="trocarDoc('prova')">PROVA</button>
-            <button class="pdf-tab" id="tab-gab" onclick="trocarDoc('gab')">GABARITO</button>
-            <button class="pdf-tab ary" onclick="trocarDoc('ary')">📙 VADE ARY</button>
-        </div>
-        <iframe id="pdf-frame"></iframe>
-    </section>
+<div class="laws-bar">
+    <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" class="law-link">CLT</a>
+    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="law-link">CF/88</a>
+    <button class="law-link" style="background:var(--warning); color:black;" onclick="togglePostits()">📌 POST-ITS/TESES</button>
+    <button class="law-link" style="background:var(--primary); margin-left: auto;" onclick="salvarPecaMestre()">💾 SALVAR MESTRE</button>
 </div>
+
+<div class="exam-grid" id="exam-grid"></div>
+
+<div class="pecas-bar">
+    <button class="btn-peca" onclick="setEstrutura('rt')">RT</button>
+    <button class="btn-peca" onclick="setEstrutura('cont')">CONT</button>
+    <button class="btn-peca" onclick="setEstrutura('ro')">RO</button>
+    <button class="btn-peca" onclick="setEstrutura('ap')">AP</button>
+</div>
+
+<div class="mode-bar">
+    <button class="btn-mode active" id="m-peca" onclick="setModo('peca')">🏋️ SIMULADO PEÇA (150L)</button>
+    <button class="btn-mode" id="m-quest" onclick="setModo('quest')">📝 QUESTÕES (120L)</button>
+</div>
+
+<main class="workspace">
+    <section class="col-res">
+        <div class="fgv-header">
+            <span id="label-modo">FOLHA FGV - PEÇA</span>
+            <button onclick="arquivar()" style="background:var(--gold); border:none; padding:3px 8px; border-radius:3px; font-weight:bold; cursor:pointer;">ARQUIVAR</button>
+        </div>
+        
+        <div class="paper">
+            <div id="box-postit" class="postit-panel">
+                <div style="font-weight:bold; font-size:0.75rem; margin-bottom:8px;">BANCO DE TESES/DICAS:</div>
+                <div id="notes-list" class="note-list"></div>
+                <input type="text" id="note-in" placeholder="Nova dica..." style="width:100%; padding:8px; font-size:0.8rem; margin-bottom:8px;">
+                <button onclick="addPostit()" style="width:100%; background:black; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">SALVAR DICA</button>
+            </div>
+
+            <div class="line-nums" id="line-nums"></div>
+            <textarea id="texto-final" class="textarea-fgv" oninput="autoSave()"></textarea>
+        </div>
+    </section>
+
+    <section class="col-pdf" id="col-pdf">
+        <div class="pdf-tabs">
+            <button id="t-prova" class="tab-btn active" onclick="setDoc('prova')">PROVA</button>
+            <button id="t-gab" class="tab-btn" onclick="setDoc('gab')">GABARITO</button>
+            <button id="t-ary" class="tab-btn" onclick="setDoc('ary')" style="background:var(--gold); color:black;">VADE ARY</button>
+        </div>
+        <iframe id="f-pdf"></iframe>
+    </section>
+</main>
+
+<button id="mobile-switch" onclick="toggleMobile()">PDF</button>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -127,51 +138,58 @@
     const app = initializeApp(config); const db = getDatabase(app);
     window.db_ops = { ref, set, push, get, db };
 
-    // Sincronização inicial
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'teses'), (s) => renderLista(s.val(), 'teses-list'));
-    onValue(ref(db, 'dicas'), (s) => renderLista(s.val(), 'dicas-list'));
+    onValue(ref(db, 'banco_postits'), (s) => renderPostits(s.val()));
 </script>
 
 <script>
-    let exameAtivo = 42; let pecaKey = "";
+    let ex = 42; let modo = 'peca'; let pecaK = ''; let timeLeft = 18000; let timerInt = null;
 
-    function trocarDoc(tipo) {
-        document.querySelectorAll('.pdf-tab').forEach(t => t.classList.remove('active'));
-        const f = document.getElementById('pdf-frame');
-        if(tipo === 'prova') { f.src = `ro${exameAtivo}.pdf`; document.getElementById('tab-prova').classList.add('active'); }
-        else if(tipo === 'gab') { f.src = `ro${exameAtivo}-gabarito.pdf`; document.getElementById('tab-gab').classList.add('active'); }
-        else { f.src = `Aryanna Linhares.pdf`; }
+    // Gerar Exames
+    const grid = document.getElementById('exam-grid');
+    for(let i=35; i<=44; i++) {
+        const b = document.createElement('button');
+        b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x=>x.classList.remove('active')); b.classList.add('active'); ex=i; setDoc('prova'); };
+        grid.appendChild(b);
     }
 
-    async function carregarPecaMestre(val) {
-        if(!val) return; pecaKey = val;
-        const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${val}`));
-        document.getElementById('texto-final').value = s.exists() ? s.val() : "ESTRUTURA: " + val.toUpperCase();
-        autoSave();
+    function setDoc(tipo) {
+        document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+        document.getElementById(`t-${tipo}`).classList.add('active');
+        const f = document.getElementById('f-pdf');
+        f.src = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gab' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+    }
+
+    function setModo(m) {
+        modo = m;
+        document.querySelectorAll('.btn-mode').forEach(b=>b.classList.remove('active'));
+        document.getElementById(m==='peca'?'m-peca':'m-quest').classList.add('active');
+        document.getElementById('label-modo').innerText = m==='peca' ? "FOLHA FGV - PEÇA" : "RESPOSTAS DISC. (Q1 a Q4)";
+        gerarLinhas(m==='peca'? 150 : 120);
+    }
+
+    async function setEstrutura(p) {
+        pecaK = p;
+        const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${p}`));
+        document.getElementById('texto-final').value = s.exists() ? s.val() : `ESTRUTURA ${p.toUpperCase()}...`;
     }
 
     async function salvarPecaMestre() {
-        if(!pecaKey) return alert("Escolha uma peça no menu 📂!");
-        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${pecaKey}`), document.getElementById('texto-final').value);
-        alert("Peça Mestre Salva com Sucesso!");
+        if(!pecaK) return alert("Selecione uma peça!");
+        await window.db_ops.set(window.db_ops.ref(window.db_ops.db, `modelos_mestre/${pecaK}`), document.getElementById('texto-final').value);
+        alert("Salvo!");
     }
 
-    function togglePanel(id) {
-        const p = document.getElementById(id);
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    async function addPostit() {
+        const v = document.getElementById('note-in').value;
+        if(v) await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'banco_postits'), { texto: v });
+        document.getElementById('note-in').value = "";
     }
 
-    async function dbAdd(path) {
-        const inp = document.getElementById(path === 'dicas' ? 'dica-in' : 'tese-in');
-        if(!inp.value) return;
-        await window.db_ops.push(window.db_ops.ref(window.db_ops.db, path), { texto: inp.value });
-        inp.value = "";
-    }
-
-    function renderLista(data, id) {
-        const el = document.getElementById(id); el.innerHTML = "";
-        if(data) Object.keys(data).forEach(k => { el.innerHTML += `<div>• ${data[k].texto}</div>`; });
+    function renderPostits(d) {
+        const c = document.getElementById('notes-list'); c.innerHTML = "";
+        if(d) Object.keys(d).reverse().forEach(k => { c.innerHTML += `<div style="padding:4px; border-bottom:1px solid #ddd;">• ${d[k].texto}</div>`; });
     }
 
     function autoSave() {
@@ -179,20 +197,24 @@
         window.sv = setTimeout(() => {
             window.db_ops.set(window.db_ops.ref(window.db_ops.db, 'v3_treino/peca'), document.getElementById('texto-final').value);
             window.isEditing = false;
-        }, 1000);
+        }, 800);
     }
 
-    function mudarExame(v) { exameAtivo = v; trocarDoc('prova'); }
+    function toggleTimer() {
+        if(timerInt) { clearInterval(timerInt); timerInt=null; document.getElementById('btn-timer').innerText="INICIAR"; }
+        else { timerInt = setInterval(() => { timeLeft--; updateTimer(); }, 1000); document.getElementById('btn-timer').innerText="PAUSAR"; }
+    }
 
-    window.onload = () => {
-        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h;
-        const sel = document.getElementById('ex-select');
-        for(let i=44; i>=35; i--) {
-            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`;
-            if(i==42) o.selected=true; sel.appendChild(o);
-        }
-        trocarDoc('prova');
-    };
+    function updateTimer() {
+        const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60;
+        document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function togglePostits() { const p = document.getElementById('box-postit'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; }
+    function toggleMobile() { document.getElementById('col-pdf').classList.toggle('active'); }
+    function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
+
+    window.onload = () => { gerarLinhas(150); setDoc('prova'); };
 </script>
 </body>
 </html>
