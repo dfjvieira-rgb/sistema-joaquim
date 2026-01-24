@@ -25,36 +25,32 @@
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR SECTION */
+        /* EDITOR FGV */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
-        
-        /* ABAS DE RESPOSTA OAB */
-        .answer-tabs { display: flex; background: #e2e8f0; padding: 5px 10px 0; gap: 2px; }
-        .tab-a { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #cbd5e1; font-size: 0.7rem; font-weight: bold; cursor: pointer; color: #475569; }
-        .tab-a.active { background: white; color: var(--primary); border-bottom: 2px solid var(--primary); }
-
         .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-symbol { height: 35px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
         
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; scroll-behavior: smooth; }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); position: relative; }
+        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; user-select: none; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
 
-        /* VIEWER SECTION */
+        /* VIEWER & ZOOM */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         
+        .zoom-controls { background: #1e293b; padding: 8px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.7rem; border-bottom: 1px solid #444; color: var(--gold); }
+        .zoom-controls input { flex: 1; accent-color: var(--gold); }
+
         #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
         canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
 
         /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 80vh; overflow-y: auto; }
-        .historico-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
-
+        
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
 
         @media (max-width: 1024px) {
@@ -77,13 +73,6 @@
 
 <div class="main-container">
     <section class="editor-section">
-        <div class="answer-tabs">
-            <button class="tab-a active" onclick="mudarCaderno('peca')">PEÇA PRÁTICA</button>
-            <button class="tab-a" onclick="mudarCaderno('q1')">QUESTÃO 1</button>
-            <button class="tab-a" onclick="mudarCaderno('q2')">QUESTÃO 2</button>
-            <button class="tab-a" onclick="mudarCaderno('q3')">QUESTÃO 3</button>
-            <button class="tab-a" onclick="mudarCaderno('q4')">QUESTÃO 4</button>
-        </div>
         <div class="toolbar">
             <select id="exam-select" onchange="mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.7rem;"></select>
             <button class="btn-symbol" style="background:#f0fdf4; color:var(--success)" onclick="abrirEvolucao()">📚</button>
@@ -92,7 +81,7 @@
             <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="limparFolha()">🗑️</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="finalizarEArquivar()">💾</button>
         </div>
-        <div class="paper-wrapper">
+        <div class="paper-wrapper" id="scroll-area">
             <div class="paper-sheet">
                 <div class="line-nums" id="line-nums-main"></div>
                 <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
@@ -106,25 +95,34 @@
             <button class="tab" onclick="carregarPDF('gabarito')">GABARITO</button>
             <button class="tab" style="color:var(--gold)" onclick="carregarPDF('vade')">VADE</button>
         </div>
+        <div class="zoom-controls">
+            <span>ZOOM PDF:</span>
+            <input type="range" min="0.8" max="2.5" step="0.1" value="1.3" id="zoom-range" oninput="ajustarZoom(this.value)">
+            <span id="zoom-val">130%</span>
+        </div>
         <div id="pdf-viewport"></div>
     </section>
 </div>
 
 <div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <h3>⚖️ ESTRUTURAS ARYANNA</h3><br>
-        <button onclick="injetar('RT_ESPOLIO')" style="width:100%; padding:12px; margin-bottom:8px; background:#e0e7ff; border:none; border-radius:8px; font-weight:bold;">ESTRUTURA: RT ESPÓLIO (ROMEU DIAMANTE)</button>
-        <button onclick="injetar('RT')" style="width:100%; padding:10px; margin-bottom:5px;">RT Padrão</button>
-        <button onclick="injetar('CONT')" style="width:100%; padding:10px; margin-bottom:5px;">Contestação</button>
+        <h3>⚖️ ESTRUTURAS FGV (CADERNO COMPLETO)</h3><br>
+        <button onclick="injetar('RT_ESPOLIO')" style="width:100%; padding:12px; margin-bottom:8px; background:#e0e7ff; border:1px solid var(--primary); border-radius:8px; font-weight:bold; text-align:left;">
+            RT ESPÓLIO (ROMEU DIAMANTE) + QUESTÕES
+        </button>
+        <button onclick="injetar('RO')" style="width:100%; padding:10px; margin-bottom:5px; text-align:left;">Recurso Ordinário + Questões</button>
     </div>
 </div>
 
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div>
+    <div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div>
 </div>
 
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 RASCUNHO / DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="saveRascunho()"></textarea></div>
+    <div class="modal-content" style="background:var(--rascunho-bg)">
+        <h3>📌 POST-IT / DICAS</h3><br>
+        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="saveRascunho()"></textarea>
+    </div>
 </div>
 
 <button id="mobile-btn" onclick="toggleMobile()">📑</button>
@@ -136,9 +134,7 @@
     const app = initializeApp(config); const db = getDatabase(app);
     window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get; window.update = update; window.remove = remove;
 
-    // Carregamento dinâmico por caderno
-    window.cadernoAtivo = 'peca';
-    onValue(ref(db, `v3_treino/${window.cadernoAtivo}`), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 </script>
 
@@ -147,22 +143,6 @@
     let pecaSendoEditadaId = null;
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    function mudarCaderno(tipo) {
-        window.cadernoAtivo = tipo;
-        document.querySelectorAll('.tab-a').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        // Recarrega do Firebase o conteúdo específico desse caderno
-        window.get(window.ref(window.db, `v3_treino/${tipo}`)).then(s => {
-            document.getElementById('texto-final').value = s.val() || "";
-            // Atualiza contador de linhas para questões (geralmente menores)
-            let h = ""; 
-            let maxL = (tipo === 'peca') ? 150 : 30;
-            for(let i=1; i<=maxL; i++) h += i + "<br>";
-            document.getElementById('line-nums-main').innerHTML = h;
-        });
-    }
 
     async function carregarPDF(tipo) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -184,15 +164,17 @@
             canvas.height = viewport.height; canvas.width = viewport.width;
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
         }
+        document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%";
     }
+
+    function ajustarZoom(val) { scale = parseFloat(val); renderAllPages(); }
 
     function injetar(tipo) {
         const estruturas = {
-            'RT_ESPOLIO': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, representado por sua inventariante e viúva, JULIETA SAFIRA, nacionalidade..., CPF..., residente..., por seu advogado..., vem propor:\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de [EMPRESA], qualificação..., pelos fatos e fundamentos:\n\n1. GRATUIDADE DE JUSTIÇA (Art. 790, § 3º, CLT)\n2. PRIORIDADE NA TRAMITAÇÃO (Art. 1048 CPC / Art. 71 Lei 10.741/03)\n3. VÍNCULO EMPREGATÍCIO (Art. 3º e 29 CLT)\n4. VERBAS RESCISÓRIAS (Saldo salarial, 13º e Férias Proporcionais)',
-            'RT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...',
-            'CONT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nPROCESSO Nº ...'
+            'RT_ESPOLIO': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE ROMEU DIAMANTE, representado por JULIETA SAFIRA, qualificação...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. PRIORIDADE IDOSO (Art. 1048 CPC)\n3. VÍNCULO (Art. 3º CLT)\n\n[PROSSIGA A PEÇA ATÉ A LINHA 150]\n\n\n' + 
+                          '-'.repeat(40) + '\nQUESTÃO 1\na)\nb)\n' + '-'.repeat(40) + '\nQUESTÃO 2\na)\nb)\n' + '-'.repeat(40) + '\nQUESTÃO 3\na)\nb)\n' + '-'.repeat(40) + '\nQUESTÃO 4\na)\nb)',
         };
-        document.getElementById('texto-final').value = estruturas[tipo];
+        document.getElementById('texto-final').value = estruturas[tipo] || "";
         autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
     }
@@ -201,41 +183,44 @@
         window.isEditing = true; 
         clearTimeout(window.sv); 
         window.sv = setTimeout(() => { 
-            window.set(window.ref(window.db, `v3_treino/${window.cadernoAtivo}`), document.getElementById('texto-final').value); 
+            window.set(window.ref(window.db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); 
             window.isEditing = false; 
         }, 1000); 
     }
 
     async function finalizarEArquivar() {
-        const t = prompt("Nome do Treino (Ex: Simulado 40):");
+        const t = prompt("Título para o Museu (Ex: RT Romeu Diamante):");
         if(t) {
-            // Salva o conjunto completo (Peça + Questões)
-            const snap = await window.get(window.ref(window.db, 'v3_treino'));
             await window.push(window.ref(window.db, 'historico_treinos'), { 
                 titulo: t, 
-                conteudo: snap.val(), 
+                texto: document.getElementById('texto-final').value, 
                 data: new Date().toLocaleString() 
             });
-            alert("Treino completo arquivado no Museu!");
+            alert("Caderno completo arquivado!");
         }
     }
 
     async function carregarHistorico() {
-        const list = document.getElementById('lista-historico'); list.innerHTML = "Abrindo gavetas...";
-        const snap = await window.get(window.ref(window.db, 'historico_treinos')); list.innerHTML = "";
+        const list = document.getElementById('lista-historico'); list.innerHTML = "";
+        const snap = await window.get(window.ref(window.db, 'historico_treinos'));
         if(snap.exists()) {
             Object.keys(snap.val()).forEach(key => {
                 const item = snap.val()[key];
-                const d = document.createElement('div'); d.className = 'historico-item';
-                d.innerHTML = `<div><strong>${item.titulo}</strong><br><small>${item.data}</small></div>
-                               <button class="btn-delete-small" onclick="excluirTreino('${key}', event)">🗑️</button>`;
-                d.onclick = () => { if(confirm("Restaurar este treino?")) { window.set(window.ref(window.db, 'v3_treino'), item.conteudo); location.reload(); }};
+                const d = document.createElement('div');
+                d.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
+                d.innerHTML = `<div style="cursor:pointer"><strong>${item.titulo}</strong><br><small>${item.data}</small></div>
+                               <button onclick="excluirTreino('${key}')" style="background:none; border:none;">🗑️</button>`;
+                d.querySelector('div').onclick = () => {
+                    document.getElementById('texto-final').value = item.texto;
+                    autoSave();
+                    document.getElementById('modal-evolucao').style.display = 'none';
+                };
                 list.appendChild(d);
             });
         }
     }
 
-    async function excluirTreino(id, e) { e.stopPropagation(); if(confirm("Excluir?")) { await window.remove(window.ref(window.db, `historico_treinos/${id}`)); carregarHistorico(); } }
+    async function excluirTreino(id) { if(confirm("Excluir?")) { await window.remove(window.ref(window.db, `historico_treinos/${id}`)); carregarHistorico(); } }
     function abrirEvolucao() { document.getElementById('modal-evolucao').style.display='flex'; carregarHistorico(); }
     function abrirPecas() { document.getElementById('modal-pecas').style.display='flex'; }
     function abrirPostIt() { document.getElementById('modal-rascunho').style.display='flex'; }
@@ -245,9 +230,10 @@
     function toggleSimulado() { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = formatarTempo(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } }
     function resetTimer() { clearInterval(timerInterval); timerInterval = null; tempoSegundos = 18000; document.getElementById('timer-display').innerText = "05:00:00"; }
     function formatarTempo(s) { const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const seg = s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; }
+    function limparFolha() { if(confirm("Limpar caderno?")) { document.getElementById('texto-final').value = ''; autoSave(); } }
 
     window.onload = () => {
-        let h = ""; for(let i=1; i<=150; i++) h += i + "<br>";
+        let h = ""; for(let i=1; i<=300; i++) h += i + "<br>";
         document.getElementById('line-nums-main').innerHTML = h;
         const sel = document.getElementById('exam-select');
         for(let i=45; i>=35; i--) { let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`; if(i==40) opt.selected = true; sel.appendChild(opt); }
