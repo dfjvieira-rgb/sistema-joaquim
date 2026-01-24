@@ -9,7 +9,7 @@
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4;
+            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4; --rascunho: #fefce8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -17,33 +17,32 @@
 
         header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .logo { font-weight: 800; color: var(--gold); }
+        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
-        .main-container { flex: 1; display: flex; overflow: hidden; background: #000; }
+        .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* ÁREA DO EDITOR - FUNDO CINZA CLARO, NÃO AZUL */
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #e2e8f0; position: relative; border-right: 2px solid #334155; }
-        
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; position: relative; border-right: 2px solid #334155; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #94a3b8; align-items: center; flex-wrap: wrap; }
         
         .btn-symbol { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #f8fafc; color: #334155; }
         .select-field { height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; font-size: 0.75rem; background: #fff; color: #334155; }
         .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 40px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
 
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; background: #f1f5f9; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        /* PAINÉIS */
-        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; }
-        .panel-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; padding-bottom: 5px; }
-        .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: #fff; outline: none; margin-bottom: 8px; font-family: 'Courier Prime', monospace; color: #000; }
-        .list-area { max-height: 120px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.5); border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
-        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; color: #000; }
+        /* PAINÉIS FGV */
+        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; margin-bottom: 10px; }
+        .list-area { max-height: 150px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.4); border-radius: 4px; border: 1px solid #ddd; }
+        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; color: #000; align-items: center; }
 
-        /* FOLHA BRANCA */
-        .paper-sheet { width: 100%; max-width: 800px; background: #ffffff !important; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; background-color: transparent; }
+        /* FOLHAS DINÂMICAS */
+        .paper-sheet { width: 100%; max-width: 800px; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); transition: 0.3s; }
+        .modo-peca { background: #ffffff !important; }
+        .modo-quest { background: var(--rascunho) !important; border: 2px dashed #d4af37; }
+        
+        .line-nums { width: 45px; background: rgba(0,0,0,0.03); border-right: 1px solid rgba(0,0,0,0.1); text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.1) 28px); background-size: 100% 28px; resize: none; background-color: transparent; }
 
-        /* PDF VIEWER */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #1e293b; }
         .tabs { display: flex; background: #0f172a; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #334155; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
@@ -55,7 +54,7 @@
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-family:monospace; font-size: 1.2rem;">05:00:00</div>
+    <div id="timer-display">05:00:00</div>
 </header>
 
 <div class="main-container">
@@ -63,44 +62,48 @@
         <div class="toolbar">
             <select class="select-field" id="exam-select" onchange="mudarExame(this.value)"></select>
             <select class="select-field" id="mode-select" onchange="mudarModo(this.value)">
-                <option value="peca">PEÇA (150L)</option>
-                <option value="quest">QUESTÕES (30L)</option>
+                <option value="peca">📄 PEÇA (150L)</option>
+                <option value="quest">📝 QUESTÕES (30L)</option>
             </select>
             
-            <button class="btn-symbol" style="border-bottom: 3px solid var(--primary)" onclick="togglePanel('box-ia')">🧠</button>
-            <button class="btn-symbol" style="border-bottom: 3px solid var(--success)" onclick="togglePanel('box-teses')">📌</button>
-            <button class="btn-symbol" style="border-bottom: 3px solid var(--danger)" onclick="togglePanel('box-dicas')">📝</button>
+            <button class="btn-symbol" title="Post-its" onclick="togglePanel('box-teses')">📌</button>
+            <button class="btn-symbol" title="Correções" onclick="togglePanel('box-dicas')">📝</button>
+            <button class="btn-symbol" title="IA Analisar" onclick="togglePanel('box-ia')">🧠</button>
             <button class="btn-symbol" onclick="mudarDoc('prova')">📄</button>
             
-            <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 FINALIZAR</button>
+            <button class="btn-save-master" onclick="arquivarTreino()">💾 FINALIZAR & SALVAR</button>
         </div>
 
         <div class="paper-wrapper">
-            <div id="box-ia" class="fgv-panel" style="border-left-color: var(--primary);">
-                <div class="panel-header"><span>🧠 IA ANALISADOR</span><span onclick="togglePanel('box-ia')" style="cursor:pointer">×</span></div>
-                <textarea id="ia-input" class="fgv-input" rows="2" placeholder="Cole o enunciado..."></textarea>
-                <button onclick="alert('IA Analisando...')" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:4px; font-weight:bold;">IDENTIFICAR</button>
+            <div id="box-dicas" class="fgv-panel" style="border-left-color: var(--danger);">
+                <div style="font-weight:bold; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <span>📝 ARQUIVO DE CORREÇÕES PRÁTICAS</span>
+                    <span onclick="togglePanel('box-dicas')" style="cursor:pointer">×</span>
+                </div>
+                <div id="dicas-list" class="list-area"></div>
+                <input type="text" id="dica-tit" class="fgv-input" placeholder="Título do Erro/Acerto" style="width:100%; color:#000;">
+                <textarea id="dica-txt" class="fgv-input" rows="2" placeholder="O que corrigir?" style="width:100%; color:#000;"></textarea>
+                <button onclick="dbSalvar('dicas', 'dica')" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:4px; font-weight:bold;">SALVAR CORREÇÃO</button>
             </div>
 
             <div id="box-teses" class="fgv-panel" style="border-left-color: var(--success);">
-                <div class="panel-header"><span>📌 POST-ITS (TESES)</span><span onclick="togglePanel('box-teses')" style="cursor:pointer">×</span></div>
+                <div style="font-weight:bold; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <span>📌 TESES PARA PEÇAS</span>
+                    <span onclick="togglePanel('box-teses')" style="cursor:pointer">×</span>
+                </div>
                 <div id="teses-list" class="list-area"></div>
-                <input type="text" id="tese-tit" class="fgv-input" placeholder="Título">
-                <textarea id="tese-txt" class="fgv-input" rows="2" placeholder="Fundamento..."></textarea>
-                <input type="hidden" id="tese-id">
-                <button onclick="dbSalvar('teses', 'tese')" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:4px; font-weight:bold;">GRAVAR TESE</button>
+                <input type="text" id="tese-tit" class="fgv-input" placeholder="Título da Tese" style="width:100%; color:#000;">
+                <textarea id="tese-txt" class="fgv-input" rows="2" placeholder="Fundamento Art..." style="width:100%; color:#000;"></textarea>
+                <button onclick="dbSalvar('teses', 'tese')" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:4px; font-weight:bold;">SALVAR TESE</button>
             </div>
 
-            <div id="box-dicas" class="fgv-panel" style="border-left-color: var(--danger);">
-                <div class="panel-header"><span>📝 NÃO CONFUNDA (DICAS)</span><span onclick="togglePanel('box-dicas')" style="cursor:pointer">×</span></div>
-                <div id="dicas-list" class="list-area"></div>
-                <input type="text" id="dica-tit" class="fgv-input" placeholder="Título da Dica">
-                <textarea id="dica-txt" class="fgv-input" rows="3" placeholder="Explicação técnica..."></textarea>
-                <input type="hidden" id="dica-id">
-                <button onclick="dbSalvar('dicas', 'dica')" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:4px; font-weight:bold;">GRAVAR DICA</button>
+            <div id="box-ia" class="fgv-panel" style="border-left-color: var(--primary);">
+                <div class="panel-header"><span>🧠 IA ANALISADOR</span><span onclick="togglePanel('box-ia')" style="cursor:pointer">×</span></div>
+                <textarea id="ia-input" class="fgv-input" rows="2" placeholder="Cole o enunciado..." style="color:#000;"></textarea>
+                <button onclick="alert('IA Analisando...')" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:4px; font-weight:bold;">IDENTIFICAR PEÇA</button>
             </div>
 
-            <div class="paper-sheet">
+            <div id="folha-fgv" class="paper-sheet modo-peca">
                 <div class="line-nums" id="line-nums"></div>
                 <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
             </div>
@@ -119,49 +122,86 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-    window.db_ops = { ref, set, push, remove, update, get, db };
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+    };
+    
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+    window.db_ops = { ref, set, push, remove, db };
 
-    onValue(ref(db, 'teses'), (s) => renderLista(s.val(), 'teses-list', 'tese', 'teses'));
-    onValue(ref(db, 'dicas'), (s) => renderLista(s.val(), 'dicas-list', 'dica', 'dicas'));
-    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    // Sincronização em Tempo Real
+    onValue(ref(db, 'teses'), (s) => renderLista(s.val(), 'teses-list', 'teses'));
+    onValue(ref(db, 'dicas'), (s) => renderLista(s.val(), 'dicas-list', 'dicas'));
+    
+    window.carregarTextoModo = (m) => {
+        onValue(ref(db, `v3_treino/${m}`), (s) => {
+            if(!window.isEditing) document.getElementById('texto-final').value = s.val() || "";
+        }, { onlyOnce: true });
+    };
+    window.carregarTextoModo('peca');
 </script>
 
 <script>
-    let exAtual = 42; let modo = 'peca';
+    let exAtual = 42; let modoGlobal = 'peca';
+
+    function mudarModo(v) {
+        modoGlobal = v;
+        const f = document.getElementById('folha-fgv');
+        f.className = v === 'peca' ? "paper-sheet modo-peca" : "paper-sheet modo-quest";
+        gerarLinhas(v === 'peca' ? 150 : 30);
+        window.carregarTextoModo(v);
+    }
 
     function togglePanel(id) {
         const el = document.getElementById(id);
-        const atual = el.style.display;
+        const st = el.style.display;
         document.querySelectorAll('.fgv-panel').forEach(p => p.style.display = 'none');
-        el.style.display = atual === 'block' ? 'none' : 'block';
+        el.style.display = st === 'block' ? 'none' : 'block';
     }
 
     async function dbSalvar(path, prefix) {
-        const t = document.getElementById(`${prefix}-tit`).value, x = document.getElementById(`${prefix}-txt`).value, id = document.getElementById(`${prefix}-id`).value;
+        const t = document.getElementById(`${prefix}-tit`).value, x = document.getElementById(`${prefix}-txt`).value;
         if(!t || !x) return;
-        if(id) await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `${path}/${id}`), { titulo: t, texto: x });
-        else await window.db_ops.push(window.db_ops.ref(window.db_ops.db, path), { titulo: t, texto: x });
-        document.getElementById(`${prefix}-tit`).value = ""; document.getElementById(`${prefix}-txt`).value = ""; document.getElementById(`${prefix}-id`).value = "";
+        await window.db_ops.push(window.db_ops.ref(window.db_ops.db, path), { titulo: t, texto: x });
+        document.getElementById(`${prefix}-tit`).value = ""; document.getElementById(`${prefix}-txt`).value = "";
     }
 
-    function renderLista(data, containerId, prefix, path) {
+    function renderLista(data, containerId, path) {
         const c = document.getElementById(containerId); c.innerHTML = "";
         if(data) Object.keys(data).forEach(k => {
-            c.innerHTML += `<div class="list-item"><span onclick="carregar('${k}','${path}','${prefix}')" style="cursor:pointer;flex:1"><b>${data[k].titulo}</b></span><span onclick="excluir('${k}','${path}')" style="color:red;cursor:pointer">✖</span></div>`;
+            c.innerHTML += `<div class="list-item"><span><b>${data[k].titulo}</b></span><span onclick="excluir('${k}','${path}')" style="color:red;cursor:pointer">✖</span></div>`;
         });
     }
 
-    window.carregar = async (id, path, prefix) => {
-        const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `${path}/${id}`));
-        document.getElementById(`${prefix}-tit`).value = s.val().titulo;
-        document.getElementById(`${prefix}-txt`).value = s.val().texto;
-        document.getElementById(`${prefix}-id`).value = id;
-    };
-
     window.excluir = (id, path) => { if(confirm("Excluir?")) window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `${path}/${id}`)); };
+
+    // FUNÇÃO DE ARQUIVAMENTO (SALVAR PEÇA/QUESTÃO NO HISTÓRICO)
+    async function arquivarTreino() {
+        const txt = document.getElementById('texto-final').value;
+        if(!txt) return alert("Escreva algo antes de arquivar!");
+        
+        const nome = prompt("Dê um nome para este arquivo (ex: MS Contra Ato do Juiz):");
+        if(!nome) return;
+
+        const registro = {
+            titulo: nome,
+            exame: exAtual,
+            tipo: modoGlobal,
+            data: new Date().toLocaleString(),
+            conteudo: txt
+        };
+
+        try {
+            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'arquivo_treinos'), registro);
+            alert("✅ ARQUIVADO! Sua produção foi salva no Histórico.");
+        } catch(e) { alert("Erro ao salvar."); }
+    }
 
     function mudarDoc(tipo, btn) {
         if(btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); }
@@ -169,18 +209,23 @@
     }
 
     function mudarExame(v) { exAtual = v; mudarDoc('prova'); }
-    function mudarModo(v) { modo = v; gerarLinhas(v === 'peca' ? 150 : 30); }
     function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
     
     function autoSave() {
         window.isEditing = true; clearTimeout(window.sv);
-        window.sv = setTimeout(() => { window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modo}`), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
+        window.sv = setTimeout(() => { 
+            window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modoGlobal}`), document.getElementById('texto-final').value); 
+            window.isEditing = false; 
+        }, 800);
     }
 
     window.onload = () => {
         gerarLinhas(150);
         const sel = document.getElementById('exam-select');
-        for(let i=44; i>=35; i--) { let o = document.createElement('option'); o.value = i; o.innerText = `EXAME ${i}`; if(i==42) o.selected = true; sel.appendChild(o); }
+        for(let i=44; i>=35; i--) { 
+            let o = document.createElement('option'); o.value = i; o.innerText = `EXAME ${i}`; 
+            if(i==42) o.selected = true; sel.appendChild(o); 
+        }
         mudarDoc('prova');
     };
 </script>
