@@ -160,111 +160,120 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push; window.get = get;
 
-    // Sincronização em tempo real com Nuvem
+    // Exportar para o navegador
+    window.db = db; window.ref = ref; window.set = set; 
+    window.onValue = onValue; window.push = push; window.get = get;
+
+    // Sincronização em tempo real
     onValue(ref(db, 'treino_atual'), (snapshot) => {
         const data = snapshot.val();
-        if(data && document.activeElement !== document.getElementById('texto-final')) {
-            document.getElementById('texto-final').value = data[window.modoAtual] || "";
+        const area = document.getElementById('texto-final');
+        if(data && document.activeElement !== area) {
+            area.value = data[window.modoAtual] || "";
         }
         document.getElementById('cloud-status').innerText = "☁️ SYNC OK";
-        document.getElementById('label-folha').innerText = window.modoAtual === 'peca' ? "PEÇA (150L) • ONLINE" : "DISC. (120L) • ONLINE";
+        document.getElementById('label-folha').innerText = window.modoAtual.toUpperCase() + " • ONLINE";
     });
 </script>
 
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; window.modoAtual = 'peca';
 
-    // GERAR GRID DE EXAMES
-    const grid = document.getElementById('exam-grid');
-    for(let i=35; i<=45; i++){
-        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
-        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc(docAtual); };
-        grid.appendChild(b);
-    }
-
-    // SALVAMENTO HÍBRIDO (LOCAL + NUVEM)
-    function saveTudo() {
-        const txt = document.getElementById('texto-final').value;
-        // Salva Local (Antigo)
-        localStorage.setItem(window.modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', txt);
-        // Salva Nuvem (Novo)
-        if(window.set && window.ref) {
-            window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
-        }
-    }
-
-    function modoTreino(tipo) {
-        window.modoAtual = tipo;
-        const area = document.getElementById('texto-final');
-        document.querySelectorAll('.btn-pratica').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-modo-' + (tipo === 'peca' ? 'peca' : 'questoes')).classList.add('active');
-        
-        const lineContainer = document.getElementById('line-nums-main');
-        if(tipo === 'peca') {
-            area.style.height = "3750px"; gerarLinhas(150, lineContainer);
-        } else {
-            area.style.height = "3000px"; gerarLinhas(120, lineContainer);
-        }
-        // Tenta carregar do local se a nuvem falhar
-        area.value = localStorage.getItem(tipo === 'peca' ? 'save_2026_peca' : 'save_2026_questoes') || "";
-    }
-
+    // FUNÇÕES DE BOTÃO CORRIGIDAS
     function abrirBancoPostits() {
         const lista = document.getElementById('lista-postits');
-        lista.innerHTML = '<p style="padding:20px;">Carregando teses da nuvem...</p>';
-        window.get(window.ref(window.db, 'postits')).then((snapshot) => {
-            const data = snapshot.val();
-            lista.innerHTML = '';
-            // Se não tiver na nuvem, tenta pegar do LocalStorage (Antigo)
-            const localDb = JSON.parse(localStorage.getItem('db_master')) || {};
-            const mergedData = {...localDb, ...data};
+        lista.innerHTML = '<p style="padding:20px;">Carregando banco...</p>';
+        document.getElementById('janela-postits').style.display = 'flex';
 
-            for(let id in mergedData) {
+        // Tenta buscar na nuvem
+        window.get(window.ref(window.db, 'postits')).then((snapshot) => {
+            const data = snapshot.val() || {};
+            const localDb = JSON.parse(localStorage.getItem('db_master')) || {};
+            const merged = {...localDb, ...data};
+            
+            lista.innerHTML = '';
+            if(Object.keys(merged).length === 0) {
+                lista.innerHTML = '<p style="padding:20px;">Nenhum post-it encontrado.</p>';
+                return;
+            }
+
+            for(let id in merged) {
                 const div = document.createElement('div');
                 div.className = 'hist-item';
-                div.innerHTML = `<span style="color:black">📌 <b>${mergedData[id].nome}</b></span> 
-                <button onclick="copiarPostit('${btoa(unescape(encodeURIComponent(mergedData[id].texto)))}')" style="background:var(--success); color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold;">INSERIR</button>`;
+                // Usamos o Base64 para evitar quebras de aspas no texto da Aryanna
+                const textoLimpo = btoa(unescape(encodeURIComponent(merged[id].texto)));
+                div.innerHTML = `<span style="color:black">📌 <b>${merged[id].nome}</b></span> 
+                <button onclick="copiarPostit('${textoLimpo}')" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:6px; font-weight:bold;">INSERIR</button>`;
                 lista.appendChild(div);
             }
+        }).catch(() => {
+            lista.innerHTML = '<p style="padding:20px; color:red">Erro de conexão. Verifique a internet.</p>';
         });
-        document.getElementById('janela-postits').style.display = 'flex';
+    }
+
+    function copiarPostit(encodedText) {
+        const texto = decodeURIComponent(escape(atob(encodedText)));
+        const area = document.getElementById('texto-final');
+        area.value += "\n" + texto;
+        saveTudo();
+        fecharModal('janela-postits');
+    }
+
+    function saveTudo() {
+        const txt = document.getElementById('texto-final').value;
+        localStorage.setItem(window.modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', txt);
+        if(window.db) {
+            window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
+        }
     }
 
     function salvarNovoPostit() {
         const nome = document.getElementById('cad-nome').value;
         const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return;
-        // Salva na Nuvem
+        if(!nome || !texto) return alert("Preencha título e texto!");
+        
         window.push(window.ref(window.db, 'postits'), { nome, texto });
-        // Salva no Local
+        
         let localDb = JSON.parse(localStorage.getItem('db_master')) || {};
         localDb[Date.now()] = { nome, texto };
         localStorage.setItem('db_master', JSON.stringify(localDb));
+        
+        document.getElementById('cad-nome').value = '';
+        document.getElementById('cad-texto').value = '';
         fecharModal('modal-cadastro');
-        alert("Tese Salva!");
+        alert("Salvo com sucesso!");
+    }
+
+    // INTERFACE BÁSICA
+    function modoTreino(tipo) {
+        window.modoAtual = tipo;
+        const area = document.getElementById('texto-final');
+        document.querySelectorAll('.btn-pratica').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-modo-' + (tipo === 'peca' ? 'peca' : 'questoes')).classList.add('active');
+        const container = document.getElementById('line-nums-main');
+        if(tipo === 'peca') { area.style.height = "3750px"; gerarLinhas(150, container); }
+        else { area.style.height = "3000px"; gerarLinhas(120, container); }
+        area.value = localStorage.getItem(tipo === 'peca' ? 'save_2026_peca' : 'save_2026_questoes') || "";
     }
 
     function abrirHistorico() {
         window.get(window.ref(window.db, 'historico')).then((snapshot) => {
-            const cloudHist = snapshot.val() || {};
-            const localHist = JSON.parse(localStorage.getItem('master_historico')) || [];
+            const cloud = snapshot.val() || {};
+            const local = JSON.parse(localStorage.getItem('master_historico')) || [];
             const lista = document.getElementById('lista-historico');
             lista.innerHTML = '';
             
-            // Renderiza Local
-            localHist.forEach((item, i) => {
+            local.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.className = 'hist-item';
                 div.innerHTML = `<span style="color:black"><b>[LOCAL]</b> ${item.titulo}</span> <button onclick="verHistLocal(${i})" style="background:var(--primary); color:white; border:none; padding:8px; border-radius:4px">VER</button>`;
                 lista.appendChild(div);
             });
-            // Renderiza Nuvem
-            for(let id in cloudHist) {
+            for(let id in cloud) {
                 const div = document.createElement('div');
                 div.className = 'hist-item';
-                div.innerHTML = `<span style="color:var(--fgv-blue)"><b>[NUVEM]</b> ${cloudHist[id].titulo}</span> <button onclick="verHistCloud('${id}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:4px">VER</button>`;
+                div.innerHTML = `<span style="color:var(--fgv-blue)"><b>[NUVEM]</b> ${cloud[id].titulo}</span> <button onclick="verHistCloud('${id}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:4px">VER</button>`;
                 lista.appendChild(div);
             }
         });
@@ -275,43 +284,17 @@
         const texto = document.getElementById('texto-final').value;
         if(!texto) return;
         const titulo = `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleDateString()}`;
-        // Arquiva na Nuvem
         window.push(window.ref(window.db, 'historico'), { titulo, texto, modo: window.modoAtual });
-        // Arquiva no Local
         let hist = JSON.parse(localStorage.getItem('master_historico')) || [];
         hist.unshift({ titulo, texto, modo: window.modoAtual });
         localStorage.setItem('master_historico', JSON.stringify(hist));
-        alert("Treino Arquivado!");
+        alert("Arquivado!");
     }
 
-    function copiarPostit(b64) {
-        const dec = decodeURIComponent(escape(atob(b64)));
-        document.getElementById('texto-final').value += "\n" + dec;
-        saveTudo();
-        fecharModal('janela-postits');
-    }
-
-    function verHistLocal(i) {
-        const item = JSON.parse(localStorage.getItem('master_historico'))[i];
-        abrirView(item.titulo, item.texto, item.modo);
-    }
-
-    function verHistCloud(id) {
-        window.get(window.ref(window.db, 'historico/' + id)).then(s => {
-            const item = s.val();
-            abrirView(item.titulo, item.texto, item.modo);
-        });
-    }
-
-    function abrirView(t, txt, m) {
-        document.getElementById('lista-historico').style.display = 'none';
-        document.getElementById('view-historico').style.display = 'flex';
-        document.getElementById('view-hist-titulo').innerText = t;
-        document.getElementById('texto-hist-view').value = txt;
-        gerarLinhas(m === 'peca' ? 150 : 120, document.getElementById('line-nums-hist'));
-        document.getElementById('texto-hist-view').style.height = m === 'peca' ? "3750px" : "3000px";
-    }
-
+    // AUXILIARES
+    function verHistLocal(i) { const item = JSON.parse(localStorage.getItem('master_historico'))[i]; abrirView(item.titulo, item.texto, item.modo); }
+    function verHistCloud(id) { window.get(window.ref(window.db, 'historico/' + id)).then(s => { const item = s.val(); abrirView(item.titulo, item.texto, item.modo); }); }
+    function abrirView(t, txt, m) { document.getElementById('lista-historico').style.display = 'none'; document.getElementById('view-historico').style.display = 'flex'; document.getElementById('view-hist-titulo').innerText = t; document.getElementById('texto-hist-view').value = txt; gerarLinhas(m === 'peca' ? 150 : 120, document.getElementById('line-nums-hist')); document.getElementById('texto-hist-view').style.height = m === 'peca' ? "3750px" : "3000px"; }
     function fecharViewHist() { document.getElementById('view-historico').style.display = 'none'; document.getElementById('lista-historico').style.display = 'block'; }
     function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
@@ -319,26 +302,15 @@
     function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); } }
     function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
-    
-    function mudarDoc(tipo) {
-        docAtual = tipo;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active');
-        document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-    }
+    function mudarDoc(tipo) { docAtual = tipo; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active'); document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
+    function aplicarEstruct(t) { if(window.modoAtual !== 'peca') return; const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." }; document.getElementById('texto-final').value = m[t]; saveTudo(); }
 
-    function aplicarEstruct(t) {
-        if(window.modoAtual !== 'peca') return;
-        const m = { 
-            rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", 
-            cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", 
-            ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", 
-            ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." 
-        };
-        document.getElementById('texto-final').value = m[t];
-        saveTudo();
+    const grid = document.getElementById('exam-grid');
+    for(let i=35; i<=45; i++){
+        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc(docAtual); };
+        grid.appendChild(b);
     }
-
     window.onload = () => { modoTreino('peca'); mudarDoc('prova'); };
 </script>
 </body>
