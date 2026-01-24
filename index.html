@@ -18,10 +18,10 @@
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         header { background: var(--card); padding: 8px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
-        #timer-display { font-family: monospace; font-size: 1.6rem; font-weight: bold; color: var(--warning); }
-        #cloud-status { font-size: 0.6rem; color: var(--success); margin-left: 10px; font-weight: bold; }
+        #timer-display { font-family: monospace; font-size: 1.4rem; font-weight: bold; color: var(--warning); }
+        #cloud-status { font-size: 0.6rem; color: var(--success); font-weight: bold; margin-left: 5px; }
 
-        .laws-bar { background: #000; padding: 6px; display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid #333; flex-shrink: 0; z-index: 1001; }
+        .laws-bar { background: #000; padding: 6px; display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid #333; flex-shrink: 0; }
         .law-link { background: #333; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid #444; white-space: nowrap; }
 
         .exam-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; background: #000; padding: 1px; border-bottom: 1px solid #333; flex-shrink: 0; }
@@ -44,7 +44,7 @@
         .tab-btn.active { background: white; color: var(--fgv-blue); }
         iframe { width: 100%; height: 100%; border: none; background: #525659; }
 
-        .fgv-header { background: #f0f0f0; color: #000; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; }
+        .fgv-header { background: #f0f0f0; color: #000; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
         .paper { flex: 1; display: flex; overflow-y: auto; background: white; -webkit-overflow-scrolling: touch; }
         .line-nums { width: 30px; background: #fdfdfd; border-right: 1px solid #ddd; text-align: center; font-size: 11px; line-height: 25px; color: #999; padding-top: 5px; flex-shrink: 0; }
         .textarea-fgv { flex: 1; border: none; outline: none; resize: none; padding: 0 10px; font-family: 'Caveat', cursive; font-size: 20px; line-height: 25px; background-attachment: local; background-image: linear-gradient(transparent, transparent 24px, #d1d5db 25px); background-size: 100% 25px; color: #001f3f; width: 100%; transition: background-color 0.3s; }
@@ -56,12 +56,283 @@
         .consulta-h { padding: 15px; background: var(--fgv-blue); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         .consulta-b { flex: 1; overflow-y: auto; color: #333; }
         .hist-item { padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* ESTADOS DE EDIÇÃO CENTRALIZADA */
-        .mode-tese-header { background: var(--warning) !important; color: black !important; border-bottom: 2px solid #000 !important; }
+
+        .mode-tese-header { background: var(--warning) !important; color: black !important; }
         .mode-tese-paper { background-color: var(--postit-bg) !important; }
 
-        .line-counter { font-size: 0.6rem; background: #000; color: var(--gold); padding: 2px 6px; border-radius: 4px; margin-left: 10px; }
+        .line-counter { font-size: 0.6rem; background: #000; color: var(--gold); padding: 2px 6px; border-radius: 4px; }
 
         @media (max-width: 1024px) {
-            .col-pdf { position: absolute; left: 0; top: 0; width: 1
+            .col-pdf { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 5; display: none; }
+            .col-pdf.active { display: flex; }
+            #mobile-switch { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><span style="font-weight:bold; color:var(--gold);">ARYANNA MASTER 2026</span><span id="cloud-status">☁️ OK</span></div>
+    <div id="timer-display">05:00:00</div>
+    <button onclick="toggleTimer()" id="btn-timer" style="background:var(--success); color:white; border:none; padding:6px 12px; border-radius:6px; font-size: 0.7rem; font-weight: bold;">INICIAR</button>
+</header>
+
+<div class="laws-bar">
+    <button class="law-link" onclick="abrirBancoPostits()">📌 BANCO DE TESES</button>
+    <button class="law-link" onclick="abrirHistorico()" style="background:var(--gold); color:black; margin-left: auto;">📚 HISTÓRICO</button>
+</div>
+
+<div class="exam-grid" id="exam-grid"></div>
+
+<div class="pecas-menu">
+    <button class="btn-peca" onclick="aplicarEstruct('rt')">RT</button>
+    <button class="btn-peca" onclick="aplicarEstruct('cont')">CONT</button>
+    <button class="btn-peca" onclick="aplicarEstruct('ro')">RO</button>
+    <button class="btn-peca" onclick="aplicarEstruct('ap')">AP</button>
+</div>
+
+<div class="pratica-bar">
+    <button class="btn-pratica active" id="btn-modo-peca" onclick="setModoPrincipal('peca')">🏋️ PEÇA</button>
+    <button class="btn-pratica" id="btn-modo-questoes" onclick="setModoPrincipal('questoes')">📝 QUESTÕES</button>
+</div>
+
+<main class="workspace">
+    <section class="col-res">
+        <div class="fgv-header" id="editor-header">
+            <span id="label-folha">PEÇA</span>
+            <div id="controles-editor" style="display:flex; gap:5px; align-items:center;">
+                <span id="counter-display" class="line-counter">0/150</span>
+                <button onclick="arquivarTreino()" style="background:var(--gold); padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem; cursor:pointer">ARQUIVAR</button>
+            </div>
+            <div id="controles-tese" style="display:none; gap:5px;">
+                <button onclick="salvarTeseCentral(false)" style="background:var(--success); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR</button>
+                <button onclick="salvarTeseCentral(true)" style="background:var(--primary); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">SALVAR+INSERIR</button>
+                <button onclick="cancelarEdicaoTese()" style="background:var(--danger); color:white; padding:5px 8px; border:none; border-radius:4px; font-weight:bold; font-size:0.6rem;">X</button>
+            </div>
+        </div>
+        <div class="paper">
+            <div class="line-nums" id="line-nums-main"></div>
+            <textarea id="texto-final" class="textarea-fgv" oninput="handleInput()"></textarea>
+        </div>
+    </section>
+
+    <section class="col-pdf" id="section-pdf">
+        <div class="pdf-tabs">
+            <button id="tab-prova" class="tab-btn active" onclick="mudarDoc('prova')">PROVA</button>
+            <button id="tab-gab" class="tab-btn" onclick="mudarDoc('gabarito')">GABARITO</button>
+            <button id="tab-ary" class="tab-btn" onclick="mudarDoc('aryanna')">ARYANNA</button>
+        </div>
+        <iframe id="f-pdf"></iframe>
+    </section>
+</main>
+
+<button id="mobile-switch" onclick="switchMobile()">PDF / FOLHA</button>
+
+<div id="janela-postits" class="overlay-consulta" style="display:none;">
+    <div class="consulta-card">
+        <div class="consulta-h">BANCO DE TESES <button onclick="fecharModal('janela-postits')">✕</button></div>
+        <div id="lista-postits" class="consulta-b"></div>
+        <button onclick="novaTeseNaFolha()" style="padding:15px; background:var(--success); color:white; border:none; font-weight:bold; cursor:pointer">+ NOVA TESE NA FOLHA</button>
+    </div>
+</div>
+
+<div id="janela-historico" class="overlay-consulta" style="display:none;">
+    <div class="consulta-card">
+        <div class="consulta-h">HISTÓRICO <button onclick="fecharModal('janela-historico')">✕</button></div>
+        <div id="lista-historico" class="consulta-b"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        projectId: "masteroab-db5e1",
+        storageBucket: "masteroab-db5e1.firebasestorage.app",
+        messagingSenderId: "620234160245",
+        appId: "1:620234160245:web:d0ef18660600087f9ba03c",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.db = db; window.ref = ref; window.set = set; 
+    window.onValue = onValue; window.push = push; window.get = get; window.remove = remove; window.update = update;
+
+    onValue(ref(db, 'treino_atual'), (snapshot) => {
+        if(window.isEditingTese) return;
+        const data = snapshot.val();
+        if(data && document.activeElement !== document.getElementById('texto-final')) {
+            document.getElementById('texto-final').value = data[window.modoAtual] || "";
+            atualizarContador();
+        }
+    });
+</script>
+
+<script>
+    let timeLeft = 18000; let timerInterval = null; let exAtual = 42; 
+    window.modoAtual = 'peca'; window.isEditingTese = false; 
+    window.bufferTextoOriginal = ""; window.teseIdAtual = null; window.teseNomeAtual = "";
+
+    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function setModoPrincipal(tipo) {
+        window.isEditingTese = false;
+        window.modoAtual = tipo;
+        document.getElementById('editor-header').classList.remove('mode-tese-header');
+        document.getElementById('texto-final').classList.remove('mode-tese-paper');
+        document.getElementById('controles-editor').style.display = 'flex';
+        document.getElementById('controles-tese').style.display = 'none';
+        document.getElementById('label-folha').innerText = tipo.toUpperCase();
+        document.querySelectorAll('.btn-pratica').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-modo-' + tipo).classList.add('active');
+        
+        const area = document.getElementById('texto-final');
+        const container = document.getElementById('line-nums-main');
+        if(tipo === 'peca') { area.style.height = "3750px"; gerarLinhas(150, container); }
+        else { area.style.height = "3000px"; gerarLinhas(120, container); }
+        
+        area.value = localStorage.getItem('save_2026_' + tipo) || "";
+        atualizarContador();
+    }
+
+    function editarTeseNaFolha(id, nome, textoBase64) {
+        window.bufferTextoOriginal = document.getElementById('texto-final').value;
+        window.isEditingTese = true;
+        window.teseIdAtual = id;
+        window.teseNomeAtual = nome;
+        document.getElementById('editor-header').classList.add('mode-tese-header');
+        document.getElementById('texto-final').classList.add('mode-tese-paper');
+        document.getElementById('controles-editor').style.display = 'none';
+        document.getElementById('controles-tese').style.display = 'flex';
+        document.getElementById('label-folha').innerText = "TESE: " + nome;
+        document.getElementById('texto-final').value = decodeURIComponent(escape(atob(textoBase64)));
+        fecharModal('janela-postits');
+        atualizarContador();
+    }
+
+    function novaTeseNaFolha() {
+        let nome = prompt("Título da tese:");
+        if(!nome) return;
+        window.bufferTextoOriginal = document.getElementById('texto-final').value;
+        window.isEditingTese = true;
+        window.teseIdAtual = null;
+        window.teseNomeAtual = nome;
+        document.getElementById('editor-header').classList.add('mode-tese-header');
+        document.getElementById('texto-final').classList.add('mode-tese-paper');
+        document.getElementById('controles-editor').style.display = 'none';
+        document.getElementById('controles-tese').style.display = 'flex';
+        document.getElementById('label-folha').innerText = "NOVA TESE: " + nome;
+        document.getElementById('texto-final').value = "";
+        fecharModal('janela-postits');
+    }
+
+    function salvarTeseCentral(inserirNaPeca) {
+        const txt = document.getElementById('texto-final').value;
+        if(window.teseIdAtual) {
+            window.update(window.ref(window.db, 'postits/' + window.teseIdAtual), { texto: txt });
+        } else {
+            window.push(window.ref(window.db, 'postits'), { nome: window.teseNomeAtual, texto: txt });
+        }
+        const voltarPara = inserirNaPeca ? (window.bufferTextoOriginal + "\n" + txt) : window.bufferTextoOriginal;
+        setModoPrincipal(window.modoAtual);
+        document.getElementById('texto-final').value = voltarPara;
+        saveTudo();
+    }
+
+    function cancelarEdicaoTese() {
+        if(confirm("Sair sem salvar?")) {
+            const backup = window.bufferTextoOriginal;
+            setModoPrincipal(window.modoAtual);
+            document.getElementById('texto-final').value = backup;
+        }
+    }
+
+    function handleInput() { if(!window.isEditingTese) saveTudo(); atualizarContador(); }
+    
+    function atualizarContador() {
+        const lines = document.getElementById('texto-final').value.split('\n').length;
+        document.getElementById('counter-display').innerText = `${lines}/${window.modoAtual === 'peca' ? 150 : 120}`;
+    }
+
+    function saveTudo() {
+        const txt = document.getElementById('texto-final').value;
+        localStorage.setItem('save_2026_' + window.modoAtual, txt);
+        if(window.db) window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
+    }
+
+    function abrirBancoPostits() {
+        const lista = document.getElementById('lista-postits');
+        lista.innerHTML = '<p style="padding:20px;">Carregando...</p>';
+        document.getElementById('janela-postits').style.display = 'flex';
+        window.get(window.ref(window.db, 'postits')).then((s) => {
+            const data = s.val() || {};
+            lista.innerHTML = '';
+            for(let id in data) {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                div.innerHTML = `
+                    <div style="font-weight:bold;">📌 ${data[id].nome}</div>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="editarTeseNaFolha('${id}', '${data[id].nome}', '${btoa(unescape(encodeURIComponent(data[id].texto)))}')" style="background:var(--warning); border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer">EDITAR</button>
+                        <button onclick="excluirTese('${id}')" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer">X</button>
+                    </div>`;
+                lista.appendChild(div);
+            }
+        });
+    }
+
+    function excluirTese(id) { if(confirm("Apagar?")) { window.remove(window.ref(window.db, 'postits/' + id)); abrirBancoPostits(); } }
+
+    function arquivarTreino() {
+        window.push(window.ref(window.db, 'historico'), { titulo: `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleString()}`, texto: document.getElementById('texto-final').value, modo: window.modoAtual });
+        alert("Arquivado!");
+    }
+
+    function abrirHistorico() {
+        const lista = document.getElementById('lista-historico');
+        lista.innerHTML = '<p style="padding:20px;">Buscando...</p>';
+        document.getElementById('janela-historico').style.display = 'flex';
+        window.get(window.ref(window.db, 'historico')).then((s) => {
+            const data = s.val() || {};
+            lista.innerHTML = '';
+            Object.keys(data).reverse().forEach(id => {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                div.innerHTML = `<span>${data[id].titulo}</span> <button onclick="recuperarTreino('${id}')" style="background:var(--success); border:none; padding:5px 10px; color:white; border-radius:4px; cursor:pointer">ABRIR</button>`;
+                lista.appendChild(div);
+            });
+        });
+    }
+
+    function recuperarTreino(id) {
+        window.get(window.ref(window.db, 'historico/' + id)).then(s => {
+            const item = s.val();
+            setModoPrincipal(item.modo);
+            document.getElementById('texto-final').value = item.texto;
+            saveTudo();
+            fecharModal('janela-historico');
+        });
+    }
+
+    function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
+    function toggleTimer() { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } else { timerInterval = setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); } }
+    function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+    function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
+    function mudarDoc(tipo) { document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
+    function aplicarEstruct(t) { if(window.modoAtual !== 'peca') return; const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA...\nAGRAVO DE PETIÇÃO..." }; document.getElementById('texto-final').value = m[t]; handleInput(); }
+
+    const grid = document.getElementById('exam-grid');
+    for(let i=35; i<=45; i++){
+        const b = document.createElement('button'); b.className = `btn-ex ${i==42?'active':''}`; b.innerText = i;
+        b.onclick = () => { document.querySelectorAll('.btn-ex').forEach(x => x.classList.remove('active')); b.classList.add('active'); exAtual = i; mudarDoc('prova'); };
+        grid.appendChild(b);
+    }
+    window.onload = () => { setModoPrincipal('peca'); mudarDoc('prova'); };
+</script>
+</body>
+</html>
