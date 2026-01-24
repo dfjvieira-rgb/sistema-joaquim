@@ -46,7 +46,7 @@
         .zoom-slider { appearance: slider-vertical; -webkit-appearance: slider-vertical; width: 8px; height: 120px; background: var(--gold); cursor: pointer; }
         .zoom-label { font-size: 9px; font-weight: bold; color: var(--gold); }
 
-        /* MODAL FIX */
+        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
         .btn-model-item { width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; text-align: left; cursor: pointer; transition: 0.2s; }
@@ -103,7 +103,7 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>⚖️ IDENTIFICAÇÃO DE PEÇA</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal-peca">⚖️ IDENTIFICAÇÃO</h3><br><div id="lista-pecas"></div></div></div>
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div></div>
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:350px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
@@ -120,49 +120,42 @@
     let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // BANCO DE DADOS DAS PEÇAS (ESTRUTURA FGV)
-    const bancoPecas = {
-        "RT": {
-            titulo: "Reclamação Trabalhista",
-            base: "Art. 840, §1º da CLT",
-            texto: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nNOME DO RECLAMANTE, nacionalidade, estado civil, profissão, RG..., CPF..., residente na..., vem, propor\n\nRECLAMAÇÃO TRABALHISTA\n\ncom fulcro no Art. 840, § 1º da CLT, em face de NOME DA RECLAMADA (qualificação).\n\n1. JUSTIÇA GRATUITA (Art. 790, §3º CLT)\n2. MÉRITO...\n3. HONORÁRIOS (Art. 791-A CLT)\n\nVALOR DA CAUSA: R$ ..."
-        },
-        "CONT": {
-            titulo: "Contestação",
-            base: "Art. 847 da CLT",
-            texto: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\nNOME DA RECLAMADA, já qualificada, vem oferecer\n\nCONTESTAÇÃO\n\ncom fulcro no Art. 847 da CLT.\n\n1. PRELIMINARES (Art. 337 CPC)\n2. PREJUDICIAL (Prescrição - Art. 7, XXIX, CF)\n3. MÉRITO\n4. REQUERIMENTOS FINAIS"
-        },
-        "RO": {
-            titulo: "Recurso Ordinário",
-            base: "Art. 895, I da CLT",
-            texto: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\nRECORRENTE, vem interpor RECURSO ORDINÁRIO, com fulcro no Art. 895, I da CLT.\n\n------------------------------\n\nRAZÕES DO RECURSO ORDINÁRIO\nEgrégio Tribunal Regional do Trabalho da ... Região\n\nI - PRELIMINARES\nII - MÉRITO\nIII - CONCLUSÃO"
-        }
+    // 1. BANCO DE DADOS INTELIGENTE POR EXAME
+    const bancoExames = {
+        "45": { peca: "Reclamação Trabalhista", art: "Art. 840, §1º CLT", local: "Vara do Trabalho de...", corpo: "1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
+        "44": { peca: "Contestação", art: "Art. 847 CLT", local: "Vara do Trabalho de...", corpo: "1. PRELIMINAR: INÉPCIA\n2. MÉRITO: VALE-TRANSPORTE" },
+        "40": { peca: "Reclamação Trabalhista", art: "Art. 840, §1º CLT", local: "90ª Vara do Trabalho de Osasco/SP", corpo: "1. VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n2. GRATUIDADE (Art. 790 CLT)\n3. DANOS MORAIS (Art. 223-G CLT)" },
+        "default": { peca: "Petiçao Padrão", art: "Art. ... CLT", local: "... Vara do Trabalho de ...", corpo: "1. MÉRITO\n2. HONORÁRIOS" }
     };
 
-    // FUNÇÕES DE INJEÇÃO NO CADERNO
-    window.injetarPeca = (chave) => {
-        const peca = bancoPecas[chave];
-        const divisor = "\n" + "-".repeat(20) + " FOLHA DE QUESTÕES " + "-".repeat(20) + "\n";
-        const total = peca.texto + "\n\n" + divisor + "QUESTÃO 1: \nA) \nB) \n\nQUESTÃO 2: \nA) \nB) \n\nQUESTÃO 3: \nA) \nB) \n\nQUESTÃO 4: \nA) \nB)";
+    window.injetarPecaMaster = (ex) => {
+        const d = bancoExames[ex] || bancoExames["default"];
+        const divisor = "\n" + "-".repeat(15) + " FOLHA DE RESPOSTAS (FGV) " + "-".repeat(15) + "\n";
+        const total = `AO DOUTO JUÍZO DA ${d.local}\n\nRECLAMANTE, qualificação completa, vem propor\n\n${d.peca.toUpperCase()}\n\ncom fulcro no ${d.art}.\n\nTESES PRINCIPAIS:\n${d.corpo}\n\n` + divisor + "QUESTÃO 1: \nA) \nB) \n\nQUESTÃO 2: \nA) \nB) \n\nQUESTÃO 3: \nA) \nB) \n\nQUESTÃO 4: \nA) \nB)";
         document.getElementById('texto-final').value = total;
         window.autoSave();
         document.getElementById('modal-pecas').style.display = 'none';
     };
 
     window.abrirPecas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const d = bancoExames[ex] || bancoExames["default"];
         const container = document.getElementById('lista-pecas');
-        container.innerHTML = "";
-        Object.keys(bancoPecas).forEach(k => {
-            const btn = document.createElement('div');
-            btn.className = "btn-model-item";
-            btn.onclick = () => window.injetarPeca(k);
-            btn.innerHTML = `<strong>${bancoPecas[k].titulo}</strong><span>Base Legal: ${bancoPecas[k].base}</span>`;
-            container.appendChild(btn);
-        });
+        container.innerHTML = `
+            <div class="btn-model-item" onclick="window.injetarPecaMaster('${ex}')">
+                <strong>${d.peca} (EXAME ${ex})</strong>
+                <span>Endereçamento: ${d.local}</span>
+                <span>Fundamento: ${d.art}</span>
+            </div>
+            <div class="btn-model-item" onclick="window.injetarPecaMaster('default')">
+                <strong>Estrutura Genérica</strong>
+                <span>Use para qualquer exame não listado</span>
+            </div>
+        `;
         document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    // MOTOR PDF & ZOOM
+    // 2. MOTOR PDF & ZOOM
     window.applyZoom = (val) => {
         document.getElementById('pdf-inner-zoom').style.transform = `scale(${val/100})`;
         document.getElementById('zoom-text').innerText = val + "%";
@@ -177,6 +170,7 @@
 
     async function renderPDF() {
         const container = document.getElementById('pdf-inner-zoom'); container.innerHTML = "";
+        if(!pdfDoc) return;
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
             const viewport = page.getViewport({ scale: 2.0 }); 
@@ -188,7 +182,7 @@
         }
     }
 
-    // FIREBASE & GESTÃO
+    // 3. FIREBASE & GESTÃO
     window.autoSave = () => { window.isEditing = true; set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); setTimeout(()=>window.isEditing=false, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
@@ -207,7 +201,7 @@
                 const item = snap.val()[k];
                 const d = document.createElement('div');
                 d.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:#333;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; flex:1;"><strong>${item.titulo}</strong><br><small>${item.data}</small></div><button onclick="window.delTreino('${k}')" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
+                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; flex:1;"><strong>${item.titulo}</strong><br><small>${item.data} - Exame ${item.exame}</small></div><button onclick="window.delTreino('${k}')" style="background:none; border:none; cursor:pointer;">🗑️</button>`;
                 list.appendChild(d);
             });
         }
@@ -229,7 +223,7 @@
 
     let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
     document.getElementById('line-nums-main').innerHTML = h;
-    window.mudarExame = () => window.carregarPDF('prova');
+    window.mudarExame = () => { window.carregarPDF('prova'); };
     window.carregarPDF('prova');
     window.applyZoom(130);
 
