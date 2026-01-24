@@ -56,6 +56,8 @@
         .consulta-b { flex: 1; overflow-y: auto; color: #333; }
         .hist-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
+        .line-counter { font-size: 0.6rem; background: #000; color: var(--gold); padding: 2px 6px; border-radius: 4px; margin-left: 10px; }
+
         @media (max-width: 1024px) {
             .col-pdf { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 5; display: none; }
             .col-pdf.active { display: flex; }
@@ -95,11 +97,12 @@
     <section class="col-res">
         <div class="fgv-header">
             <span id="label-folha">CARREGANDO...</span>
+            <span id="counter-display" class="line-counter">0/150 LINHAS</span>
             <button onclick="arquivarTreino()" style="background:var(--gold); padding:5px 12px; border:none; border-radius:4px; cursor:pointer; font-weight: bold; font-size: 0.6rem;">ARQUIVAR</button>
         </div>
         <div class="paper">
             <div class="line-nums" id="line-nums-main"></div>
-            <textarea id="texto-final" class="textarea-fgv" oninput="saveTudo()"></textarea>
+            <textarea id="texto-final" class="textarea-fgv" oninput="handleInput()"></textarea>
         </div>
     </section>
 
@@ -119,16 +122,12 @@
     <div class="consulta-card">
         <div class="consulta-h">MEUS TREINOS <button onclick="fecharModal('janela-historico')">✕</button></div>
         <div id="lista-historico" class="consulta-b"></div>
-        <div id="view-historico" class="consulta-b" style="display:none; background:white;">
-            <div class="fgv-header"><span id="view-hist-titulo"></span> <button onclick="fecharViewHist()">VOLTAR</button></div>
-            <div class="paper" style="flex:1;"><div class="line-nums" id="line-nums-hist"></div><textarea id="texto-hist-view" class="textarea-fgv" readonly></textarea></div>
-        </div>
     </div>
 </div>
 
 <div id="janela-postits" class="overlay-consulta" style="display:none;">
     <div class="consulta-card">
-        <div class="consulta-h">POST-ITS / TESES <button onclick="fecharModal('janela-postits')">✕</button></div>
+        <div class="consulta-h">BANCO DE TESES (POST-ITS) <button onclick="fecharModal('janela-postits')">✕</button></div>
         <div id="lista-postits" class="consulta-b"></div>
     </div>
 </div>
@@ -161,16 +160,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Exportar para o navegador
     window.db = db; window.ref = ref; window.set = set; 
     window.onValue = onValue; window.push = push; window.get = get;
 
-    // Sincronização em tempo real
     onValue(ref(db, 'treino_atual'), (snapshot) => {
         const data = snapshot.val();
         const area = document.getElementById('texto-final');
         if(data && document.activeElement !== area) {
             area.value = data[window.modoAtual] || "";
+            atualizarContador();
         }
         document.getElementById('cloud-status').innerText = "☁️ SYNC OK";
         document.getElementById('label-folha').innerText = window.modoAtual.toUpperCase() + " • ONLINE";
@@ -180,72 +178,128 @@
 <script>
     let timeLeft = 18000; let timerInterval = null; let exAtual = 42; let docAtual = 'prova'; window.modoAtual = 'peca';
 
-    // FUNÇÕES DE BOTÃO CORRIGIDAS
+    // FUNÇÕES DE INPUT E CONTADOR
+    function handleInput() {
+        saveTudo();
+        atualizarContador();
+    }
+
+    function atualizarContador() {
+        const text = document.getElementById('texto-final').value;
+        const lines = text.split('\n').length;
+        const max = window.modoAtual === 'peca' ? 150 : 120;
+        const display = document.getElementById('counter-display');
+        display.innerText = `${lines}/${max} LINHAS`;
+        display.style.color = lines > max ? 'var(--danger)' : 'var(--gold)';
+    }
+
+    // MELHORIA POST-ITS: AGORA CARREGAM NA FOLHA
     function abrirBancoPostits() {
         const lista = document.getElementById('lista-postits');
-        lista.innerHTML = '<p style="padding:20px;">Carregando banco...</p>';
+        lista.innerHTML = '<p style="padding:20px;">Acessando Banco de Teses...</p>';
         document.getElementById('janela-postits').style.display = 'flex';
 
-        // Tenta buscar na nuvem
         window.get(window.ref(window.db, 'postits')).then((snapshot) => {
             const data = snapshot.val() || {};
             const localDb = JSON.parse(localStorage.getItem('db_master')) || {};
             const merged = {...localDb, ...data};
-            
             lista.innerHTML = '';
-            if(Object.keys(merged).length === 0) {
-                lista.innerHTML = '<p style="padding:20px;">Nenhum post-it encontrado.</p>';
-                return;
-            }
-
+            
             for(let id in merged) {
                 const div = document.createElement('div');
                 div.className = 'hist-item';
-                // Usamos o Base64 para evitar quebras de aspas no texto da Aryanna
-                const textoLimpo = btoa(unescape(encodeURIComponent(merged[id].texto)));
-                div.innerHTML = `<span style="color:black">📌 <b>${merged[id].nome}</b></span> 
-                <button onclick="copiarPostit('${textoLimpo}')" style="background:var(--success); color:white; border:none; padding:10px 15px; border-radius:6px; font-weight:bold;">INSERIR</button>`;
+                const b64 = btoa(unescape(encodeURIComponent(merged[id].texto)));
+                div.innerHTML = `
+                    <div style="flex:1">📌 <b>${merged[id].nome}</b></div>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="visualizarPostitNaFolha('${b64}')" style="background:var(--primary); color:white; border:none; padding:8px; border-radius:4px; font-size:0.7rem;">LER NA FOLHA</button>
+                        <button onclick="inserirPostit('${b64}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:4px; font-size:0.7rem;">INSERIR</button>
+                    </div>`;
                 lista.appendChild(div);
             }
-        }).catch(() => {
-            lista.innerHTML = '<p style="padding:20px; color:red">Erro de conexão. Verifique a internet.</p>';
         });
     }
 
-    function copiarPostit(encodedText) {
-        const texto = decodeURIComponent(escape(atob(encodedText)));
-        const area = document.getElementById('texto-final');
-        area.value += "\n" + texto;
+    function visualizarPostitNaFolha(encoded) {
+        if(confirm("Deseja abrir esta tese para leitura na folha? O texto atual da sua peça será substituído.")) {
+            const texto = decodeURIComponent(escape(atob(encoded)));
+            document.getElementById('texto-final').value = texto;
+            fecharModal('janela-postits');
+            atualizarContador();
+        }
+    }
+
+    function inserirPostit(encoded) {
+        const texto = decodeURIComponent(escape(atob(encoded)));
+        document.getElementById('texto-final').value += "\n" + texto;
         saveTudo();
+        atualizarContador();
         fecharModal('janela-postits');
+    }
+
+    // HISTÓRICO E ARQUIVAMENTO
+    function abrirHistorico() {
+        const lista = document.getElementById('lista-historico');
+        lista.innerHTML = '<p style="padding:20px;">Buscando treinos...</p>';
+        document.getElementById('janela-historico').style.display = 'flex';
+        window.get(window.ref(window.db, 'historico')).then((snapshot) => {
+            const cloud = snapshot.val() || {};
+            const local = JSON.parse(localStorage.getItem('master_historico')) || [];
+            lista.innerHTML = '';
+            local.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                div.innerHTML = `<span><b>[LOCAL]</b> ${item.titulo}</span> <button onclick="recuperarTreinoLocal(${i})" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:6px;">CARREGAR</button>`;
+                lista.appendChild(div);
+            });
+            for(let id in cloud) {
+                const div = document.createElement('div');
+                div.className = 'hist-item';
+                div.innerHTML = `<span><b>[NUVEM]</b> ${cloud[id].titulo}</span> <button onclick="recuperarTreinoCloud('${id}')" style="background:var(--success); color:white; border:none; padding:10px; border-radius:6px;">CARREGAR</button>`;
+                lista.appendChild(div);
+            }
+        });
+    }
+
+    function recuperarTreinoLocal(i) {
+        const item = JSON.parse(localStorage.getItem('master_historico'))[i];
+        if(confirm("Carregar este treino na folha principal?")) {
+            modoTreino(item.modo);
+            document.getElementById('texto-final').value = item.texto;
+            saveTudo();
+            fecharModal('janela-historico');
+        }
+    }
+
+    function recuperarTreinoCloud(id) {
+        window.get(window.ref(window.db, 'historico/' + id)).then(s => {
+            const item = s.val();
+            if(confirm("Carregar este treino da nuvem?")) {
+                modoTreino(item.modo);
+                document.getElementById('texto-final').value = item.texto;
+                saveTudo();
+                fecharModal('janela-historico');
+            }
+        });
+    }
+
+    function arquivarTreino() {
+        const texto = document.getElementById('texto-final').value;
+        if(texto.length < 10) return alert("Escreva algo antes!");
+        const titulo = `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleDateString()}`;
+        window.push(window.ref(window.db, 'historico'), { titulo, texto, modo: window.modoAtual });
+        let hist = JSON.parse(localStorage.getItem('master_historico')) || [];
+        hist.unshift({ titulo, texto, modo: window.modoAtual });
+        localStorage.setItem('master_historico', JSON.stringify(hist));
+        alert("Arquivado!");
     }
 
     function saveTudo() {
         const txt = document.getElementById('texto-final').value;
         localStorage.setItem(window.modoAtual === 'peca' ? 'save_2026_peca' : 'save_2026_questoes', txt);
-        if(window.db) {
-            window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
-        }
+        if(window.db) window.set(window.ref(window.db, 'treino_atual/' + window.modoAtual), txt);
     }
 
-    function salvarNovoPostit() {
-        const nome = document.getElementById('cad-nome').value;
-        const texto = document.getElementById('cad-texto').value;
-        if(!nome || !texto) return alert("Preencha título e texto!");
-        
-        window.push(window.ref(window.db, 'postits'), { nome, texto });
-        
-        let localDb = JSON.parse(localStorage.getItem('db_master')) || {};
-        localDb[Date.now()] = { nome, texto };
-        localStorage.setItem('db_master', JSON.stringify(localDb));
-        
-        document.getElementById('cad-nome').value = '';
-        document.getElementById('cad-texto').value = '';
-        fecharModal('modal-cadastro');
-        alert("Salvo com sucesso!");
-    }
-
-    // INTERFACE BÁSICA
     function modoTreino(tipo) {
         window.modoAtual = tipo;
         const area = document.getElementById('texto-final');
@@ -255,47 +309,18 @@
         if(tipo === 'peca') { area.style.height = "3750px"; gerarLinhas(150, container); }
         else { area.style.height = "3000px"; gerarLinhas(120, container); }
         area.value = localStorage.getItem(tipo === 'peca' ? 'save_2026_peca' : 'save_2026_questoes') || "";
+        atualizarContador();
     }
 
-    function abrirHistorico() {
-        window.get(window.ref(window.db, 'historico')).then((snapshot) => {
-            const cloud = snapshot.val() || {};
-            const local = JSON.parse(localStorage.getItem('master_historico')) || [];
-            const lista = document.getElementById('lista-historico');
-            lista.innerHTML = '';
-            
-            local.forEach((item, i) => {
-                const div = document.createElement('div');
-                div.className = 'hist-item';
-                div.innerHTML = `<span style="color:black"><b>[LOCAL]</b> ${item.titulo}</span> <button onclick="verHistLocal(${i})" style="background:var(--primary); color:white; border:none; padding:8px; border-radius:4px">VER</button>`;
-                lista.appendChild(div);
-            });
-            for(let id in cloud) {
-                const div = document.createElement('div');
-                div.className = 'hist-item';
-                div.innerHTML = `<span style="color:var(--fgv-blue)"><b>[NUVEM]</b> ${cloud[id].titulo}</span> <button onclick="verHistCloud('${id}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:4px">VER</button>`;
-                lista.appendChild(div);
-            }
-        });
-        document.getElementById('janela-historico').style.display = 'flex';
+    function salvarNovoPostit() {
+        const nome = document.getElementById('cad-nome').value;
+        const texto = document.getElementById('cad-texto').value;
+        if(!nome || !texto) return;
+        window.push(window.ref(window.db, 'postits'), { nome, texto });
+        fecharModal('modal-cadastro');
+        alert("Tese Salva!");
     }
 
-    function arquivarTreino() {
-        const texto = document.getElementById('texto-final').value;
-        if(!texto) return;
-        const titulo = `${window.modoAtual.toUpperCase()} - Exame ${exAtual} - ${new Date().toLocaleDateString()}`;
-        window.push(window.ref(window.db, 'historico'), { titulo, texto, modo: window.modoAtual });
-        let hist = JSON.parse(localStorage.getItem('master_historico')) || [];
-        hist.unshift({ titulo, texto, modo: window.modoAtual });
-        localStorage.setItem('master_historico', JSON.stringify(hist));
-        alert("Arquivado!");
-    }
-
-    // AUXILIARES
-    function verHistLocal(i) { const item = JSON.parse(localStorage.getItem('master_historico'))[i]; abrirView(item.titulo, item.texto, item.modo); }
-    function verHistCloud(id) { window.get(window.ref(window.db, 'historico/' + id)).then(s => { const item = s.val(); abrirView(item.titulo, item.texto, item.modo); }); }
-    function abrirView(t, txt, m) { document.getElementById('lista-historico').style.display = 'none'; document.getElementById('view-historico').style.display = 'flex'; document.getElementById('view-hist-titulo').innerText = t; document.getElementById('texto-hist-view').value = txt; gerarLinhas(m === 'peca' ? 150 : 120, document.getElementById('line-nums-hist')); document.getElementById('texto-hist-view').style.height = m === 'peca' ? "3750px" : "3000px"; }
-    function fecharViewHist() { document.getElementById('view-historico').style.display = 'none'; document.getElementById('lista-historico').style.display = 'block'; }
     function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
     function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
     function gerarLinhas(qtd, container) { let h = ""; for(let i=1; i<=qtd; i++) h += i + "<br>"; container.innerHTML = h; }
@@ -303,7 +328,7 @@
     function updateTimerDisplay() { const h = Math.floor(timeLeft/3600); const m = Math.floor((timeLeft%3600)/60); const s = timeLeft%60; document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
     function switchMobile() { document.getElementById('section-pdf').classList.toggle('active'); }
     function mudarDoc(tipo) { docAtual = tipo; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tipo === 'gabarito' ? 'tab-gab' : tipo === 'aryanna' ? 'tab-ary' : 'tab-prova').classList.add('active'); document.getElementById('f-pdf').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`; }
-    function aplicarEstruct(t) { if(window.modoAtual !== 'peca') return; const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." }; document.getElementById('texto-final').value = m[t]; saveTudo(); }
+    function aplicarEstruct(t) { if(window.modoAtual !== 'peca') return; const m = { rt: "AO JUÍZO DA... VARA DO TRABALHO...\n\nRECLAMANTE..., qualificado...\nRECLAMAÇÃO TRABALHISTA...", cont: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECLAMADO..., qualificado...\nCONTESTAÇÃO...", ro: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nRECORRENTE..., qualificado...\nRECURSO ORDINÁRIO...", ap: "AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\n\nAGRAVANTE..., qualificado...\nAGRAVO DE PETIÇÃO..." }; document.getElementById('texto-final').value = m[t]; handleInput(); }
 
     const grid = document.getElementById('exam-grid');
     for(let i=35; i<=45; i++){
