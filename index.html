@@ -19,13 +19,11 @@
         .logo { font-weight: 800; color: var(--gold); }
         #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
-        /* LAB DE HISTORINHAS (CÉREBRO) */
         .ia-lab { background: #1e3a8a; padding: 10px 20px; display: none; gap: 10px; align-items: center; border-bottom: 1px solid #3b82f6; }
         .ia-lab input { flex: 1; background: #0f172a; border: 1px solid #3b82f6; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; outline: none; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR SECTION */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
@@ -33,14 +31,14 @@
         .btn-save { background: var(--success); color: white; margin-left: auto; }
         .btn-header { background: var(--danger); color: white; border: none; padding: 5px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* FOLHA FGV */
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .postit-espelho { width: 100%; max-width: 800px; background: var(--fgv-yellow); padding: 15px; border-left: 10px solid #f59e0b; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; margin-bottom: 20px; border-radius: 4px; display: none; }
+        .postit-espelho { width: 100%; max-width: 800px; background: var(--fgv-yellow); padding: 15px; border-left: 10px solid #f59e0b; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; margin-bottom: 20px; border-radius: 4px; display: none; position: relative; }
+        .close-postit { position: absolute; top: 5px; right: 10px; cursor: pointer; font-weight: bold; }
+        
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* PDF VIEWER */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
@@ -66,7 +64,7 @@
 
 <div class="ia-lab" id="lab-box">
     <input type="text" id="ai-input" placeholder="Cole a historinha aqui...">
-    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;">ANALISAR</button>
+    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer; color:#000">ANALISAR</button>
 </div>
 
 <div class="main-container">
@@ -77,17 +75,20 @@
                 <option value="peca">PEÇA (150L)</option>
                 <option value="quest">QUESTÕES (30L)</option>
             </select>
+            
             <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()">🧠</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: Atos definitivos = Recurso. Atos iniciais = Contestação.')">💡</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="verTeses()">📌</button>
-            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="verHistorico()">📚</button>
-            <button class="btn-symbol btn-save" onclick="salvarTreino()">💾</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Aryanna diz: Se a historinha termina em SENTENÇA, peça RECURSO ORDINÁRIO. Se termina em NOTIFICAÇÃO, peça CONTESTAÇÃO.')">💡</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="carregarPostit('teses')">📌</button>
+            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarPostit('historico')">📚</button>
+            
+            <button class="btn-symbol btn-save" onclick="salvarTreinoParaHistorico()">💾</button>
         </div>
 
         <div class="paper-wrapper">
             <div id="postit-dicas" class="postit-espelho">
-                <strong>📝 POST-IT DE INTELIGÊNCIA:</strong>
-                <div id="dica-content" style="margin-top:5px; white-space: pre-wrap;"></div>
+                <span class="close-postit" onclick="this.parentElement.style.display='none'">×</span>
+                <strong id="postit-titulo">📝 NOTAS:</strong>
+                <div id="dica-content" style="margin-top:5px; white-space: pre-wrap; font-size: 0.85rem;"></div>
             </div>
             <div class="paper-sheet">
                 <div class="line-nums" id="line-nums"></div>
@@ -110,44 +111,81 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
-    window.db = db; window.ref = ref; window.set = set; window.push = push;
+    window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
+
+    // Carregamento Inicial
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 </script>
 
 <script>
     let exAtual = 42; let modoAtivo = 'peca'; let tempo = 18000;
-    
+
     function toggleCerebro() { 
         const lab = document.getElementById('lab-box');
-        lab.style.display = lab.style.display === 'flex' ? 'none' : 'flex';
+        lab.style.display = (lab.style.display === 'flex') ? 'none' : 'flex';
     }
 
     function analisarHistorinha() {
         const t = document.getElementById('ai-input').value.toLowerCase();
-        let r = "🎯 Analisando atos...";
-        if(t.includes("sentença")) r = "🎯 PEÇA: RECURSO ORDINÁRIO (Art. 895, I, CLT)\n⚖️ TESE: Atacar fundamentos da sentença.";
-        if(t.includes("notificado")) r = "🎯 PEÇA: CONTESTAÇÃO (Art. 847, CLT)\n⚖️ TESE: Preliminares (337 CPC) e Prescrição.";
+        let r = "🎯 CÉREBRO ANALISANDO...\n";
+        if(t.includes("sentença")) r += "PEÇA: RECURSO ORDINÁRIO (895, I, CLT)\nTese: Atacar a fundamentação da sentença.";
+        else if(t.includes("notificado")) r += "PEÇA: CONTESTAÇÃO (847, CLT)\nTese: Preliminares e Prescrição.";
+        else r += "Não identifiquei palavras-chave (Sentença/Notificado).";
+        
+        document.getElementById('postit-titulo').innerText = "🧠 IDENTIFICAÇÃO DE PEÇA:";
         document.getElementById('dica-content').innerText = r;
         document.getElementById('postit-dicas').style.display = 'block';
+    }
+
+    async function carregarPostit(caminho) {
+        const snapshot = await window.get(window.ref(window.db, caminho));
+        let data = snapshot.val();
+        let textoFinal = "";
+        if(data) {
+            Object.values(data).forEach(item => {
+                textoFinal += `• ${item.titulo || item.data}: ${item.texto.substring(0,50)}...\n`;
+            });
+        } else { textoFinal = "Nenhum dado encontrado nesta categoria."; }
+        
+        document.getElementById('postit-titulo').innerText = caminho === 'teses' ? "📌 MINHAS TESES:" : "📚 HISTÓRICO:";
+        document.getElementById('dica-content').innerText = textoFinal;
+        document.getElementById('postit-dicas').style.display = 'block';
+    }
+
+    function salvarTreinoParaHistorico() {
+        const titulo = prompt("Título para salvar no Histórico:");
+        if(titulo) {
+            window.push(window.ref(window.db, 'historico'), { titulo, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
+            alert("Salvo com sucesso!");
+        }
     }
 
     function ativarSimulado() {
         if(confirm("Iniciar Simulado? Limpa a folha e inicia 5h.")) {
             document.getElementById('texto-final').value = '';
             document.getElementById('lab-box').style.display = 'none';
-            autoSave();
             setInterval(() => {
                 tempo--;
                 let h = Math.floor(tempo / 3600);
                 let m = Math.floor((tempo % 3600) / 60);
                 let s = tempo % 60;
-                document.getElementById('timer-display').innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
             }, 1000);
         }
+    }
+
+    function autoSave() {
+        window.isEditing = true;
+        clearTimeout(window.sv);
+        window.sv = setTimeout(() => {
+            window.set(window.ref(window.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value);
+            window.isEditing = false;
+        }, 1000);
     }
 
     function mudarModo(m) { modoAtivo = m; gerarLinhas(m === 'peca' ? 150 : 30); }
@@ -162,14 +200,7 @@
     }
     function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab')); }
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
-    function autoSave() {
-        window.isEditing = true;
-        clearTimeout(window.sv);
-        window.sv = setTimeout(() => {
-            window.set(window.ref(window.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value);
-            window.isEditing = false;
-        }, 1000);
-    }
+
     window.onload = () => {
         gerarLinhas(150);
         const sel = document.getElementById('exam-select');
