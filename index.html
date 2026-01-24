@@ -17,25 +17,172 @@
 
         header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .logo { font-weight: 800; color: var(--gold); }
-        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
-        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
-        .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 38px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
+        /* TOOLBAR RESTAURADA COM TODOS OS BOTÕES */
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
+        
+        .btn-symbol { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
+        .select-field { height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold; font-size: 0.75rem; background: #fff; }
+        .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 40px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
 
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        /* PAINÉIS INTEGRADOS */
-        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; }
+        /* PAINÉIS */
+        .fgv-panel { width: 100%; max-width: 800px; background: var(--fgv-yellow); border-left: 10px solid var(--warning); padding: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; border-radius: 4px; display: none; margin-bottom: 10px; }
         .panel-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 10px; padding-bottom: 5px; }
         .fgv-input { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.7); outline: none; margin-bottom: 8px; font-family: 'Courier Prime', monospace; }
-        .list-area { max-height: 150px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.3); border-radius: 4px; border: 1px solid #ddd; }
-        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; align-items: center; }
+        .list-area { max-height: 120px; overflow-y: auto; margin-bottom: 10px; background: rgba(255,255,255,0.3); border-radius: 4px; }
+        .list-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; font-size: 0.85rem; }
 
+        /* FOLHA */
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
+
+        /* PDF VIEWER */
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
+        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .tab.active { background: #fff; color: var(--primary); }
+        iframe { flex: 1; border: none; background: #fff; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ARYANNA MASTER 2026</div>
+    <div id="timer-display" style="color:var(--warning); font-family:monospace;">05:00:00</div>
+</header>
+
+<div class="main-container">
+    <section class="editor-section">
+        <div class="toolbar">
+            <select class="select-field" id="exam-select" onchange="mudarExame(this.value)"></select>
+            <select class="select-field" id="mode-select" onchange="mudarModo(this.value)">
+                <option value="peca">PEÇA (150L)</option>
+                <option value="quest">QUESTÕES (30L)</option>
+            </select>
+            
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="togglePanel('box-ia')">🧠</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="togglePanel('box-teses')">📌</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="togglePanel('box-dicas')">📝</button>
+            <button class="btn-symbol" style="background:#f1f5f9;" onclick="mudarDoc('prova')">📄</button>
+            
+            <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 FINALIZAR</button>
+        </div>
+
+        <div class="paper-wrapper">
+            <div id="box-ia" class="fgv-panel" style="border-left-color: var(--primary);">
+                <div class="panel-header"><span>🧠 IA ANALISADOR</span><span onclick="togglePanel('box-ia')" style="cursor:pointer">×</span></div>
+                <textarea id="ia-input" class="fgv-input" rows="2" placeholder="Cole o enunciado..."></textarea>
+                <button onclick="alert('IA Analisando...')" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:4px; font-weight:bold;">IDENTIFICAR</button>
+            </div>
+
+            <div id="box-teses" class="fgv-panel" style="border-left-color: var(--success);">
+                <div class="panel-header"><span>📌 POST-ITS (TESES)</span><span onclick="togglePanel('box-teses')" style="cursor:pointer">×</span></div>
+                <div id="teses-list" class="list-area"></div>
+                <input type="text" id="tese-tit" class="fgv-input" placeholder="Título">
+                <textarea id="tese-txt" class="fgv-input" rows="2" placeholder="Fundamento..."></textarea>
+                <input type="hidden" id="tese-id">
+                <button onclick="dbSalvar('teses', 'tese')" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:4px; font-weight:bold;">GRAVAR TESE</button>
+            </div>
+
+            <div id="box-dicas" class="fgv-panel" style="border-left-color: var(--danger);">
+                <div class="panel-header"><span>📝 NÃO CONFUNDA (DICAS)</span><span onclick="togglePanel('box-dicas')" style="cursor:pointer">×</span></div>
+                <div id="dicas-list" class="list-area"></div>
+                <input type="text" id="dica-tit" class="fgv-input" placeholder="Título da Dica">
+                <textarea id="dica-txt" class="fgv-input" rows="3" placeholder="Explicação..."></textarea>
+                <input type="hidden" id="dica-id">
+                <button onclick="dbSalvar('dicas', 'dica')" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:4px; font-weight:bold;">GRAVAR DICA</button>
+            </div>
+
+            <div class="paper-sheet">
+                <div class="line-nums" id="line-nums"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="viewer-section">
+        <div class="tabs">
+            <button class="tab active" onclick="mudarDoc('prova', this)">PROVA</button>
+            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
+            <button class="tab" onclick="mudarDoc('aryanna', this)">VADE</button>
+        </div>
+        <iframe id="pdf-frame" src=""></iframe>
+    </section>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, remove, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const app = initializeApp(config); const db = getDatabase(app);
+    window.db_ops = { ref, set, push, remove, update, get, db };
+
+    onValue(ref(db, 'teses'), (s) => renderLista(s.val(), 'teses-list', 'tese', 'teses'));
+    onValue(ref(db, 'dicas'), (s) => renderLista(s.val(), 'dicas-list', 'dica', 'dicas'));
+    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+</script>
+
+<script>
+    let exAtual = 42; let modo = 'peca';
+
+    function togglePanel(id) {
+        const el = document.getElementById(id);
+        const atual = el.style.display;
+        document.querySelectorAll('.fgv-panel').forEach(p => p.style.display = 'none');
+        el.style.display = atual === 'block' ? 'none' : 'block';
+    }
+
+    async function dbSalvar(path, prefix) {
+        const t = document.getElementById(`${prefix}-tit`).value, x = document.getElementById(`${prefix}-txt`).value, id = document.getElementById(`${prefix}-id`).value;
+        if(!t || !x) return;
+        if(id) await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `${path}/${id}`), { titulo: t, texto: x });
+        else await window.db_ops.push(window.db_ops.ref(window.db_ops.db, path), { titulo: t, texto: x });
+        document.getElementById(`${prefix}-tit`).value = ""; document.getElementById(`${prefix}-txt`).value = ""; document.getElementById(`${prefix}-id`).value = "";
+    }
+
+    function renderLista(data, containerId, prefix, path) {
+        const c = document.getElementById(containerId); c.innerHTML = "";
+        if(data) Object.keys(data).forEach(k => {
+            c.innerHTML += `<div class="list-item"><span onclick="carregar('${k}','${path}','${prefix}')" style="cursor:pointer;flex:1"><b>${data[k].titulo}</b></span><span onclick="excluir('${k}','${path}')" style="color:red;cursor:pointer">✖</span></div>`;
+        });
+    }
+
+    window.carregar = async (id, path, prefix) => {
+        const s = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, `${path}/${id}`));
+        document.getElementById(`${prefix}-tit`).value = s.val().titulo;
+        document.getElementById(`${prefix}-txt`).value = s.val().texto;
+        document.getElementById(`${prefix}-id`).value = id;
+    };
+
+    window.excluir = (id, path) => { if(confirm("Excluir?")) window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `${path}/${id}`)); };
+
+    function mudarDoc(tipo, btn) {
+        if(btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); }
+        document.getElementById('pdf-frame').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+    }
+
+    function mudarExame(v) { exAtual = v; mudarDoc('prova'); }
+    function mudarModo(v) { modo = v; gerarLinhas(v === 'peca' ? 150 : 30); }
+    function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
+    
+    function autoSave() {
+        window.isEditing = true; clearTimeout(window.sv);
+        window.sv = setTimeout(() => { window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modo}`), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
+    }
+
+    window.onload = () => {
+        gerarLinhas(150);
+        const sel = document.getElementById('exam-select');
+        for(let i=44; i>=35; i--) { let o = document.createElement('option'); o.value = i; o.innerText = `EXAME ${i}`; if(i==42) o.selected = true; sel.appendChild(o); }
+        mudarDoc('prova');
+    };
+</script>
+</body>
+</html>
