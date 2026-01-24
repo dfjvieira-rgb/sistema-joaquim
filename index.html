@@ -33,7 +33,6 @@
 
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .postit-espelho { width: 100%; max-width: 800px; background: var(--fgv-yellow); padding: 15px; border-left: 10px solid #f59e0b; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; margin-bottom: 20px; border-radius: 4px; display: none; position: relative; }
-        .close-postit { position: absolute; top: 5px; right: 10px; cursor: pointer; font-weight: bold; }
         
         .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
@@ -70,23 +69,23 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.7rem;"></select>
-            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.7rem;">
+            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.7rem; padding: 0 5px;"></select>
+            
+            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.7rem; padding: 0 5px;">
                 <option value="peca">PEÇA (150L)</option>
                 <option value="quest">QUESTÕES (30L)</option>
             </select>
             
-            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()">🧠</button>
-            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Aryanna diz: Se a historinha termina em SENTENÇA, peça RECURSO ORDINÁRIO. Se termina em NOTIFICAÇÃO, peça CONTESTAÇÃO.')">💡</button>
-            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="carregarPostit('teses')">📌</button>
-            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarPostit('historico')">📚</button>
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()" title="Cérebro">🧠</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Sentença = RO | Notificação = Contestação')">💡</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="carregarPostit('teses')" title="Teses">📌</button>
+            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarPostit('historico')" title="Histórico">📚</button>
             
             <button class="btn-symbol btn-save" onclick="salvarTreinoParaHistorico()">💾</button>
         </div>
 
         <div class="paper-wrapper">
             <div id="postit-dicas" class="postit-espelho">
-                <span class="close-postit" onclick="this.parentElement.style.display='none'">×</span>
                 <strong id="postit-titulo">📝 NOTAS:</strong>
                 <div id="dica-content" style="margin-top:5px; white-space: pre-wrap; font-size: 0.85rem;"></div>
             </div>
@@ -118,7 +117,6 @@
     const db = getDatabase(app);
     window.db = db; window.ref = ref; window.set = set; window.push = push; window.get = get;
 
-    // Carregamento Inicial
     onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 </script>
 
@@ -132,43 +130,39 @@
 
     function analisarHistorinha() {
         const t = document.getElementById('ai-input').value.toLowerCase();
-        let r = "🎯 CÉREBRO ANALISANDO...\n";
-        if(t.includes("sentença")) r += "PEÇA: RECURSO ORDINÁRIO (895, I, CLT)\nTese: Atacar a fundamentação da sentença.";
-        else if(t.includes("notificado")) r += "PEÇA: CONTESTAÇÃO (847, CLT)\nTese: Preliminares e Prescrição.";
-        else r += "Não identifiquei palavras-chave (Sentença/Notificado).";
-        
-        document.getElementById('postit-titulo').innerText = "🧠 IDENTIFICAÇÃO DE PEÇA:";
+        let r = "🎯 IDENTIFICAÇÃO:\n";
+        if(t.includes("sentença")) r += "PEÇA: RECURSO ORDINÁRIO\nTese: Atacar a decisão do juiz.";
+        else if(t.includes("notificado")) r += "PEÇA: CONTESTAÇÃO\nTese: Defesa do mérito.";
+        document.getElementById('postit-titulo').innerText = "🧠 CÉREBRO IA:";
         document.getElementById('dica-content').innerText = r;
         document.getElementById('postit-dicas').style.display = 'block';
+    }
+
+    function mudarModo(m) { 
+        modoAtivo = m; 
+        gerarLinhas(m === 'peca' ? 150 : 30); 
+    }
+
+    function gerarLinhas(n) { 
+        let h = ""; 
+        for(let i=1; i<=n; i++) h += i + "<br>"; 
+        document.getElementById('line-nums').innerHTML = h; 
     }
 
     async function carregarPostit(caminho) {
         const snapshot = await window.get(window.ref(window.db, caminho));
         let data = snapshot.val();
         let textoFinal = "";
-        if(data) {
-            Object.values(data).forEach(item => {
-                textoFinal += `• ${item.titulo || item.data}: ${item.texto.substring(0,50)}...\n`;
-            });
-        } else { textoFinal = "Nenhum dado encontrado nesta categoria."; }
-        
-        document.getElementById('postit-titulo').innerText = caminho === 'teses' ? "📌 MINHAS TESES:" : "📚 HISTÓRICO:";
+        if(data) { Object.values(data).forEach(item => { textoFinal += `• ${item.titulo || item.data}: ${item.texto.substring(0,40)}...\n`; }); }
+        else { textoFinal = "Vazio."; }
+        document.getElementById('postit-titulo').innerText = caminho.toUpperCase() + ":";
         document.getElementById('dica-content').innerText = textoFinal;
         document.getElementById('postit-dicas').style.display = 'block';
     }
 
-    function salvarTreinoParaHistorico() {
-        const titulo = prompt("Título para salvar no Histórico:");
-        if(titulo) {
-            window.push(window.ref(window.db, 'historico'), { titulo, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
-            alert("Salvo com sucesso!");
-        }
-    }
-
     function ativarSimulado() {
-        if(confirm("Iniciar Simulado? Limpa a folha e inicia 5h.")) {
+        if(confirm("Zerar folha e iniciar 5h de cronômetro?")) {
             document.getElementById('texto-final').value = '';
-            document.getElementById('lab-box').style.display = 'none';
             setInterval(() => {
                 tempo--;
                 let h = Math.floor(tempo / 3600);
@@ -188,8 +182,6 @@
         }, 1000);
     }
 
-    function mudarModo(m) { modoAtivo = m; gerarLinhas(m === 'peca' ? 150 : 30); }
-    function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
     function mudarDoc(tipo, btn) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
@@ -198,6 +190,7 @@
         else if(tipo === 'gabarito') f.src = `ro${exAtual}-gabarito.pdf`;
         else f.src = `Aryanna Linhares.pdf`;
     }
+
     function mudarExame(v) { exAtual = v; mudarDoc('prova', document.querySelector('.tab')); }
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
 
