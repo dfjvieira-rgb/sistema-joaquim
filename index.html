@@ -90,12 +90,38 @@
     let pdfDoc = null; let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
+    // FUNÇÕES DOS BOTÕES (CORREÇÃO AQUI)
+    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
+    
+    window.abrirPecas = () => {
+        const ex = document.getElementById('exam-select').value;
+        document.getElementById('titulo-modal').innerText = `ESTRUTURAS EXAME ${ex}`;
+        document.getElementById('lista-pecas').innerHTML = `<p style="color:#666; font-size:0.8rem">Estruturas mapeadas para o Exame ${ex}. Clique para injetar na folha (em breve).</p>`;
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+
+    window.finalizarEArquivar = () => {
+        if(confirm("Deseja salvar uma cópia definitiva deste treino?")) {
+            const texto = document.getElementById('texto-final').value;
+            push(ref(db, 'v4_arquivo_treinos'), { data: new Date().toLocaleString(), conteudo: texto });
+            alert("Salvo com sucesso!");
+        }
+    };
+
     window.mudarExame = () => window.carregarPDF('prova');
+    
     window.carregarPDF = async (tipo) => {
         const ex = document.getElementById('exam-select').value;
         const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
-        try { pdfDoc = await pdfjsLib.getDocument(arq).promise; window.renderAll(); } catch(e) {}
+        try { 
+            document.getElementById('pdf-viewport').innerHTML = "Carregando PDF...";
+            pdfDoc = await pdfjsLib.getDocument(arq).promise; 
+            window.renderAll(); 
+        } catch(e) {
+            document.getElementById('pdf-viewport').innerHTML = `<div style="padding:20px; color:white">Arquivo ${arq} não encontrado.</div>`;
+        }
     };
+
     window.renderAll = async () => {
         const container = document.getElementById('pdf-viewport'); container.innerHTML = "";
         for (let i = 1; i <= pdfDoc.numPages; i++) {
@@ -110,16 +136,31 @@
 
     window.autoSave = () => { window.isEdit = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v4_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEdit = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v4_rascunho/global'), document.getElementById('rascunho-editor').value);
+    
     onValue(ref(db, 'v4_treino/caderno_unico'), (s) => { if(!window.isEdit) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v4_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
     window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-    window.toggleSimulado = () => { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = new Date(tempoSegundos * 1000).toISOString().substr(11, 8); }, 1000); } else { clearInterval(timerInterval); timerInterval = null; } };
+    
+    window.toggleSimulado = () => { 
+        if(!timerInterval) { 
+            timerInterval = setInterval(() => { 
+                tempoSegundos--; 
+                document.getElementById('timer-display').innerText = new Date(tempoSegundos * 1000).toISOString().substr(11, 8); 
+            }, 1000); 
+            document.getElementById('btn-simulado').innerText = "⏸️";
+        } else { 
+            clearInterval(timerInterval); 
+            timerInterval = null; 
+            document.getElementById('btn-simulado').innerText = "🏁";
+        } 
+    };
 
+    // Inicialização das linhas e select
     let h = ""; for(let i=1; i<=300; i++) h += i + "<br>";
     document.getElementById('line-nums-main').innerHTML = h;
+    
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
         let opt = document.createElement('option');
