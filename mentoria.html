@@ -2,309 +2,246 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARYANNA MASTER | ELITE DASHBOARD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ARYANNA MASTER PRO | INTEGRAL 1-45</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
-        :root { 
-            --primary: #1e40af; 
-            --accent: #3b82f6;
-            --gold: #fbbf24; 
-            --bg: #f8fafc; 
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border: #e2e8f0;
+        :root {
+            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
+            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
         }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); 
-            color: var(--text-main); 
-            min-height: 100vh;
-        }
+        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 2000; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
+        #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
+        
+        .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* CONTAINER ADAPTATIVO: Mobile (Max 600px) | Desktop (100%) */
-        .m-container { 
-            width: 100%; 
-            min-height: 100vh;
-            background: var(--card-bg); 
-            display: flex; 
-            flex-direction: column;
-            margin: 0 auto;
-            transition: all 0.3s ease;
-        }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
+        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 5px; border-bottom: 1px solid #cbd5e1; align-items: center; overflow-x: auto; }
+        .btn-symbol { height: 36px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 800; }
+        
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 3000px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
 
-        /* HEADER GRANDE PARA DESKTOP */
-        .m-header { 
-            background: #000; 
-            color: var(--gold); 
-            padding: 25px; 
-            text-align: center; 
-            font-weight: 800; 
-            border-bottom: 4px solid var(--gold); 
-            font-size: 1.2rem; 
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; position: relative; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; z-index: 100; }
+        .tab { padding: 8px 12px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
+        .tab.active { background: #fff; color: var(--primary); }
         
-        .m-nav { 
-            display: flex; 
-            background: #fff; 
-            border-bottom: 1px solid var(--border); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-        }
-        
-        .m-nav button { 
-            flex: 1; 
-            padding: 20px 10px; 
-            border: none; 
-            background: none; 
-            font-weight: 700; 
-            font-size: 0.85rem; 
-            color: var(--text-sub); 
-            cursor: pointer; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .m-nav button.active { 
-            color: var(--primary); 
-            box-shadow: inset 0 -4px 0 var(--primary);
-            background: #f1f5f9;
-        }
+        #pdf-outer-container { flex: 1; overflow: auto; background: #525659; display: flex; justify-content: center; }
+        #pdf-inner-zoom { transform-origin: top center; transition: transform 0.1s ease-out; display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 100%; background: white; }
 
-        /* BARRA DE ARTIGOS - MAIOR NO DESKTOP */
-        .artigo-scroll { 
-            display: flex; 
-            overflow-x: auto; 
-            gap: 15px; 
-            padding: 20px; 
-            background: #f8fafc; 
-            white-space: nowrap;
-            scrollbar-width: thin;
-        }
-        
-        .art-link { 
-            background: #fff; 
-            color: var(--primary); 
-            padding: 12px 24px; 
-            border-radius: 12px; 
-            font-size: 0.85rem; 
-            font-weight: 700; 
-            text-decoration: none;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .art-link:hover { border-color: var(--primary); background: var(--primary); color: #fff; }
+        .zoom-sidebar { position: absolute; right: 10px; top: 60px; display: flex; flex-direction: column; gap: 10px; z-index: 500; background: rgba(0,0,0,0.8); padding: 12px 8px; border-radius: 30px; border: 1px solid var(--gold); }
+        .zoom-slider { appearance: slider-vertical; width: 8px; height: 120px; cursor: pointer; }
 
-        .m-content { 
-            padding: 30px; 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 25px; 
-            max-width: 1400px; /* Limite para não esticar demais em monitores UltraWide */
-            margin: 0 auto;
-            width: 100%;
-        }
-        
-        .pane { display: none; flex: 1; flex-direction: column; }
-        .pane.active { display: flex; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
+        .btn-model-item { width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; text-align: left; cursor: pointer; }
 
-        /* CARDS GIGANTES PARA DESKTOP */
-        .fgv-card { 
-            background: #fff;
-            border: 2px solid var(--fgv-border);
-            border-radius: 15px;
-            position: relative; 
-            padding: 40px 25px 25px; 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .fgv-tag { 
-            position: absolute; 
-            top: -15px; 
-            left: 20px; 
-            background: #000; 
-            color: var(--gold);
-            padding: 5px 20px; 
-            font-size: 0.75rem; 
-            font-weight: 800; 
-            border-radius: 8px;
-            text-transform: uppercase;
-            border: 1px solid var(--gold);
-        }
-        
-        /* LINHAS DE CADERNO ADAPTADAS */
-        .fgv-input { 
-            width: 100%; 
-            border: none; 
-            outline: none; 
-            font-size: 1.1rem; /* Letra maior no Desktop */
-            line-height: 35px; 
-            color: #1e293b; 
-            flex: 1; 
-            resize: none; 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: repeating-linear-gradient(transparent, transparent 34px, #e2e8f0 35px);
-        }
-
-        .mentoria-callout {
-            background: #fff;
-            border: 2px solid var(--primary);
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--primary);
-            box-shadow: 4px 4px 0px var(--primary);
-        }
-
-        .status { 
-            padding: 15px; 
-            font-size: 0.8rem; 
-            text-align: center; 
-            background: #000; 
-            color: #fff; 
-            font-weight: 600; 
-        }
-
-        /* MEDIA QUERY PARA DESKTOP (TELA CHEIA) */
-        @media (min-width: 1024px) {
-            .m-container { max-width: 100%; }
-            .m-header { font-size: 1.5rem; padding: 35px; }
-            .m-nav button { font-size: 1rem; padding: 25px; }
-            .fgv-input { font-size: 1.25rem; line-height: 40px; background: repeating-linear-gradient(transparent, transparent 39px, #e2e8f0 40px); }
-        }
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
+        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
     </style>
 </head>
 <body>
-    <div class="m-container">
-        <div class="m-header">Aryanna Master | Elite Mentoria 2ª Fase</div>
-        
-        <div class="m-nav">
-            <button class="active" onclick="tab(event, 't1')">Estratégia de Peças</button>
-            <button onclick="tab(event, 't2')">Simulados & Ciladas</button>
-            <button onclick="tab(event, 't3')">Folha de Respostas</button>
-        </div>
 
-        <div class="artigo-scroll">
-            <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm#art840" target="_blank" class="art-link">📜 Art. 840 CLT (Inicial)</a>
-            <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm#art847" target="_blank" class="art-link">🛡️ Art. 847 CLT (Contestação)</a>
-            <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm#art895" target="_blank" class="art-link">🚀 Art. 895 CLT (Recurso)</a>
-            <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm#art539" target="_blank" class="art-link">💰 Art. 539 CPC (Consignação)</a>
-            <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm#art791a" target="_blank" class="art-link">💎 Art. 791-A (Honorários)</a>
-        </div>
-
-        <div class="m-content">
-            <div id="t1" class="pane active">
-                <div class="mentoria-callout">
-                    <strong>⚡ COMANDO DE MESTRE:</strong><br>
-                    No computador, use o teclado para estruturar suas teses com rapidez. Foque em: **FATO + FUNDAMENTO + PEDIDO**. A FGV pontua a precisão técnica, não o tamanho do texto.
-                </div>
-                <div class="fgv-card">
-                    <div class="fgv-tag">MAPA MENTAL DE FUNDAMENTOS</div>
-                    <textarea id="db-teses" class="fgv-input" oninput="save()">
---- PEÇAS QUE VOCÊ DEVE DOMINAR ---
-1. RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT) - Pedidos liquidados!
-2. CONTESTAÇÃO (Art. 847 CLT) - Ordem: Preliminares -> Prejudiciais -> Mérito.
-3. CONSIGNANTE (Art. 539 CPC) - Ótima para cair em 2026.
-
---- ARTIGOS DE SEGURANÇA ---
-- JUSTIÇA GRATUITA: Art. 790, §3º e §4º CLT.
-- HONORÁRIOS: Art. 791-A CLT (5% a 15%).
-- MULTA ART. 477 CLT: Atraso no pagamento das verbas rescisórias.</textarea>
-                </div>
-            </div>
-
-            <div id="t2" class="pane">
-                <div class="fgv-card">
-                    <div class="fgv-tag">RADAR DE CILADAS (TREINAMENTO)</div>
-                    <textarea id="db-dicas" class="fgv-input" oninput="save()">
-[NÃO CAIA NESSA!]
-- RITO SUMARÍSSIMO: Pedidos devem ser certos e determinados.
-- ESTABILIDADE GESTANTE: Súmula 244 TST (Mesmo em contrato por tempo determinado).
-- ADICIONAL DE PERICULOSIDADE: 30% sobre o salário base (Art. 193, §1º CLT).</textarea>
-                </div>
-            </div>
-
-            <div id="t3" class="pane">
-                <div class="fgv-card">
-                    <div class="fgv-tag">FOLHA DE RESPOSTA DIGITAL</div>
-                    <textarea id="db-check" class="fgv-input" oninput="save()">
-AO JUÍZO DA ... VARA DO TRABALHO DE ...
-
-PROCESSO Nº: ...
-
-(NOME DO CLIENTE), já qualificado nos autos, vem, por seu advogado, apresentar:
-
-(NOME DA PEÇA)
-
-1. PRELIMINARMENTE
-2. NO MÉRITO
-3. DOS PEDIDOS E REQUERIMENTOS FINAIS
-
-Local... Data...
-Advogado... OAB...</textarea>
-                </div>
-            </div>
-        </div>
-        
-        <div class="status" id="st">Painel de Mentoria: Sincronizado e Pronto.</div>
+<header>
+    <div class="logo">ARYANNA MASTER 2026</div>
+    <div class="timer-group" style="display:flex; align-items:center; gap:10px;">
+        <div id="timer-display">05:00:00</div>
+        <button onclick="window.toggleSimulado()" style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">🏁</button>
     </div>
+</header>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+<div class="main-container">
+    <section class="editor-section">
+        <div class="toolbar">
+            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.7rem; border:1px solid #ddd;"></select>
+            <button class="btn-symbol" title="Meus Treinos" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" title="Gabarito de Peça" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
+        </div>
+        <div class="paper-wrapper">
+            <div class="paper-sheet">
+                <div class="line-nums" id="line-nums-main"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="viewer-section" id="viewer">
+        <div class="tabs">
+            <button class="tab active" onclick="window.carregarPDF('prova', this)">PROVA</button>
+            <button class="tab" onclick="window.carregarPDF('gabr', this)">GABARITO</button>
+            <button class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade', this)">VADE</button>
+        </div>
+        <div class="zoom-sidebar">
+            <input type="range" min="50" max="300" value="130" class="zoom-slider" oninput="window.applyZoom(this.value)">
+        </div>
+        <div id="pdf-outer-container">
+            <div id="pdf-inner-zoom"></div>
+        </div>
+    </section>
+</div>
+
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>⚖️ IDENTIFICAÇÃO OFICIAL (1-45)</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div></div>
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS SALVAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:400px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
+
+<button id="mobile-btn" onclick="document.getElementById('viewer').classList.toggle('active')">📑</button>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const app = initializeApp(config); const db = getDatabase(app);
+
+    let pdfDoc = null; let timerInterval = null; let tempo = 18000;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    // MAPEAMENTO HISTÓRICO RIGOROSO (FGV TRABALHO)
+    const bancoMaster = {
+        "45": { p: "Reclamação Trabalhista", f: "840, § 1º, CLT", e: "Vara do Trabalho" },
+        "44": { p: "Contestação", f: "847, CLT", e: "Vara do Trabalho" },
+        "43": { p: "Recurso Ordinário", f: "895, I, CLT", e: "Vara/TRT" },
+        "42": { p: "Reclamação Trabalhista", f: "840, § 1º, CLT", e: "Vara do Trabalho" },
+        "41": { p: "Contestação", f: "847, CLT", e: "Vara do Trabalho" },
+        "40": { p: "Reclamação Trabalhista", f: "840, § 1º, CLT", e: "90ª Vara de Osasco" },
+        "39": { p: "Ação de Consignação em Pagamento", f: "539, CPC c/c 769, CLT", e: "Vara do Trabalho" },
+        "38": { p: "Contestação", f: "847, CLT", e: "Vara do Trabalho" },
+        "37": { p: "Recurso Ordinário", f: "895, I, CLT", e: "Vara/TRT" },
+        "36": { p: "Mandado de Segurança", f: "5º, LXIX, CF e Lei 12.016/09", e: "Presidente do TRT" },
+        "35": { p: "Contestação", f: "847, CLT", e: "Vara do Trabalho" },
+        "34": { p: "Recurso Ordinário", f: "895, I, CLT", e: "Vara/TRT" },
+        "33": { p: "Reclamação Trabalhista", f: "840, § 1º, CLT", e: "Vara do Trabalho" },
+        "31": { p: "Recurso Ordinário", f: "895, I, CLT", e: "Vara/TRT" },
+        "27": { p: "Ação de Consignação em Pagamento", f: "539, CPC", e: "Vara do Trabalho" },
+        "21": { p: "Embargos de Terceiro", f: "674, CPC", e: "Vara do Trabalho (Dependência)" },
+        "18": { p: "Inquérito para Apuração de Falta Grave", f: "853, CLT", e: "Vara do Trabalho" },
+        "11": { p: "Recurso Ordinário", f: "895, I, CLT", e: "Vara/TRT" },
+        "02": { p: "Ação de Consignação em Pagamento", f: "539, CPC", e: "Vara do Trabalho" }
+    };
+
+    window.injetarManual = (ex) => {
+        const d = bancoMaster[ex] || { p: "Identificar no PDF...", f: "Consulte o Gabarito", e: "Vara do Trabalho" };
+        const line = "\n" + "-".repeat(15) + " FOLHA DE RESPOSTAS (MODELO FGV) " + "-".repeat(15) + "\n";
         
-        const config = { 
-            apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-            authDomain: "masteroab-db5e1.firebaseapp.com", 
-            projectId: "masteroab-db5e1", 
-            databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-        };
+        let enderecamento = `AO DOUTO JUÍZO DA ${d.e.toUpperCase()} DE ...`;
+        if(d.p.includes("Mandado")) enderecamento = `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO`;
         
-        const app = initializeApp(config); 
-        const db = getDatabase(app);
-        const path = 'v5_mentoria_isolada'; 
+        const template = `${enderecamento}\n\nPROCESSO Nº ...\n\nNOME DA PARTE, qualificação..., vem por seu advogado propor/apresentar\n\n${d.p.toUpperCase()}\n\ncom fulcro no ART. ${d.f}.\n\n--- TESES DO EXAME ${ex} ---\n(Extrair do PDF do Gabarito)\n\n` + 
+        line + "QUESTÃO 1:\n\n" + line + "QUESTÃO 2:\n\n" + line + "QUESTÃO 3:\n\n" + line + "QUESTÃO 4:\n";
+        
+        document.getElementById('texto-final').value = template;
+        window.autoSave();
+        document.getElementById('modal-pecas').style.display = 'none';
+    };
 
-        window.tab = (e, id) => {
-            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.m-nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); 
-            e.currentTarget.classList.add('active');
-        };
+    window.abrirPecas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const container = document.getElementById('lista-pecas');
+        container.innerHTML = "";
+        
+        const item = document.createElement('div');
+        item.className = "btn-model-item";
+        item.style.border = "2px solid var(--gold)";
+        item.onclick = () => window.injetarManual(ex);
+        item.innerHTML = `<strong>🏆 EXAME ${ex}</strong><br>Peça: <span style="color:var(--primary)">${bancoMaster[ex]?.p || "RT (Provável - Ver PDF)"}</span><br><small>Fundamento: ${bancoMaster[ex]?.f || "Art. 840"}</small>`;
+        container.appendChild(item);
+        
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
 
-        window.save = () => {
-            document.getElementById('st').innerText = "Salvando Evolução...";
-            clearTimeout(window.sv);
-            window.sv = setTimeout(() => {
-                set(ref(db, path), {
-                    t: document.getElementById('db-teses').value,
-                    d: document.getElementById('db-dicas').value,
-                    c: document.getElementById('db-check').value
-                }).then(() => { document.getElementById('st').innerText = "✓ Sincronizado com Sucesso"; });
-            }, 800);
-        };
+    // PDF MOTOR
+    window.applyZoom = (v) => { document.getElementById('pdf-inner-zoom').style.transform = `scale(${v/100})`; };
+    window.carregarPDF = async (tipo, btn) => {
+        if(btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); }
+        const ex = document.getElementById('exam-select').value;
+        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabr' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+        try { pdfDoc = await pdfjsLib.getDocument(arq).promise; renderPDF(); } catch(e) { console.error("PDF não encontrado."); }
+    };
 
-        onValue(ref(db, path), (s) => {
-            if(s.exists()){
-                const data = s.val();
-                if(document.activeElement.tagName !== 'TEXTAREA'){
-                    document.getElementById('db-teses').value = data.t || document.getElementById('db-teses').value;
-                    document.getElementById('db-dicas').value = data.d || document.getElementById('db-dicas').value;
-                    document.getElementById('db-check').value = data.c || document.getElementById('db-check').value;
-                }
-            }
-        });
-    </script>
+    async function renderPDF() {
+        const container = document.getElementById('pdf-inner-zoom'); container.innerHTML = "";
+        if(!pdfDoc) return;
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+            const page = await pdfDoc.getPage(i);
+            const vp = page.getViewport({ scale: 2.0 }); 
+            const canvas = document.createElement('canvas');
+            container.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        }
+    }
+
+    // PERSISTÊNCIA & FIREBASE
+    window.autoSave = () => { window.isEditing = true; set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); setTimeout(()=>window.isEditing=false, 1000); };
+    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
+    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
+    window.limparFolha = () => { if(confirm("Deseja apagar tudo?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
+    
+    window.finalizarEArquivar = async () => {
+        const n = prompt("Título do Treino (Ex: Peça 36 Completa):");
+        if(n) { 
+            await push(ref(db, 'historico_treinos'), { 
+                titulo: n, 
+                texto: document.getElementById('texto-final').value, 
+                data: new Date().toLocaleString(), 
+                exame: document.getElementById('exam-select').value 
+            }); 
+            alert("Treino salvo no Museu!"); 
+        }
+    };
+
+    window.abrirEvolucao = async () => {
+        const snap = await get(ref(db, 'historico_treinos'));
+        const list = document.getElementById('lista-historico'); list.innerHTML = "";
+        if(snap.exists()) {
+            Object.keys(snap.val()).forEach(k => {
+                const item = snap.val()[k];
+                const d = document.createElement('div'); d.className = "btn-model-item";
+                d.onclick = () => window.restaurar(k);
+                d.innerHTML = `<strong>${item.titulo}</strong><br><small>Exame ${item.exame} - ${item.data}</small>`;
+                list.appendChild(d);
+            });
+        }
+        document.getElementById('modal-evolucao').style.display = 'flex';
+    };
+
+    window.restaurar = async (k) => { const s = await get(ref(db, `historico_treinos/${k}`)); document.getElementById('texto-final').value = s.val().texto; window.autoSave(); document.getElementById('modal-evolucao').style.display='none'; };
+
+    // INICIALIZAÇÃO
+    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
+    
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) {
+        let opt = document.createElement('option'); opt.value = i < 10 ? "0"+i : i; opt.innerText = "EXAME "+opt.value;
+        if(i==45) opt.selected = true; sel.appendChild(opt);
+    }
+
+    let lines = ""; for(let i=1; i<=350; i++) lines += i + "<br>";
+    document.getElementById('line-nums-main').innerHTML = lines;
+    window.mudarExame = () => window.carregarPDF('prova');
+    window.carregarPDF('prova');
+    window.applyZoom(130);
+
+    window.toggleSimulado = () => {
+        if(!timerInterval) {
+            timerInterval = setInterval(() => {
+                tempo--; const h=Math.floor(tempo/3600), m=Math.floor((tempo%3600)/60), s=tempo%60;
+                document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+        } else { clearInterval(timerInterval); timerInterval = null; }
+    };
+</script>
 </body>
 </html>
