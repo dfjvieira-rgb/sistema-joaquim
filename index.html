@@ -28,7 +28,6 @@
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR SECTION */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-symbol { height: 35px; min-width: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
@@ -38,7 +37,6 @@
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* VIEWER SECTION */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
@@ -50,9 +48,11 @@
         #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; scroll-behavior: smooth; }
         canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
 
-        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 80vh; overflow-y: auto; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; cursor: pointer; text-align: left; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .btn-peca span { font-size: 0.7rem; color: #64748b; font-weight: normal; }
+        .btn-peca:hover { background: #e0e7ff; border-color: var(--primary); }
 
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
 
@@ -75,8 +75,8 @@
 </header>
 
 <div class="ia-lab" id="lab-box">
-    <input type="text" id="ai-input" placeholder="Análise de tese IA...">
-    <button onclick="alert('Analisando...')" class="btn-header" style="background:var(--gold); color:black;">ANALISAR</button>
+    <input type="text" id="ai-input" placeholder="Cole o problema para análise IA...">
+    <button onclick="alert('Analisando teses...')" class="btn-header" style="background:var(--gold); color:black;">ANALISAR</button>
 </div>
 
 <div class="main-container">
@@ -113,11 +113,20 @@
     </section>
 </div>
 
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content">
+        <h3>⚖️ ESTRUTURAS (PADRÃO ARYANNA)</h3><br>
+        <button class="btn-peca" onclick="injetar('RT')">Petição Inicial (RT) <span>Art. 840, §1º CLT</span></button>
+        <button class="btn-peca" onclick="injetar('CONT')">Contestação <span>Art. 847 CLT</span></button>
+        <button class="btn-peca" onclick="injetar('RO')">Recurso Ordinário <span>Art. 895, I CLT</span></button>
+        <button class="btn-peca" onclick="injetar('RR')">Recurso de Revista <span>Art. 896 CLT</span></button>
+        <button class="btn-peca" onclick="injetar('CONSIG')">Ação de Consignação <span>Art. 539 CPC</span></button>
+        <button class="btn-peca" onclick="injetar('MS')">Mandado de Segurança <span>Lei 12.016</span></button>
+    </div>
+</div>
+
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content"><h3>📚 MUSEU DE PEÇAS</h3><br><div id="lista-historico"></div></div>
-</div>
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content"><h3>⚖️ ESTRUTURAS</h3><br><button onclick="injetar('RT')" style="width:100%; padding:10px; margin-bottom:5px;">RT (Art. 840)</button><button onclick="injetar('CONT')" style="width:100%; padding:10px;">Contestação (Art. 847)</button></div>
 </div>
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="saveRascunho()"></textarea></div>
@@ -149,24 +158,16 @@
         try { pdfDoc = await pdfjsLib.getDocument(arq).promise; renderAllPages(); } catch (e) { console.error(e); }
     }
 
-    // NOVA LÓGICA: Sincroniza a ordem das páginas 1, 2, 3...
     async function renderAllPages() {
         const container = document.getElementById('pdf-viewport');
         container.innerHTML = ""; 
-        
-        // Renderiza sequencialmente para garantir a ordem 1, 2, 3...
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
             const viewport = page.getViewport({ scale: scale });
             const canvas = document.createElement('canvas');
-            canvas.id = 'page-' + i; // ID para controle
             container.appendChild(canvas);
-            
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            canvas.height = viewport.height; canvas.width = viewport.width;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
         }
         document.getElementById('zoom-val').innerText = Math.round(scale * 100) + "%";
     }
@@ -177,7 +178,20 @@
     function abrirPecas() { document.getElementById('modal-pecas').style.display='flex'; }
     function abrirPostIt() { document.getElementById('modal-rascunho').style.display='flex'; }
     function limparFolha() { if(confirm("Apagar tudo?")) { document.getElementById('texto-final').value = ''; autoSave(); } }
-    function injetar(tipo) { document.getElementById('texto-final').value += (tipo==='RT' ? '\nAO DOUTO JUÍZO...' : '\nCONTESTAÇÃO...'); autoSave(); }
+
+    function injetar(tipo) {
+        const estruturas = {
+            'RT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., RECLAMADA..., Art. 840, §1º CLT...',
+            'CONT': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nCONTESTAÇÃO, Art. 847 CLT...',
+            'RO': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO, Art. 895, I, CLT...',
+            'RR': 'AO DOUTO JUIZ PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\n\nPROCESSO Nº ...\n\n(FOLHA DE ROSTO)\nNOME DO RECORRENTE, qualificado, vem interpor RECURSO DE REVISTA, com fulcro no Art. 896 da CLT. Seguem razões anexas.\n\n(FOLHA DE RAZÕES)\nAO EGRÉGIO TRIBUNAL SUPERIOR DO TRABALHO\nRAZÕES DO RECURSO DE REVISTA\n\n1. PRELIMINAR DE TRANSCENDÊNCIA (Art. 896-A CLT)\n2. PRESSUPOSTOS INTRÍNSECOS\n3. MÉRITO / REFORMA\n\nLocal, data.\nAdvogado... OAB...',
+            'CONSIG': 'AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO, Art. 539 CPC...',
+            'MS': 'AO DOUTO JUÍZO DO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\n\nMANDADO DE SEGURANÇA, Lei 12.016...'
+        };
+        document.getElementById('texto-final').value = estruturas[tipo];
+        autoSave();
+        document.getElementById('modal-pecas').style.display = 'none';
+    }
 
     function toggleSimulado() { 
         if(!timerInterval) { 
@@ -187,20 +201,20 @@
     }
     function resetTimer() { clearInterval(timerInterval); timerInterval = null; tempoSegundos = 18000; document.getElementById('timer-display').innerText = "05:00:00"; }
     function formatarTempo(s) { const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const seg = s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; }
-
     function autoSave() { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { window.set(window.ref(window.db, 'v3_treino/peca'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); }
     function saveRascunho() { window.set(window.ref(window.db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value); }
     function mudarExame(v) { exAtual = v; carregarPDF('prova'); }
     function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
 
     async function finalizarEArquivar() {
-        const t = prompt("Título:"); if(t) {
+        const t = prompt("Título para o Museu:");
+        if(t) {
             await window.push(window.ref(window.db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
-            alert("Salvo!"); document.getElementById('texto-final').value = ""; autoSave();
+            alert("Salvo no Museu!"); document.getElementById('texto-final').value = ""; autoSave();
         }
     }
     async function carregarHistorico() {
-        const list = document.getElementById('lista-historico'); list.innerHTML = "Lendo Museu...";
+        const list = document.getElementById('lista-historico'); list.innerHTML = "Abrindo o Museu...";
         const snap = await window.get(window.ref(window.db, 'historico_treinos')); list.innerHTML = "";
         if(snap.exists()) snap.forEach(c => {
             const item = c.val(); const d = document.createElement('div'); d.style = "padding:12px; border-bottom:1px solid #eee; cursor:pointer;";
