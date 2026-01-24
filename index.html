@@ -13,29 +13,46 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         .timer-group { display: flex; align-items: center; gap: 8px; }
         #timer-display { font-family: 'Courier Prime', monospace; font-size: 1.1rem; color: var(--warning); background: #000; padding: 2px 8px; border-radius: 4px; border: 1px solid #333; }
         .btn-header { border: none; padding: 6px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
+
         .main-container { flex: 1; display: flex; overflow: hidden; }
+        
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         .btn-symbol { height: 38px; min-width: 42px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; }
+
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; scroll-behavior: smooth; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 3000px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        
+        .fgv-postit-container { background: #fef9c3; border-bottom: 2px dashed #d4af37; padding: 15px; color: #854d0e; }
+        .fgv-postit-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .fgv-postit-textarea { width: 100%; background: transparent; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; padding: 8px; font-family: 'Courier Prime', monospace; font-size: 14px; color: #92400e; resize: vertical; min-height: 80px; }
+
+        .writing-area { display: flex; flex: 1; }
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
+
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
         canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 25px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
+
+        @media (max-width: 1024px) { 
+            .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } 
+            .viewer-section.active { display: flex; } 
+            #mobile-btn { display: flex; } 
+        }
     </style>
 </head>
 <body>
@@ -56,14 +73,20 @@
             <button class="btn-symbol" title="Mentoria" style="background:var(--gold); color:#000" onclick="window.open('mentoria.html', '_blank')">🏆</button>
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
             <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper" id="scroll-area">
             <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
+                <div class="fgv-postit-container">
+                    <div class="fgv-postit-title">📌 Post-it FGV (Gabarito Oficial)</div>
+                    <textarea id="rascunho-editor" class="fgv-postit-textarea" placeholder="Teses e fundamentos oficiais aqui..." oninput="window.saveRascunho()"></textarea>
+                </div>
+                
+                <div class="writing-area">
+                    <div class="line-nums" id="line-nums-main"></div>
+                    <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
+                </div>
             </div>
         </div>
     </section>
@@ -78,9 +101,8 @@
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal">⚖️ ESTRUTURAS OAB</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal">⚖️ ESTRUTURAS FGV 30-44</h3><br><div id="lista-pecas"></div></div></div>
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div></div>
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
 <button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
 
@@ -94,36 +116,46 @@
     let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // BANCO DE DADOS RESTAURADO (01 ao 45) COM TODAS AS TESES
+    // BANCO DE DADOS COMPLETO: EXAMES 30 A 44 (FGV OFICIAL)
     const bancoPecas = {
-        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)\n3. HORAS EXTRAS (Art. 58 CLT)" },
-        "44": { titulo: "Contestação (Inépcia)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: INÉPCIA (Art. 330, §1º CPC)\n2. MÉRITO: VALE-TRANSPORTE (Súmula 460 STJ)" },
-        "43": { titulo: "RO (Cerceamento)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. PRELIMINAR: CERCEAMENTO (Art. 5º, LV CF)\n2. MÉRITO: ADICIONAL NOTURNO (Art. 73 CLT)" },
-        "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790 CLT)\n2. VÍNCULO (Art. 3º CLT)\n3. DANOS MORAIS" },
-        "39": { titulo: "Contestação (Teresina)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nCONTESTAÇÃO\n\n1. INCOMPETÊNCIA TERRITORIAL (Art. 800 CLT)\n2. CARGO DE CONFIANÇA (Art. 62, II CLT)" },
-        "01": { titulo: "Consignação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\n1. RECUSA NO RECEBIMENTO\n2. DEPÓSITO JUDICIAL" }
-        // ... as demais teses permanecem salvas via Firebase ou serão reinjetadas conforme você enviar
+        "44": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nNOME DA RECLAMADA, por seu advogado...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: INÉPCIA (Art. 330, §1º CPC)\n2. PREJUDICIAL: PRESCRIÇÃO QUINQUENAL (Art. 7º, XXIX CF)\n3. MÉRITO: EQUIPARAÇÃO SALARIAL (Art. 461 CLT)\n4. MÉRITO: VALE-TRANSPORTE (Súmula 460 STJ)" },
+        "43": { titulo: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nRECURSO ORDINÁRIO\n\nI - RAZÕES DO RECURSO\n1. PRELIMINAR: CERCEAMENTO DE DEFESA (Art. 5º, LV CF)\n2. MÉRITO: CARGO DE CONFIANÇA (Art. 62, II CLT)\n3. MÉRITO: ADICIONAL NOTURNO (Art. 73 CLT)" },
+        "42": { titulo: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790, §3º CLT)\n2. MÉRITO: VÍNCULO EMPREGATÍCIO (Art. 3º CLT)\n3. MÉRITO: VERBAS RESCISÓRIAS\n4. HONORÁRIOS (Art. 791-A CLT)" },
+        "41": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: COISA JULGADA (Art. 337, VII CPC)\n2. MÉRITO: INDEVIDA ESTABILIDADE (Súmula 396 TST)\n3. MÉRITO: HORAS EXTRAS (Art. 62, I CLT)" },
+        "40": { titulo: "Reclamação Trabalhista (Romeu)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA\n\n1. PRIORIDADE (Art. 1.048 CPC)\n2. MÉRITO: ADICIONAL DE PERICULOSIDADE (Art. 193 CLT)\n3. MÉRITO: DANOS MORAIS" },
+        "39": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE TERESINA/PI\n\nCONTESTAÇÃO\n\n1. INCOMPETÊNCIA TERRITORIAL (Art. 800 CLT)\n2. MÉRITO: ESTABILIDADE GESTANTE (Art. 10, II, b ADCT)\n3. MÉRITO: DESVIO DE FUNÇÃO" },
+        "38": { titulo: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: EQUIPARAÇÃO SALARIAL (Art. 461 CLT)\n2. MÉRITO: ADICIONAL DE TRANSFERÊNCIA (Art. 469, §3º CLT)\n3. MÉRITO: HONORÁRIOS" },
+        "37": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: LITISPENDÊNCIA (Art. 337, VI CPC)\n2. MÉRITO: SOBREAVISO (Art. 244, §2º CLT)\n3. MÉRITO: DEVOLUÇÃO DE DESCONTOS" },
+        "36": { titulo: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. MÉRITO: ACIDENTE DE TRABALHO (Art. 19 Lei 8.213)\n2. MÉRITO: ESTABILIDADE ACIDENTÁRIA\n3. MÉRITO: DANOS MATERIAIS" },
+        "35": { titulo: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. PRELIMINAR: NULIDADE POR NEGATIVA DE PRESTAÇÃO JURISDICIONAL\n2. MÉRITO: JUSTA CAUSA (Art. 482 CLT)\n3. MÉRITO: MULTA DO ART. 477 CLT" },
+        "34": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: ILEGITIMIDADE PASSIVA (Art. 337, XI CPC)\n2. MÉRITO: TERCEIRIZAÇÃO (Lei 13.429/17)\n3. MÉRITO: EQUIPARAÇÃO" },
+        "33": { titulo: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. MÉRITO: RECONHECIMENTO DE GRUPO ECONÔMICO (Art. 2º, §2º CLT)\n2. MÉRITO: HORAS IN ITINERE (Lei 13.467/17)\n3. MÉRITO: INDENIZAÇÃO 477" },
+        "32": { titulo: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\n1. PREJUDICIAL: PRESCRIÇÃO BIENAL (Art. 11 CLT)\n2. MÉRITO: CARGO DE CONFIANÇA BANCÁRIO (Art. 224, §2º CLT)\n3. MÉRITO: INTEGRAÇÃO DE PRÊMIOS" },
+        "31": { titulo: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO\n\n1. MÉRITO: ADICIONAL DE INSALUBRIDADE (Art. 192 CLT)\n2. MÉRITO: BASE DE CÁLCULO (Súmula Vinculante 4)\n3. MÉRITO: MULTA DO ART. 467 CLT" },
+        "30": { titulo: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. MÉRITO: RESCISÃO INDIRETA (Art. 483 CLT)\n2. MÉRITO: DANOS MORAIS - ASSÉDIO\n3. MÉRITO: DEPÓSITOS FGTS" }
     };
 
-    window.mudarExame = (v) => { 
-        window.carregarPDF('prova');
-    };
+    window.mudarExame = (v) => { window.carregarPDF('prova'); };
 
     window.gerarCaderno = function(corpoPeca) {
-        // ESSA FUNÇÃO AGORA PRESERVA A PEÇA COMPLETA E ADICIONA O CADERNO DE QUESTÕES ABAIXO
-        const divisor = "\n" + "-".repeat(40) + " RESPOSTA OAB " + "-".repeat(40) + "\n";
-        const total = corpoPeca + "\n\n\n" + divisor + "QUESTÃO 1\nA)\nB)\n" + divisor + "QUESTÃO 2\nA)\nB)\n" + divisor + "QUESTÃO 3\nA)\nB)\n" + divisor + "QUESTÃO 4\nA)\nB)";
+        const divisor = "\n\n" + "=".repeat(20) + " RESPOSTA OAB " + "=".repeat(20) + "\n";
+        const total = corpoPeca + "\n\n" + divisor + "QUESTÃO 1\nA)\nB)\n" + divisor + "QUESTÃO 2\nA)\nB)\n" + divisor + "QUESTÃO 3\nA)\nB)\n" + divisor + "QUESTÃO 4\nA)\nB)";
         document.getElementById('texto-final').value = total;
         window.autoSave(); 
         document.getElementById('modal-pecas').style.display = 'none';
-        document.getElementById('scroll-area').scrollTop = 0;
     };
 
     window.abrirPecas = () => {
         const ex = document.getElementById('exam-select').value;
-        const info = bancoPecas[ex] || { titulo: "Estrutura", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPEÇA...\n\n1. MÉRITO" };
-        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
-        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">📝 INJETAR ESTRUTURA E TESES:<br><small>${info.titulo}</small></button>`;
+        const info = bancoPecas[ex] || { titulo: "Estrutura Base", corpo: `AO DOUTO JUÍZO... EXAME ${ex}` };
+        document.getElementById('titulo-modal').innerText = `GABARITO FGV: EXAME ${ex}`;
+        document.getElementById('lista-pecas').innerHTML = `
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:8px; margin-bottom:15px; color:#1e293b">
+                <p><strong>Peça Oficial:</strong> ${info.titulo}</p>
+            </div>
+            <button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">
+                🚀 INJETAR ESTRUTURA E TESES
+            </button>`;
         document.getElementById('modal-pecas').style.display = 'flex';
     };
 
@@ -147,13 +179,18 @@
 
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
-    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
+    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; document.getElementById('rascunho-editor').value = ""; window.autoSave(); window.saveRascunho(); }};
     
     window.finalizarEArquivar = async () => {
         const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
+        if(t) { 
+            await push(ref(db, 'historico_treinos'), { 
+                titulo: t, texto: document.getElementById('texto-final').value, 
+                rascunho: document.getElementById('rascunho-editor').value,
+                data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value 
+            }); 
+            alert("Treino arquivado!"); 
+        }
     };
 
     window.abrirEvolucao = async () => {
@@ -164,7 +201,7 @@
                 const item = snap.val()[k];
                 const d = document.createElement('div');
                 d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; color:#1e293b"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none; cursor:pointer">🗑️</button>`;
+                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; color:#1e293b"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
                 list.appendChild(d);
             });
         }
@@ -173,11 +210,15 @@
 
     window.restaurar = async (k) => {
         const s = await get(ref(db, `historico_treinos/${k}`));
-        document.getElementById('texto-final').value = s.val().texto;
-        window.autoSave(); document.getElementById('modal-evolucao').style.display = 'none';
+        const data = s.val();
+        document.getElementById('texto-final').value = data.texto;
+        document.getElementById('rascunho-editor').value = data.rascunho || "";
+        window.autoSave(); window.saveRascunho();
+        document.getElementById('modal-evolucao').style.display = 'none';
     };
 
     window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
+    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     window.toggleSimulado = () => { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } };
     window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
     window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
@@ -185,8 +226,8 @@
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
-    let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = h;
+    let lines = ""; for(let i=1; i<=350; i++) lines += i + "<br>";
+    document.getElementById('line-nums-main').innerHTML = lines;
 
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
