@@ -49,7 +49,7 @@
             gap: 10px; z-index: 500; background: rgba(0,0,0,0.8); padding: 12px 8px; border-radius: 30px; 
             border: 1px solid var(--gold); align-items: center; backdrop-filter: blur(5px);
         }
-        .zoom-slider { appearance: slider-vertical; -webkit-appearance: slider-vertical; width: 8px; height: 120px; background: var(--gold); }
+        .zoom-slider { appearance: slider-vertical; -webkit-appearance: slider-vertical; width: 8px; height: 120px; background: var(--gold); cursor: pointer; }
         .zoom-label { font-size: 9px; font-weight: bold; color: var(--gold); }
 
         /* MODAIS */
@@ -126,7 +126,30 @@
     let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // ZOOM HD
+    // 1. LÓGICA JURÍDICA: BANCO DE PEÇAS E DIVISORES
+    const bancoPecas = {
+        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)\n3. HORAS EXTRAS" },
+        "44": { titulo: "Contestação (Inépcia)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nCONTESTAÇÃO\n\n1. PRELIMINAR: INÉPCIA (Art. 330, §1º CPC)\n2. MÉRITO: VALE-TRANSPORTE" },
+        "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA 90ª VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA\n\n1. GRATUIDADE (Art. 790 CLT)\n2. VÍNCULO (Art. 3º CLT)\n3. DANOS MORAIS" }
+    };
+
+    window.gerarCaderno = function(corpoPeca) {
+        const divisor = "\n" + "-".repeat(30) + " RESPOSTA OAB " + "-".repeat(30) + "\n";
+        const total = corpoPeca + "\n\n\n" + divisor + "QUESTÃO 1\nA)\nB)\n" + divisor + "QUESTÃO 2\nA)\nB)\n" + divisor + "QUESTÃO 3\nA)\nB)\n" + divisor + "QUESTÃO 4\nA)\nB)";
+        document.getElementById('texto-final').value = total;
+        window.autoSave(); 
+        document.getElementById('modal-pecas').style.display = 'none';
+    };
+
+    window.abrirPecas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const info = bancoPecas[ex] || { titulo: "Estrutura Padrão", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n" };
+        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
+        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:800; cursor:pointer;">📝 INJETAR: ${info.titulo}</button>`;
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+
+    // 2. MOTOR DE ZOOM HD
     window.applyZoom = (val) => {
         document.getElementById('pdf-inner-zoom').style.transform = `scale(${val/100})`;
         document.getElementById('zoom-text').innerText = val + "%";
@@ -143,7 +166,7 @@
         const container = document.getElementById('pdf-inner-zoom'); container.innerHTML = "";
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
-            const viewport = page.getViewport({ scale: 2.0 }); // Base HD
+            const viewport = page.getViewport({ scale: 2.0 }); 
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.height = viewport.height; canvas.width = viewport.width;
@@ -152,7 +175,7 @@
         }
     }
 
-    // EDITOR E HISTÓRICO
+    // 3. GESTÃO DE TREINOS E FIREBASE
     window.autoSave = () => { window.isEditing = true; set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); setTimeout(()=>window.isEditing=false, 1000); };
     window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
@@ -160,7 +183,16 @@
     
     window.finalizarEArquivar = async () => {
         const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
+        if(t) { 
+            await push(ref(db, 'historico_treinos'), { 
+                titulo: t, 
+                texto: document.getElementById('texto-final').value, 
+                data: new Date().toLocaleString(), 
+                exame: document.getElementById('exam-select').value,
+                tempoRestante: document.getElementById('timer-display').innerText
+            }); 
+            alert("Treino salvo no Museu!"); 
+        }
     };
 
     window.abrirEvolucao = async () => {
@@ -170,8 +202,8 @@
             Object.keys(snap.val()).forEach(k => {
                 const item = snap.val()[k];
                 const d = document.createElement('div');
-                d.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer;"><strong>${item.titulo}</strong><br><small>${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
+                d.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:#333;";
+                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; flex:1;"><strong>${item.titulo}</strong><br><small>${item.data} | Ex: ${item.exame}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none; font-size:1.2rem; cursor:pointer;">🗑️</button>`;
                 list.appendChild(d);
             });
         }
@@ -179,18 +211,9 @@
     };
 
     window.restaurar = async (k) => { const s = await get(ref(db, `historico_treinos/${k}`)); document.getElementById('texto-final').value = s.val().texto; window.autoSave(); document.getElementById('modal-evolucao').style.display='none'; };
-    window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
+    window.delTreino = async (k) => { if(confirm("Excluir definitivamente do Museu?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
 
-    // PEÇAS
-    window.abrirPecas = () => {
-        const ex = document.getElementById('exam-select').value;
-        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
-        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.injetar()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px;">INJETAR ESTRUTURA PADRÃO</button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
-    };
-    window.injetar = () => { document.getElementById('texto-final').value = "AO DOUTO JUÍZO DA ... VARA DO TRABALHO...\n\n"; window.autoSave(); document.getElementById('modal-pecas').style.display='none'; };
-
-    // SETUP
+    // SETUP INICIAL
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
@@ -212,6 +235,7 @@
                 tempoSegundos--;
                 const h=Math.floor(tempoSegundos/3600), m=Math.floor((tempoSegundos%3600)/60), s=tempoSegundos%60;
                 document.getElementById('timer-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                if(tempoSegundos <= 0) { clearInterval(timerInterval); alert("Tempo Esgotado!"); }
             }, 1000);
             document.getElementById('btn-simulado').innerText = "⏸";
         } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; }
