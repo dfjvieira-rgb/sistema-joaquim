@@ -19,15 +19,16 @@
         .logo { font-weight: 800; color: var(--gold); }
         #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
 
-        /* LAB DE HISTORINHAS - IA */
-        .ia-lab { background: #1e3a8a; padding: 10px 20px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #3b82f6; }
+        /* LAB DE HISTORINHAS (O CÉREBRO) */
+        .ia-lab { background: #1e3a8a; padding: 10px 20px; display: none; gap: 10px; align-items: center; border-bottom: 1px solid #3b82f6; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
         .ia-lab input { flex: 1; background: #0f172a; border: 1px solid #3b82f6; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; outline: none; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
         /* EDITOR SECTION */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; z-index: 10; border-right: 2px solid #334155; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
         .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
         .btn-save { background: var(--success); color: white; margin-left: auto; }
@@ -44,7 +45,7 @@
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; }
 
-        /* PDF VIEWER */
+        /* COLUNA DIREITA: PDF VIEWER */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
@@ -64,13 +65,13 @@
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" onclick="location.reload()">05:00:00</div>
+    <div id="timer-display">05:00:00</div>
     <button style="background:var(--danger); color:white; border:none; padding:5px 15px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="limparFolha()">🏁 SIMULADO</button>
 </header>
 
-<div class="ia-lab">
-    <input type="text" id="ai-input" placeholder="Cole a historinha aqui...">
-    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;">🔍 IDENTIFICAR</button>
+<div class="ia-lab" id="lab-box">
+    <input type="text" id="ai-input" placeholder="Cole a historinha aqui para o cérebro analisar...">
+    <button onclick="analisarHistorinha()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer; color:#000">ANALISAR</button>
 </div>
 
 <div class="main-container">
@@ -81,6 +82,7 @@
                 <option value="peca">PEÇA (150L)</option>
                 <option value="quest">QUESTÕES (30L)</option>
             </select>
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="toggleCerebro()" title="Identificar Peça">🧠</button>
             <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Sentença = RO | Notificação = Contestação')">💡</button>
             <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="verTeses()">📌</button>
             <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="verHistorico()">📚</button>
@@ -89,7 +91,7 @@
 
         <div class="paper-wrapper">
             <div id="postit-dicas" class="postit-espelho">
-                <strong>📝 POST-IT DE DICAS:</strong>
+                <strong>📝 POST-IT DE INTELIGÊNCIA:</strong>
                 <div id="dica-content" style="margin-top:5px; white-space: pre-wrap;"></div>
             </div>
             <div class="paper-sheet">
@@ -123,11 +125,15 @@
 
 <script>
     let exAtual = 42; let modoAtivo = 'peca';
+    function toggleCerebro() { 
+        const lab = document.getElementById('lab-box');
+        lab.style.display = lab.style.display === 'flex' ? 'none' : 'flex';
+    }
     function analisarHistorinha() {
         const t = document.getElementById('ai-input').value.toLowerCase();
-        let r = "🎯 Analisando atos do juiz...";
-        if(t.includes("sentença")) r = "🎯 RECURSO ORDINÁRIO (Art. 895, I, CLT)\n⚖️ Teses: Preliminar de nulidade, mérito e honorários.";
-        if(t.includes("notificado")) r = "🎯 CONTESTAÇÃO (Art. 847, CLT)\n⚖️ Teses: Prescrição bienal/quinquenal e mérito.";
+        let r = "🎯 CÉREBRO: Analisando atos...";
+        if(t.includes("sentença")) r = "🎯 PEÇA: RECURSO ORDINÁRIO (Art. 895, I, CLT)\n⚖️ Dica: Atacar os fundamentos da sentença em 8 dias.";
+        if(t.includes("notificado")) r = "🎯 PEÇA: CONTESTAÇÃO (Art. 847, CLT)\n⚖️ Dica: Focar em Preliminares e Prescrição.";
         document.getElementById('dica-content').innerText = r;
         document.getElementById('postit-dicas').style.display = 'block';
     }
