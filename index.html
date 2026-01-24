@@ -10,7 +10,7 @@
         :root {
             --bg: #f8fafc; --sidebar-bg: #ffffff; --header-bg: #0f172a;
             --accent: #d4af37; --text-main: #1e293b; --text-muted: #64748b;
-            --success: #10b981; --border: #e2e8f0;
+            --success: #10b981; --border: #e2e8f0; --danger: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -29,55 +29,68 @@
         .scroll-area { flex: 1; overflow-y: auto; padding: 15px; }
         
         .card-elite { background: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 12px; transition: 0.3s; cursor: pointer; }
-        .card-elite:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card-elite h4 { font-size: 0.7rem; color: var(--text-main); margin-bottom: 4px; text-transform: uppercase; }
 
         .editor-container { flex: 2; display: flex; flex-direction: column; background: #f1f5f9; position: relative; }
         .top-bar { background: #fff; padding: 8px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; }
         .ui-select { border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; color: var(--text-main); background: #f8fafc; }
+        
         .btn-ghost { background: transparent; border: 1px solid var(--border); padding: 7px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-confunda { background: var(--danger); color: white; border: none; padding: 7px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; cursor: pointer; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
         .btn-save { background: var(--header-bg); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
 
         .sheet-container { flex: 1; overflow-y: auto; padding: 20px 10px; display: flex; justify-content: center; }
         .fgv-page { width: 100%; max-width: 800px; background: white; min-height: 1500px; display: flex; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; }
         .line-numbers { width: 45px; background: #fcfcfc; border-right: 1px solid #eee; text-align: center; color: #ccc; font-size: 11px; padding-top: 20px; line-height: 25px; pointer-events: none; }
-        .writer { flex: 1; border: none; outline: none; resize: none; padding: 20px 30px; font-family: 'Caveat', cursive; font-size: 22px; line-height: 25px; background-image: linear-gradient(transparent, transparent 24px, #f0f0f0 25px); background-size: 100% 25px; color: #2c3e50; }
+        .writer { flex: 1; border: none; outline: none; resize: none; padding: 20px 30px; font-family: 'Caveat', cursive; font-size: 22px; line-height: 25px; background-image: linear-gradient(transparent, transparent 24px, #f0f0f0 25px); background-size: 100% 25px; color: #1e3a8a; }
 
         .pdf-view { flex: 1.2; display: flex; flex-direction: column; background: #fff; border-left: 1px solid var(--border); }
+        .pdf-nav { display: flex; background: #f1f5f9; padding: 4px 10px 0; gap: 4px; border-bottom: 1px solid var(--border); }
+        .p-btn { flex: 1; padding: 8px; border: none; background: #e2e8f0; font-size: 0.6rem; font-weight: 800; color: var(--text-muted); cursor: pointer; border-radius: 4px 4px 0 0; transition: 0.2s; }
+        .p-btn.active { background: white; color: var(--accent); }
+
         iframe { flex: 1; border: none; }
 
-        /* MODAL ESTRUTURAS */
-        #modal-pecas { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
+        /* MODAIS */
+        #modal-pecas, #modal-confunda { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 650px; height: 85vh; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; }
-        .pecas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow-y: auto; padding-right: 10px; }
-        .peca-opt { padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: 0.2s; background: #fafafa; }
-        .peca-opt:hover { border-color: var(--accent); background: #fffcea; }
-        .peca-opt span { display: block; font-size: 0.6rem; color: var(--text-muted); font-weight: 400; margin-top: 4px; }
+        .list-area { overflow-y: auto; }
+        .pecas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .peca-opt { padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #fafafa; }
+        .confunda-item { margin-bottom: 15px; padding: 15px; border-left: 5px solid var(--danger); background: #fff5f5; border-radius: 4px; }
 
-        #mobile-fab { display: none; position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--header-bg); color: var(--accent); border: 2px solid var(--accent); z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); align-items: center; justify-content: center; font-size: 1.2rem; }
+        #mobile-fab { display: none; position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--header-bg); color: var(--accent); border: 2px solid var(--accent); z-index: 2000; align-items: center; justify-content: center; font-size: 1.2rem; }
 
         @media (max-width: 1024px) {
             aside.sidebar { display: none; }
             .pdf-view { position: fixed; inset: 0; z-index: 1500; display: none; }
             .pdf-view.active { display: flex; }
             #mobile-fab { display: flex; }
-            .pecas-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">ELITE OAB 2026 | ARYANNA LINHARES</div>
+    <div class="logo">ELITE OAB 2026 | ARYANNA</div>
     <div class="timer" id="clock" onclick="toggleClock()">05:00:00</div>
     <div id="sync-dot" style="width:10px; height:10px; background:var(--success); border-radius:50%;"></div>
 </header>
 
 <div id="modal-pecas">
     <div class="modal-content">
-        <h3 style="margin-bottom:15px;">Apostila Aryanna: 40 Peças & Estruturas</h3>
-        <div class="pecas-grid" id="pecas-anchor"></div>
-        <button class="btn-save" style="margin-top:20px; background: #444;" onclick="closeModal()">Fechar</button>
+        <h3 style="margin-bottom:15px;">Estruturas Aryanna</h3>
+        <div class="list-area pecas-grid" id="pecas-anchor"></div>
+        <button class="btn-ghost" style="margin-top:20px;" onclick="closeModal('modal-pecas')">Fechar</button>
+    </div>
+</div>
+
+<div id="modal-confunda">
+    <div class="modal-content">
+        <h3 style="margin-bottom:15px; color:var(--danger)">🚨 NÃO CONFUNDA</h3>
+        <div class="list-area" id="confunda-anchor"></div>
+        <button class="btn-ghost" style="margin-top:20px;" onclick="closeModal('modal-confunda')">Sair</button>
     </div>
 </div>
 
@@ -86,7 +99,6 @@
         <nav class="tabs-nav">
             <button class="t-btn active" onclick="nav('mentoria', this)">🎓 Ritual</button>
             <button class="t-btn" onclick="nav('postits', this)">📌 Teses</button>
-            <button class="t-btn" onclick="nav('historico', this)">📚 Histórico</button>
         </nav>
         <div id="side-list" class="scroll-area"></div>
         <div style="padding: 12px; border-top: 1px solid var(--border)">
@@ -96,8 +108,9 @@
 
     <main class="editor-container">
         <div class="top-bar">
-            <select class="ui-select" id="exam-sel" onchange="changeExam(this.value)"></select>
-            <button class="btn-ghost" onclick="openPecas()">⚖️ ESTRUTURA MESTRE</button>
+            <select class="ui-select" id="exam-sel" onchange="updateView(this.value)"></select>
+            <button class="btn-ghost" onclick="openPecas()">⚖️ ESTRUTURAS</button>
+            <button class="btn-confunda" onclick="openConfunda()">🚨 NÃO CONFUNDA</button>
             <button class="btn-ghost" onclick="insertSym('§')">§</button>
             <button class="btn-ghost" onclick="insertSym('Art. ')">Art.</button>
             <div style="flex:1"></div>
@@ -112,6 +125,11 @@
     </main>
 
     <section class="pdf-view" id="pdf-container">
+        <nav class="pdf-nav">
+            <button class="p-btn active" id="btn-pdf-prova" onclick="setDocType('prova')">PROVA</button>
+            <button class="p-btn" id="btn-pdf-gab" onclick="setDocType('gabarito')">GABARITO</button>
+            <button class="p-btn" id="btn-pdf-ary" onclick="setDocType('apostila')">APOSTILA</button>
+        </nav>
         <iframe id="pdf-frame" src="about:blank"></iframe>
     </section>
 </div>
@@ -124,57 +142,48 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
     window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push; window.get = get;
-
     onValue(ref(db, 'treino_atual/global'), (s) => { if(!window.typing) { document.getElementById('main-editor').value = s.val() || ""; } });
-    
-    window.nav = (type, btn) => {
-        document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-        const area = document.getElementById('side-list');
-        if(type === 'mentoria') { area.innerHTML = `<div class="card-elite"><h4>Ritual Aryanna</h4><p>Sempre verifique:<br>1. Prescrição<br>2. Preliminares<br>3. Prejudiciais<br>4. Mérito<br>5. Pedidos</p></div>`; }
-        else { onValue(ref(db, type), (s) => { area.innerHTML = ''; const data = s.val() || {}; Object.keys(data).reverse().forEach(id => { const item = data[id]; area.innerHTML += `<div class="card-elite" onclick="loadItem('${type}','${id}')"><h4>${item.titulo || item.nome}</h4></div>`; }); }); }
-    };
 </script>
 
 <script>
-    const PEÇAS_ARYANNA = [
-        { n: "01. Reclamação Trabalhista (Rito Ordinário)", d: "Art. 840, § 1º da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nNOME DO RECLAMANTE, qualificação completa, por seu advogado, vem propor RECLAMAÇÃO TRABALHISTA em face de NOME DA RECLAMADA, qualificação..." },
-        { n: "02. RT (Rito Sumaríssimo)", d: "Art. 852-A da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\n(Atenção: Pedidos liquidados e sem citação por edital)\n\nRECLAMAÇÃO TRABALHISTA (RITO SUMARÍSSIMO)..." },
-        { n: "03. Contestação", d: "Art. 847 da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nPROCESSO Nº: ___\n\nRECLAMADA, já qualificada, vem apresentar CONTESTAÇÃO..." },
-        { n: "04. Recurso Ordinário (Interposição)", d: "Art. 895, I, CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nPROCESSO Nº: ___\n\nNOME, já qualificado, vem interpor RECURSO ORDINÁRIO para o TRT da ___ Região..." },
-        { n: "05. Recurso Ordinário (Razões)", d: "Fundamento TRT", e: "EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ___ REGIÃO\n\nRAZÕES DO RECURSO ORDINÁRIO\n\nRecorrente: ___\nRecorrido: ___\nProcesso nº: ___" },
-        { n: "06. Contrarrazões ao RO", d: "Art. 900 da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\n(Interposição para o juiz a quo)\n\nVem apresentar CONTRARRAZÕES AO RECURSO ORDINÁRIO..." },
-        { n: "07. Recurso de Revista", d: "Art. 896 da CLT", e: "AO PRESIDENTE DO TRIBUNAL REGIONAL DO TRABALHO DA ___ REGIÃO\n\nPROCESSO Nº: ___\n\nInterpor RECURSO DE REVISTA para o TST..." },
-        { n: "08. Agravo de Instrumento", d: "Art. 897, 'b', CLT", e: "AO JUÍZO (Autoridade que denegou o recurso)\n\nInterpor AGRAVO DE INSTRUMENTO para destrancar o recurso..." },
-        { n: "09. Agravo de Petição (Execução)", d: "Art. 897, 'a', CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nPROCESSO Nº (Execução): ___\n\nInterpor AGRAVO DE PETIÇÃO (Delimitação de matérias e valores)..." },
-        { n: "10. Embargos à Execução", d: "Art. 884 da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nEXECUTADA, já qualificada, garantido o juízo, opor EMBARGOS À EXECUÇÃO..." },
-        { n: "11. Ação de Consignação em Pagamento", d: "Art. 539 CPC", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nCONSIGNANTE em face de CONSIGNADO... (Verbas rescisórias/Chaves/Homologação)" },
-        { n: "12. Inquérito para Apuração de Falta Grave", d: "Art. 853 da CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nREQUERENTE em face de REQUERIDO (Estável)..." },
-        { n: "13. Mandado de Segurança", d: "Lei 12.016/09", e: "AO PRESIDENTE DO TRIBUNAL REGIONAL DO TRABALHO DA ___ REGIÃO\n\nIMPETRANTE em face de ATO DO JUIZ DA ___ VT... (Direito líquido e certo)" },
-        { n: "14. Ação Rescisória", d: "Art. 966 CPC", e: "AO PRESIDENTE DO TRIBUNAL REGIONAL DO TRABALHO DA ___ REGIÃO\n\nAUTOR em face de RÉU... (Desconstituir coisa julgada)" },
-        { n: "15. Embargos de Terceiro", d: "Art. 674 CPC", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nDISTRIBUIÇÃO POR DEPENDÊNCIA AO PROCESSO Nº: ___\n\nEMBARGANTE (Terceiro) em face de EMBARGADO..." },
-        { n: "16. Ação de Homologação de Acordo", d: "Art. 855-B CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nREQUERENTES (Empregado e Empregador), petição conjunta..." },
-        { n: "17. Recurso Adesivo", d: "Art. 997 CPC", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nInterpor RECURSO ORDINÁRIO ADESIVO..." },
-        { n: "18. Embargos de Declaração", d: "Art. 897-A CLT", e: "AO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nOpor EMBARGOS DE DECLARAÇÃO (Omissão/Contradição/Obscuridade)..." },
-        { n: "19. Agravo Interno / Regimental", d: "Art. 1.021 CPC", e: "AO DESEMBARGADOR RELATOR DO TRT DA ___ REGIÃO\n\nInterpor AGRAVO INTERNO contra decisão monocrática..." },
-        { n: "20. Reclamação Constitucional", d: "Art. 102, I, 'l', CF", e: "AO MINISTRO PRESIDENTE DO SUPREMO TRIBUNAL FEDERAL\n\nPreservar competência/Autoridade de decisão..." }
-        // ... (as demais seguem a mesma lógica de endereçamento técnico)
-    ];
+    let currentExam = 42;
+    let currentDocType = 'prova'; // prova, gabarito, apostila
 
-    let currentEx = 42; let secs = 18000;
-
-    function openPecas() {
-        const anchor = document.getElementById('pecas-anchor'); anchor.innerHTML = "";
-        PEÇAS_ARYANNA.forEach(p => {
-            const div = document.createElement('div'); div.className = "peca-opt";
-            div.innerHTML = `${p.n} <span>${p.d}</span>`;
-            div.onclick = () => { document.getElementById('main-editor').value = p.e; pushData(); closeModal(); };
-            anchor.appendChild(div);
-        });
-        document.getElementById('modal-pecas').style.display = "flex";
+    function updateView(examValue) {
+        currentExam = examValue;
+        loadPdf();
     }
 
-    function closeModal() { document.getElementById('modal-pecas').style.display = "none"; }
+    function setDocType(type) {
+        currentDocType = type;
+        document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('active'));
+        if(type === 'prova') document.getElementById('btn-pdf-prova').classList.add('active');
+        if(type === 'gabarito') document.getElementById('btn-pdf-gab').classList.add('active');
+        if(type === 'apostila') document.getElementById('btn-pdf-ary').classList.add('active');
+        loadPdf();
+    }
 
+    function loadPdf() {
+        const frame = document.getElementById('pdf-frame');
+        if(currentDocType === 'prova') {
+            frame.src = `ro${currentExam}.pdf`;
+        } else if(currentDocType === 'gabarito') {
+            frame.src = `ro${currentExam}-gabarito.pdf`;
+        } else {
+            frame.src = `Aryanna Linhares.pdf`;
+        }
+    }
+
+    // Funções de UI mantidas
+    const PEÇAS = [{n:"Reclamação", e:"AO JUÍZO DA ___ VT..."}, {n:"Contestação", e:"AO JUÍZO DA ___ VT...\nPROCESSO Nº..."}, {n:"RO", e:"AO JUÍZO DA ___ VT...\nInterpor RO..."}];
+    function openPecas() { 
+        document.getElementById('pecas-anchor').innerHTML = PEÇAS.map(p => `<div class="peca-opt" onclick="applyPeca(\`${p.e}\`)">${p.n}</div>`).join('');
+        document.getElementById('modal-pecas').style.display = "flex"; 
+    }
+    function applyPeca(t) { document.getElementById('main-editor').value = t; pushData(); closeModal('modal-pecas'); }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    function openConfunda() { document.getElementById('modal-confunda').style.display = "flex"; }
+    
     function pushData() {
         window.typing = true; document.getElementById('sync-dot').style.background = '#f59e0b';
         clearTimeout(window.sTime);
@@ -190,14 +199,16 @@
         a.focus(); a.selectionStart = a.selectionEnd = start + s.length; pushData();
     }
 
-    function changeExam(v) { currentEx = v; document.getElementById('pdf-frame').src = `ro${v}.pdf`; }
     function buildNum(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('num-col').innerHTML = h; }
-    function toggleClock() { setInterval(() => { if(secs > 0) { secs--; const h = Math.floor(secs/3600), m = Math.floor((secs%3600)/60), s = secs%60; document.getElementById('clock').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; } }, 1000); }
-
+    
     window.onload = () => {
         const s = document.getElementById('exam-sel');
-        for(let i=45; i>=35; i--) { const o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; if(i==42) o.selected=true; s.appendChild(o); }
-        buildNum(150); toggleClock(); changeExam(42);
+        for(let i=45; i>=35; i--) { 
+            const o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; 
+            if(i==42) o.selected=true; s.appendChild(o); 
+        }
+        buildNum(150);
+        updateView(42); 
     };
 </script>
 </body>
