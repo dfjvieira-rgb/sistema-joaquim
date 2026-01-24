@@ -2,128 +2,237 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>FGV RASCUNHO OFICIAL | 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ARYANNA MASTER PRO | 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --fgv-bg: #e2e8f0; --primary: #1e40af; --success: #15803d; --danger: #b91c1c;
+            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
+            --bg-site: #0f172a; --gold: #d4af37; --fgv-yellow: #fff9c4;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--fgv-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* HEADER TÉCNICO */
-        header { background: #1e293b; color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; }
-        .exam-info { font-size: 0.8rem; font-weight: bold; }
-        #timer-display { font-family: monospace; font-size: 1.2rem; color: #fbbf24; background: #000; padding: 4px 10px; border-radius: 4px; }
+        header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .logo { font-weight: 800; color: var(--gold); }
+        #timer-display { font-family: monospace; font-size: 1.2rem; color: var(--warning); background: #000; padding: 5px 12px; border-radius: 8px; }
 
         .main-container { flex: 1; display: flex; overflow: hidden; }
 
-        /* EDITOR - ESTILO RASCUNHO FGV */
-        .editor-section { flex: 1; display: flex; flex-direction: column; overflow-y: auto; align-items: center; padding: 20px; gap: 15px; }
+        /* EDITOR */
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; position: relative; border-right: 2px solid #334155; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; }
         
-        .toolbar-fgv { width: 100%; max-width: 850px; background: #fff; padding: 10px; border-radius: 4px; display: flex; gap: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-items: center; }
-        
-        .paper-sheet { 
-            width: 100%; max-width: 850px; background: white; min-height: 1500px; 
-            display: flex; box-shadow: 0 0 15px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; 
-            position: relative; margin-bottom: 50px;
-        }
-        .line-numbers { 
-            width: 40px; border-right: 2px solid #000; text-align: center; 
-            padding-top: 20px; color: #64748b; font-size: 12px; line-height: 24px; user-select: none;
-        }
-        .text-area { 
-            flex: 1; border: none; outline: none; padding: 20px; 
-            font-family: 'Courier Prime', monospace; font-size: 17px; line-height: 24px; 
-            color: #1e293b; resize: none;
-            background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 100% 24px;
-        }
+        .btn-symbol { width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
+        .btn-save-master { background: var(--success); color: white; border: none; padding: 0 15px; height: 38px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: auto; }
 
-        /* GERENCIADOR DE TESES (MODAL LATERAL) */
-        .teses-panel { 
-            position: fixed; top: 100px; left: 20px; width: 300px; background: #fff9c4; 
-            border: 2px solid #f59e0b; padding: 15px; border-radius: 8px; z-index: 1000;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.2); display: none;
-        }
-        .tese-form input, .tese-form textarea { width: 100%; margin-bottom: 8px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.8rem; }
-        .tese-item { background: rgba(255,255,255,0.6); padding: 8px; border-radius: 4px; margin-top: 10px; font-size: 0.75rem; border-bottom: 1px solid #ddd; }
-        .tese-actions { display: flex; gap: 10px; margin-top: 5px; }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* POST-IT GESTÃO (CRUD) */
+        .postit-espelho { width: 100%; max-width: 800px; background: var(--fgv-yellow); padding: 15px; border-left: 10px solid #f59e0b; box-shadow: 5px 5px 15px rgba(0,0,0,0.1); color: #854d0e; margin-bottom: 20px; border-radius: 4px; display: block; position: relative; }
+        .postit-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 4px; }
+        .postit-form { display: flex; flex-direction: column; gap: 5px; }
+        .postit-form input, .postit-form textarea { width: 100%; padding: 8px; border: 1px solid #d4af37; border-radius: 4px; background: rgba(255,255,255,0.6); font-size: 0.8rem; outline: none; }
+        .btn-add-tese { background: var(--success); color: white; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+
+        .teses-list { max-height: 150px; overflow-y: auto; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d4af37; }
+        .tese-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.3); padding: 6px; margin-bottom: 4px; border-radius: 4px; font-size: 0.75rem; }
+        .tese-actions { display: flex; gap: 10px; }
+        .btn-edit { color: #2563eb; cursor: pointer; }
+        .btn-del { color: #dc2626; cursor: pointer; }
+
+        /* FOLHA */
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 1200px; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; color: #334155; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
         /* VIEWER */
-        .viewer-section { flex: 0.8; background: #475569; display: flex; flex-direction: column; border-left: 4px solid #1e293b; }
-        .viewer-tabs { display: flex; background: #1e293b; }
-        .v-tab { padding: 10px; border: none; background: #1e293b; color: #94a3b8; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-        .v-tab.active { background: #fff; color: #1e293b; }
-        iframe { flex: 1; border: none; }
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
+        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .tab.active { background: #fff; color: var(--primary); }
+        iframe { flex: 1; border: none; background: #fff; }
 
-        .btn-action { padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; z-index: 1000; border: 2px solid var(--gold); align-items: center; justify-content: center; font-size: 1.5rem; }
+
+        @media (max-width: 1024px) {
+            .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; }
+            .viewer-section.active { display: flex; }
+            #mobile-btn { display: flex; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="exam-info">OAB 2ª FASE - DIREITO DO TRABALHO - EXAME <span id="ex-num">44</span></div>
+    <div class="logo">ARYANNA MASTER 2026</div>
     <div id="timer-display">05:00:00</div>
-    <button class="btn-action" style="background:var(--danger); color:white" onclick="simulado()">INICIAR PROVA</button>
+    <button style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="ativarSimulado()">🏁 SIMULADOR</button>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
-        <div class="toolbar-fgv">
-            <select id="sel-ex" onchange="mudarExame(this.value)">
-                <option value="44">Exame 44</option>
-                <option value="43">Exame 43</option>
-                <option value="42" selected>Exame 42</option>
-                <option value="41">Exame 41</option>
-                <option value="40">Exame 40</option>
+        <div class="toolbar">
+            <select class="btn-symbol" id="exam-select" onchange="mudarExame(this.value)" style="width:auto; font-size:0.75rem; padding: 0 5px;"></select>
+            <select class="btn-symbol" id="mode-select" onchange="mudarModo(this.value)" style="width:auto; font-size:0.75rem;">
+                <option value="peca">PEÇA (150L)</option>
+                <option value="quest">QUESTÕES (30L)</option>
             </select>
-            <button class="btn-action" style="background:#f59e0b; color:white" onclick="toggleTeses()">⚖️ GERENCIAR TESES</button>
-            <button class="btn-action" style="background:#475569; color:white" onclick="mudarDoc('prova')">📄 VER PROVA</button>
-            <button class="btn-action" style="background:var(--success); color:white; margin-left:auto;" onclick="salvarHistorico()">💾 SALVAR NO HISTÓRICO</button>
+            
+            <button class="btn-symbol" style="background:#e0e7ff; color:var(--primary)" onclick="acionarIA()" title="Localizar Peça">🧠</button>
+            <button class="btn-symbol" style="background:#f1f5f9; color:#475569;" onclick="mudarDoc('prova')" title="Ver PDF">📄</button>
+            <button class="btn-symbol" style="background:#fee2e2; color:var(--danger)" onclick="alert('Dica: Olhe sempre o último ato processual!')">💡</button>
+            <button class="btn-symbol" style="background:#fef9c3; color:#854d0e" onclick="togglePostit()" title="Post-its">📌</button>
+            <button class="btn-symbol" style="background:#e0f2fe; color:var(--primary)" onclick="carregarHistorico()" title="Histórico">📚</button>
+            
+            <button class="btn-save-master" onclick="salvarTreinoTotal()">💾 SALVAR NO HISTÓRICO</button>
         </div>
 
-        <div class="paper-sheet">
-            <div class="line-numbers" id="pauta-nums"></div>
-            <textarea id="escrita" class="text-area" spellcheck="false" placeholder="Inicie aqui sua peça rascunho..." oninput="autoSave()"></textarea>
+        <div class="paper-wrapper">
+            <div id="postit-gestao" class="postit-espelho">
+                <div class="postit-header">
+                    <span>📝 TESES E NOTAS</span>
+                    <span onclick="togglePostit()" style="cursor:pointer">×</span>
+                </div>
+                <div class="postit-form">
+                    <input type="text" id="t-titulo" placeholder="Título da Tese">
+                    <textarea id="t-texto" rows="2" placeholder="Fundamento jurídico..."></textarea>
+                    <input type="hidden" id="t-key">
+                    <button class="btn-add-tese" onclick="dbSalvarTese()">[+] SALVAR TESE NO BANCO</button>
+                </div>
+                <div class="teses-list" id="db-list"></div>
+            </div>
+
+            <div class="paper-sheet">
+                <div class="line-nums" id="line-nums"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="autoSave()"></textarea>
+            </div>
         </div>
     </section>
 
-    <div class="teses-panel" id="painel-teses">
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <strong>ESTAÇÃO DE TESES</strong>
-            <button onclick="toggleTeses()" style="background:none; border:none; cursor:pointer; font-weight:bold;">[X]</button>
+    <section class="viewer-section" id="viewer">
+        <div class="tabs">
+            <button class="tab active" id="tab-prova" onclick="mudarDoc('prova', this)">PROVA</button>
+            <button class="tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
+            <button class="tab" style="color:var(--gold)" onclick="mudarDoc('aryanna', this)">VADE</button>
         </div>
-        <div class="tese-form">
-            <input type="text" id="t-tit" placeholder="Tese (ex: Horas Extras)">
-            <textarea id="t-fund" rows="2" placeholder="Fundamento (ex: Art. 58 CLT)"></textarea>
-            <input type="hidden" id="t-key">
-            <button class="btn-action" style="background:var(--success); color:white; width:100%" onclick="dbSaveTese()">INCLUIR TESE</button>
-        </div>
-        <div id="lista-teses-db" style="margin-top:15px; max-height: 300px; overflow-y:auto;"></div>
-    </div>
-
-    <section class="viewer-section">
-        <div class="viewer-tabs">
-            <button class="v-tab active" id="tab-p" onclick="mudarDoc('prova', this)">CADERNO DE QUESTÕES</button>
-            <button class="v-tab" onclick="mudarDoc('gabarito', this)">GABARITO</button>
-            <button class="v-tab" style="color:#fbbf24" onclick="mudarDoc('vade', this)">VADE MECUM</button>
-        </div>
-        <iframe id="frame-pdf" src=""></iframe>
+        <iframe id="pdf-frame" src=""></iframe>
     </section>
 </div>
 
+<button id="mobile-btn" onclick="toggleMobile()">📑</button>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
+    import { getDatabase, ref, set, onValue, push, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
-    window.dbOps = { ref, set, push, remove, update, db };
+    window.db_ops = { ref, set, push, get, remove, update, db };
 
     onValue(ref(db, 'teses'), (snap) => {
-        const container =
+        const list = document.getElementById('db-list');
+        list.innerHTML = "";
+        const data = snap.val();
+        if(data) {
+            Object.keys(data).forEach(k => {
+                list.innerHTML += `<div class="tese-item">
+                    <div><b>${data[k].titulo}</b>: ${data[k].texto}</div>
+                    <div class="tese-actions">
+                        <span class="btn-edit" onclick="editarTese('${k}', '${data[k].titulo}', '${data[k].texto}')">✎</span>
+                        <span class="btn-del" onclick="excluirTese('${k}')">✖</span>
+                    </div>
+                </div>`;
+            });
+        }
+    });
+
+    onValue(ref(db, 'v3_treino/peca'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+</script>
+
+<script>
+    let exAtual = 42; let modoAtivo = 'peca'; let tempo = 18000;
+
+    function togglePostit() { 
+        const p = document.getElementById('postit-gestao');
+        p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function dbSalvarTese() {
+        const t = document.getElementById('t-titulo').value;
+        const x = document.getElementById('t-texto').value;
+        const k = document.getElementById('t-key').value;
+        if(!t || !x) return alert("Preencha os campos!");
+        if(k) {
+            await window.db_ops.update(window.db_ops.ref(window.db_ops.db, `teses/${k}`), { titulo: t, texto: x });
+        } else {
+            await window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'teses'), { titulo: t, texto: x });
+        }
+        document.getElementById('t-titulo').value = ""; document.getElementById('t-texto').value = ""; document.getElementById('t-key').value = "";
+    }
+
+    window.editarTese = (k, t, x) => {
+        document.getElementById('t-titulo').value = t;
+        document.getElementById('t-texto').value = x;
+        document.getElementById('t-key').value = k;
+    };
+
+    window.excluirTese = async (k) => {
+        if(confirm("Excluir tese?")) await window.db_ops.remove(window.db_ops.ref(window.db_ops.db, `teses/${k}`));
+    };
+
+    function acionarIA() {
+        let h = prompt("Cole o enunciado para identificação:");
+        if(h) alert("Sugestão: " + (h.toLowerCase().includes("sentença") ? "RO" : "Contestação"));
+    }
+
+    async function carregarHistorico() {
+        const snap = await window.db_ops.get(window.db_ops.ref(window.db_ops.db, 'historico'));
+        alert("Histórico: " + (snap.exists() ? Object.values(snap.val()).length + " itens." : "Vazio."));
+    }
+
+    function salvarTreinoTotal() {
+        const t = prompt("Título do treino:");
+        if(t) window.db_ops.push(window.db_ops.ref(window.db_ops.db, 'historico'), { titulo: `[EX ${exAtual}] ${t}`, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString() });
+    }
+
+    function mudarModo(m) { modoAtivo = m; gerarLinhas(m === 'peca' ? 150 : 30); }
+    function gerarLinhas(n) { let h = ""; for(let i=1; i<=n; i++) h += i + "<br>"; document.getElementById('line-nums').innerHTML = h; }
+    
+    function mudarDoc(tipo, btn) {
+        if(btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); }
+        document.getElementById('pdf-frame').src = tipo === 'prova' ? `ro${exAtual}.pdf` : tipo === 'gabarito' ? `ro${exAtual}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+    }
+
+    function mudarExame(v) { exAtual = v; mudarDoc('prova'); }
+    function autoSave() {
+        window.isEditing = true; clearTimeout(window.sv);
+        window.sv = setTimeout(() => { window.db_ops.set(window.db_ops.ref(window.db_ops.db, `v3_treino/${modoAtivo}`), document.getElementById('texto-final').value); window.isEditing = false; }, 1000);
+    }
+
+    function ativarSimulado() {
+        if(confirm("Zerar e começar?")) {
+            document.getElementById('texto-final').value = "";
+            setInterval(() => {
+                tempo--; let h=Math.floor(tempo/3600), m=Math.floor((tempo%3600)/60), s=tempo%60;
+                document.getElementById('timer-display').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+    }
+
+    window.onload = () => {
+        gerarLinhas(150);
+        const sel = document.getElementById('exam-select');
+        for(let i=44; i>=35; i--) {
+            let opt = document.createElement('option'); opt.value = i; opt.innerText = `EXAME ${i}`;
+            if(i==42) opt.selected = true; sel.appendChild(opt);
+        }
+        mudarDoc('prova');
+    };
+
+    function toggleMobile() { document.getElementById('viewer').classList.toggle('active'); }
+</script>
+</body>
+</html>
