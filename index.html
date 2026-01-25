@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER | TREINO & SIMULADO</title>
+    <title>ARYANNA MASTER | SELEÇÃO ATIVA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
+    
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
@@ -13,6 +16,7 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
         header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         .timer-group { display: flex; align-items: center; gap: 8px; }
@@ -33,9 +37,14 @@
         .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
-        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
-        canvas { box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 98%; }
         
+        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+        .page-container { position: relative; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.5); background: white; }
+        
+        /* Ajuste fino para a camada de seleção de texto do PDF */
+        .textLayer { opacity: 1; mix-blend-mode: multiply; }
+        .textLayer ::selection { background: rgba(37, 99, 235, 0.3); }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
 
@@ -57,7 +66,7 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" onchange="window.carregarPDF('prova')" class="btn-symbol" style="width:auto; font-size:0.75rem; border:1px solid #ddd;"></select>
+            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; border:1px solid #ddd;"></select>
             <button class="btn-symbol" title="Mentoria Isolada" style="background:var(--gold); color:#000" onclick="window.location.href='mentoria.html'">🏆</button>
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
@@ -85,7 +94,7 @@
 
 <div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3 id="titulo-modal">⚖️ ESTRUTURAS OAB</h3><br><div id="lista-pecas"></div></div></div>
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU DE TREINOS</h3><br><div id="lista-historico"></div></div></div>
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3 id="titulo-postit">📌 POST-IT & DICAS</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:350px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
 <button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
 
@@ -100,29 +109,18 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     const bancoPecas = {
-        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
-        "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA" },
-        "01": { titulo: "Consignação", corpo: "AO DOUTO JUÍZO... AÇÃO DE CONSIGNAÇÃO" }
+        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
+        "35": { titulo: "RO (35º Exame)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO" }
     };
 
-    window.gerarCaderno = function(corpoPeca) {
-        const divisor = "\n" + "-".repeat(40) + " RESPOSTA OAB " + "-".repeat(40) + "\n";
-        document.getElementById('texto-final').value = corpoPeca + "\n\n" + divisor + "QUESTÃO 1\n";
-        window.autoSave(); document.getElementById('modal-pecas').style.display = 'none';
-    };
-
-    window.abrirPecas = () => {
+    window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
-        const info = bancoPecas[ex] || { titulo: "Estrutura", corpo: "AO DOUTO JUÍZO..." };
-        document.getElementById('titulo-modal').innerText = `EXAME ${ex}`;
-        document.getElementById('lista-pecas').innerHTML = `<button onclick="window.gerarCaderno(\`${info.corpo}\`)" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">📝 INJETAR ESTRUTURA</button>`;
-        document.getElementById('modal-pecas').style.display = 'flex';
+        window.carregarPDF('prova');
+        window.loadPostIt(ex);
     };
 
-    // AJUSTE CIRÚRGICO NA LÓGICA DE CARREGAMENTO
     window.carregarPDF = async (tipo) => {
         const ex = document.getElementById('exam-select').value;
-        // AJUSTE: Mapeamento para os seus arquivos locais e vade.pdf
         const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
         
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -131,64 +129,101 @@
 
         try { 
             pdfDoc = await pdfjsLib.getDocument(arq).promise; 
-            window.renderAll(); 
+            window.renderWithTextLayer(); 
         } catch(e) {
-            console.error("Erro ao carregar PDF:", arq);
-            document.getElementById('pdf-viewport').innerHTML = `<div style="color:white;padding:20px;">Erro: arquivo ${arq} não encontrado.</div>`;
+            document.getElementById('pdf-viewport').innerHTML = `<div style="color:white;padding:20px;">Documento ${arq} não encontrado.</div>`;
         }
     };
 
-    window.renderAll = async () => {
-        const container = document.getElementById('pdf-viewport'); container.innerHTML = "";
+    window.renderWithTextLayer = async () => {
+        const container = document.getElementById('pdf-viewport'); 
+        container.innerHTML = "";
+        
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
             const viewport = page.getViewport({ scale: scale });
+
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page-container';
+            pageDiv.style.width = viewport.width + 'px';
+            pageDiv.style.height = viewport.height + 'px';
+            container.appendChild(pageDiv);
+
             const canvas = document.createElement('canvas');
-            container.appendChild(canvas);
-            canvas.height = viewport.height; canvas.width = viewport.width;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-        }
-    };
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            pageDiv.appendChild(canvas);
 
-    window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
-    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
-    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-    
-    window.finalizarEArquivar = async () => {
-        const t = prompt("Nome do Treino:");
-        if(t) { await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value }); alert("Arquivado!"); }
-    };
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-    window.abrirEvolucao = async () => {
-        const snap = await get(ref(db, 'historico_treinos'));
-        const list = document.getElementById('lista-historico'); list.innerHTML = "";
-        if(snap.exists()) {
-            Object.keys(snap.val()).forEach(k => {
-                const item = snap.val()[k];
-                const d = document.createElement('div');
-                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:#000;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
-                list.appendChild(d);
+            const textLayerDiv = document.createElement('div');
+            textLayerDiv.className = 'textLayer';
+            pageDiv.appendChild(textLayerDiv);
+
+            const textContent = await page.getTextContent();
+            pdfjsLib.renderTextLayer({
+                textContent: textContent,
+                container: textLayerDiv,
+                viewport: viewport,
+                textDivs: []
             });
         }
-        document.getElementById('modal-evolucao').style.display = 'flex';
     };
 
-    window.restaurar = async (k) => {
-        const s = await get(ref(db, `historico_treinos/${k}`));
-        document.getElementById('texto-final').value = s.val().texto;
-        window.autoSave(); document.getElementById('modal-evolucao').style.display = 'none';
+    window.autoSave = () => { 
+        window.isEditing = true; 
+        clearTimeout(window.sv); 
+        window.sv = setTimeout(() => { 
+            set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); 
+            window.isEditing = false; 
+        }, 1000); 
     };
 
-    window.delTreino = async (k) => { if(confirm("Excluir?")) { await remove(ref(db, `historico_treinos/${k}`)); window.abrirEvolucao(); }};
-    window.toggleSimulado = () => { if(!timerInterval) { timerInterval = setInterval(() => { tempoSegundos--; document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); }, 1000); document.getElementById('btn-simulado').innerText = "⏸"; } else { clearInterval(timerInterval); timerInterval = null; document.getElementById('btn-simulado').innerText = "🏁"; } };
+    window.saveRascunho = () => {
+        const ex = document.getElementById('exam-select').value;
+        set(ref(db, `v3_rascunho/exame_${ex}`), document.getElementById('rascunho-editor').value);
+    };
+
+    window.loadPostIt = (ex) => {
+        get(ref(db, `v3_rascunho/exame_${ex}`)).then((s) => {
+            document.getElementById('rascunho-editor').value = s.val() || "";
+        });
+    };
+
+    window.abrirPostIt = () => {
+        const ex = document.getElementById('exam-select').value;
+        document.getElementById('titulo-postit').innerText = `📌 POST-IT (EXAME ${ex})`;
+        document.getElementById('modal-rascunho').style.display = 'flex';
+    };
+
+    window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
+    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
-    window.resetTimer = () => { clearInterval(timerInterval); timerInterval=null; tempoSegundos=18000; document.getElementById('timer-display').innerText="05:00:00"; };
+    
+    window.toggleSimulado = () => { 
+        if(!timerInterval) { 
+            timerInterval = setInterval(() => { 
+                tempoSegundos--; 
+                document.getElementById('timer-display').innerText = window.fmt(tempoSegundos); 
+            }, 1000); 
+            document.getElementById('btn-simulado').innerText = "⏸"; 
+        } else { 
+            clearInterval(timerInterval); 
+            timerInterval = null; 
+            document.getElementById('btn-simulado').innerText = "🏁"; 
+        } 
+    };
+
+    window.resetTimer = () => { 
+        clearInterval(timerInterval); 
+        timerInterval=null; 
+        tempoSegundos=18000; 
+        document.getElementById('timer-display').innerText="05:00:00"; 
+        document.getElementById('btn-simulado').innerText = "🏁";
+    };
 
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
 
     let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
     document.getElementById('line-nums-main').innerHTML = h;
@@ -201,7 +236,8 @@
         if(i==35) opt.selected = true;
         sel.appendChild(opt);
     }
-    window.carregarPDF('prova');
+    
+    window.mudarExame();
 </script>
 </body>
 </html>
