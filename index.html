@@ -21,31 +21,32 @@
         
         .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        /* EDITOR */
+        /* EDITOR PRINCIPAL */
         .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 1px solid #334155; min-width: 0; }
         .toolbar { background: #fff; padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid #cbd5e1; align-items: center; overflow-x: auto; }
-        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: #fff; flex-shrink: 0; }
+        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: #fff; flex-shrink: 0; transition: 0.2s; }
+        .btn-symbol:active { transform: scale(0.95); background: #f8fafc; }
 
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: #64748b; }
         .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         .line-nums { width: 40px; background: rgba(0,0,0,0.05); border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 20px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.1) 28px); background-size: 100% 28px; resize: none; background-color: transparent; }
 
-        /* PDF FIX */
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; }
+        /* VIEWER PDF */
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; }
         .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); font-weight: bold; }
         
-        #pdf-viewport { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 10px; width: 100%; touch-action: pan-y; }
-        .page-container { position: relative; margin-bottom: 15px; background: white; max-width: 100%; }
-        canvas { max-width: 100% !important; height: auto !important; }
+        #pdf-viewport { flex: 1; overflow-y: scroll !important; overflow-x: auto; display: block; width: 100%; height: 100%; -webkit-overflow-scrolling: touch; touch-action: auto; padding: 10px 0; text-align: center; }
+        .page-container { position: relative; margin: 0 auto 20px auto; background: white; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        canvas { display: block; max-width: 100%; height: auto !important; }
 
         /* MODAIS */
         .modal-full { display: none; position: fixed; inset: 0; background: #f1f5f9; z-index: 9999; flex-direction: column; }
         .modal-header { background: #1e293b; color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
         .modal-body { flex: 1; overflow-y: auto; padding: 10px; }
-        .fgv-sheet { background: white; display: flex; min-height: 100%; max-width: 800px; margin: 0 auto; border: 1px solid #ddd; }
+        .fgv-sheet { background: white; display: flex; min-height: 100%; max-width: 800px; margin: 0 auto; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         /* MOBILE */
         @media (max-width: 768px) {
@@ -73,18 +74,21 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
+            
+            <button class="btn-symbol" title="Mentoria" style="background:#fefce8;" onclick="window.abrirModal('modal-mentoria')">🏆</button>
+            
+            <button class="btn-symbol" title="Folha de Respostas" onclick="window.abrirModal('modal-respostas')">📚</button>
+            <button class="btn-symbol" title="Estruturas de Peça" onclick="window.toggleEstruturas()">⚖️</button>
+            <button class="btn-symbol" title="Não Confunda" onclick="window.abrirModal('modal-nc')">📌</button>
+            <button class="btn-symbol" title="Dicas e Teses" onclick="window.abrirModal('modal-dicas')">💡</button>
+            <button class="btn-symbol" title="Limpar Tudo" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
         
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Escreva sua peça aqui..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Inicie a redação da sua peça processual..."></textarea>
             </div>
         </div>
     </section>
@@ -94,9 +98,10 @@
             <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
             <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
             <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
-            <div style="margin-left:auto; display:flex; gap:5px; padding-right:5px;">
-                <button onclick="window.mudarPagina(-1)" class="btn-symbol" style="height:28px; min-width:32px;">❮</button>
-                <button onclick="window.mudarPagina(1)" class="btn-symbol" style="height:28px; min-width:32px;">❯</button>
+            <div style="margin-left:auto; display:flex; gap:5px; padding-right:5px; align-items:center;">
+                <button onclick="window.mudarPagina(-1)" class="btn-symbol" style="height:28px; min-width:32px; font-size:0.8rem;">❮</button>
+                <span id="page-indicator" style="color:white; font-size:0.7rem; min-width:30px; text-align:center;">1</span>
+                <button onclick="window.mudarPagina(1)" class="btn-symbol" style="height:28px; min-width:32px; font-size:0.8rem;">❯</button>
             </div>
         </div>
         <div id="pdf-viewport"></div>
@@ -105,8 +110,23 @@
 
 <button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
 
+<div id="modal-mentoria" class="modal-full">
+    <div class="modal-header"><h3>🏆 ORIENTAÇÕES DE MENTORIA</h3><button onclick="window.fecharModal('modal-mentoria')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
+    <div class="modal-body" style="padding:20px; color:#1e293b;">
+        <div style="background:white; padding:20px; border-radius:12px; border-left:8px solid var(--gold);">
+            <h4 style="margin-bottom:10px;">Checklist da Aprovação:</h4>
+            <ul style="margin-left:20px; line-height:1.8;">
+                <li>Leia o enunciado identificando o <b>último ato processual</b>.</li>
+                <li>Identifique se há <b>liminar ou tutela</b> de urgência.</li>
+                <li>Marque as <b>datas</b> para contagem de prazo (Art. 775 CLT).</li>
+                <li>Nas questões, responda de forma direta: "Sim/Não, por causa do Artigo X".</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><h3>📚 RESPOSTAS (FGV)</h3><button onclick="window.fecharModal('modal-respostas')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
+    <div class="modal-header"><h3>📚 FOLHA DE RESPOSTAS (FGV)</h3><button onclick="window.fecharModal('modal-respostas')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
     <div class="modal-body">
         <div class="fgv-sheet">
             <div class="line-nums" id="ln-res"></div>
@@ -128,11 +148,11 @@
 <div id="modal-nc" class="modal-full">
     <div class="modal-header"><h3>📌 NÃO CONFUNDA</h3><button onclick="window.fecharModal('modal-nc')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
     <div class="modal-body">
-        <div style="background:white; padding:15px; border-radius:10px; margin-bottom:15px;">
-            <input type="text" id="nc-a" placeholder="Peça A" style="width:48%; padding:10px;">
-            <input type="text" id="nc-b" placeholder="Peça B" style="width:48%; padding:10px;">
-            <textarea id="nc-desc" placeholder="Diferença crucial..." style="width:100%; margin-top:10px; padding:10px; height:80px;"></textarea>
-            <button onclick="window.addNC()" style="width:100%; background:var(--danger); color:white; padding:12px; margin-top:10px; border:none; border-radius:5px; font-weight:bold;">GRAVAR NO BANCO</button>
+        <div style="background:white; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #ddd;">
+            <input type="text" id="nc-a" placeholder="Peça A" style="width:48%; padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <input type="text" id="nc-b" placeholder="Peça B" style="width:48%; padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <textarea id="nc-desc" placeholder="Qual a diferença técnica entre elas?" style="width:100%; margin-top:10px; padding:10px; height:80px; border:1px solid #ccc; border-radius:5px;"></textarea>
+            <button onclick="window.addNC()" style="width:100%; background:var(--danger); color:white; padding:12px; margin-top:10px; border:none; border-radius:5px; font-weight:bold;">SALVAR DISTINÇÃO</button>
         </div>
         <div id="lista-nc"></div>
     </div>
@@ -172,22 +192,24 @@
         if (!pdfDoc || isRendering) return; isRendering = true;
         const container = document.getElementById('pdf-viewport');
         const page = await pdfDoc.getPage(pageNum);
-        const containerWidth = container.clientWidth - 20;
+        const containerWidth = container.clientWidth - 30;
         const unscaledViewport = page.getViewport({ scale: 1 });
         const scale = containerWidth / unscaledViewport.width;
-        const viewport = page.getViewport({ scale: scale > 1.3 ? 1.3 : scale });
+        const viewport = page.getViewport({ scale: scale > 1.4 ? 1.4 : scale });
 
         const pageDiv = document.createElement('div'); pageDiv.className = 'page-container';
         pageDiv.style.width = viewport.width + 'px'; pageDiv.style.height = viewport.height + 'px';
-        const canvas = document.createElement('canvas'); canvas.height = viewport.height; canvas.width = viewport.width;
+        const canvas = document.createElement('canvas'); 
+        canvas.height = viewport.height; canvas.width = viewport.width;
         pageDiv.appendChild(canvas);
         container.appendChild(pageDiv);
 
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        document.getElementById('page-indicator').innerText = pageNum;
         isRendering = false;
     };
 
-    window.mudarPagina = (d) => { if(pdfDoc && pageNum+d >= 1 && pageNum+d <= pdfDoc.numPages) { pageNum+=d; document.getElementById('pdf-viewport').innerHTML=""; window.renderPage(); } };
+    window.mudarPagina = (d) => { if(pdfDoc && pageNum+d >= 1 && pageNum+d <= pdfDoc.numPages) { pageNum+=d; document.getElementById('pdf-viewport').innerHTML=""; window.renderPage(); document.getElementById('pdf-viewport').scrollTop = 0; } };
     window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
     window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
@@ -196,7 +218,7 @@
 
     window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
-    window.finalizarManual = () => set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value).then(() => alert("Backup Salvo!"));
+    window.finalizarManual = () => set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value).then(() => alert("Sincronizado com Sucesso!"));
 
     window.injetar = (tipo) => {
         const esq = { 'RT': 'AO JUÍZO DA... VARA DO TRABALHO...', 'CON': 'AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...', 'RO': 'AO JUÍZO DA... VARA DO TRABALHO...\nPROCESSO Nº...\nRECURSO ORDINÁRIO...' };
@@ -212,7 +234,7 @@
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
         onValue(ref(db, `v5_nc/exame_${ex}`), (s) => {
             const d = s.val(); const lista = document.getElementById('lista-nc'); lista.innerHTML = "";
-            if(d) Object.entries(d).forEach(([id, it]) => { lista.innerHTML += `<div style="background:white; padding:10px; margin-bottom:10px; border-left:5px solid red;"><b>${it.a} vs ${it.b}</b><br><small>${it.d}</small></div>`; });
+            if(d) Object.entries(d).forEach(([id, it]) => { lista.innerHTML += `<div style="background:white; padding:10px; margin-bottom:10px; border-left:5px solid red; color:#333;"><b>${it.a} vs ${it.b}</b><br><small>${it.d}</small></div>`; });
         });
     };
 
