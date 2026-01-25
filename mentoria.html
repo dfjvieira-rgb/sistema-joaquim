@@ -17,20 +17,21 @@
         .section-card { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid #334155; }
         .section-card h2 { color: var(--gold); font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
         
-        /* ÁREA DE EVOLUÇÃO E POST-IT DENTRO DA MENTORIA */
+        /* POST-IT SINCRONIZADO */
         .postit-area { background: var(--rascunho-bg); color: #1e3a8a; padding: 15px; border-radius: 8px; margin-top: 10px; }
-        .postit-area textarea { width: 100%; height: 150px; background: transparent; border: none; outline: none; font-family: 'Inter'; font-size: 0.9rem; resize: none; }
+        .postit-area textarea { width: 100%; height: 180px; background: transparent; border: none; outline: none; font-family: 'Inter'; font-size: 0.9rem; resize: none; line-height: 1.4; }
         
         .item { background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--primary); }
         .item strong { color: #60a5fa; font-size: 0.85rem; display: block; }
         .item p { font-size: 0.8rem; color: #cbd5e1; margin-top: 3px; }
 
+        /* BOTÃO VOLTAR - APONTANDO PARA O INDEX */
         .btn-back { 
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--gold); color: #000; border: 2px solid #000; padding: 18px 40px; 
             border-radius: 50px; font-weight: 800; text-decoration: none; 
             font-size: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.7); z-index: 9999;
-            width: 80%; text-align: center;
+            width: 85%; text-align: center; display: block;
         }
     </style>
 </head>
@@ -38,27 +39,33 @@
 
 <header>
     <h1>🏆 MENTORIA & EVOLUÇÃO</h1>
-    <p style="font-size: 0.7rem; color: #94a3b8;">Sincronizado com seu Treino</p>
+    <p style="font-size: 0.7rem; color: #94a3b8;">Dicas da Aryanna & Seus Treinos</p>
 </header>
 
 <div class="grid">
     <div class="section-card">
         <h2>📌 MEUS POST-ITS (Sincronizado)</h2>
         <div class="postit-area">
-            <textarea id="mentoria-rascunho" placeholder="Anote aqui suas dicas da Aryanna..." oninput="saveRascunho()"></textarea>
+            <textarea id="mentoria-rascunho" placeholder="Escreva suas dicas aqui... Elas aparecerão no simulador!" oninput="saveRascunho()"></textarea>
         </div>
     </div>
 
     <div class="section-card">
         <h2>⚖️ TESES DE OURO</h2>
-        <div class="item"><strong>Equiparação (Art. 461)</strong><p>Mesma função, mesma localidade. Diferença < 2 anos na função e < 4 na empresa.</p></div>
-        <div class="item"><strong>Estabilidade Gestante</strong><p>Súmula 244 TST. Mesmo em contrato de experiência ou aviso prévio.</p></div>
+        <div class="item">
+            <strong>Equiparação Salarial (Art. 461)</strong>
+            <p>Diferença de tempo na função < 2 anos e na empresa < 4 anos. Mesma localidade.</p>
+        </div>
+        <div class="item">
+            <strong>Justa Causa (Art. 482)</strong>
+            <p>Exige imediatidade, gradação de penas e ausência de "bis in idem" (dupla punição).</p>
+        </div>
     </div>
 
     <div class="section-card">
-        <h2>📚 HISTÓRICO DE TREINOS</h2>
-        <div id="mentoria-historico" style="max-height: 200px; overflow-y: auto; font-size: 0.8rem; color: #cbd5e1;">
-            Carregando evolução...
+        <h2>📚 MEU MUSEU (EVOLUÇÃO)</h2>
+        <div id="mentoria-historico" style="max-height: 250px; overflow-y: auto; font-size: 0.8rem; color: #cbd5e1;">
+            Carregando sua evolução...
         </div>
     </div>
 </div>
@@ -67,8 +74,9 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
+    // SUA CONFIGURAÇÃO ORIGINAL DO FIREBASE
     const config = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
         authDomain: "masteroab-db5e1.firebaseapp.com", 
@@ -79,31 +87,32 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // RESTAURANDO POST-ITS
+    // SINCRONIZAÇÃO DO POST-IT
     const rascunhoArea = document.getElementById('mentoria-rascunho');
-    onValue(ref(db, 'v3_rascunho/global'), (snapshot) => {
-        if (snapshot.exists()) rascunhoArea.value = snapshot.val();
+    onValue(ref(db, 'v3_rascunho/global'), (snap) => {
+        if (snap.exists()) rascunhoArea.value = snap.val();
     });
 
     window.saveRascunho = () => {
         set(ref(db, 'v3_rascunho/global'), rascunhoArea.value);
     };
 
-    // RESTAURANDO EVOLUÇÃO (MUSEU)
+    // SINCRONIZAÇÃO DA EVOLUÇÃO (MUSEU)
     const histDiv = document.getElementById('mentoria-historico');
-    onValue(ref(db, 'historico_treinos'), (snapshot) => {
-        if (snapshot.exists()) {
+    onValue(ref(db, 'historico_treinos'), (snap) => {
+        if (snap.exists()) {
             let html = "";
-            const dados = snapshot.val();
+            const dados = snap.val();
+            // Reverte para mostrar os mais novos primeiro
             Object.keys(dados).reverse().forEach(k => {
-                html += `<div style="padding:8px; border-bottom:1px solid #334155;">
-                            <strong>${dados[k].titulo}</strong><br>
-                            <small>${dados[k].data} - Exame ${dados[k].exame}</small>
+                html += `<div style="padding:10px; border-bottom:1px solid #334155; background:rgba(255,255,255,0.03); margin-bottom:5px; border-radius:6px;">
+                            <strong style="color:var(--gold)">${dados[k].titulo}</strong><br>
+                            <small>${dados[k].data} | Exame: ${dados[k].exame}</small>
                          </div>`;
             });
             histDiv.innerHTML = html;
         } else {
-            histDiv.innerHTML = "Nenhum treino arquivado.";
+            histDiv.innerHTML = "Inicie um treino para ver sua evolução aqui.";
         }
     });
 </script>
