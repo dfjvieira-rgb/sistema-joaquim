@@ -12,7 +12,7 @@
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
-            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
+            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fff9db;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -31,23 +31,19 @@
         .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; font-weight: bold; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
         
-        /* MENU PEÇAS ARYANNA */
+        /* MENU PEÇAS */
         #menu-estruturas { display: none; position: absolute; top: 45px; left: 110px; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; width: 250px; }
         .menu-item { padding: 12px 15px; color: #333; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.85rem; font-weight: 600; }
         .menu-item:hover { background: #f1f5f9; color: var(--primary); }
 
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; align-items: center; }
-        .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
-        .tab.active { background: #fff; color: var(--primary); }
-        
+        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 800px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 90vh; overflow-y: auto; }
         
         .fgv-header { border: 2px solid #000; padding: 10px; margin-bottom: 10px; text-align: center; font-weight: bold; font-size: 0.75rem; color: #000; }
         .fgv-paper-mock { display: flex; background: white; border: 1px solid #000; min-height: 500px; }
         .fgv-lines { width: 35px; background: #f0f0f0; border-right: 1px solid #000; text-align: center; font-size: 11px; padding-top: 10px; line-height: 24px; color: #000; font-weight: bold; }
-        .fgv-textarea { flex: 1; border: none; outline: none; padding: 10px; font-size: 15px; line-height: 24px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 23px, #ccc 24px); background-size: 100% 24px; resize: none; }
+        .fgv-textarea { flex: 1; border: none; outline: none; padding: 10px; font-size: 15px; line-height: 24px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 23px, #ccc 24px); background-size: 100% 28px; resize: none; }
     </style>
 </head>
 <body>
@@ -67,13 +63,12 @@
             
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.toggleEstruturas()">⚖️</button>
             <div id="menu-estruturas">
-                <div class="menu-item" onclick="window.carregarEstrutura('RT')">Reclamação Trabalhista (Art. 840)</div>
-                <div class="menu-item" onclick="window.carregarEstrutura('CONTESTACAO')">Contestação (Art. 847)</div>
-                <div class="menu-item" onclick="window.carregarEstrutura('RO')">Recurso Ordinário (Art. 895)</div>
-                <div class="menu-item" onclick="window.carregarEstrutura('CONTRARRAZOES')">Contrarrazões de RO (Art. 900)</div>
+                <div class="menu-item" onclick="window.carregarEstrutura('RT')">Reclamação Trabalhista</div>
+                <div class="menu-item" onclick="window.carregarEstrutura('CONTESTACAO')">Contestação</div>
+                <div class="menu-item" onclick="window.carregarEstrutura('RO')">Recurso Ordinário (RO)</div>
             </div>
 
-            <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" title="NÃO CONFUNDA" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
             <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" title="Dicas" style="background:#e0f2fe; color:var(--primary)" onclick="window.abrirDicas()">💡</button>
             
@@ -87,8 +82,8 @@
         </div>
     </section>
 
-    <section class="viewer-section">
-        <div class="tabs">
+    <section class="viewer-section" style="flex:1.2; background:#334155; display:flex; flex-direction:column;">
+        <div class="tabs" style="display:flex; background:#1e293b; padding:5px 10px 0; gap:4px;">
             <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
             <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
             <button id="tab-vade" class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
@@ -98,9 +93,13 @@
 </div>
 
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'">
-    <div class="modal-content" style="background:var(--rascunho-bg); max-width:400px;">
-        <h3 id="titulo-postit">📌 POST-IT</h3><br>
-        <textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveLocal('v3_rascunho')"></textarea>
+    <div class="modal-content" style="background:var(--rascunho-bg); max-width:600px; border: 2px solid var(--warning);">
+        <h3 style="color:#854d0e; display:flex; align-items:center; gap:10px;">📌 NÃO CONFUNDA! <small style="font-size:0.6rem; color:#a36e0d;">(Salvo por Exame)</small></h3>
+        <p style="font-size:0.7rem; margin-bottom:10px; color:#a36e0d;">Use este espaço para mapear distinções críticas e evitar pegadinhas.</p>
+        <textarea id="rascunho-editor" class="text-area" 
+            placeholder="Exemplo: &#10;DIFERENÇA ENTRE RITO SUMARÍSSIMO X ORDINÁRIO...&#10;DEPÓSITO RECURSAL X CUSTAS..."
+            style="background:var(--rascunho-bg); height:450px; border:1px dashed #d4af37; background-image: none; line-height: 24px;" 
+            oninput="window.saveLocal('v3_rascunho')"></textarea>
     </div>
 </div>
 
@@ -116,7 +115,7 @@
 
 <div id="modal-dicas" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
-        <div class="fgv-header">RASCUNHO: FATO - FUNDAMENTO - PEDIDO</div>
+        <div class="fgv-header">RASCUNHO DE TESES (F-F-P)</div>
         <div class="fgv-paper-mock">
             <div class="fgv-lines" id="ln-dicas"></div>
             <textarea id="dicas-editor" class="fgv-textarea" oninput="window.saveLocal('v3_dicas')"></textarea>
@@ -133,8 +132,8 @@
 
     const estruturas = {
         RT: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n(QUALIFICAÇÃO - ART. 840 CLT)\n\nI - PRELIMINARES\nII - MÉRITO (FATO, FUNDAMENTO, PEDIDO)\nIII - PEDIDOS\n\nVALOR DA CAUSA: R$ ...",
-        CONTESTACAO: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nPROCESSO Nº ...\n\n(QUALIFICAÇÃO - ART. 847 CLT)\n\nI - PRELIMINARES\nII - PREJUDICIAIS (PRESCRIÇÃO)\nIII - MÉRITO\nIV - PEDIDOS",
-        RO: "FOLHA DE ROSTO: AO JUIZ DA ... VARA DO TRABALHO\n\nRAZÕES: AO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO\n\nI - ADMISSIBILIDADE\nII - MÉRITO (REFORMA)\nIII - CONCLUSÃO"
+        CONTESTACAO: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nPROCESSO Nº ...\n\nCONTESTAÇÃO (ART. 847 CLT)\n\nI - PRELIMINARES\nII - PREJUDICIAIS\nIII - MÉRITO\nIV - PEDIDOS",
+        RO: "FOLHA DE ROSTO: AO JUIZ DA ... VARA DO TRABALHO\n\nRAZÕES: AO TRT DA ... REGIÃO\n\nI - ADMISSIBILIDADE\nII - MÉRITO\nIII - CONCLUSÃO"
     };
 
     window.toggleEstruturas = () => {
@@ -143,31 +142,33 @@
     };
 
     window.carregarEstrutura = (p) => {
-        if(confirm(`Carregar estrutura de ${p}?`)) {
-            document.getElementById('texto-final').value = estruturas[p] || "";
+        if(confirm(`Carregar esqueleto de ${p}?`)) {
+            document.getElementById('texto-final').value = estruturas[p];
             window.autoSave();
             document.getElementById('menu-estruturas').style.display = 'none';
         }
     };
 
-    window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
-    window.abrirPostIt = () => { const ex = document.getElementById('exam-select').value; document.getElementById('titulo-postit').innerText = `📌 POST-IT (EXAME ${ex})`; window.abrirModal('modal-rascunho'); };
-    window.abrirDicas = () => window.abrirModal('modal-dicas');
-
     window.saveLocal = (node) => {
         const ex = document.getElementById('exam-select').value;
-        set(ref(db, `${node}/exame_${ex}`), event.target.value);
+        const val = event.target.value;
+        set(ref(db, `${node}/exame_${ex}`), val);
     };
 
     window.finalizarManual = () => {
         set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value)
-        .then(() => alert("✅ Tudo salvo no Firebase!"));
+        .then(() => alert("💾 Caderno salvo com sucesso!"));
     };
 
     window.autoSave = () => { 
         window.isEditing = true; clearTimeout(window.sv); 
         window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); 
     };
+
+    window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
+    window.abrirPostIt = () => window.abrirModal('modal-rascunho');
+    window.abrirDicas = () => window.abrirModal('modal-dicas');
+    window.limparFolha = () => { if(confirm("Limpar a folha principal?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
 
     window.loadDadosExame = (ex) => {
         get(ref(db, `v3_rascunho/exame_${ex}`)).then(s => document.getElementById('rascunho-editor').value = s.val() || "");
@@ -180,8 +181,6 @@
         window.loadDadosExame(ex);
     };
 
-    window.limparFolha = () => { if(confirm("Limpar a folha principal?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
-
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 
     // UI Setup
@@ -190,10 +189,9 @@
         let opt = document.createElement('option'); let n = i < 10 ? "0"+i : i;
         opt.value = n; opt.innerText = `EXAME ${n}`; if(i==35) opt.selected = true; sel.appendChild(opt);
     }
-    let lns = ""; for(let i=1; i<=350; i++) lns += i + "<br>"; document.getElementById('line-nums-main').innerHTML = lns;
-    let flns = ""; for(let i=1; i<=30; i++) flns += i + "<br>"; 
-    document.getElementById('ln-respostas').innerHTML = flns;
-    document.getElementById('ln-dicas').innerHTML = flns;
+    document.getElementById('line-nums-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-respostas').innerHTML = Array.from({length:30}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-dicas').innerHTML = Array.from({length:30}, (_,i)=>i+1).join('<br>');
     
     window.mudarExame();
 </script>
