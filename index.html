@@ -52,6 +52,14 @@
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
+        
+        /* ESTILOS ESPELHO FGV */
+        .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
+        .espelho-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); }
+        .espelho-txt { flex: 1; font-size: 0.75rem; color: var(--text); }
+        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.75rem; }
+        .nota-floating { position: sticky; top: 0; background: var(--gold); color: #000; padding: 10px; text-align: center; font-weight: 900; border-radius: 8px; margin-bottom: 15px; z-index: 10; }
+
         @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
         .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
     </style>
@@ -70,6 +78,7 @@
             <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
             <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
@@ -142,9 +151,25 @@
     <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
 </div>
 
+<div id="modal-espelho" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO DE CORREÇÃO FGV</h3></div>
+    <div class="modal-body">
+        <div class="nota-floating">NOTA ATUAL: <span id="nota-valor">0.00</span> / 5.00</div>
+        <div id="checklist-fgv">
+            <div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento: Vara do Trabalho de...</div><div class="espelho-pt">0,10</div></div>
+            <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Qualificação das partes e Art. 840 CLT</div><div class="espelho-pt">0,40</div></div>
+            <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Tese de Mérito 01 (Fato/Fundamento/Pedido)</div><div class="espelho-pt">0,60</div></div>
+            <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Tese de Mérito 02 (Fato/Fundamento/Pedido)</div><div class="espelho-pt Gemini-wit">0,60</div></div>
+            <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Honorários Advocatícios (Art. 791-A CLT)</div><div class="espelho-pt">0,50</div></div>
+            <div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Fechamento (Local, Data, Advogado, OAB)</div><div class="espelho-pt">0,10</div></div>
+        </div>
+        <p style="font-size:0.6rem; opacity:0.6; margin-top:15px;">* Estes itens são exemplificativos. Marque o que você identificou em sua peça.</p>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
@@ -153,7 +178,6 @@
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-    // OBJETO DE PEÇAS PRESERVADO INTEGRALMENTE
     const pecas = {
         'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
         'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
@@ -220,12 +244,31 @@
         pdfjsLib.renderTextLayer({ textContent: textContent, container: textLayerDiv, viewport: vp, textDivs: [] });
     }
 
+    // MOTOR DE CÁLCULO DE NOTA
+    window.calcNota = () => {
+        let total = 0;
+        document.querySelectorAll('.espelho-item input:checked').forEach(i => total += parseFloat(i.value));
+        document.getElementById('nota-valor').innerText = total.toFixed(2);
+        return total.toFixed(2);
+    };
+
     window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
-    window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); }, 1000); };
+    
+    window.autoSave = () => { 
+        clearTimeout(window.sv); 
+        window.sv = setTimeout(() => { 
+            window.saveMeta('v3_treino', document.getElementById('texto-final').value); 
+        }, 1000); 
+    };
+
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value; window.carregarPDF('prova');
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
-        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
+        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => {
+            const val = s.val();
+            document.getElementById('res-editor').value = (typeof val === 'object') ? (val.comentarios || "") : (val || "");
+            if(val && val.nota) document.getElementById('nota-valor').innerText = val.nota;
+        });
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
 
@@ -242,10 +285,27 @@
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
     window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
     
-    // ALTERAÇÃO PONTUAL: SALVAR E IR PARA MENTORIA
+    // FINALIZAR MANUAL ATUALIZADO COM NOTA E REDIRECIONAMENTO
     window.finalizarManual = () => {
-        window.saveMeta('v3_treino', document.getElementById('texto-final').value).then(() => {
-            if(confirm("Sincronizado! Deseja ir para a mentoria ver o comparativo?")) {
+        const ex = document.getElementById('exam-select').value;
+        const nota = window.calcNota();
+        const peca = document.getElementById('texto-final').value;
+        const folha = document.getElementById('res-editor').value;
+        const dicas = document.getElementById('dicas-editor').value;
+
+        const dadosFull = {
+            nota: nota,
+            comentarios: folha,
+            timestamp: new Date().toISOString()
+        };
+
+        // Salva tudo e vai para a mentoria
+        Promise.all([
+            set(ref(db, `v3_treino/exame_${ex}`), peca),
+            set(ref(db, `v3_respostas/exame_${ex}`), dadosFull),
+            set(ref(db, `v3_dicas/exame_${ex}`), dicas)
+        ]).then(() => {
+            if(confirm(`Sincronizado! Nota: ${nota}. Ir para o Museu ver o comparativo?`)) {
                 window.location.href='mentoria.html';
             }
         });
