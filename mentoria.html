@@ -31,7 +31,6 @@
         .btn-del { position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.2); border: none; color: #ef4444; border-radius: 4px; padding: 4px 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
         .cat-badge { font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; background: #334155; color: #fff; margin-left: 4px; font-weight: 800; }
         
-        /* NOVO: Badge de nota no Museu */
         .nota-badge { background: var(--gold); color: #000; font-size: 0.6rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
     </style>
 </head>
@@ -46,7 +45,7 @@
     <label>Título da Tese</label>
     <input type="text" id="tit" placeholder="Ex: Adicional de Periculosidade">
     <label>Conteúdo (Fato, Fundamento e Pedido)</label>
-    <textarea id="tese-content" rows="4" placeholder="Escreva a estrutura da tese aqui..."></textarea>
+    <textarea id="tese-content" rows="6" placeholder="Fato: ...&#10;Fundamento: ...&#10;Pedido: ..."></textarea>
     <button class="btn-next" onclick="finalizarEProxima()">SALVAR NO ARQUIVO DE TESES ➔</button>
 </div>
 
@@ -74,36 +73,49 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
+    // FUNÇÃO ATUALIZADA PARA ORGANIZAR EM PARÁGRAFOS
     window.finalizarEProxima = () => {
         const t = document.getElementById('tit').value;
         const c = document.getElementById('tese-content').value;
+        
         if(t && c) {
-            push(ref(db, 'v10_teses_sincronizadas'), { titulo: t, conteudo: c, timestamp: serverTimestamp() });
-            document.getElementById('tit').value = ''; document.getElementById('tese-content').value = '';
+            // Garante que o texto tenha quebras de linha duplas para separar parágrafos visualmente
+            const textoFormatado = c.split('\n').filter(line => line.trim() !== '').join('\n\n');
+            
+            push(ref(db, 'v10_teses_sincronizadas'), { 
+                titulo: t, 
+                conteudo: textoFormatado, 
+                timestamp: serverTimestamp() 
+            });
+            
+            document.getElementById('tit').value = ''; 
+            document.getElementById('tese-content').value = '';
         }
     };
 
     window.excluirTese = (id) => { if(confirm("Apagar?")) remove(ref(db, `v10_teses_sincronizadas/${id}`)); };
 
-    // ESCUTA PRINCIPAL
     onValue(ref(db), (snap) => {
         const data = snap.val() || {};
-        
-        // Renderizar Teses
         const cont = document.getElementById('container-user');
         cont.innerHTML = "";
         const teses = data.v10_teses_sincronizadas || {};
+        
         Object.keys(teses).reverse().forEach(id => {
-            cont.innerHTML += `<div class="item"><button class="btn-del" onclick="excluirTese('${id}')">DEL</button><strong style="color:var(--gold)">${teses[id].titulo}</strong><p style="margin-top:5px; font-size:0.8rem">${teses[id].conteudo}</p></div>`;
+            // O white-space: pre-wrap no CSS já garantirá que os \n\n virem parágrafos
+            cont.innerHTML += `
+                <div class="item">
+                    <button class="btn-del" onclick="excluirTese('${id}')">DEL</button>
+                    <strong style="color:var(--gold)">${teses[id].titulo}</strong>
+                    <div style="margin-top:8px; font-size:0.8rem; white-space: pre-wrap; color: #cbd5e1;">${teses[id].conteudo}</div>
+                </div>`;
         });
 
-        // Renderizar Museu (Comparativo)
         const h = document.getElementById('mentoria-historico');
         const treinos = data.v3_treino || {};
         const respostas = data.v3_respostas || {};
         const dicas = data.v3_dicas || {};
         
-        // Unifica todos os exames encontrados
         const examesSet = new Set([...Object.keys(treinos), ...Object.keys(respostas), ...Object.keys(dicas)]);
         const examesUnicos = Array.from(examesSet).sort().reverse();
 
@@ -111,8 +123,6 @@
         examesUnicos.forEach(k => {
             const label = k.replace('exame_', 'EXAME ');
             const pecaSalva = treinos[k] || "O texto da peça não foi encontrado.";
-            
-            // TRATAMENTO DA RESPOSTA (NOVO MODELO COM NOTA)
             const respRaw = respostas[k];
             let folhaSalva = "Você ainda não escreveu nada.";
             let notaSalva = "S/N";
@@ -122,7 +132,7 @@
                     folhaSalva = respRaw.comentarios || "Sem comentários salvos.";
                     notaSalva = respRaw.nota || "0.00";
                 } else {
-                    folhaSalva = respRaw; // Legado (texto puro)
+                    folhaSalva = respRaw;
                 }
             }
 
