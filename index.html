@@ -21,6 +21,11 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: var(--text); }
         header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
+        
+        /* Checklist Style */
+        #checklist-area { display: none; background: var(--warning); color: #000; padding: 10px; font-size: 0.75rem; font-weight: bold; border-bottom: 2px solid var(--gold); }
+        .check-item { margin-right: 15px; display: inline-block; }
+
         .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
         .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); min-width: 0; }
         .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto; white-space: nowrap; }
@@ -47,7 +52,6 @@
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-        .dark-mode .menu-category { background: #0f172a; color: #94a3b8; }
 
         @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
         .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
@@ -60,17 +64,20 @@
     <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div>
 </header>
 
+<div id="checklist-area"></div>
+
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
+            <button class="btn-symbol" onclick="window.location.href='mentoria.html'" title="Mentoria">🏆</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')" title="Folha de Respostas">📚</button>
+            <button class="btn-symbol" onclick="window.toggleEstruturas()" title="Estruturas Jurídicas">⚖️</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')" title="Não Confunda">📌</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
+            <button class="btn-symbol" onclick="window.exportarBackup()" title="Backup Local">📥</button>
+            <button class="btn-symbol" onclick="window.limparFolha()" title="Limpar">🗑️</button>
+            <button class="btn-symbol" onclick="window.toggleDarkMode()" title="Dark Mode">🌓</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
         <div class="paper-wrapper">
@@ -100,7 +107,6 @@
     <div class="menu-item" onclick="window.gerarPeca('ACP')">CONSIGNAÇÃO EM PAGAMENTO</div>
     <div class="menu-item" onclick="window.gerarPeca('INQUERITO')">INQUÉRITO FALTA GRAVE</div>
     <div class="menu-item" onclick="window.gerarPeca('HOMOLOG')">HOMOLOGAÇÃO DE ACORDO</div>
-
     <div class="menu-category">Recursos</div>
     <div class="menu-item" onclick="window.gerarPeca('RO')">RECURSO ORDINÁRIO (RO)</div>
     <div class="menu-item" onclick="window.gerarPeca('RR')">RECURSO DE REVISTA (RR)</div>
@@ -108,13 +114,11 @@
     <div class="menu-item" onclick="window.gerarPeca('ED')">EMBARGOS DE DECLARAÇÃO</div>
     <div class="menu-item" onclick="window.gerarPeca('AG_INTERNO')">AGRAVO INTERNO</div>
     <div class="menu-item" onclick="window.gerarPeca('CONTRA')">CONTRARRAZÕES</div>
-
     <div class="menu-category">Execução</div>
     <div class="menu-item" onclick="window.gerarPeca('AP')">AGRAVO DE PETIÇÃO</div>
     <div class="menu-item" onclick="window.gerarPeca('EEX')">EMBARGOS À EXECUÇÃO</div>
     <div class="menu-item" onclick="window.gerarPeca('EX_PRE')">EXCEÇÃO PRÉ-EXECUTIVIDADE</div>
     <div class="menu-item" onclick="window.gerarPeca('IDPJ')">IDPJ (PERSONALIDADE JUR.)</div>
-
     <div class="menu-category">Ações Especiais</div>
     <div class="menu-item" onclick="window.gerarPeca('MS')">MANDADO DE SEGURANÇA</div>
     <div class="menu-item" onclick="window.gerarPeca('AR')">AÇÃO RESCISÓRIA</div>
@@ -123,14 +127,7 @@
 
 <div id="modal-nc" class="modal-full">
     <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
-    <div class="modal-body">
-        <div id="box-teses"><input type="text" placeholder="Tese Principal..." class="input-nc-field nc-assunto-item"></div>
-        <button class="btn-plus" onclick="window.addNCField('box-teses', 'input')">+</button>
-        <div id="box-explicações"><textarea placeholder="Diferença técnica..." class="textarea-nc-field nc-explica-item"></textarea></div>
-        <button class="btn-plus" onclick="window.addNCField('box-explicações', 'textarea')">+</button>
-        <button onclick="window.saveNC()" style="width:100%; padding:10px; background:var(--success); color:white; border:none; margin-top:10px;">SALVAR</button>
-        <div id="lista-nc"></div>
-    </div>
+    <div class="modal-body"><div id="box-teses"></div><div id="lista-nc"></div></div>
 </div>
 
 <div id="modal-respostas" class="modal-full">
@@ -151,68 +148,62 @@
     const app = initializeApp(config); const db = getDatabase(app);
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
+    // QUALIFICAÇÃO ATUALIZADA ART. 319 CPC
+    const QUALIF = "nacionalidade..., estado civil..., profissão..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa)...";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-   window.gerarPeca = (tipo) => {
-    // Objeto de Prazos e Alertas Técnicos (Gatilhos de Aprovação)
-    const alertas = {
-        'RT': "💡 DICA: Indique o Rito (Ordinário > 40 salários / Sumaríssimo até 40). Não esqueça os honorários de 15%!",
-        'CON': "💡 DICA: Verifique se há prescrição bienal (2 anos do fim do contrato) ou quinquenal (5 anos atrás).",
-        'RO': "⏳ PRAZO: 8 dias úteis. Verifique se o caso pede Depósito Recursal e Custas!",
-        'AP': "⚠️ OBRIGATÓRIO: Você DEVE delimitar matérias e valores agora, ou o recurso não será conhecido!",
-        'MS': "⏳ PRAZO: 120 dias da ciência do ato. Verifique se há direito líquido e certo (prova pré-constituída).",
-        'AR': "💰 DEPÓSITO PRÉVIO: 20% do valor da causa (Art. 836 CLT). Peça Juízo Rescindente e Rescisório.",
-        'ED': "⏳ PRAZO: 5 dias úteis. Interrompe o prazo para outros recursos!",
-        'AI': "⏳ PRAZO: 8 dias úteis. Serve para DESTRANCAR recurso. Preparo de 50% do valor do recurso que se pretende destrancar.",
-        'HOMOLOG': "💡 DICA: Advogados obrigatoriamente distintos! O juiz tem 15 dias para decidir."
+    window.gerarPeca = (tipo) => {
+        const checklists = {
+            'RT': ["Rito indicado?", "Honorários 15%?", "Justiça Gratuita?", "Valor da Causa?"],
+            'CON': ["Prescrição arguida?", "Preliminares CPC 337?", "Documentos impugnados?", "Sucumbência?"],
+            'RO': ["Tempestividade (8d)?", "Custas pagas?", "Depósito Recursal?", "Razões Separadas?"],
+            'AP': ["Matérias delimitadas?", "Valores delimitados?", "Garantia do Juízo?"],
+            'MS': ["Prova pré-constituída?", "Liminar pedida?", "Autoridade indicada?", "Prazo 120d?"],
+            'AR': ["Depósito 20%?", "Trânsito em julgado?", "Juízo Rescindente?", "Juízo Rescisório?"]
+        };
+
+        const checklistDiv = document.getElementById('checklist-area');
+        if(checklists[tipo]) {
+            checklistDiv.style.display = 'block';
+            checklistDiv.innerHTML = checklists[tipo].map(item => `<span class="check-item"><input type="checkbox"> ${item}</span>`).join('');
+        } else { checklistDiv.style.display = 'none'; }
+
+        const pecas = {
+            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
+            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
+            'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor:\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nI - DO DEPÓSITO\nRequer o depósito da quantia/objeto no prazo de 5 dias (Art. 542, I CPC).\n\nII - DO MÉRITO\n(Explicar recusa ou dúvida no pagamento - Art. 544 CPC).\n\nIII - REQUERIMENTOS FINAIS\na) Deferimento do depósito;\nb) Notificação do consignatário para levantar ou contestar;\nc) PROCEDÊNCIA para declarar extinta a obrigação e dar quitação das parcelas;\nd) Honorários.\n\nValor da causa: R$ ...\nNestes Termos, Pede Deferimento.`,
+            'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor:\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nI - DA SUSPENSÃO (Prazo de 30 dias - Art. 853 CLT).\nII - DO MÉRITO (Falta grave - Art. 482 CLT).\nIII - REQUERIMENTOS FINAIS\na) Notificação do requerido;\nb) Oitiva de até 6 testemunhas (Art. 821 CLT);\nc) Procedência para rescindir o contrato por justa causa.\n\nNestes Termos, Pede Deferimento.`,
+            'HOMOLOG': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE 1 e NOME DO REQUERENTE 2, por seus advogados distintos, vêm, com fulcro no Art. 855-B da CLT, requerer:\n\nHOMOLOGAÇÃO DE TRANSAÇÃO EXTRAJUDICIAL\n\nI - DOS TERMOS (Verbas, valores e prazos).\nII - DOS PEDIDOS\na) Suspensão do prazo prescricional (Art. 855-E CLT);\nb) Homologação por sentença (Título Executivo);\nc) Justiça gratuita.\n\nNestes Termos, Pedem Deferimento.`,
+            'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor:\n\nRECURSO ORDINÁRIO\n\npara o Egrégio TRT. Pressupostos de admissibilidade presentes (Tempestividade e Preparo anexos). Requer intimação da parte contrária e remessa ao Tribunal.\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO\n\nI - PRELIMINARES/PREJUDICIAIS RECURSAIS\nII - MÉRITO (REFORMA DO JULGADO)\n(Tese: Fato, Fundamento e Pedido de Reforma).\n\nIII - CONCLUSÃO\nRequer o CONHECIMENTO e PROVIMENTO do recurso.\n\nLocal e Data. Advogado... OAB...`,
+            'RR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 896 da CLT, interpor RECURSO DE REVISTA.\n\n----------\n\nRAZÕES DO RECURSO DE REVISTA\n\nI - TRANSCENDÊNCIA (Art. 896-A CLT);\nII - PRESSUPOSTOS INTRÍNSECOS (Divergência ou Violação);\nIII - PREQUESTIONAMENTO (Transcrição do trecho da decisão - Art. 896, §1º-A CLT).\nIV - CONCLUSÃO: Conhecimento e Provimento.`,
+            'AI': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. Declara a formação do instrumento (Art. 897, § 5º CLT). Preparo recolhido (Art. 899, §7º CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE INSTRUMENTO\n\nI - DA REFORMA (Demonstrar cabimento do recurso destrancado).\nII - CONCLUSÃO: Provimento para processar o recurso denegado.`,
+            'ED': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor:\n\nEMBARGOS DE DECLARAÇÃO\n\nI - CABIMENTO (Omissão, Contradição, Obscuridade ou Erro Material).\nII - RAZÕES E PEDIDO: Sanar o vício com efeito modificativo.`,
+            'AG_INTERNO': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, vem, com fulcro no Art. 1.021 do CPC, interpor AGRAVO INTERNO.\n\nI - RAZÕES: Impugnação específica dos fundamentos da decisão monocrática.\nII - CONCLUSÃO: Retratação ou Provimento.`,
+            'CONTRA': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar:\n\nCONTRARRAZÕES AO RECURSO (...)\n\nI - MÉRITO: Manutenção da decisão.\nII - CONCLUSÃO: Não provimento do recurso adverso.`,
+            'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE PETIÇÃO\n\nI - MÉRITO (Reforma na execução).\nII - CONCLUSÃO: Conhecimento e Provimento.`,
+            'EEX': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO EXECUTADO, já qualificado, vem, com fulcro no Art. 884 da CLT, opor:\n\nEMBARGOS À EXECUÇÃO\n\n(Garantia do juízo comprovada).\nI - MÉRITO (Art. 884 CLT).\nII - PEDIDO: Procedência para ajustar a execução.`,
+            'EX_PRE': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO EXECUTADO, vem, com base na Súmula 393 do TST, opor:\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nI - CABIMENTO (Ordem pública - sem garantia do juízo).\nII - MÉRITO E PEDIDO: Extinção da execução.`,
+            'IDPJ': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO REQUERENTE, vem, com fulcro no Art. 855-A da CLT, suscitar:\n\nINCIDENTE DE DESCONSIDERAÇÃO DA PERSONALIDADE JURÍDICA\n\nI - MÉRITO (Art. 50 CC / Art. 28 CDC).\nII - PEDIDO: Citação dos sócios e suspensão do processo (Art. 134, §3º CPC).`,
+            'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar:\n\nMANDADO DE SEGURANÇA COM PEDIDO LIMINAR\n\nI - CABIMENTO (OJ 92 SDI-2).\nII - DA LIMINAR (Fumus boni iuris e Periculum in mora).\nIII - MÉRITO (Direito Líquido e Certo).\nIV - PEDIDOS: Liminar, Notificação da Autoridade Coatora, Ciência ao Órgão de Representação, Oitiva do MPT e Segurança Definitiva.\n\nValor da causa: R$ ...`,
+            'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor:\n\nAÇÃO RESCISÓRIA\n\nI - DEPÓSITO PRÉVIO (20% - Art. 836 CLT).\nII - CABIMENTO (Art. 966 CPC - Trânsito em julgado).\nIII - PEDIDOS: Juízo Rescindente (desconstituição) e Juízo Rescisório (novo julgamento).\n\nValor da causa: R$ ...`,
+            'ACUM': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO SINDICATO, substituto processual, vem, com fulcro no Art. 872 da CLT, propor:\n\nAÇÃO DE CUMPRIMENTO\n\nI - MÉRITO (Título Normativo).\nII - PEDIDO: Cumprimento e multa normativa.\n\nValor da causa: R$ ...`
+        };
+        
+        document.getElementById('texto-final').value = pecas[tipo] || "Peça não mapeada.";
+        window.autoSave(); 
+        window.toggleEstruturas();
     };
 
-    if(alertas[tipo]) alert(alertas[tipo]);
-
-    const pecas = {
-        // --- CONHECIMENTO ---
-        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
-
-        'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
-
-        'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor:\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nI - DO DEPÓSITO\nRequer o depósito da quantia/objeto no prazo de 5 dias (Art. 542, I CPC).\n\nII - DO MÉRITO\n(Explicar recusa ou dúvida no pagamento - Art. 544 CPC).\n\nIII - REQUERIMENTOS FINAIS\na) Deferimento do depósito;\nb) Notificação do consignatário para levantar ou contestar;\nc) PROCEDÊNCIA para declarar extinta a obrigação e dar quitação das parcelas;\nd) Honorários.\n\nValor da causa: R$ ...\nNestes Termos, Pede Deferimento.`,
-
-        'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor:\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nI - DA SUSPENSÃO (Prazo de 30 dias - Art. 853 CLT).\nII - DO MÉRITO (Falta grave - Art. 482 CLT).\nIII - REQUERIMENTOS FINAIS\na) Notificação do requerido;\nb) Oitiva de até 6 testemunhas (Art. 821 CLT);\nc) Procedência para rescindir o contrato por justa causa.\n\nNestes Termos, Pede Deferimento.`,
-
-        'HOMOLOG': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE 1 e NOME DO REQUERENTE 2, por seus advogados distintos, vêm, com fulcro no Art. 855-B da CLT, requerer:\n\nHOMOLOGAÇÃO DE TRANSAÇÃO EXTRAJUDICIAL\n\nI - DOS TERMOS (Verbas, valores e prazos).\nII - DOS PEDIDOS\na) Suspensão do prazo prescricional (Art. 855-E CLT);\nb) Homologação por sentença (Título Executivo);\nc) Justiça gratuita.\n\nNestes Termos, Pedem Deferimento.`,
-
-        'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor:\n\nRECURSO ORDINÁRIO\n\npara o Egrégio TRT. Pressupostos de admissibilidade presentes (Tempestividade e Preparo anexos). Requer intimação da parte contrária e remessa ao Tribunal.\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO\n\nI - PRELIMINARES/PREJUDICIAIS RECURSAIS\nII - MÉRITO (REFORMA DO JULGADO)\n(Tese: Fato, Fundamento e Pedido de Reforma).\n\nIII - CONCLUSÃO\nRequer o CONHECIMENTO e PROVIMENTO do recurso.\n\nLocal e Data. Advogado... OAB...`,
-
-        'RR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 896 da CLT, interpor RECURSO DE REVISTA.\n\n----------\n\nRAZÕES DO RECURSO DE REVISTA\n\nI - TRANSCENDÊNCIA (Art. 896-A CLT);\nII - PRESSUPOSTOS INTRÍNSECOS (Divergência ou Violação);\nIII - PREQUESTIONAMENTO (Transcrição do trecho da decisão - Art. 896, §1º-A CLT).\nIV - CONCLUSÃO: Conhecimento e Provimento.`,
-
-        'AI': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. Declara a formação do instrumento (Art. 897, § 5º CLT). Preparo recolhido (Art. 899, §7º CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE INSTRUMENTO\n\nI - DA REFORMA (Demonstrar cabimento do recurso destrancado).\nII - CONCLUSÃO: Provimento para processar o recurso denegado.`,
-
-        'ED': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor:\n\nEMBARGOS DE DECLARAÇÃO\n\nI - CABIMENTO (Omissão, Contradição, Obscuridade ou Erro Material).\nII - RAZÕES E PEDIDO: Sanar o vício com efeito modificativo.`,
-
-        'AG_INTERNO': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, vem, com fulcro no Art. 1.021 do CPC, interpor AGRAVO INTERNO.\n\nI - RAZÕES: Impugnação específica dos fundamentos da decisão monocrática.\nII - CONCLUSÃO: Retratação ou Provimento.`,
-
-        'CONTRA': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar:\n\nCONTRARRAZÕES AO RECURSO (...)\n\nI - MÉRITO: Manutenção da decisão.\nII - CONCLUSÃO: Não provimento do recurso adverso.`,
-
-        'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE PETIÇÃO\n\nI - MÉRITO (Reforma na execução).\nII - CONCLUSÃO: Conhecimento e Provimento.`,
-
-        'EEX': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO EXECUTADO, já qualificado, vem, com fulcro no Art. 884 da CLT, opor:\n\nEMBARGOS À EXECUÇÃO\n\n(Garantia do juízo comprovada).\nI - MÉRITO (Art. 884 CLT).\nII - PEDIDO: Procedência para ajustar a execução.`,
-
-        'EX_PRE': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO EXECUTADO, vem, com base na Súmula 393 do TST, opor:\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nI - CABIMENTO (Ordem pública - sem garantia do juízo).\nII - MÉRITO E PEDIDO: Extinção da execução.`,
-
-        'IDPJ': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO REQUERENTE, vem, com fulcro no Art. 855-A da CLT, suscitar:\n\nINCIDENTE DE DESCONSIDERAÇÃO DA PERSONALIDADE JURÍDICA\n\nI - MÉRITO (Art. 50 CC / Art. 28 CDC).\nII - PEDIDO: Citação dos sócios e suspensão do processo (Art. 134, §3º CPC).`,
-
-        'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar:\n\nMANDADO DE SEGURANÇA COM PEDIDO LIMINAR\n\nI - CABIMENTO (OJ 92 SDI-2).\nII - DA LIMINAR (Fumus boni iuris e Periculum in mora).\nIII - MÉRITO (Direito Líquido e Certo).\nIV - PEDIDOS: Liminar, Notificação da Autoridade Coatora, Ciência ao Órgão de Representação, Oitiva do MPT e Segurança Definitiva.\n\nValor da causa: R$ ...`,
-
-        'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor:\n\nAÇÃO RESCISÓRIA\n\nI - DEPÓSITO PRÉVIO (20% - Art. 836 CLT).\nII - CABIMENTO (Art. 966 CPC - Trânsito em julgado).\nIII - PEDIDOS: Juízo Rescindente (desconstituição) e Juízo Rescisório (novo julgamento).\n\nValor da causa: R$ ...`,
-
-        'ACUM': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO SINDICATO, substituto processual, vem, com fulcro no Art. 872 da CLT, propor:\n\nAÇÃO DE CUMPRIMENTO\n\nI - MÉRITO (Título Normativo).\nII - PEDIDO: Cumprimento e multa normativa.\n\nValor da causa: R$ ...`
+    // BACKUP LOCAL (EXPORTAR TXT)
+    window.exportarBackup = () => {
+        const ex = document.getElementById('exam-select').value;
+        const conteudo = `EXAME ${ex}\n\n=== PEÇA ===\n${document.getElementById('texto-final').value}\n\n=== RESPOSTAS ===\n${document.getElementById('res-editor').value}\n\n=== DICAS ===\n${document.getElementById('dicas-editor').value}`;
+        const blob = new Blob([conteudo], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `AryannaMaster_Exame${ex}_Backup.txt`;
+        a.click();
     };
-    
-    document.getElementById('texto-final').value = pecas[tipo] || "Peça não mapeada.";
-    window.autoSave(); 
-    window.toggleEstruturas();
-};
 
     // FUNÇÕES DE UI E PDF (PRESERVADAS)
     let currentPdf = null;
@@ -255,6 +246,7 @@
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
         get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
+        document.getElementById('checklist-area').style.display = 'none';
     };
 
     window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display==='block'?'none':'block'; };
@@ -275,4 +267,3 @@
 </script>
 </body>
 </html>
-
