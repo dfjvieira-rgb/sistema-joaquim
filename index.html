@@ -167,4 +167,43 @@
         isRendering = false;
     };
 
-    window.mudarPagina = (d) => { if (pdfDoc && !isRendering) { let n = pageNum + d; if (n >= 1 && n <= pdfDoc.numPages) { pageNum = n; window.renderizarPagina(); } }
+    window.mudarPagina = (d) => { if (pdfDoc && !isRendering) { let n = pageNum + d; if (n >= 1 && n <= pdfDoc.numPages) { pageNum = n; window.renderizarPagina(); } } };
+    window.irParaPagina = (v) => { let p = parseInt(v); if (p >= 1 && p <= pdfDoc.numPages) { pageNum = p; window.renderizarPagina(); } };
+
+    window.autoSave = () => { 
+        window.isEditing = true; clearTimeout(window.sv); 
+        window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); 
+    };
+
+    window.saveRascunho = () => { const ex = document.getElementById('exam-select').value; set(ref(db, `v3_rascunho/exame_${ex}`), document.getElementById('rascunho-editor').value); };
+    window.saveDicas = () => { const ex = document.getElementById('exam-select').value; set(ref(db, `v3_dicas/exame_${ex}`), document.getElementById('dicas-editor').value); };
+    window.loadPostIt = (ex) => {
+        get(ref(db, `v3_rascunho/exame_${ex}`)).then((s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
+        get(ref(db, `v3_dicas/exame_${ex}`)).then((s) => { document.getElementById('dicas-editor').value = s.val() || ""; });
+    };
+
+    window.abrirPostIt = () => { const ex = document.getElementById('exam-select').value; document.getElementById('titulo-postit').innerText = `📌 POST-IT (EXAME ${ex})`; document.getElementById('modal-rascunho').style.display = 'flex'; };
+    window.abrirDicas = () => { document.getElementById('modal-dicas').style.display = 'flex'; };
+    window.abrirEvolucao = () => { window.location.href = 'evolucao.html'; };
+    window.abrirPecas = () => { window.location.href = 'pecas.html'; };
+    window.limparFolha = () => { if(confirm("Limpar a folha principal?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
+    window.finalizarEArquivar = () => { alert("Treino salvo com sucesso!"); };
+
+    window.mudarExame = () => { const ex = document.getElementById('exam-select').value; window.carregarPDF('prova'); window.loadPostIt(ex); };
+    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
+
+    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) {
+        let opt = document.createElement('option'); let num = i < 10 ? "0" + i : i;
+        opt.value = num; opt.innerText = `EXAME ${num}`; if(i==35) opt.selected = true; sel.appendChild(opt);
+    }
+
+    let lns = ""; for(let i=1; i<=350; i++) lns += i + "<br>"; document.getElementById('line-nums-main').innerHTML = lns;
+    let flns = ""; for(let i=1; i<=30; i++) flns += i + "<br>"; document.getElementById('fgv-line-nums').innerHTML = flns;
+    
+    window.mudarExame();
+</script>
+</body>
+</html>
