@@ -2,126 +2,296 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MENTORIA OAB | ESTRATÉGIA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PROJETOS ÍNTEGROS | MASTER OAB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
-        :root { --primary: #2563eb; --gold: #d4af37; --bg: #0f172a; --fgv-border: #1e293b; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #333; min-height: 100vh; padding: 10px; }
+        :root {
+            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #dc2626;
+            --bg-site: #0f172a; --gold: #d4af37; --pen-blue: #1e3a8a; --rascunho-bg: #fefce8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #333; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Container Estilo FGV */
-        .m-container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 95vh; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
+        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1000; color: white; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         
-        /* Navegação por Abas */
-        .m-nav { display: flex; background: #f1f5f9; border-bottom: 1px solid #ddd; }
-        .m-nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: 700; font-size: 0.7rem; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; }
-        .m-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+        .main-container { flex: 1; display: flex; overflow: hidden; }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
         
-        .m-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .pane { display: none; flex: 1; flex-direction: column; }
-        .pane.active { display: flex; }
+        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 5px; border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: nowrap; overflow-x: auto; }
+        .btn-symbol { height: 36px; min-width: 38px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: white; }
+        
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; font-weight: bold; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
+        
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
+        .tab { padding: 8px 12px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
+        .tab.active { background: #fff; color: var(--primary); font-weight: bold; }
+        
+        #pdf-viewport, #espelho-viewport { flex: 1; overflow: auto; background: #525659; }
+        #espelho-viewport { background: #fff; color: #1e293b; padding: 20px; display: none; }
+        .item-espelho { margin-bottom: 15px; padding: 12px; border-left: 4px solid var(--success); background: #f0fdf4; border-radius: 4px; }
 
-        /* Card Estilo Folha de Respostas */
-        .fgv-card { border: 2px solid var(--fgv-border); margin-bottom: 20px; position: relative; padding: 20px 15px 15px; flex: 1; display: flex; flex-direction: column; }
-        .fgv-tag { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 8px; font-size: 10px; font-weight: 900; border: 1px solid var(--fgv-border); color: #000; }
+        /* MODAIS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 12px; padding: 0; color: #1e293b; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        .fgv-input { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #1e3a8a; flex: 1; resize: none; font-family: inherit; background-image: linear-gradient(transparent, transparent 27px, #f1f5f9 28px); background-size: 100% 28px; }
+        /* ESTILO MENTORIA DENTRO DO MODAL */
+        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.8rem; }
+        .m-nav { display: flex; background: #f1f5f9; }
+        .m-nav button { flex: 1; padding: 12px 5px; border: none; background: none; font-weight: 700; font-size: 0.65rem; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; }
+        .m-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+        .m-content { padding: 15px; flex: 1; overflow-y: auto; }
+        .pane { display: none; }
+        .pane.active { display: block; }
+        .fgv-card { border: 2px solid #1e293b; margin-bottom: 10px; position: relative; padding: 15px 10px 10px; background: #fff; }
+        .fgv-tag { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 5px; font-size: 9px; font-weight: 900; border: 1px solid #1e293b; }
+        .fgv-input { width: 100%; border: none; outline: none; font-size: 14px; line-height: 1.6; color: #1e3a8a; min-height: 200px; resize: none; background-image: linear-gradient(transparent, transparent 24px, #f1f5f9 25px); background-size: 100% 25px; }
+
+        #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
         
-        .status { padding: 10px; font-size: 10px; text-align: center; background: #f8fafc; color: #94a3b8; font-weight: bold; border-top: 1px solid #eee; }
-        
-        /* Dicas Rápidas */
-        .quick-tips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .tip-box { background: #fffbeb; border: 1px solid #fef3c7; padding: 8px; border-radius: 4px; font-size: 11px; color: #92400e; }
+        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
     </style>
 </head>
 <body>
-    <div class="m-container">
-        <div class="m-header">ARYANNA MASTER | MENTORIA & ESTRATÉGIA</div>
-        
-        <div class="m-nav">
-            <button class="active" onclick="tab(event, 't1')">📌 Teses de Ouro</button>
-            <button onclick="tab(event, 't2')">💡 Dicas Aula</button>
-            <button onclick="tab(event, 't3')">✅ Checklist</button>
-        </div>
 
+<header>
+    <div class="logo">PROJETOS ÍNTEGROS | MASTER OAB</div>
+    <div id="timer-display" style="color:var(--gold)">05:00:00</div>
+</header>
+
+<div class="main-container">
+    <section class="editor-section">
+        <div class="toolbar">
+            <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
+            <button class="btn-symbol" title="Mentoria Aryanna" style="background:var(--gold)" onclick="window.abrirMentoria()">🏆</button>
+            <button class="btn-symbol" title="Museu" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" title="Estruturas" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" title="Post-it" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" title="Importar" onclick="window.importarDados()">📥</button>
+            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
+        </div>
+        <div class="paper-wrapper">
+            <div class="paper-sheet">
+                <div class="line-nums" id="line-nums-main"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="viewer-section" id="viewer">
+        <div class="tabs">
+            <button id="btn-tab-prova" class="tab active" onclick="window.switchTabPDF('prova')">PROVA</button>
+            <button id="btn-tab-gabarito" class="tab" onclick="window.switchTabPDF('gabarito')">GABARITO</button>
+            <button id="btn-tab-espelho" class="tab" onclick="window.switchTabEspelho()">⭐ ESPELHO</button>
+        </div>
+        <div id="pdf-viewport"></div>
+        <div id="espelho-viewport">
+            <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 5px;">Espelho de Correção</h3>
+            <div id="espelho-lista"></div>
+        </div>
+    </section>
+</div>
+
+<div id="modal-mentoria" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content">
+        <div class="m-header">ARYANNA MASTER | MENTORIA & ESTRATÉGIA</div>
+        <div style="padding: 10px; background: #fff; text-align: center; border-bottom: 1px solid #ddd;">
+            <button onclick="window.open('vade.pdf', '_blank')" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;">📖 ABRIR VADE MECUM (PDF)</button>
+        </div>
+        <div class="m-nav">
+            <button id="btn-t1" class="active" onclick="window.tabMentoria('t1')">📌 Teses</button>
+            <button id="btn-t2" onclick="window.tabMentoria('t2')">💡 Dicas</button>
+            <button id="btn-t3" onclick="window.tabMentoria('t3')">✅ Checklist</button>
+        </div>
         <div class="m-content">
             <div id="t1" class="pane active">
-                <div class="fgv-card">
-                    <div class="fgv-tag">FUNDAMENTAÇÃO E TESES PERSISTENTES</div>
-                    <textarea id="db-teses" class="fgv-input" placeholder="Ex: Art. 461 CLT para Equiparação..." oninput="save()"></textarea>
-                </div>
+                <div class="fgv-card"><div class="fgv-tag">FUNDAMENTAÇÃO</div>
+                <textarea id="db-teses" class="fgv-input" placeholder="Teses persistentes..." oninput="window.saveMentoria()"></textarea></div>
             </div>
-
             <div id="t2" class="pane">
-                <div class="fgv-card">
-                    <div class="fgv-tag">DICAS DA ARYANNA & LEMBRETES</div>
-                    <textarea id="db-dicas" class="fgv-input" placeholder="Ex: Não esquecer de pedir honorários 15%..." oninput="save()"></textarea>
-                </div>
-                <div class="quick-tips">
-                    <div class="tip-box">🎯 <b>Foco:</b> Indicar Artigos e Súmulas.</div>
-                    <div class="tip-box">⚠️ <b>Cilada:</b> Valor da Causa na RT.</div>
-                </div>
+                <div class="fgv-card"><div class="fgv-tag">DICAS AULA</div>
+                <textarea id="db-dicas" class="fgv-input" placeholder="Lembretes da Aryanna..." oninput="window.saveMentoria()"></textarea></div>
             </div>
-
             <div id="t3" class="pane">
-                <div class="fgv-card">
-                    <div class="fgv-tag">CONFERÊNCIA FINAL (FGV)</div>
-                    <textarea id="db-check" class="fgv-input" placeholder="1. Endereçamento correto?&#10;2. Pediu Gratuidade?..." oninput="save()"></textarea>
-                </div>
+                <div class="fgv-card"><div class="fgv-tag">CHECKLIST FINAL</div>
+                <textarea id="db-check" class="fgv-input" placeholder="Conferência FGV..." oninput="window.saveMentoria()"></textarea></div>
             </div>
         </div>
-
-        <div class="status" id="st">Sincronizado com Nuvem</div>
+        <div id="st-mentoria" style="font-size:10px; text-align:center; padding:5px; background: #f8fafc; color: #94a3b8;">Sincronizado</div>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        
-        const config = { 
-            apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-            authDomain: "masteroab-db5e1.firebaseapp.com", 
-            projectId: "masteroab-db5e1", 
-            databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-        };
-        
-        const app = initializeApp(config); 
-        const db = getDatabase(app);
-        const path = 'v5_mentoria_isolada'; // Caminho único para não misturar
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px;"><h3>⚖️ ESTRUTURAS</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px;"><h3>📚 MUSEU</h3><br><div id="lista-historico"></div></div></div>
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px; background:var(--rascunho-bg)"><h3>📌 POST-IT</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
-        window.tab = (e, id) => {
-            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.m-nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); 
-            e.currentTarget.classList.add('active');
-        };
+<button id="mobile-btn" onclick="document.getElementById('viewer').classList.toggle('active')">📑</button>
 
-        window.save = () => {
-            document.getElementById('st').innerText = "Salvando...";
-            clearTimeout(window.sv);
-            window.sv = setTimeout(() => {
-                set(ref(db, path), {
-                    t: document.getElementById('db-teses').value,
-                    d: document.getElementById('db-dicas').value,
-                    c: document.getElementById('db-check').value
-                }).then(() => { 
-                    document.getElementById('st').innerText = "✓ Conteúdo Salvo"; 
-                });
-            }, 800);
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const app = initializeApp(config); const db = getDatabase(app);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        onValue(ref(db, path), (s) => {
-            if(s.exists()){
-                const data = s.val();
-                if(!document.activeElement.classList.contains('fgv-input')){
-                    document.getElementById('db-teses').value = data.t || "";
-                    document.getElementById('db-dicas').value = data.d || "";
-                    document.getElementById('db-check').value = data.c || "";
-                }
+    // --- LOGICA MENTORIA (O SEU CODIGO ENVIADO) ---
+    window.abrirMentoria = () => document.getElementById('modal-mentoria').style.display = 'flex';
+    
+    window.tabMentoria = (id) => {
+        document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.m-nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('btn-' + id).classList.add('active');
+    };
+
+    window.saveMentoria = () => {
+        document.getElementById('st-mentoria').innerText = "Salvando...";
+        clearTimeout(window.svMent);
+        window.svMent = setTimeout(() => {
+            set(ref(db, 'v5_mentoria_isolada'), {
+                t: document.getElementById('db-teses').value,
+                d: document.getElementById('db-dicas').value,
+                c: document.getElementById('db-check').value
+            }).then(() => { document.getElementById('st-mentoria').innerText = "✓ Sincronizado"; });
+        }, 800);
+    };
+
+    onValue(ref(db, 'v5_mentoria_isolada'), (s) => {
+        if(s.exists() && document.activeElement.tagName !== 'TEXTAREA'){
+            const d = s.val();
+            document.getElementById('db-teses').value = d.t || "";
+            document.getElementById('db-dicas').value = d.d || "";
+            document.getElementById('db-check').value = d.c || "";
+        }
+    });
+
+    // --- ESTRUTURAS ---
+    const estruturas = [
+        { nome: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., propor:\n\nRECLAMAÇÃO TRABALHISTA..." },
+        { nome: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº: ...\n\nRECLAMADO..., oferecer:\n\nCONTESTAÇÃO..." },
+        { nome: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECORRENTE..., interpor:\n\nRECURSO ORDINÁRIO..." },
+        { nome: "Mandado de Segurança", corpo: "EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO TRT DA ... REGIÃO\n\nIMPETRANTE..., impetrar:\n\nMANDADO DE SEGURANÇA COM PEDIDO LIMINAR..." }
+    ];
+
+    window.abrirPecas = () => {
+        const lista = document.getElementById('lista-pecas');
+        lista.innerHTML = estruturas.map(p => `<button class="btn-peca" onclick="window.injetarPeca(\`${p.corpo}\`)">${p.nome}</button>`).join('');
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+
+    window.injetarPeca = (txt) => { document.getElementById('texto-final').value = txt; window.autoSave(); document.getElementById('modal-pecas').style.display = 'none'; };
+
+    // --- PDF E GERAL ---
+    window.switchTabPDF = (tipo) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tipo === 'prova' ? 'btn-tab-prova' : 'btn-tab-gabarito').classList.add('active');
+        document.getElementById('pdf-viewport').style.display = 'block';
+        document.getElementById('espelho-viewport').style.display = 'none';
+        window.carregarPDF(tipo);
+    };
+
+    window.switchTabEspelho = () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('btn-tab-espelho').classList.add('active');
+        document.getElementById('pdf-viewport').style.display = 'none';
+        document.getElementById('espelho-viewport').style.display = 'block';
+        window.carregarDadosEspelho();
+    };
+
+    window.carregarPDF = async (tipo) => {
+        const ex = document.getElementById('exam-select').value;
+        const url = tipo === 'prova' ? `ro${ex}.pdf` : `ro${ex}-gabarito.pdf`;
+        const container = document.getElementById('pdf-viewport');
+        container.innerHTML = "<p style='color:white; padding:20px;'>Carregando...</p>";
+        try {
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            container.innerHTML = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const vp = page.getViewport({ scale: 1.2 });
+                const canvas = document.createElement('canvas');
+                canvas.style.display = "block"; canvas.style.margin = "0 auto 10px";
+                container.appendChild(canvas);
+                canvas.height = vp.height; canvas.width = vp.width;
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
             }
-        });
-    </script>
+        } catch(e) { container.innerHTML = `<p style='color:white; padding:20px;'>Arquivo não encontrado.</p>`; }
+    };
+
+    window.autoSave = () => {
+        window.isEditing = true; clearTimeout(window.sv);
+        window.sv = setTimeout(() => {
+            set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value);
+            window.isEditing = false;
+        }, 1000);
+    };
+
+    window.carregarDadosEspelho = async () => {
+        const ex = document.getElementById('exam-select').value;
+        const lista = document.getElementById('espelho-lista');
+        const snap = await get(ref(db, `banco_espelhos/${ex}`));
+        if(snap.exists()) {
+            lista.innerHTML = snap.val().items.map(i => `<div class="item-espelho"><strong>${i.topico}</strong><br><small>${i.fundamentacao}</small><br><b>${i.valor} pts</b></div>`).join('');
+        }
+    };
+
+    window.importarDados = async () => {
+        const json = prompt("JSON do espelho:");
+        if(json) {
+            const ex = document.getElementById('exam-select').value;
+            await set(ref(db, `banco_espelhos/${ex}`), JSON.parse(json));
+            window.carregarDadosEspelho();
+        }
+    };
+
+    window.finalizarEArquivar = async () => {
+        const t = prompt("Título:");
+        if(t) {
+            await push(ref(db, 'historico_treinos'), { titulo: t, texto: document.getElementById('texto-final').value, data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value });
+            alert("Salvo!");
+        }
+    };
+
+    window.abrirEvolucao = async () => {
+        const snap = await get(ref(db, 'historico_treinos'));
+        const list = document.getElementById('lista-historico'); list.innerHTML = "";
+        if(snap.exists()){
+            Object.entries(snap.val()).forEach(([id, item]) => {
+                const div = document.createElement('div');
+                div.style = "padding:10px; border-bottom:1px solid #eee; cursor:pointer;";
+                div.innerHTML = `<b>${item.titulo}</b> <small>(${item.data})</small>`;
+                div.onclick = () => { document.getElementById('texto-final').value = item.texto; document.getElementById('modal-evolucao').style.display='none'; window.autoSave(); };
+                list.appendChild(div);
+            });
+        }
+        document.getElementById('modal-evolucao').style.display = 'flex';
+    };
+
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) {
+        let num = i < 10 ? "0" + i : i;
+        let opt = document.createElement('option');
+        opt.value = num; opt.innerText = `EXAME ${num}`;
+        if(i==36) opt.selected = true;
+        sel.appendChild(opt);
+    }
+
+    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
+    onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
+    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
+    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
+    window.mudarExame = () => { window.carregarPDF('prova'); window.carregarDadosEspelho(); };
+
+    let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
+    document.getElementById('line-nums-main').innerHTML = l;
+    window.carregarPDF('prova');
+</script>
 </body>
 </html>
