@@ -2,116 +2,68 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA MASTER OAB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARYANNA MASTER | MENTORIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --blue: #2563eb; --bg: #0f172a; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* CABEÇALHO */
-        .top-bar { background: #1e293b; padding: 10px; border-bottom: 2px solid var(--gold); display: flex; align-items: center; justify-content: space-between; }
-        
-        /* BOTÃO DO TROFÉU - NOVO ID PARA FORÇAR RESET */
-        #botao-central-mentoria { background: var(--gold); border: none; border-radius: 10px; width: 50px; height: 50px; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        /* ÁREA DE TRABALHO */
-        .editor-container { flex: 1; overflow-y: auto; background: #64748b; padding: 10px; }
-        .folha-branca { background: white; width: 100%; max-width: 800px; min-height: 1500px; margin: 0 auto; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .numeros { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; font-size: 11px; padding-top: 15px; line-height: 28px; color: #94a3b8; }
-        .campo-texto { flex: 1; border: none; outline: none; padding: 15px; font-size: 16px; line-height: 28px; background-image: linear-gradient(#e2e8f0 1px, transparent 1px); background-size: 100% 28px; color: #1e3a8a; }
-
-        /* PAINEL DA ARYANNA (MENTORIA) */
-        #janela-mentoria { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 99999; align-items: center; justify-content: center; }
-        .caixa-mentoria { background: white; width: 90%; max-width: 500px; border-radius: 20px; display: flex; flex-direction: column; max-height: 85vh; overflow: hidden; }
-        .titulo-mentoria { background: #000; color: var(--gold); padding: 20px; text-align: center; font-weight: bold; }
-        .btn-pdf-azul { background: var(--blue); color: white; border: none; padding: 15px; font-weight: bold; border-radius: 10px; margin: 15px; cursor: pointer; text-decoration: none; text-align: center; }
-        
-        .abas-mentoria { display: flex; border-bottom: 1px solid #ddd; }
-        .aba-item { flex: 1; padding: 15px; border: none; background: #f1f5f9; cursor: pointer; font-weight: bold; font-size: 12px; }
-        .aba-item.ativa { background: white; color: var(--blue); border-bottom: 3px solid var(--blue); }
-        
-        .conteudo-mentoria { padding: 20px; flex: 1; overflow-y: auto; }
-        .input-mentoria { width: 100%; min-height: 250px; border: 2px solid #000; padding: 10px; font-size: 15px; resize: none; }
+        :root { --gold: #d4af37; --blue: #2563eb; --fgv: #1e293b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; height: 100vh; display: flex; flex-direction: column; }
+        header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 900; border-bottom: 4px solid var(--gold); position: relative; }
+        .back-btn { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 4px; font-size: 11px; }
+        .main { flex: 1; display: flex; flex-direction: column; padding: 10px; max-width: 800px; margin: 0 auto; width: 100%; }
+        .vade-btn { background: var(--blue); color: white; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: 800; margin-bottom: 15px; display: block; }
+        .tabs { display: flex; gap: 4px; }
+        .tab { flex: 1; padding: 12px; background: #cbd5e1; border: 2px solid var(--fgv); border-bottom: none; border-radius: 8px 8px 0 0; font-weight: 800; font-size: 11px; cursor: pointer; color: #475569; text-transform: uppercase; }
+        .tab.active { background: white; color: var(--blue); padding-bottom: 15px; margin-bottom: -2px; z-index: 5; }
+        .sheet { background: white; border: 2px solid var(--fgv); flex: 1; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .sheet-header { background: var(--fgv); color: white; padding: 6px 15px; font-size: 10px; font-weight: 900; }
+        .editor { flex: 1; border: none; outline: none; padding: 20px; font-size: 16px; line-height: 25px; color: #1e3a8a; background-image: linear-gradient(transparent 24px, #f1f5f9 25px); background-size: 100% 25px; resize: none; }
+        #save-status { text-align: center; font-size: 10px; padding: 5px; color: #94a3b8; }
     </style>
 </head>
 <body>
-
-<div class="top-bar">
-    <div style="color:white; font-weight:bold;">SISTEMA MASTER</div>
-    <button id="botao-central-mentoria" onclick="acaoAbrirMentoria()">🏆</button>
-</div>
-
-<div class="editor-container">
-    <div class="folha-branca">
-        <div class="numeros" id="linhas-count"></div>
-        <textarea class="campo-texto" id="area-da-peca" oninput="salvarPeca()"></textarea>
+<header>
+    <a href="index.html" class="back-btn">⬅ VOLTAR</a>
+    ARYANNA MASTER | MENTORIA
+</header>
+<div class="main">
+    <a href="vade.pdf" target="_blank" class="vade-btn">📖 ABRIR VADE MECUM (PDF)</a>
+    <div class="tabs">
+        <button id="tab0" class="tab active" onclick="change(0)">📌 TESES</button>
+        <button id="tab1" class="tab" onclick="change(1)">💡 DICAS</button>
+        <button id="tab2" class="tab" onclick="change(2)">✅ CHECKLIST</button>
     </div>
-</div>
-
-<div id="janela-mentoria" onclick="if(event.target==this) this.style.display='none'">
-    <div class="caixa-mentoria">
-        <div class="titulo-mentoria">ARYANNA MASTER | MENTORIA</div>
-        
-        <a href="vade.pdf" target="_blank" class="btn-pdf-azul">📖 ABRIR APOSTILA PDF</a>
-
-        <div class="abas-mentoria">
-            <button class="aba-item ativa" onclick="mudarAbaMentoria(0)">TESES</button>
-            <button class="aba-item" onclick="mudarAbaMentoria(1)">DICAS</button>
-            <button class="aba-item" onclick="mudarAbaMentoria(2)">CHECKLIST</button>
-        </div>
-        
-        <div class="conteudo-mentoria">
-            <textarea id="texto-mentoria" class="input-mentoria" oninput="salvarDadosMentoria()"></textarea>
-        </div>
+    <div class="sheet">
+        <div class="sheet-header" id="label">FUNDAMENTAÇÃO E TESES</div>
+        <textarea id="mentoria-text" class="editor" oninput="save()"></textarea>
     </div>
+    <div id="save-status">SINCRONIZADO</div>
 </div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    let abaAtiva = 0;
-    let memoriaLocal = { t: "", d: "", c: "" };
+    let active = 0; let store = { t: "", d: "", c: "" };
+    const labels = ["FUNDAMENTAÇÃO E TESES", "DICAS ESTRATÉGICAS", "CHECKLIST FINAL"];
 
-    // FUNÇÃO QUE O TROFÉU CHAMA
-    window.acaoAbrirMentoria = () => {
-        document.getElementById('janela-mentoria').style.display = 'flex';
+    window.change = (idx) => {
+        active = idx;
+        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+        document.getElementById('label').innerText = labels[idx];
+        const area = document.getElementById('mentoria-text');
+        area.value = idx === 0 ? store.t : (idx === 1 ? store.d : store.c);
     };
 
-    window.mudarAbaMentoria = (idx) => {
-        abaAtiva = idx;
-        const botoes = document.querySelectorAll('.aba-item');
-        botoes.forEach((b, i) => b.classList.toggle('ativa', i === idx));
-        
-        const txt = document.getElementById('texto-mentoria');
-        if(idx === 0) txt.value = memoriaLocal.t;
-        if(idx === 1) txt.value = memoriaLocal.d;
-        if(idx === 2) txt.value = memoriaLocal.c;
+    window.save = () => {
+        const val = document.getElementById('mentoria-text').value;
+        if(active === 0) store.t = val; else if(active === 1) store.d = val; else store.c = val;
+        set(ref(db, 'mentoria_v8_full'), store);
     };
 
-    window.salvarDadosMentoria = () => {
-        const val = document.getElementById('texto-mentoria').value;
-        if(abaAtiva === 0) memoriaLocal.t = val;
-        if(abaAtiva === 1) memoriaLocal.d = val;
-        if(abaAtiva === 2) memoriaLocal.c = val;
-        set(ref(db, 'mentoria_v6'), memoriaLocal);
-    };
-
-    onValue(ref(db, 'mentoria_v6'), (s) => {
-        if(s.exists()) {
-            memoriaLocal = s.val();
-            mudarAbaMentoria(abaAtiva);
-        }
-    });
-
-    window.salvarPeca = () => set(ref(db, 'peca_atual'), document.getElementById('area-da-peca').value);
-    onValue(ref(db, 'peca_atual'), (s) => { if(document.activeElement.id !== 'area-da-peca') document.getElementById('area-da-peca').value = s.val() || ""; });
-
-    let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
-    document.getElementById('linhas-count').innerHTML = l;
+    onValue(ref(db, 'mentoria_v8_full'), (s) => { if(s.exists()) { store = s.val(); change(active); } });
 </script>
 </body>
 </html>
