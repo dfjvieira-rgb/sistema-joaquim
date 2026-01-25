@@ -44,7 +44,6 @@
 
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
         #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; }
-        .page-container { position: relative; margin: 10px auto; background: #fff; display: block; width: fit-content; line-height: 0; }
 
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
         .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; }
@@ -54,15 +53,8 @@
         .menu-item { padding: 10px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
         .dark-mode .menu-category { background: #0f172a; color: #94a3b8; }
-
-        .container-nc-input { background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .input-nc-field { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--pen-blue); padding: 10px 5px; font-size: 1rem; margin-bottom: 15px; outline: none; background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; }
-        .textarea-nc-field { width: 100%; height: 100px; background: transparent; border: none; color: var(--pen-blue); font-size: 1rem; line-height: 28px; outline: none; resize: none; background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; }
-        .btn-nc-add { background: var(--toolbar-bg); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; margin-right: 5px; }
-        .btn-nc-save { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
-
-        @media (max-width: 768px) { .viewer-section { display: none; } .viewer-section.active-mobile { display: flex; position: absolute; inset: 0; z-index: 100; } .floating-toggle { display: flex !important; } }
-        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
+        
+        @media (max-width: 768px) { .viewer-section { display: none; } .viewer-section.active-mobile { display: flex; position: absolute; inset: 0; z-index: 100; } }
     </style>
 </head>
 <body class="dark-mode">
@@ -75,12 +67,10 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
+            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol"></select>
             <button class="btn-symbol" title="Questões" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" title="Estruturas Aryanna" onclick="window.toggleEstruturas()">⚖️</button>
+            <button class="btn-symbol" title="Estruturas" onclick="window.toggleEstruturas()">⚖️</button>
             <button class="btn-symbol" title="Não Confunda" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" title="Qual é a Peça" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
@@ -89,7 +79,7 @@
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Escreva aqui..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
             </div>
         </div>
     </section>
@@ -99,42 +89,35 @@
     </section>
 </div>
 
-<button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
-
 <div id="menu-estruturas">
     <div class="menu-category">Peças Básicas</div>
     <div class="menu-item" onclick="window.injetar('RT')">RECLAMAÇÃO TRABALHISTA</div>
     <div class="menu-item" onclick="window.injetar('CON')">CONTESTAÇÃO</div>
     <div class="menu-item" onclick="window.injetar('RO')">RECURSO ORDINÁRIO</div>
     
-    <div class="menu-category">Peças Atípicas</div>
-    <div class="menu-item" onclick="window.injetar('MS')">MANDADO DE SEGURANÇA</div>
-    <div class="menu-item" onclick="window.injetar('AR')">AÇÃO RESCISÓRIA</div>
+    <div class="menu-category">Especiais (Atípicas)</div>
     <div class="menu-item" onclick="window.injetar('ACP')">CONSIGNAÇÃO EM PAGAMENTO</div>
+    <div class="menu-item" onclick="window.injetar('AR')">AÇÃO RESCISÓRIA</div>
+    <div class="menu-item" onclick="window.injetar('MS')">MANDADO DE SEGURANÇA</div>
     
-    <div class="menu-category">Recursos e Incidentes</div>
-    <div class="menu-item" onclick="window.injetar('ED')">EMBARGOS DE DECLARAÇÃO</div>
+    <div class="menu-category">Recursos e Execução</div>
     <div class="menu-item" onclick="window.injetar('AP')">AGRAVO DE PETIÇÃO</div>
     <div class="menu-item" onclick="window.injetar('AI')">AGRAVO DE INSTRUMENTO</div>
-    <div class="menu-item" onclick="window.injetar('CONTRA')">CONTRARRAZÕES</div>
+    <div class="menu-item" onclick="window.injetar('ED')">EMBARGOS DE DECLARAÇÃO</div>
 </div>
 
 <div id="modal-nc" class="modal-full">
-    <div class="modal-header"><button class="btn-nc-add" onclick="window.fecharModal('modal-nc')">VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
+    <div class="modal-header"><button onclick="window.fecharModal('modal-nc')">VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
     <div class="modal-body">
-        <div class="container-nc-input">
-            <div id="box-teses"><input type="text" placeholder="Tese Principal" class="input-nc-field nc-assunto-item"></div>
-            <div id="box-explicações"><textarea placeholder="Diferença..." class="textarea-nc-field nc-explica-item"></textarea></div>
-            <button class="btn-nc-add" onclick="window.addNCField('box-teses', 'input')">+ TESE</button>
-            <button class="btn-nc-add" onclick="window.addNCField('box-explicações', 'textarea')">+ DIFERENÇA</button>
-            <button class="btn-nc-save" onclick="window.saveNC()">SALVAR</button>
-        </div>
+        <div id="box-teses"><input type="text" placeholder="Tese Principal" class="input-nc-field nc-assunto-item"></div>
+        <div id="box-explicações"><textarea placeholder="Diferença..." class="textarea-nc-field nc-explica-item"></textarea></div>
+        <button onclick="window.saveNC()">SALVAR</button>
         <div id="lista-nc"></div>
     </div>
 </div>
 
 <div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><button class="btn-nc-add" onclick="window.fecharModal('modal-respostas')">VOLTAR</button><h3>QUESTÕES</h3></div>
+    <div class="modal-header"><button onclick="window.fecharModal('modal-respostas')">VOLTAR</button><h3>QUESTÕES</h3></div>
     <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div></div>
 </div>
 
@@ -145,54 +128,31 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    const q = "nacionalidade..., estado civil..., profissão..., RG n..., CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., onde recebe intimações";
+    const q = "nacionalidade..., estado civil..., profissão..., RG n..., CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado, com endereço profissional na Rua..., onde recebe intimações";
 
     window.injetar = (tipo) => {
         const editor = document.getElementById('texto-final');
         const est = {
-            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n\n\n\n\n\nNOME DO RECLAMANTE, ${q}, vem, perante Vossa Excelência, com fulcro no Art. 840, § 1º, da CLT, propor\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de NOME DA RECLAMADA, (qualificação e endereço), pelos fatos e fundamentos a seguir expostos:\n\nI - DAS PRELIMINARES\n(Justiça Gratuita, Tramitação Prioritária)\n\nII - DO MÉRITO\n(Fato, Fundamento, Pedido)\n\nIII - DOS REQUERIMENTOS FINAIS\nDiante do exposto, requer a notificação da reclamada para apresentar defesa, sob pena de revelia e confissão. Requer a produção de todas as provas em direito admitidas.\n\nIV - DOS PEDIDOS\na) ...\nb) Honorários de sucumbência (Art. 791-A da CLT)\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos,\nPede Deferimento.\n\nLocal..., Data...\n\nAdvogado...\nOAB n...`,
+            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n\n\n\n\n\nNOME DO RECLAMANTE, ${q}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA em face de NOME DA RECLAMADA, (endereço), pelos motivos:\n\nI - PRELIMINARES\n\nII - MÉRITO\n\nIII - REQUERIMENTOS FINAIS\n\nIV - PEDIDOS\n\nValor da causa R$...\nNestes Termos, Pede Deferimento.\nLocal..., Data...\nAdvogado... OAB...`,
             
-            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\n\n\n\n\nNOME DA RECLAMADA, já qualificada nos autos da Reclamação Trabalhista que lhe move NOME DO RECLAMANTE, por seu advogado infra-assinado, vem, perante Vossa Excelência, com fulcro no Art. 847 da CLT, apresentar\n\nCONTESTAÇÃO\n\npelos fundamentos a seguir expostos:\n\nI - DAS PRELIMINARES\n(Inépcia, Ilegitimidade, Perempção - Art. 337 CPC)\n\nII - DAS PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal / Quinquenal - Art. 7º, XXIX, CF/88)\n\nIII - DO MÉRITO\n(Contestar ponto a ponto)\n\nIV - DOS REQUERIMENTOS FINAIS E PEDIDOS\nRequer o acolhimento das preliminares ou, no mérito, a improcedência total dos pedidos. Requer a produção de provas.\n\nNestes Termos, Pede Deferimento.\nLocal..., Data...\nAdvogado... OAB...`,
+            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\n\n\n\n\nNOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO à RT movida por NOME DO RECLAMANTE, pelos motivos:\n\nI - PRELIMINARES\n\nII - PREJUDICIAIS\n\nIII - MÉRITO\n\nIV - REQUERIMENTOS E PEDIDOS\n\nNestes Termos, Pede Deferimento.`,
             
-            'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\n\n\n\n\nNOME DO RECORRENTE, já qualificado, por seu advogado, inconformado com a r. sentença, vem, perante Vossa Excelência, com fulcro no Art. 895, I da CLT, interpor\n\nRECURSO ORDINÁRIO\n\npara o Egrégio TRT da ... Região. Encontram-se presentes os pressupostos de admissibilidade, inclusive preparo (anexo). Requer a notificação da parte contrária para contrarrazões.\n\nNestes Termos, Pede Deferimento.\nLocal..., Data...\nAdvogado... OAB...\n\n---------- (PÁGINA 2) ----------\n\nRAZÕES DO RECURSO ORDINÁRIO\nEgrégio Tribunal,\nColenda Turma...\n\nI - PRELIMINARES DE NULIDADE\n(Cerceamento de defesa, negativa de prestação jurisdicional)\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição)\n\nIII - MÉRITO (Reforma da Sentença)\n\nIV - CONCLUSÃO / PEDIDO DE REFORMA\nRequer o conhecimento e provimento do recurso para reformar a r. sentença nos termos acima expostos.\n\nLocal..., Data...\nAdvogado... OAB...`,
-            
-            'ED': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ... (ou Desembargador Relator)\n\nProcesso nº ...\n\n\n\n\n\nNOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor\n\nEMBARGOS DE DECLARAÇÃO\n\nem face da r. decisão de fls..., pelos motivos de:\n\nI - CABIMENTO E TEMPESTIVIDADE (5 dias)\n\nII - DA OMISSÃO / CONTRADIÇÃO / OBSCURIDADE / ERRO MATERIAL\n\nIII - PEDIDO (Efeito Modificativo/Prequestionamento)`,
-            
-            'CONTRA': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\nNOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar\n\nCONTRARRAZÕES AO RECURSO ORDINÁRIO\n\ninterposto pela parte adversa. Requer a remessa ao Egrégio TRT.\n\nNestes Termos, Pede Deferimento.\nLocal..., Data...\nAdvogado... OAB...\n\n----------\nRAZÕES DAS CONTRARRAZÕES\nEgrégio Tribunal...\n\nI - PRELIMINARES (Inadmissibilidade do recurso alheio)\n\nII - MÉRITO (Manutenção da Sentença)`
+            'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n\n\n\n\n\nNOME DO CONSIGNANTE, ${q}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO em face de NOME DO CONSIGNADO, (qualificação), pelos motivos:\n\nI - DOS FATOS\n\nII - DO DEPÓSITO (Requerer o depósito da quantia em 5 dias - Art. 542, I CPC)\n\nIII - MÉRITO\n\nIV - REQUERIMENTOS E PEDIDOS (Notificação para levantar o depósito ou contestar)\n\nValor da causa R$...\nNestes Termos, Pede Deferimento.`,
+
+            'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO\n\n\n\n\n\n\n\n\n\nNOME DO AUTOR, ${q}, vem, com fulcro no Art. 966 do CPC e Art. 836 da CLT, propor AÇÃO RESCISÓRIA em face de NOME DO RÉU, (qualificação), visando desconstituir a decisão no processo nº..., pelos motivos:\n\nI - DO DEPÓSITO PRÉVIO (Comprovar o depósito de 20% - Art. 836 CLT)\n\nII - DO CABIMENTO (Indicar inciso do Art. 966 CPC)\n\nIII - MÉRITO (Corte rescisório e novo julgamento)\n\nIV - REQUERIMENTOS E PEDIDOS\n\nValor da causa R$...\nNestes Termos, Pede Deferimento.`,
+
+            'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\n\n\n\n\n\n\n\n\nNOME DO IMPETRANTE, ${q}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar MANDADO DE SEGURANÇA COM PEDIDO LIMINAR contra ato do Juiz da ... VT de ...\n\nI - DIREITO LÍQUIDO E CERTO\n\nII - LIMINAR (Fumus Boni Iuris e Periculum In Mora)\n\nIII - PEDIDOS`,
+
+            'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\n\n\n\n\nNOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO... (Delimitação de matérias e valores Art. 897, § 1º)`,
+
+            'AI': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\n\n\n\n\n\n\n\n\n\nNOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO... (Declaração de autenticidade e formação do instrumento Art. 897, § 5º)`
         };
         editor.value = est[tipo]; window.autoSave(); window.toggleEstruturas();
-    };
-
-    window.addNCField = (containerId, type) => {
-        const container = document.getElementById(containerId);
-        const el = document.createElement(type === 'input' ? 'input' : 'textarea');
-        el.className = type === 'input' ? 'input-nc-field nc-assunto-item' : 'textarea-nc-field nc-explica-item';
-        el.placeholder = "...";
-        container.appendChild(el);
-    };
-
-    window.saveNC = () => {
-        const ex = document.getElementById('exam-select').value;
-        const teses = Array.from(document.querySelectorAll('.nc-assunto-item')).map(i => i.value).filter(v => v.trim() !== "").join(' / ');
-        const explicações = Array.from(document.querySelectorAll('.nc-explica-item')).map(i => i.value).filter(v => v.trim() !== "");
-        if(teses && explicações.length > 0) {
-            push(ref(db, `v7_nc/exame_${ex}`), { assunto: teses, explicações }).then(() => {
-                document.getElementById('box-teses').innerHTML = '<input type="text" placeholder="Tese Principal" class="input-nc-field nc-assunto-item">';
-                document.getElementById('box-explicações').innerHTML = '<textarea placeholder="Diferença..." class="textarea-nc-field nc-explica-item"></textarea>';
-            });
-        }
     };
 
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
-        onValue(ref(db, `v7_nc/exame_${ex}`), (s) => {
-            const d = s.val(); const lista = document.getElementById('lista-nc'); lista.innerHTML = "";
-            if(d) Object.entries(d).forEach(([id, it]) => { 
-                let explicaHtml = it.explicações.map(t => `<div style="margin-top:10px; line-height:28px; background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px;">• ${t}</div>`).join('');
-                lista.innerHTML += `<div style="background:var(--paper); padding:15px; margin-bottom:15px; border-left:5px solid var(--gold); border: 1px solid var(--border); color:var(--pen-blue);"><b style="color:var(--gold); text-transform:uppercase;">${it.assunto}</b>${explicaHtml}</div>`; 
-            });
-        });
     };
 
     window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, `v3_treino/exame_${document.getElementById('exam-select').value}`), document.getElementById('texto-final').value); }, 1000); };
