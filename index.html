@@ -3,82 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MASTER OAB | SISTEMA INTEGRADO</title>
+    <title>MASTER OAB | SISTEMA DEFINITIVO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --gold: #d4af37; --bg-site: #0f172a; --pen-blue: #1e3a8a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #333; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background: #1e293b; padding: 10px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; color: white; height: 50px; }
+        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; color: white; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         
-        /* TOOLBAR */
-        .toolbar { background: #fff; padding: 8px; display: flex; gap: 6px; border-bottom: 1px solid #cbd5e1; align-items: center; }
-        .btn-symbol { height: 40px; min-width: 42px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: white; }
+        .main-container { flex: 1; display: flex; overflow: hidden; }
         
-        /* ÁREA DE ESCRITA */
-        .main-container { flex: 1; display: flex; overflow: hidden; background: #64748b; }
-        .paper-sheet { width: 95%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 20px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 20px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
+        /* SEÇÃO ESQUERDA: EDITOR */
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
+        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 5px; border-bottom: 1px solid #cbd5e1; align-items: center; overflow-x: auto; }
+        .btn-symbol { height: 36px; min-width: 38px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: white; flex-shrink: 0; }
+        
+        /* SEÇÃO DIREITA: VISUALIZADOR DE PROVAS */
+        .viewer-section { width: 45%; display: flex; flex-direction: column; background: #1e293b; transition: width 0.3s ease; }
+        .viewer-header { background: #0f172a; padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid var(--gold); }
+        .viewer-content { flex: 1; width: 100%; border: none; background: white; }
 
-        /* PAINEL DE MENTORIA - SISTEMA ARYANNA */
-        #painel-mentoria { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
-        .m-content { background: white; width: 95%; max-width: 550px; border-radius: 15px; display: flex; flex-direction: column; max-height: 90vh; overflow: hidden; }
-        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); }
-        
-        .m-btn-pdf { background: var(--primary); color: white; border: none; padding: 15px; width: 90%; margin: 15px auto; border-radius: 8px; font-weight: 800; cursor: pointer; text-decoration: none; text-align: center; display: block; }
-        
-        .m-tabs { display: flex; background: #f1f5f9; }
-        .m-tab { flex: 1; padding: 12px; border: none; background: none; font-weight: 700; font-size: 11px; color: #64748b; cursor: pointer; }
-        .m-tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #fff; }
-        
-        .m-body { padding: 15px; flex: 1; overflow-y: auto; }
-        .m-input { width: 100%; min-height: 300px; border: 2px solid #1e293b; padding: 12px; font-size: 15px; color: var(--pen-blue); line-height: 1.6; resize: none; outline: none; background-image: linear-gradient(transparent, transparent 23px, #f1f5f9 24px); background-size: 100% 24px; }
+        /* FOLHA DE RESPOSTA */
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
+        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+        .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
 
-        #st-save { font-size: 10px; text-align: center; padding: 10px; color: #94a3b8; }
+        /* MODAIS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        
+        /* CONTEÚDO MENTORIA ARYANNA */
+        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.8rem; }
+        .m-nav { display: flex; background: #f1f5f9; }
+        .m-nav button { flex: 1; padding: 12px 5px; border: none; background: none; font-weight: 700; font-size: 0.65rem; color: #64748b; cursor: pointer; }
+        .m-nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #fff; }
+        .m-body { padding: 15px; overflow-y: auto; flex: 1; }
+        .pane { display: none; }
+        .pane.active { display: block; }
+        .fgv-input { width: 100%; border: 2px solid #000; padding: 10px; font-size: 14px; min-height: 300px; resize: none; color: var(--pen-blue); }
+
+        .btn-vade-blue { background: var(--primary); color: white; border: none; padding: 12px; width: 90%; margin: 10px auto; border-radius: 8px; font-weight: 800; cursor: pointer; display: block; text-align: center; text-decoration: none; }
+
+        @media (max-width: 1024px) { .viewer-section { display: none; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">MASTER OAB | PROJETOS ÍNTEGROS</div>
-    <div id="cronometro" style="color:var(--gold); font-weight:bold;">05:00:00</div>
+    <div class="logo">MASTER OAB | TREINO PROFISSIONAL</div>
+    <div id="timer" style="color:var(--gold); font-weight:bold;">05:00:00</div>
 </header>
 
-<div class="toolbar">
-    <button class="btn-symbol" style="background:var(--gold)" onclick="abrirCentral()">🏆</button>
-    <button class="btn-symbol" onclick="alert('Funcionalidade de Peças')">⚖️</button>
-    <button class="btn-symbol" onclick="alert('Histórico')">📚</button>
-    <button class="btn-symbol" style="background: #059669; color: white; margin-left: auto; width: auto; padding: 0 15px; font-size: 0.8rem; font-weight: bold;" onclick="salvarTreino()">SALVAR TREINO</button>
-</div>
-
 <div class="main-container">
-    <div class="paper-sheet">
-        <div class="line-nums" id="l-nums"></div>
-        <textarea id="editor-principal" class="text-area" placeholder="Comece sua peça aqui..." spellcheck="false"></textarea>
-    </div>
+    <section class="editor-section">
+        <div class="toolbar">
+            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-weight:bold;"></select>
+            <button class="btn-symbol" title="Mentoria Aryanna" style="background:var(--gold)" onclick="window.abrirMentoria()">🏆</button>
+            <button class="btn-symbol" title="Estruturas" onclick="window.abrirPecas()">⚖️</button>
+            <button class="btn-symbol" title="Histórico" onclick="window.abrirEvolucao()">📚</button>
+            <button class="btn-symbol" title="Post-it" onclick="window.abrirPostIt()">📌</button>
+            <button class="btn-symbol" style="background: #059669; color: white; margin-left: auto;" onclick="window.finalizarEArquivar()">💾</button>
+        </div>
+        <div class="paper-wrapper">
+            <div class="paper-sheet">
+                <div class="line-nums" id="l-nums"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="viewer-section" id="viewer">
+        <div class="viewer-header">
+            <button class="btn-symbol" onclick="window.carregarPDF('caderno')" id="btn-caderno" style="flex:1; font-size:0.7rem;">📄 CADERNO</button>
+            <button class="btn-symbol" onclick="window.carregarPDF('espelho')" id="btn-espelho" style="flex:1; font-size:0.7rem;">🔍 ESPELHO</button>
+        </div>
+        <iframe id="pdf-frame" class="viewer-content" src="about:blank"></iframe>
+    </section>
 </div>
 
-<div id="painel-mentoria" onclick="if(event.target==this) fecharCentral()">
-    <div class="m-content">
-        <div class="m-header">ARYANNA MASTER | MENTORIA</div>
-        
-        <a href="vade.pdf" target="_blank" class="m-btn-pdf">📖 ABRIR APOSTILA (VADE.PDF)</a>
-        
-        <div class="m-tabs">
-            <button class="m-tab active" id="tab0" onclick="mudarAba(0)">📌 TESES</button>
-            <button class="m-tab" id="tab1" onclick="mudarAba(1)">💡 DICAS</button>
-            <button class="m-tab" id="tab2" onclick="mudarAba(2)">✅ CHECKLIST</button>
+<div id="modal-mentoria" class="modal" onclick="if(event.target==this) this.style.display='none'">
+    <div class="modal-content">
+        <div class="m-header">ARYANNA MASTER | MENTORIA & ESTRATÉGIA</div>
+        <a href="vade.pdf" target="_blank" class="btn-vade-blue">📖 ABRIR APOSTILA (VADE.PDF)</a>
+        <div class="m-nav">
+            <button id="bt0" class="active" onclick="window.tabM(0)">📌 TESES</button>
+            <button id="bt1" onclick="window.tabM(1)">💡 DICAS</button>
+            <button id="bt2" onclick="window.tabM(2)">✅ CHECKLIST</button>
         </div>
-
         <div class="m-body">
-            <textarea id="m-texto" class="m-input" placeholder="Anotações da mentoria..." oninput="salvarMentoria()"></textarea>
+            <textarea id="db-mentoria" class="fgv-input" oninput="window.saveM()"></textarea>
         </div>
-        
-        <div id="st-save">Sincronizado</div>
-        <button onclick="fecharCentral()" style="padding: 15px; background: #eee; border: none; font-weight: bold; cursor: pointer;">FECHAR</button>
+        <div id="st-m" style="text-align:center; font-size:10px; padding:10px; color:#94a3b8;">✓ Sincronizado</div>
     </div>
 </div>
 
@@ -89,54 +107,50 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    let abaAtiva = 0;
+    // SISTEMA DE EXAMES E PDFS (RECUPERADO)
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) {
+        let n = i < 10 ? "0"+i : i;
+        let opt = document.createElement('option');
+        opt.value = n; opt.innerText = `EXAME ${n}`;
+        if(i==36) opt.selected = true;
+        sel.appendChild(opt);
+    }
+
+    window.carregarPDF = (tipo) => {
+        const exame = sel.value;
+        const url = tipo === 'caderno' 
+            ? `https://oab.fgv.br/arquivos/Exame_${exame}_Caderno_Trabalho.pdf`
+            : `https://oab.fgv.br/arquivos/Exame_${exame}_Padrao_Trabalho.pdf`;
+        document.getElementById('pdf-frame').src = url;
+    };
+
+    // MENTORIA ARYANNA
+    let abaM = 0;
     let dadosM = { t: "", d: "", c: "" };
-
-    // FUNÇÕES DE ABERTURA
-    window.abrirCentral = () => { document.getElementById('painel-mentoria').style.display = 'flex'; };
-    window.fecharCentral = () => { document.getElementById('painel-mentoria').style.display = 'none'; };
-
-    // CONTROLE DE ABAS
-    window.mudarAba = (idx) => {
-        abaAtiva = idx;
-        document.querySelectorAll('.m-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-        const campo = document.getElementById('m-texto');
-        if(idx === 0) campo.value = dadosM.t || "";
-        if(idx === 1) campo.value = dadosM.d || "";
-        if(idx === 2) campo.value = dadosM.c || "";
+    window.abrirMentoria = () => { document.getElementById('modal-mentoria').style.display = 'flex'; };
+    window.tabM = (idx) => {
+        abaM = idx;
+        document.querySelectorAll('.m-nav button').forEach((b, i) => b.classList.toggle('active', i === idx));
+        const campo = document.getElementById('db-mentoria');
+        campo.value = idx === 0 ? dadosM.t : (idx === 1 ? dadosM.d : dadosM.c);
     };
-
-    // SALVAMENTO NO FIREBASE
-    window.salvarMentoria = () => {
-        const val = document.getElementById('m-texto').value;
-        if(abaAtiva === 0) dadosM.t = val;
-        if(abaAtiva === 1) dadosM.d = val;
-        if(abaAtiva === 2) dadosM.c = val;
-        
-        document.getElementById('st-save').innerText = "Salvando...";
-        set(ref(db, 'v6_mentoria_oficial'), dadosM).then(() => {
-            document.getElementById('st-save').innerText = "✓ Sincronizado";
-        });
+    window.saveM = () => {
+        const val = document.getElementById('db-mentoria').value;
+        if(abaM === 0) dadosM.t = val; else if(abaM === 1) dadosM.d = val; else dadosM.c = val;
+        set(ref(db, 'v6_mentoria_integrada'), dadosM);
     };
+    onValue(ref(db, 'v6_mentoria_integrada'), (s) => { if(s.exists()) { dadosM = s.val(); window.tabM(abaM); } });
 
-    // RECUPERAÇÃO DOS DADOS
-    onValue(ref(db, 'v6_mentoria_oficial'), (s) => {
-        if(s.exists()){
-            dadosM = s.val();
-            mudarAba(abaAtiva);
-        }
-    });
+    // EDITOR E LINHAS
+    window.autoSave = () => set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value);
+    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(document.activeElement.id !== 'texto-final') document.getElementById('texto-final').value = s.val() || ""; });
 
-    // SISTEMA DE ESCRITA
-    const editor = document.getElementById('editor-principal');
-    editor.oninput = () => set(ref(db, 'v3_treino/caderno_unico'), editor.value);
-    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(document.activeElement !== editor) editor.value = s.val() || ""; });
-
-    // GERADOR DE LINHAS
     let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
     document.getElementById('l-nums').innerHTML = l;
 
-    window.salvarTreino = () => alert("Treino salvo com sucesso no banco de dados!");
+    // INICIALIZAÇÃO
+    window.carregarPDF('caderno');
 </script>
 </body>
 </html>
