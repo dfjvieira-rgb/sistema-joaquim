@@ -30,7 +30,6 @@
         .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; }
         
-        /* PDF VIEWPORT INTELIGENTE */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
         .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; }
         .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
@@ -38,20 +37,22 @@
         #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; }
         .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); line-height: 0; overflow: hidden; }
         canvas { display: block; width: 100% !important; height: auto !important; }
-        .textLayer { opacity: 0.15; }
 
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
         .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; }
         .modal-header h3 { font-size: 0.75rem; flex: 1; color: var(--gold); }
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.05); }
         .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
+        
+        /* ESTILO DO NÃO CONFUNDA COM BOTÕES + */
+        .container-nc-input { background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; position: relative; }
+        .input-nc-field { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--pen-blue); padding: 10px 5px; font-size: 1rem; margin-bottom: 10px; outline: none; }
+        .textarea-nc-field { width: 100%; height: 60px; background: transparent; border: none; color: var(--pen-blue); font-size: 0.9rem; line-height: 24px; outline: none; resize: none; border-bottom: 1px dashed var(--border); margin-bottom: 10px; }
+        .btn-plus { background: var(--primary); color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 70vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-        .dark-mode .menu-category { background: #0f172a; color: #94a3b8; }
-        .container-nc-input { background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .input-nc-field { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--pen-blue); padding: 10px 5px; font-size: 1rem; margin-bottom: 15px; outline: none; background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; }
-        .textarea-nc-field { width: 100%; height: 80px; background: transparent; border: none; color: var(--pen-blue); font-size: 1rem; line-height: 28px; outline: none; resize: none; background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; }
         @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
         .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
     </style>
@@ -76,7 +77,6 @@
             <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
-        
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
@@ -117,9 +117,17 @@
     <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
     <div class="modal-body">
         <div class="container-nc-input">
-            <div id="box-teses"><input type="text" placeholder="Tese Principal (ex: Adicional de Periculosidade)" class="input-nc-field nc-assunto-item"></div>
-            <div id="box-explicações"><textarea placeholder="Diferença técnica ou fundamentação..." class="textarea-nc-field nc-explica-item"></textarea></div>
-            <button class="btn-nc-save" style="width:100%; background:var(--success); color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="window.saveNC()">SALVAR NO BANCO</button>
+            <div id="box-teses">
+                <input type="text" placeholder="Tese Principal (ex: Adicional de Periculosidade)" class="input-nc-field nc-assunto-item">
+            </div>
+            <button class="btn-plus" onclick="window.addNCField('box-teses', 'input')">+</button>
+            
+            <div id="box-explicações">
+                <textarea placeholder="Diferença técnica ou fundamentação..." class="textarea-nc-field nc-explica-item"></textarea>
+            </div>
+            <button class="btn-plus" onclick="window.addNCField('box-explicações', 'textarea')">+</button>
+            
+            <button style="width:100%; background:var(--success); color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;" onclick="window.saveNC()">SALVAR NO BANCO</button>
         </div>
         <div id="lista-nc"></div>
     </div>
@@ -146,7 +154,7 @@
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., onde recebe intimações e notificações";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-    // --- LÓGICA DE PDF INTELIGENTE ---
+    // --- PDF ENGINE ---
     let currentPdf = null;
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
@@ -164,7 +172,7 @@
                 const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
                 c.style.height = "800px"; v.appendChild(c); observer.observe(c);
             }
-        } catch(e) { v.innerHTML = "<p style='color:white;padding:20px;'>Documento não disponível para este exame.</p>"; }
+        } catch(e) { v.innerHTML = "<p style='color:white;padding:20px;'>Indisponível.</p>"; }
     };
 
     async function renderPage(num, container) {
@@ -172,34 +180,44 @@
         container.dataset.rendered = "true";
         const page = await currentPdf.getPage(num);
         const parentWidth = document.getElementById('pdf-viewport').clientWidth;
-        const uv = page.getViewport({ scale: 1 });
-        const scale = (parentWidth - 30) / uv.width;
+        const scale = (parentWidth - 30) / page.getViewport({scale:1}).width;
         const viewport = page.getViewport({ scale });
-        container.style.height = "auto"; container.style.width = viewport.width + "px";
+        container.style.height = "auto";
         const canvas = document.createElement('canvas');
         canvas.height = viewport.height; canvas.width = viewport.width;
         container.appendChild(canvas);
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-        const tl = document.createElement('div'); tl.className = 'textLayer'; container.appendChild(tl);
-        const tc = await page.getTextContent();
-        pdfjsLib.renderTextLayer({ textContent: tc, container: tl, viewport });
     }
 
-    // --- LÓGICA ORIGINAL PRESERVADA ---
+    // --- LÓGICA NÃO CONFUNDA (FIELDS DINÂMICOS) ---
+    window.addNCField = (containerId, type) => {
+        const container = document.getElementById(containerId);
+        const el = document.createElement(type === 'input' ? 'input' : 'textarea');
+        el.className = type === 'input' ? 'input-nc-field nc-assunto-item' : 'textarea-nc-field nc-explica-item';
+        el.placeholder = "Adicionar outro...";
+        container.appendChild(el);
+    };
+
+    window.saveNC = () => {
+        const ex = document.getElementById('exam-select').value;
+        const assuntos = Array.from(document.querySelectorAll('.nc-assunto-item')).map(i => i.value).filter(v => v);
+        const explicas = Array.from(document.querySelectorAll('.nc-explica-item')).map(i => i.value).filter(v => v);
+        
+        if(assuntos.length && explicas.length) {
+            push(ref(db, `v7_nc/exame_${ex}`), { 
+                assunto: assuntos.join(" / "), 
+                explicações: explicas 
+            }).then(() => {
+                document.getElementById('box-teses').innerHTML = '<input type="text" class="input-nc-field nc-assunto-item" placeholder="Tese Principal...">';
+                document.getElementById('box-explicações').innerHTML = '<textarea class="textarea-nc-field nc-explica-item" placeholder="Diferença técnica..."></textarea>';
+            });
+        }
+    };
+
+    // --- BASE FUNCTIONS ---
     window.gerarPeca = (tipo) => {
-        const pecas = {
-            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA em face de NOME DA RECLAMADA, (qualificação)...`,
-            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada nos autos, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO...`,
-            'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor RECURSO ORDINÁRIO para o Egrégio TRT da ... Região. (Preparo anexo).\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO...`,
-            'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO...`,
-            'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor AÇÃO RESCISÓRIA...`,
-            'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar MANDADO DE SEGURANÇA COM PEDIDO LIMINAR...`,
-            'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado nos autos, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO para o Egrégio TRT da ... Região. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE PETIÇÃO...`,
-            'AI': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. O Agravante declara a formação do instrumento com as peças obrigatórias (Art. 897, § 5º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE INSTRUMENTO...`,
-            'ED': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor EMBARGOS DE DECLARAÇÃO...`,
-            'CONTRA': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar CONTRARRAZÕES AO RECURSO ORDINÁRIO.\n\n----------\n\nRAZÕES DAS CONTRARRAZÕES...`
-        };
-        document.getElementById('texto-final').value = pecas[tipo];
+        const pecas = { 'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA...`, 'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO...`, 'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor RECURSO ORDINÁRIO...` };
+        document.getElementById('texto-final').value = pecas[tipo] || "Estrutura em breve...";
         window.autoSave(); window.toggleEstruturas();
     };
 
@@ -208,26 +226,16 @@
     
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
-        window.carregarPDF('prova'); // Agora carrega o PDF ao mudar o exame
+        window.carregarPDF('prova');
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
         get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
         onValue(ref(db, `v7_nc/exame_${ex}`), (s) => {
-            const d = s.val(); const lista = document.getElementById('lista-nc'); lista.innerHTML = "";
-            if(d) Object.entries(d).forEach(([id, it]) => { 
-                lista.innerHTML += `<div style="background:var(--paper); padding:15px; margin-bottom:15px; border-left:5px solid var(--gold); border: 1px solid var(--border); border-radius:8px;"><b style="color:var(--gold); text-transform:uppercase;">${it.assunto}</b><div style="margin-top:5px; line-height:1.5;">${it.explicações.join('<br>• ')}</div></div>`; 
+            const lista = document.getElementById('lista-nc'); lista.innerHTML = "";
+            if(s.val()) Object.entries(s.val()).forEach(([id, it]) => { 
+                lista.innerHTML += `<div style="background:var(--paper); padding:15px; margin-bottom:15px; border-left:5px solid var(--gold); border: 1px solid var(--border); border-radius:8px;"><b style="color:var(--gold); text-transform:uppercase;">${it.assunto}</b><div style="margin-top:5px; line-height:1.5;">• ${it.explicações.join('<br>• ')}</div></div>`; 
             });
         });
-    };
-
-    window.saveNC = () => {
-        const ex = document.getElementById('exam-select').value;
-        const teses = document.querySelector('.nc-assunto-item').value;
-        const explica = document.querySelector('.nc-explica-item').value;
-        if(teses && explica) {
-            push(ref(db, `v7_nc/exame_${ex}`), { assunto: teses, explicações: [explica] });
-            document.querySelector('.nc-assunto-item').value = ""; document.querySelector('.nc-explica-item').value = "";
-        }
     };
 
     window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
