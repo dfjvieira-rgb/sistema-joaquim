@@ -39,6 +39,7 @@
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
+        .btn-peca { width: 100%; padding: 12px; margin-bottom: 8px; border: 1px solid #ddd; background: #f8fafc; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: left; }
 
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
         
@@ -52,20 +53,19 @@
 <body>
 
 <header>
-    <div class="logo">PROJETOS ÍNTEGROS</div>
+    <div class="logo">PROJETOS ÍNTEGROS | MASTER OAB</div>
     <div id="timer-display" style="color:var(--gold)">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;">
-                </select>
-            <button class="btn-symbol" title="Mentoria" onclick="window.open('mentoria.html', '_blank')">🏆</button>
+            <select id="exam-select" onchange="window.mudarExame(this.value)" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
+            <button class="btn-symbol" title="Mentoria/Apostila" onclick="window.open('mentoria.html', '_blank')">🏆</button>
             <button class="btn-symbol" title="Museu" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" title="Importar" onclick="window.importarDados()">📥</button>
+            <button class="btn-symbol" title="Importar Espelho" onclick="window.importarDados()">📥</button>
             <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
         </div>
         <div class="paper-wrapper">
@@ -78,19 +78,20 @@
 
     <section class="viewer-section" id="viewer">
         <div class="tabs">
-            <button class="tab active" onclick="window.switchTab(this, 'pdf')">PROVA</button>
-            <button class="tab" onclick="window.switchTab(this, 'espelho')">⭐ ESPELHO</button>
+            <button id="btn-tab-prova" class="tab active" onclick="window.switchTabPDF('prova')">PROVA</button>
+            <button id="btn-tab-gabarito" class="tab" onclick="window.switchTabPDF('gabarito')">GABARITO PDF</button>
+            <button id="btn-tab-espelho" class="tab" onclick="window.switchTabEspelho()">⭐ ESPELHO</button>
         </div>
         <div id="pdf-viewport"></div>
         <div id="espelho-viewport">
-            <h3 id="espelho-titulo">Espelho de Correção</h3>
+            <h3 id="espelho-titulo" style="border-bottom: 2px solid var(--gold); padding-bottom: 5px;">Espelho de Correção</h3>
             <div id="espelho-lista"></div>
         </div>
     </section>
 </div>
 
-<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>⚖️ ESTRUTURAS</h3><br><div id="lista-pecas"></div></div></div>
-<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MUSEU</h3><br><div id="lista-historico"></div></div></div>
+<div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>⚖️ SELECIONE A ESTRUTURA</h3><br><div id="lista-pecas"></div></div></div>
+<div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div></div>
 <div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3>📌 POST-IT</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:300px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
 
 <button id="mobile-btn" onclick="document.getElementById('viewer').classList.toggle('active')">📑</button>
@@ -101,59 +102,71 @@
     
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
-
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // 1. POPULAR O SELETOR DE EXAMES (GARANTE QUE APAREÇAM)
-    const popularExames = () => {
-        const sel = document.getElementById('exam-select');
-        sel.innerHTML = "";
-        for(let i=45; i>=1; i--) {
-            let num = i < 10 ? "0" + i : i;
-            let opt = document.createElement('option');
-            opt.value = num;
-            opt.innerText = `EXAME ${num}`;
-            if(i == 35) opt.selected = true; // Começa no 35 como você pediu
-            sel.appendChild(opt);
-        }
+    // --- BANCO DE ESTRUTURAS (Botão ⚖️) ---
+    const estruturas = [
+        { nome: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMANTE..., nacionalidade..., estado civil..., profissão..., CPF..., RG..., CTPS..., residente e domiciliado na Rua..., vem, por seu advogado infra-assinado, com fulcro no Art. 840, §1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de RECLAMADO..., pessoa jurídica..., CNPJ..., com sede na Rua..." },
+        { nome: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº: ...\n\nRECLAMADO..., já qualificado nos autos, vem, por seu advogado, com fulcro no Art. 847 da CLT, oferecer:\n\nCONTESTAÇÃO\n\nà Reclamação Trabalhista movida por RECLAMANTE..." },
+        { nome: "Recurso Ordinário", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº: ...\n\nRECORRENTE..., já qualificado nos autos, vem, por seu advogado, com fulcro no Art. 895, I da CLT, interpor:\n\nRECURSO ORDINÁRIO\n\npara o Egrégio Tribunal Regional do Trabalho da ... Região." }
+    ];
+
+    window.abrirPecas = () => {
+        const lista = document.getElementById('lista-pecas');
+        lista.innerHTML = estruturas.map(p => `<button class="btn-peca" onclick="window.injetarPeca(\`${p.corpo}\`)">${p.nome}</button>`).join('');
+        document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    // 2. FUNÇÕES DE PDF
-    window.carregarPDF = async () => {
+    window.injetarPeca = (txt) => {
+        document.getElementById('texto-final').value = txt;
+        window.autoSave();
+        document.getElementById('modal-pecas').style.display = 'none';
+    };
+
+    // --- NAVEGAÇÃO PDF E ESPELHO ---
+    window.switchTabPDF = (tipo) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tipo === 'prova' ? 'btn-tab-prova' : 'btn-tab-gabarito').classList.add('active');
+        document.getElementById('pdf-viewport').style.display = 'block';
+        document.getElementById('espelho-viewport').style.display = 'none';
+        window.carregarPDF(tipo);
+    };
+
+    window.switchTabEspelho = () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('btn-tab-espelho').classList.add('active');
+        document.getElementById('pdf-viewport').style.display = 'none';
+        document.getElementById('espelho-viewport').style.display = 'block';
+        window.carregarDadosEspelho();
+    };
+
+    window.carregarPDF = async (tipo) => {
         const ex = document.getElementById('exam-select').value;
+        const url = tipo === 'prova' ? `ro${ex}.pdf` : `ro${ex}-gabarito.pdf`;
         const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "<p style='color:white; padding:20px;'>Carregando PDF...</p>";
-        
+        container.innerHTML = "<p style='color:white; padding:20px;'>Carregando...</p>";
         try {
-            const url = `ro${ex}.pdf`;
             const pdf = await pdfjsLib.getDocument(url).promise;
             container.innerHTML = "";
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
-                const viewport = page.getViewport({ scale: 1.2 });
+                const vp = page.getViewport({ scale: 1.2 });
                 const canvas = document.createElement('canvas');
-                canvas.style.display = "block";
-                canvas.style.margin = "0 auto 10px";
+                canvas.style.display = "block"; canvas.style.margin = "0 auto 10px";
                 container.appendChild(canvas);
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+                canvas.height = vp.height; canvas.width = vp.width;
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
             }
-        } catch(e) {
-            container.innerHTML = `<p style='color:white; padding:20px;'>PDF ro${ex}.pdf não encontrado no servidor.</p>`;
-        }
+        } catch(e) { container.innerHTML = `<p style='color:white; padding:20px;'>Arquivo ${url} não encontrado.</p>`; }
     };
 
-    // 3. FUNÇÕES DE ESPELHO
-    window.importarDados = async () => {
-        const json = prompt("Cole o JSON do espelho:");
-        if(json) {
-            try {
-                const ex = document.getElementById('exam-select').value;
-                await set(ref(db, `banco_espelhos/${ex}`), JSON.parse(json));
-                alert("Salvo!"); window.carregarDadosEspelho();
-            } catch(e) { alert("Erro no JSON."); }
-        }
+    // --- FIREBASE E EXAMES ---
+    window.autoSave = () => {
+        window.isEditing = true; clearTimeout(window.sv);
+        window.sv = setTimeout(() => {
+            set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value);
+            window.isEditing = false;
+        }, 1000);
     };
 
     window.carregarDadosEspelho = async () => {
@@ -162,69 +175,38 @@
         const snap = await get(ref(db, `banco_espelhos/${ex}`));
         if(snap.exists()) {
             lista.innerHTML = snap.val().items.map(i => `<div class="item-espelho"><strong>${i.topico}</strong><br><small>${i.fundamentacao}</small><br><b>${i.valor} pts</b></div>`).join('');
-        } else { lista.innerHTML = "<p>Sem espelho para este exame. Importe via 📥.</p>"; }
+        } else { lista.innerHTML = "<p>Sem espelho. Importe no botão 📥.</p>"; }
     };
 
-    window.switchTab = (btn, type) => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('pdf-viewport').style.display = type === 'pdf' ? 'block' : 'none';
-        document.getElementById('espelho-viewport').style.display = type === 'espelho' ? 'block' : 'none';
-        if(type === 'espelho') window.carregarDadosEspelho();
-    };
-
-    window.mudarExame = () => { window.carregarPDF(); window.carregarDadosEspelho(); };
-
-    // 4. FIREBASE AUTO-SAVE E MUSEU
-    window.autoSave = () => {
-        window.isEditing = true;
-        clearTimeout(window.sv);
-        window.sv = setTimeout(() => {
-            set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value);
-            window.isEditing = false;
-        }, 1000);
-    };
-
-    window.saveRascunho = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('rascunho-editor').value);
-    
-    window.finalizarEArquivar = async () => {
-        const t = prompt("Título do treino:");
-        if(t) {
-            await push(ref(db, 'historico_treinos'), {
-                titulo: t, texto: document.getElementById('texto-final').value,
-                data: new Date().toLocaleString(), exame: document.getElementById('exam-select').value
-            });
-            alert("Salvo no Museu!");
+    window.importarDados = async () => {
+        const json = prompt("Cole o JSON do espelho:");
+        if(json) {
+            try {
+                const ex = document.getElementById('exam-select').value;
+                await set(ref(db, `banco_espelhos/${ex}`), JSON.parse(json));
+                alert("Salvo!"); window.carregarDadosEspelho();
+            } catch(e) { alert("Erro!"); }
         }
     };
 
-    window.abrirEvolucao = async () => {
-        const snap = await get(ref(db, 'historico_treinos'));
-        const list = document.getElementById('lista-historico'); list.innerHTML = "";
-        if(snap.exists()) {
-            Object.entries(snap.val()).forEach(([id, item]) => {
-                const div = document.createElement('div');
-                div.style = "padding:10px; border-bottom:1px solid #eee; cursor:pointer;";
-                div.innerHTML = `<b>${item.titulo}</b> <small>(${item.data})</small>`;
-                div.onclick = () => { document.getElementById('texto-final').value = item.texto; document.getElementById('modal-evolucao').style.display='none'; window.autoSave(); };
-                list.appendChild(div);
-            });
-        }
-        document.getElementById('modal-evolucao').style.display = 'flex';
-    };
+    window.mudarExame = () => { window.carregarPDF('prova'); window.carregarDadosEspelho(); };
 
-    window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
-    window.abrirPecas = () => document.getElementById('modal-pecas').style.display = 'flex';
+    // Inicialização do Seletor
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) {
+        let num = i < 10 ? "0" + i : i;
+        let opt = document.createElement('option');
+        opt.value = num; opt.innerText = `EXAME ${num}`;
+        if(i==35) opt.selected = true;
+        sel.appendChild(opt);
+    }
 
-    // Inicialização
-    popularExames();
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
     
     let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
     document.getElementById('line-nums-main').innerHTML = l;
-    
-    window.carregarPDF();
+    window.carregarPDF('prova');
 </script>
 </body>
 </html>
