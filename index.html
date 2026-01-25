@@ -58,7 +58,7 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.carregarPDF('prova')" class="btn-symbol" style="width:auto; font-size:0.75rem; border:1px solid #ddd;"></select>
-            <button class="btn-symbol" title="Mentoria Isolada" style="background:var(--gold); color:#000" onclick="window.open('mentoria.html', '_blank')">🏆</button>
+            <button class="btn-symbol" title="Mentoria Isolada" style="background:var(--gold); color:#000" onclick="window.location.href='mentoria.html'">🏆</button>
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
@@ -102,7 +102,6 @@
     const bancoPecas = {
         "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\n1. ADICIONAL DE TRANSFERÊNCIA (Art. 469 CLT)\n2. EQUIPARAÇÃO (Art. 461 CLT)" },
         "40": { titulo: "RT (Espólio Romeu)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA" },
-        "35": { titulo: "RO (Recurso Ordinário)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPROCESSO Nº ...\n\nRECURSO ORDINÁRIO" },
         "01": { titulo: "Consignação", corpo: "AO DOUTO JUÍZO... AÇÃO DE CONSIGNAÇÃO" }
     };
 
@@ -120,20 +119,22 @@
         document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    // CORREÇÃO DOS LINKS LOCAIS
+    // AJUSTE CIRÚRGICO NA LÓGICA DE CARREGAMENTO
     window.carregarPDF = async (tipo) => {
         const ex = document.getElementById('exam-select').value;
-        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `Aryanna Linhares.pdf`;
+        // AJUSTE: Mapeamento para os seus arquivos locais e vade.pdf
+        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
         
-        // Ativar aba visualmente
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tab-${tipo}`).classList.add('active');
+        const tabActive = document.getElementById(`tab-${tipo}`);
+        if(tabActive) tabActive.classList.add('active');
 
         try { 
             pdfDoc = await pdfjsLib.getDocument(arq).promise; 
             window.renderAll(); 
         } catch(e) {
-            document.getElementById('pdf-viewport').innerHTML = `<div style="color:white; padding:20px; text-align:center;">Arquivo <b>${arq}</b> não encontrado na pasta raiz do GitHub.</div>`;
+            console.error("Erro ao carregar PDF:", arq);
+            document.getElementById('pdf-viewport').innerHTML = `<div style="color:white;padding:20px;">Erro: arquivo ${arq} não encontrado.</div>`;
         }
     };
 
@@ -167,8 +168,8 @@
             Object.keys(snap.val()).forEach(k => {
                 const item = snap.val()[k];
                 const d = document.createElement('div');
-                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
-                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer; color:#000"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
+                d.style = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; color:#000;";
+                d.innerHTML = `<div onclick="window.restaurar('${k}')" style="cursor:pointer"><strong>${item.titulo}</strong> <br><small>Exame ${item.exame} - ${item.data}</small></div><button onclick="window.delTreino('${k}')" style="border:none; background:none;">🗑️</button>`;
                 list.appendChild(d);
             });
         }
@@ -197,7 +198,7 @@
         let opt = document.createElement('option');
         let num = i < 10 ? "0" + i : i;
         opt.value = num; opt.innerText = `EXAME ${num}`;
-        if(i==35) opt.selected = true; // Definido 35 como padrão
+        if(i==35) opt.selected = true;
         sel.appendChild(opt);
     }
     window.carregarPDF('prova');
