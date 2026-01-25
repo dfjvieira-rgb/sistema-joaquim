@@ -154,30 +154,65 @@
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-    window.gerarPeca = (tipo) => {
-        const pecas = {
-            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA em face de NOME DA RECLAMADA...`,
-            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO em face de...`,
-            'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO...`,
-            'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor INQUÉRITO PARA APURAÇÃO DE FALTA GRAVE...`,
-            'HOMOLOG': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DOS REQUERENTES, por seus advogados distintos, vêm, com fulcro no Art. 855-B da CLT, requerer HOMOLOGAÇÃO DE TRANSAÇÃO EXTRAJUDICIAL...`,
-            'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor RECURSO ORDINÁRIO...`,
-            'RR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 896 da CLT, interpor RECURSO DE REVISTA...`,
-            'AI': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO...`,
-            'ED': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor EMBARGOS DE DECLARAÇÃO...`,
-            'AG_INTERNO': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, vem, com fulcro no Art. 1.021 do CPC, interpor AGRAVO INTERNO...`,
-            'CONTRA': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar CONTRARRAZÕES...`,
-            'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO...`,
-            'EEX': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO EXECUTADO, já qualificado, vem, com fulcro no Art. 884 da CLT, opor EMBARGOS À EXECUÇÃO...`,
-            'EX_PRE': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO EXECUTADO, vem, com base na Súmula 393 do TST, opor EXCEÇÃO DE PRÉ-EXECUTIVIDADE...`,
-            'IDPJ': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO REQUERENTE, vem, com fulcro no Art. 855-A da CLT, suscitar INCIDENTE DE DESCONSIDERAÇÃO DA PERSONALIDADE JURÍDICA...`,
-            'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar MANDADO DE SEGURANÇA...`,
-            'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor AÇÃO RESCISÓRIA...`,
-            'ACUM': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO SINDICATO, na qualidade de substituto processual, vem, com fulcro no Art. 872 da CLT, propor AÇÃO DE CUMPRIMENTO...`
-        };
-        document.getElementById('texto-final').value = pecas[tipo];
-        window.autoSave(); window.toggleEstruturas();
+   window.gerarPeca = (tipo) => {
+    // Objeto de Prazos e Alertas Técnicos (Gatilhos de Aprovação)
+    const alertas = {
+        'RT': "💡 DICA: Indique o Rito (Ordinário > 40 salários / Sumaríssimo até 40). Não esqueça os honorários de 15%!",
+        'CON': "💡 DICA: Verifique se há prescrição bienal (2 anos do fim do contrato) ou quinquenal (5 anos atrás).",
+        'RO': "⏳ PRAZO: 8 dias úteis. Verifique se o caso pede Depósito Recursal e Custas!",
+        'AP': "⚠️ OBRIGATÓRIO: Você DEVE delimitar matérias e valores agora, ou o recurso não será conhecido!",
+        'MS': "⏳ PRAZO: 120 dias da ciência do ato. Verifique se há direito líquido e certo (prova pré-constituída).",
+        'AR': "💰 DEPÓSITO PRÉVIO: 20% do valor da causa (Art. 836 CLT). Peça Juízo Rescindente e Rescisório.",
+        'ED': "⏳ PRAZO: 5 dias úteis. Interrompe o prazo para outros recursos!",
+        'AI': "⏳ PRAZO: 8 dias úteis. Serve para DESTRANCAR recurso. Preparo de 50% do valor do recurso que se pretende destrancar.",
+        'HOMOLOG': "💡 DICA: Advogados obrigatoriamente distintos! O juiz tem 15 dias para decidir."
     };
+
+    if(alertas[tipo]) alert(alertas[tipo]);
+
+    const pecas = {
+        // --- CONHECIMENTO ---
+        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
+
+        'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
+
+        'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor:\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nI - DO DEPÓSITO\nRequer o depósito da quantia/objeto no prazo de 5 dias (Art. 542, I CPC).\n\nII - DO MÉRITO\n(Explicar recusa ou dúvida no pagamento - Art. 544 CPC).\n\nIII - REQUERIMENTOS FINAIS\na) Deferimento do depósito;\nb) Notificação do consignatário para levantar ou contestar;\nc) PROCEDÊNCIA para declarar extinta a obrigação e dar quitação das parcelas;\nd) Honorários.\n\nValor da causa: R$ ...\nNestes Termos, Pede Deferimento.`,
+
+        'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor:\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nI - DA SUSPENSÃO (Prazo de 30 dias - Art. 853 CLT).\nII - DO MÉRITO (Falta grave - Art. 482 CLT).\nIII - REQUERIMENTOS FINAIS\na) Notificação do requerido;\nb) Oitiva de até 6 testemunhas (Art. 821 CLT);\nc) Procedência para rescindir o contrato por justa causa.\n\nNestes Termos, Pede Deferimento.`,
+
+        'HOMOLOG': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE 1 e NOME DO REQUERENTE 2, por seus advogados distintos, vêm, com fulcro no Art. 855-B da CLT, requerer:\n\nHOMOLOGAÇÃO DE TRANSAÇÃO EXTRAJUDICIAL\n\nI - DOS TERMOS (Verbas, valores e prazos).\nII - DOS PEDIDOS\na) Suspensão do prazo prescricional (Art. 855-E CLT);\nb) Homologação por sentença (Título Executivo);\nc) Justiça gratuita.\n\nNestes Termos, Pedem Deferimento.`,
+
+        'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor:\n\nRECURSO ORDINÁRIO\n\npara o Egrégio TRT. Pressupostos de admissibilidade presentes (Tempestividade e Preparo anexos). Requer intimação da parte contrária e remessa ao Tribunal.\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO\n\nI - PRELIMINARES/PREJUDICIAIS RECURSAIS\nII - MÉRITO (REFORMA DO JULGADO)\n(Tese: Fato, Fundamento e Pedido de Reforma).\n\nIII - CONCLUSÃO\nRequer o CONHECIMENTO e PROVIMENTO do recurso.\n\nLocal e Data. Advogado... OAB...`,
+
+        'RR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 896 da CLT, interpor RECURSO DE REVISTA.\n\n----------\n\nRAZÕES DO RECURSO DE REVISTA\n\nI - TRANSCENDÊNCIA (Art. 896-A CLT);\nII - PRESSUPOSTOS INTRÍNSECOS (Divergência ou Violação);\nIII - PREQUESTIONAMENTO (Transcrição do trecho da decisão - Art. 896, §1º-A CLT).\nIV - CONCLUSÃO: Conhecimento e Provimento.`,
+
+        'AI': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. Declara a formação do instrumento (Art. 897, § 5º CLT). Preparo recolhido (Art. 899, §7º CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE INSTRUMENTO\n\nI - DA REFORMA (Demonstrar cabimento do recurso destrancado).\nII - CONCLUSÃO: Provimento para processar o recurso denegado.`,
+
+        'ED': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor:\n\nEMBARGOS DE DECLARAÇÃO\n\nI - CABIMENTO (Omissão, Contradição, Obscuridade ou Erro Material).\nII - RAZÕES E PEDIDO: Sanar o vício com efeito modificativo.`,
+
+        'AG_INTERNO': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, vem, com fulcro no Art. 1.021 do CPC, interpor AGRAVO INTERNO.\n\nI - RAZÕES: Impugnação específica dos fundamentos da decisão monocrática.\nII - CONCLUSÃO: Retratação ou Provimento.`,
+
+        'CONTRA': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar:\n\nCONTRARRAZÕES AO RECURSO (...)\n\nI - MÉRITO: Manutenção da decisão.\nII - CONCLUSÃO: Não provimento do recurso adverso.`,
+
+        'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE PETIÇÃO\n\nI - MÉRITO (Reforma na execução).\nII - CONCLUSÃO: Conhecimento e Provimento.`,
+
+        'EEX': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO EXECUTADO, já qualificado, vem, com fulcro no Art. 884 da CLT, opor:\n\nEMBARGOS À EXECUÇÃO\n\n(Garantia do juízo comprovada).\nI - MÉRITO (Art. 884 CLT).\nII - PEDIDO: Procedência para ajustar a execução.`,
+
+        'EX_PRE': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO EXECUTADO, vem, com base na Súmula 393 do TST, opor:\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nI - CABIMENTO (Ordem pública - sem garantia do juízo).\nII - MÉRITO E PEDIDO: Extinção da execução.`,
+
+        'IDPJ': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO REQUERENTE, vem, com fulcro no Art. 855-A da CLT, suscitar:\n\nINCIDENTE DE DESCONSIDERAÇÃO DA PERSONALIDADE JURÍDICA\n\nI - MÉRITO (Art. 50 CC / Art. 28 CDC).\nII - PEDIDO: Citação dos sócios e suspensão do processo (Art. 134, §3º CPC).`,
+
+        'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar:\n\nMANDADO DE SEGURANÇA COM PEDIDO LIMINAR\n\nI - CABIMENTO (OJ 92 SDI-2).\nII - DA LIMINAR (Fumus boni iuris e Periculum in mora).\nIII - MÉRITO (Direito Líquido e Certo).\nIV - PEDIDOS: Liminar, Notificação da Autoridade Coatora, Ciência ao Órgão de Representação, Oitiva do MPT e Segurança Definitiva.\n\nValor da causa: R$ ...`,
+
+        'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor:\n\nAÇÃO RESCISÓRIA\n\nI - DEPÓSITO PRÉVIO (20% - Art. 836 CLT).\nII - CABIMENTO (Art. 966 CPC - Trânsito em julgado).\nIII - PEDIDOS: Juízo Rescindente (desconstituição) e Juízo Rescisório (novo julgamento).\n\nValor da causa: R$ ...`,
+
+        'ACUM': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO SINDICATO, substituto processual, vem, com fulcro no Art. 872 da CLT, propor:\n\nAÇÃO DE CUMPRIMENTO\n\nI - MÉRITO (Título Normativo).\nII - PEDIDO: Cumprimento e multa normativa.\n\nValor da causa: R$ ...`
+    };
+    
+    document.getElementById('texto-final').value = pecas[tipo] || "Peça não mapeada.";
+    window.autoSave(); 
+    window.toggleEstruturas();
+};
 
     // FUNÇÕES DE UI E PDF (PRESERVADAS)
     let currentPdf = null;
@@ -240,3 +275,4 @@
 </script>
 </body>
 </html>
+
