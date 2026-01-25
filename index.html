@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER | SELEÇÃO ATIVA</title>
+    <title>ARYANNA MASTER | NAVEGAÇÃO PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -34,22 +34,24 @@
         .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
         
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; overflow: hidden; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 4px; align-items: center; }
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         
-        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+        /* Barra de Navegação de Página */
+        .pdf-nav-tools { margin-left: auto; display: flex; align-items: center; gap: 5px; padding-right: 10px; padding-bottom: 2px; }
+        .nav-input { width: 45px; height: 24px; border-radius: 4px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-size: 0.75rem; font-weight: bold; }
+        .zoom-select { background: #1e293b; color: #fff; border: 1px solid #444; font-size: 0.65rem; padding: 2px; border-radius: 4px; }
+
+        #pdf-viewport { flex: 1; overflow: auto; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 10px 0; scroll-behavior: smooth; }
         .page-container { position: relative; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.5); background: white; }
-        
-        /* Ajuste fino para a camada de seleção de texto do PDF */
         .textLayer { opacity: 1; mix-blend-mode: multiply; }
-        .textLayer ::selection { background: rgba(37, 99, 235, 0.3); }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
 
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
-        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } }
+        @media (max-width: 1024px) { .viewer-section { position: fixed; inset: 0; z-index: 500; display: none; } .viewer-section.active { display: flex; } #mobile-btn { display: flex; } .pdf-nav-tools { padding-right: 5px; } }
     </style>
 </head>
 <body>
@@ -87,6 +89,16 @@
             <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
             <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
             <button id="tab-vade" class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
+            
+            <div class="pdf-nav-tools">
+                <input type="number" id="pdf-page-input" class="nav-input" placeholder="Pág." onkeydown="if(event.key==='Enter') window.irParaPagina(this.value)">
+                <select class="zoom-select" onchange="window.mudarZoom(this.value)">
+                    <option value="1.0">100%</option>
+                    <option value="1.3" selected>130%</option>
+                    <option value="1.6">160%</option>
+                    <option value="2.0">200%</option>
+                </select>
+            </div>
         </div>
         <div id="pdf-viewport"></div>
     </section>
@@ -108,11 +120,6 @@
     let pdfDoc = null; let scale = 1.3; let tempoSegundos = 18000; let timerInterval = null;
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    const bancoPecas = {
-        "45": { titulo: "RT (Transferência)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA" },
-        "35": { titulo: "RO (35º Exame)", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECURSO ORDINÁRIO" }
-    };
-
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
         window.carregarPDF('prova');
@@ -130,6 +137,7 @@
         try { 
             pdfDoc = await pdfjsLib.getDocument(arq).promise; 
             window.renderWithTextLayer(); 
+            document.getElementById('pdf-page-input').value = "";
         } catch(e) {
             document.getElementById('pdf-viewport').innerHTML = `<div style="color:white;padding:20px;">Documento ${arq} não encontrado.</div>`;
         }
@@ -145,17 +153,17 @@
 
             const pageDiv = document.createElement('div');
             pageDiv.className = 'page-container';
+            pageDiv.id = `page-${i}`; // ID importante para a navegação
             pageDiv.style.width = viewport.width + 'px';
             pageDiv.style.height = viewport.height + 'px';
             container.appendChild(pageDiv);
 
             const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
             canvas.height = viewport.height;
             canvas.width = viewport.width;
             pageDiv.appendChild(canvas);
 
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
 
             const textLayerDiv = document.createElement('div');
             textLayerDiv.className = 'textLayer';
@@ -171,6 +179,26 @@
         }
     };
 
+    // NOVA FUNCIONALIDADE: IR PARA PÁGINA
+    window.irParaPagina = (num) => {
+        const p = parseInt(num);
+        if (p > 0 && p <= pdfDoc.numPages) {
+            const target = document.getElementById(`page-${p}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        } else {
+            alert(`Página inválida. O PDF possui ${pdfDoc.numPages} páginas.`);
+        }
+    };
+
+    // NOVA FUNCIONALIDADE: MUDAR ZOOM
+    window.mudarZoom = (z) => {
+        scale = parseFloat(z);
+        if(pdfDoc) window.renderWithTextLayer();
+    };
+
+    // Firebase e Persistência
     window.autoSave = () => { 
         window.isEditing = true; 
         clearTimeout(window.sv); 
@@ -197,6 +225,7 @@
         document.getElementById('modal-rascunho').style.display = 'flex';
     };
 
+    // Outras Funções do Sistema
     window.limparFolha = () => { if(confirm("Limpar?")) { document.getElementById('texto-final').value = ""; window.autoSave(); }};
     window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
     window.fmt = (s) => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), seg=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`; };
@@ -225,8 +254,8 @@
 
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 
-    let h = ""; for(let i=1; i<=350; i++) h += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = h;
+    let lines = ""; for(let i=1; i<=350; i++) lines += i + "<br>";
+    document.getElementById('line-nums-main').innerHTML = lines;
 
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
