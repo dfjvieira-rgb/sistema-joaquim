@@ -37,19 +37,23 @@
         .tab { padding: 8px 15px; border: none; border-radius: 8px 8px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: #fff; color: var(--primary); }
         
-        /* Controles de Performance */
         .pdf-controls { margin-left: auto; display: flex; align-items: center; gap: 6px; padding-right: 10px; }
         .nav-btn { background: #475569; color: white; border: none; padding: 3px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         .nav-input { width: 45px; background: #000; color: #fff; border: 1px solid #666; text-align: center; border-radius: 4px; font-size: 0.8rem; height: 24px; }
 
         #pdf-viewport { flex: 1; overflow: auto; background: #525659; position: relative; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
         .page-container { position: relative; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        
-        /* Camada de Texto para Cópia */
         .textLayer { opacity: 1; mix-blend-mode: multiply; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 500px; border-radius: 12px; padding: 20px; color: #1e293b; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 12px; padding: 15px; color: #1e293b; max-height: 90vh; overflow-y: auto; }
+        
+        /* Folha FGV Mockup */
+        .fgv-header { border: 2px solid #000; padding: 10px; margin-bottom: 10px; text-align: center; font-weight: bold; font-size: 0.7rem; color: #000; line-height: 1.2; }
+        .fgv-paper-mock { display: flex; background: white; border: 1px solid #000; min-height: 400px; }
+        .fgv-lines { width: 30px; background: #f0f0f0; border-right: 1px solid #000; text-align: center; font-size: 10px; padding-top: 10px; line-height: 24px; color: #000; font-weight: bold; }
+        .fgv-textarea { flex: 1; border: none; outline: none; padding: 10px; font-size: 14px; line-height: 24px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 23px, #ccc 24px); background-size: 100% 24px; resize: none; }
+
         #mobile-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--gold); z-index: 1000; align-items: center; justify-content: center; font-size: 1.5rem; }
         
         @media (max-width: 1024px) { 
@@ -77,150 +81,4 @@
             <button class="btn-symbol" title="Museu" style="background:#f0fdf4; color:var(--success)" onclick="window.abrirEvolucao()">📚</button>
             <button class="btn-symbol" title="Estruturas" style="background:#fef9c3; color:#854d0e" onclick="window.abrirPecas()">⚖️</button>
             <button class="btn-symbol" title="Post-it" style="background:#fff7ed; color:#c2410c" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger)" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" title="Salvar" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarEArquivar()">💾</button>
-        </div>
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section" id="viewer">
-        <div class="tabs">
-            <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
-            <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button id="tab-vade" class="tab" style="color:var(--gold)" onclick="window.carregarPDF('vade')">VADE</button>
-            
-            <div class="pdf-controls">
-                <button class="nav-btn" onclick="window.mudarPagina(-1)">❮</button>
-                <input type="number" id="page-num" class="nav-input" value="1" onchange="window.irParaPagina(this.value)">
-                <span style="font-size:0.7rem">/ <span id="page-count">0</span></span>
-                <button class="nav-btn" onclick="window.mudarPagina(1)">❯</button>
-            </div>
-        </div>
-        <div id="pdf-viewport"></div>
-    </section>
-</div>
-
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="background:var(--rascunho-bg)"><h3 id="titulo-postit">📌 POST-IT</h3><br><textarea id="rascunho-editor" class="text-area" style="background:var(--rascunho-bg); height:350px; border:1px solid #ddd;" oninput="window.saveRascunho()"></textarea></div></div>
-
-<button id="mobile-btn" onclick="window.toggleMobile()">📑</button>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-
-    let pdfDoc = null, pageNum = 1, scale = 1.4, isRendering = false;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    window.carregarPDF = async (tipo) => {
-        const ex = document.getElementById('exam-select').value;
-        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
-        
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tab-${tipo}`).classList.add('active');
-
-        try {
-            pdfDoc = await pdfjsLib.getDocument(arq).promise;
-            document.getElementById('page-count').textContent = pdfDoc.numPages;
-            pageNum = 1;
-            window.renderizarPagina();
-        } catch(e) {
-            document.getElementById('pdf-viewport').innerHTML = `<div style="color:white;padding:20px;">Arquivo ${arq} não encontrado.</div>`;
-        }
-    };
-
-    window.renderizarPagina = async () => {
-        if (!pdfDoc || isRendering) return;
-        isRendering = true;
-
-        const container = document.getElementById('pdf-viewport');
-        const page = await pdfDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: scale });
-
-        container.innerHTML = "";
-        const pageDiv = document.createElement('div');
-        pageDiv.className = 'page-container';
-        pageDiv.style.width = viewport.width + 'px';
-        pageDiv.style.height = viewport.height + 'px';
-        
-        const canvas = document.createElement('canvas');
-        canvas.height = viewport.height; canvas.width = viewport.width;
-        pageDiv.appendChild(canvas);
-
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.className = 'textLayer';
-        pageDiv.appendChild(textLayerDiv);
-        container.appendChild(pageDiv);
-
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-        const textContent = await page.getTextContent();
-        pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
-
-        document.getElementById('page-num').value = pageNum;
-        isRendering = false;
-    };
-
-    window.mudarPagina = (delta) => {
-        if (!pdfDoc || isRendering) return;
-        let nova = pageNum + delta;
-        if (nova >= 1 && nova <= pdfDoc.numPages) { pageNum = nova; window.renderizarPagina(); }
-    };
-
-    window.irParaPagina = (val) => {
-        let p = parseInt(val);
-        if (p >= 1 && p <= pdfDoc.numPages) { pageNum = p; window.renderizarPagina(); }
-    };
-
-    window.autoSave = () => { 
-        window.isEditing = true; clearTimeout(window.sv); 
-        window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); 
-    };
-
-    window.saveRascunho = () => {
-        const ex = document.getElementById('exam-select').value;
-        set(ref(db, `v3_rascunho/exame_${ex}`), document.getElementById('rascunho-editor').value);
-    };
-
-    window.loadPostIt = (ex) => {
-        get(ref(db, `v3_rascunho/exame_${ex}`)).then((s) => { document.getElementById('rascunho-editor').value = s.val() || ""; });
-    };
-
-    window.abrirPostIt = () => {
-        const ex = document.getElementById('exam-select').value;
-        document.getElementById('titulo-postit').innerText = `📌 POST-IT (EXAME ${ex})`;
-        document.getElementById('modal-rascunho').style.display = 'flex';
-    };
-
-    window.mudarExame = () => {
-        const ex = document.getElementById('exam-select').value;
-        window.carregarPDF('prova');
-        window.loadPostIt(ex);
-    };
-
-    window.toggleMobile = () => document.getElementById('viewer').classList.toggle('active');
-
-    onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
-
-    const sel = document.getElementById('exam-select');
-    for(let i=45; i>=1; i--) {
-        let opt = document.createElement('option');
-        let num = i < 10 ? "0" + i : i;
-        opt.value = num; opt.innerText = `EXAME ${num}`;
-        if(i==35) opt.selected = true;
-        sel.appendChild(opt);
-    }
-
-    let lns = ""; for(let i=1; i<=350; i++) lns += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = lns;
-    
-    window.mudarExame();
-</script>
-</body>
-</html>
+            <button class="btn-symbol" title="Limpar" style="background:#fee2e2; color:var(--danger
