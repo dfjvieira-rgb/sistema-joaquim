@@ -44,8 +44,8 @@
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.05); }
         .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
         
-        /* ESTILO DO NÃO CONFUNDA COM BOTÕES + */
-        .container-nc-input { background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; position: relative; }
+        /* NÃO CONFUNDA INPUTS */
+        .container-nc-input { background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .input-nc-field { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--pen-blue); padding: 10px 5px; font-size: 1rem; margin-bottom: 10px; outline: none; }
         .textarea-nc-field { width: 100%; height: 60px; background: transparent; border: none; color: var(--pen-blue); font-size: 0.9rem; line-height: 24px; outline: none; resize: none; border-bottom: 1px dashed var(--border); margin-bottom: 10px; }
         .btn-plus { background: var(--primary); color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
@@ -53,6 +53,8 @@
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 70vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
+        .dark-mode .menu-category { background: #0f172a; color: #94a3b8; }
+        
         @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
         .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
     </style>
@@ -117,17 +119,11 @@
     <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
     <div class="modal-body">
         <div class="container-nc-input">
-            <div id="box-teses">
-                <input type="text" placeholder="Tese Principal (ex: Adicional de Periculosidade)" class="input-nc-field nc-assunto-item">
-            </div>
+            <div id="box-teses"><input type="text" placeholder="Tese Principal..." class="input-nc-field nc-assunto-item"></div>
             <button class="btn-plus" onclick="window.addNCField('box-teses', 'input')">+</button>
-            
-            <div id="box-explicações">
-                <textarea placeholder="Diferença técnica ou fundamentação..." class="textarea-nc-field nc-explica-item"></textarea>
-            </div>
+            <div id="box-explicações"><textarea placeholder="Diferença técnica..." class="textarea-nc-field nc-explica-item"></textarea></div>
             <button class="btn-plus" onclick="window.addNCField('box-explicações', 'textarea')">+</button>
-            
-            <button style="width:100%; background:var(--success); color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;" onclick="window.saveNC()">SALVAR NO BANCO</button>
+            <button style="width:100%; background:var(--success); color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="window.saveNC()">SALVAR NO BANCO</button>
         </div>
         <div id="lista-nc"></div>
     </div>
@@ -154,7 +150,7 @@
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., onde recebe intimações e notificações";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-    // --- PDF ENGINE ---
+    // --- PDF ---
     let currentPdf = null;
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
@@ -176,49 +172,53 @@
     };
 
     async function renderPage(num, container) {
-        if (container.dataset.rendered) return;
-        container.dataset.rendered = "true";
+        if (container.dataset.rendered) return; container.dataset.rendered = "true";
         const page = await currentPdf.getPage(num);
         const parentWidth = document.getElementById('pdf-viewport').clientWidth;
         const scale = (parentWidth - 30) / page.getViewport({scale:1}).width;
-        const viewport = page.getViewport({ scale });
+        const vp = page.getViewport({ scale });
         container.style.height = "auto";
-        const canvas = document.createElement('canvas');
-        canvas.height = viewport.height; canvas.width = viewport.width;
+        const canvas = document.createElement('canvas'); canvas.height = vp.height; canvas.width = vp.width;
         container.appendChild(canvas);
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
     }
 
-    // --- LÓGICA NÃO CONFUNDA (FIELDS DINÂMICOS) ---
+    // --- LÓGICA DE INTELIGÊNCIA JURÍDICA (CATEGORIZADA) ---
+    window.gerarPeca = (tipo) => {
+        const pecas = {
+            'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA em face de NOME DA RECLAMADA, (qualificação)...`,
+            'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada nos autos, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO em face de NOME DO RECLAMANTE...`,
+            'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor RECURSO ORDINÁRIO para o Egrégio TRT da ... Região. (Preparo anexo).\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO...`,
+            'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO...`,
+            'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRIBUNAL REGIONAL DO TRABALHO DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor AÇÃO RESCISÓRIA...`,
+            'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar MANDADO DE SEGURANÇA COM PEDIDO LIMINAR...`,
+            'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado nos autos, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO para o Egrégio TRT da ... Região. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).`,
+            'AI': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. O Agravante declara a formação do instrumento com as peças obrigatórias (Art. 897, § 5º da CLT).`,
+            'ED': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor EMBARGOS DE DECLARAÇÃO...`,
+            'CONTRA': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar CONTRARRAZÕES AO RECURSO ORDINÁRIO.`
+        };
+        document.getElementById('texto-final').value = pecas[tipo];
+        window.autoSave(); window.toggleEstruturas();
+    };
+
+    // --- SALVAMENTO E UI ---
     window.addNCField = (containerId, type) => {
         const container = document.getElementById(containerId);
         const el = document.createElement(type === 'input' ? 'input' : 'textarea');
         el.className = type === 'input' ? 'input-nc-field nc-assunto-item' : 'textarea-nc-field nc-explica-item';
-        el.placeholder = "Adicionar outro...";
-        container.appendChild(el);
+        el.placeholder = "Adicionar outro..."; container.appendChild(el);
     };
 
     window.saveNC = () => {
         const ex = document.getElementById('exam-select').value;
         const assuntos = Array.from(document.querySelectorAll('.nc-assunto-item')).map(i => i.value).filter(v => v);
         const explicas = Array.from(document.querySelectorAll('.nc-explica-item')).map(i => i.value).filter(v => v);
-        
         if(assuntos.length && explicas.length) {
-            push(ref(db, `v7_nc/exame_${ex}`), { 
-                assunto: assuntos.join(" / "), 
-                explicações: explicas 
-            }).then(() => {
+            push(ref(db, `v7_nc/exame_${ex}`), { assunto: assuntos.join(" / "), explicações: explicas }).then(() => {
                 document.getElementById('box-teses').innerHTML = '<input type="text" class="input-nc-field nc-assunto-item" placeholder="Tese Principal...">';
                 document.getElementById('box-explicações').innerHTML = '<textarea class="textarea-nc-field nc-explica-item" placeholder="Diferença técnica..."></textarea>';
             });
         }
-    };
-
-    // --- BASE FUNCTIONS ---
-    window.gerarPeca = (tipo) => {
-        const pecas = { 'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor RECLAMAÇÃO TRABALHISTA...`, 'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar CONTESTAÇÃO...`, 'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor RECURSO ORDINÁRIO...` };
-        document.getElementById('texto-final').value = pecas[tipo] || "Estrutura em breve...";
-        window.autoSave(); window.toggleEstruturas();
     };
 
     window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
