@@ -3,79 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MASTER OAB | PRINCIPAL</title>
+    <title>SISTEMA MASTER OAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --blue: #2563eb; --bg: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: #1e293b; padding: 10px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; color: white; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #ddd; overflow-x: auto; }
-        .btn-tool { height: 40px; padding: 0 15px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: bold; font-size: 12px; flex-shrink: 0; }
-        .main { flex: 1; display: flex; overflow: hidden; }
-        .editor-box { flex: 1; overflow-y: auto; background: #64748b; padding: 10px; }
-        .viewer-box { width: 45%; background: #1e293b; display: flex; flex-direction: column; border-left: 2px solid var(--gold); }
-        .paper { background: white; width: 100%; max-width: 800px; min-height: 1500px; margin: 0 auto; display: flex; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .lines { width: 40px; background: #f8fafc; border-right: 1px solid #eee; text-align: center; font-size: 11px; padding-top: 15px; line-height: 28px; color: #94a3b8; }
-        .editor { flex: 1; border: none; outline: none; padding: 15px; font-size: 16px; line-height: 28px; background-image: linear-gradient(transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; color: #1e3a8a; }
+        
+        /* CABEÇALHO */
+        header { background: #1e293b; padding: 10px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; color: white; height: 50px; }
+        .logo { font-weight: 900; color: var(--gold); font-size: 1rem; }
+
+        /* BARRA DE FERRAMENTAS */
+        .toolbar { background: #fff; padding: 8px 12px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; overflow-x: auto; }
+        .btn-tool { height: 38px; padding: 0 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: bold; font-size: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .btn-mentoria { background: var(--gold) !important; color: #000 !important; border: none; }
+        
+        /* CORPO DO SISTEMA */
+        .main-content { flex: 1; display: flex; overflow: hidden; }
+        
+        /* ÁREA DA FOLHA DE RESPOSTAS */
+        .editor-container { flex: 1; overflow-y: auto; background: #64748b; padding: 20px; position: relative; }
+        .paper { background: white; width: 100%; max-width: 850px; min-height: 3000px; margin: 0 auto; display: flex; box-shadow: 0 0 30px rgba(0,0,0,0.5); border-radius: 2px; }
+        .line-numbers { width: 45px; background: #f8fafc; border-right: 1px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 20px; line-height: 28px; user-select: none; }
+        .text-editor { flex: 1; border: none; outline: none; padding: 20px; font-size: 16px; line-height: 28px; color: #1e3a8a; background-image: linear-gradient(transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
+
+        /* VISUALIZADOR DE PROVAS */
+        .pdf-viewer-section { width: 45%; background: #1e293b; display: flex; flex-direction: column; border-left: 3px solid var(--gold); }
+        .pdf-controls { background: #0f172a; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #334155; }
         iframe { flex: 1; border: none; background: white; }
-        @media (max-width: 1024px) { .viewer-box { display: none; } }
+
+        @media (max-width: 1024px) { .pdf-viewer-section { display: none; } }
     </style>
 </head>
 <body>
+
 <header>
-    <div style="font-weight:900; color:var(--gold); font-size:14px;">MASTER OAB</div>
-    <div id="timer" style="font-weight:bold;">05:00:00</div>
+    <div class="logo">MASTER OAB</div>
+    <div id="cronometro" style="font-weight:bold; color:var(--gold);">05:00:00</div>
 </header>
+
 <div class="toolbar">
-    <select id="sel-exame" class="btn-tool" onchange="window.updatePDF()" style="width: auto;">
+    <select id="exam-select" class="btn-tool" onchange="window.carregarPDF()" style="width: auto;">
         </select>
-    <button class="btn-tool" style="background:var(--gold)" onclick="location.href='mentoria.html'">🏆 MENTORIA</button>
-    <button class="btn-tool" onclick="window.setTipo('Caderno')">📄 CADERNO</button>
-    <button class="btn-tool" onclick="window.setTipo('Padrao')">🔍 GABARITO</button>
-    <button class="btn-tool" style="margin-left:auto; background:#059669; color:white;" onclick="alert('Salvo!')">💾 SALVAR</button>
+    
+    <button class="btn-tool btn-mentoria" onclick="location.href='mentoria.html'">🏆 MENTORIA</button>
+    
+    <button class="btn-tool" onclick="window.setDoc('Caderno')">📄 VER PEÇA</button>
+    <button class="btn-tool" onclick="window.setDoc('Padrao')">🔍 GABARITO</button>
+    
+    <button class="btn-tool" style="margin-left:auto; background:#059669; color:white;" onclick="alert('Treino salvo!')">💾 SALVAR</button>
 </div>
-<div class="main">
-    <div class="editor-box">
+
+<div class="main-content">
+    <div class="editor-container">
         <div class="paper">
-            <div class="lines" id="line-numbers"></div>
-            <textarea id="main-text" class="editor" oninput="window.savePeca()"></textarea>
+            <div class="line-numbers" id="num-calc"></div>
+            <textarea id="editor-principal" class="text-editor" placeholder="Inicie sua peça profissional aqui..." spellcheck="false" oninput="window.salvarPeca()"></textarea>
         </div>
     </div>
-    <div class="viewer-box">
-        <iframe id="pdf-viewer" src=""></iframe>
+
+    <div class="pdf-viewer-section">
+        <div class="pdf-controls">
+            <div id="pdf-title" style="color:white; font-size:11px; font-weight:bold; padding-top:5px;">CARREGANDO...</div>
+        </div>
+        <iframe id="frame-pdf" src=""></iframe>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+    };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    const sel = document.getElementById('sel-exame');
+    // RESTAURAR LISTA DE EXAMES
+    const select = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
         let opt = document.createElement('option');
-        opt.value = i; opt.innerText = `EXAME ${i}`;
-        if(i==35) opt.selected = true;
-        sel.appendChild(opt);
+        opt.value = i;
+        opt.innerText = `EXAME ${i}`;
+        if(i == 35) opt.selected = true; // Padrão no 35 como você pediu
+        select.appendChild(opt);
     }
 
-    let tipoAtual = 'Caderno';
-    window.setTipo = (t) => { tipoAtual = t; window.updatePDF(); };
-    window.updatePDF = () => {
-        const ex = sel.value;
-        // Padronização correta dos links FGV para evitar 404
-        const url = `https://oab.fgv.br/arquivos/Exame_${ex}_${tipoAtual}_Trabalho.pdf`;
-        document.getElementById('pdf-viewer').src = url;
+    // CONTROLE DE PDFS
+    let docTipo = 'Caderno';
+    window.setDoc = (tipo) => {
+        docTipo = tipo;
+        window.carregarPDF();
     };
 
-    window.savePeca = () => set(ref(db, 'treino_v3'), document.getElementById('main-text').value);
-    onValue(ref(db, 'treino_v3'), (s) => { if(document.activeElement.id !== 'main-text') document.getElementById('main-text').value = s.val() || ""; });
+    window.carregarPDF = () => {
+        const exame = select.value;
+        const titulo = document.getElementById('pdf-title');
+        titulo.innerText = `EXAME ${exame} - ${docTipo.toUpperCase()}`;
+        
+        // Link exato da FGV
+        const url = `https://oab.fgv.br/arquivos/Exame_${exame}_${docTipo}_Trabalho.pdf`;
+        document.getElementById('frame-pdf').src = url;
+    };
 
+    // PERSISTÊNCIA DA PEÇA
+    const area = document.getElementById('editor-principal');
+    window.salvarPeca = () => set(ref(db, 'treino_peca_atual'), area.value);
+    onValue(ref(db, 'treino_peca_atual'), (s) => { if(document.activeElement !== area) area.value = s.val() || ""; });
+
+    // GERADOR DE LINHAS (300 LINHAS)
     let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
-    document.getElementById('line-numbers').innerHTML = l;
-    window.updatePDF();
+    document.getElementById('num-calc').innerHTML = l;
+
+    // INICIALIZAÇÃO
+    window.carregarPDF();
 </script>
 </body>
 </html>
