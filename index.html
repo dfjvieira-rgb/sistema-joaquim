@@ -35,7 +35,7 @@
         .line-nums { width: 35px; background: rgba(0,0,0,0.05); border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 15px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.1) 28px); background-size: 100% 28px; resize: none; background-color: transparent; }
 
-        /* PDF VIEWPORT - ROLAGEM FLUIDA */
+        /* PDF VIEWPORT */
         .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
         .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; }
         .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
@@ -58,14 +58,16 @@
 
         /* MODAIS */
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
-        .modal-header { background: #1e293b; color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        .modal-header { background: #1e293b; color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; }
+        .btn-back { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
         .modal-body { flex: 1; overflow-y: auto; padding: 10px; }
         .fgv-sheet { background: var(--paper); display: flex; min-height: 1200px; max-width: 800px; margin: 0 auto; border: 1px solid #ddd; }
 
         @media (max-width: 768px) {
             .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; }
             .viewer-section.active-mobile { display: flex; }
-            .floating-toggle { display: flex !important; left: 20px; right: auto; } /* LADO ESQUERDO */
+            .floating-toggle { display: flex !important; left: 20px; right: auto; } 
             .page-container { width: 96% !important; }
         }
         .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -75,7 +77,9 @@
         .menu-item { padding: 15px; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid #eee; }
     </style>
 </head>
-<body class="dark-mode"> <header>
+<body class="dark-mode">
+
+<header>
     <div class="logo">ARYANNA MASTER 2026</div>
     <div style="display:flex; gap:12px; align-items:center;">
         <button onclick="window.toggleDarkMode()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌓</button>
@@ -92,7 +96,7 @@
             <button class="btn-symbol" title="Folha de Respostas" onclick="window.abrirModal('modal-respostas')">📚</button>
             <button class="btn-symbol" title="Estruturas" onclick="window.toggleEstruturas()">⚖️</button>
             <button class="btn-symbol" title="Não Confunda" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" title="Dicas e Post-its" onclick="window.abrirModal('modal-dicas')">💡</button>
+            <button class="btn-symbol" title="Qual é a peça?" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
@@ -118,17 +122,28 @@
 <button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
 
 <div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><h3>📚 QUESTÕES DISSERTATIVAS</h3><button onclick="window.fecharModal('modal-respostas')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
+    <div class="modal-header">
+        <button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button>
+        <h3 style="font-size: 0.85rem;">QUESTÕES DISSERTATIVAS</h3>
+        <div style="width:75px;"></div> </div>
     <div class="modal-body"><div class="fgv-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
 </div>
 
 <div id="modal-dicas" class="modal-full">
-    <div class="modal-header"><h3>💡 POST-ITS E TESES</h3><button onclick="window.fecharModal('modal-dicas')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
+    <div class="modal-header">
+        <button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button>
+        <h3 style="font-size: 0.85rem;">QUAL É A PEÇA?</h3>
+        <div style="width:75px;"></div>
+    </div>
     <div class="modal-body"><div class="fgv-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
 </div>
 
 <div id="modal-nc" class="modal-full">
-    <div class="modal-header"><h3>📌 NÃO CONFUNDA</h3><button onclick="window.fecharModal('modal-nc')" style="color:white; background:none; border:none; font-size:1.5rem;">✕</button></div>
+    <div class="modal-header">
+        <button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button>
+        <h3 style="font-size: 0.85rem;">NÃO CONFUNDA</h3>
+        <div style="width:75px;"></div>
+    </div>
     <div class="modal-body">
         <div style="background:white; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #ddd; color: #333;">
             <input type="text" id="nc-a" placeholder="Peça A" style="width:48%; padding:10px;">
@@ -161,7 +176,6 @@
         entries.forEach(entry => { if (entry.isIntersecting) renderizarPaginaLazy(parseInt(entry.target.dataset.pagenum), entry.target); });
     }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
 
-    // CRONÔMETRO E BARRA
     setInterval(() => {
         if(totalSeconds > 0) {
             totalSeconds--;
@@ -210,7 +224,7 @@
 
     window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
     window.autoSave = () => { window.isEditing = true; clearTimeout(window.sv); window.sv = setTimeout(() => { set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value); window.isEditing = false; }, 1000); };
-    window.finalizarManual = () => set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value).then(() => alert("Sincronizado com Sucesso!"));
+    window.finalizarManual = () => set(ref(db, 'v3_treino/caderno_unico'), document.getElementById('texto-final').value).then(() => alert("Sincronizado!"));
 
     window.injetar = (t) => {
         const esq = { 
@@ -238,7 +252,7 @@
         if(a && b) push(ref(db, `v5_nc/exame_${ex}`), { a, b, d });
     };
 
-    window.limparFolha = () => { if(confirm("Deseja apagar sua peça?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
+    window.limparFolha = () => { if(confirm("Apagar peça?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
 
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) { let n = i<10?"0"+i:i; let opt = document.createElement('option'); opt.value=n; opt.innerText=`EXAME ${n}`; if(i==35) opt.selected=true; sel.appendChild(opt); }
