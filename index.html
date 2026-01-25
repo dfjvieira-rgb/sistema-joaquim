@@ -52,10 +52,8 @@
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.1); }
         .btn-back { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
 
-        /* Estilos do Não Confunda Dinâmico */
-        .tese-input-group { margin-top: 8px; display: flex; gap: 5px; }
         .input-nc { background: var(--bg-site); color: var(--text); border: 1px solid var(--border); padding: 8px; border-radius: 5px; width: 100%; }
-        .btn-add-tese { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; margin-top: 10px; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; margin-top: 10px; font-weight: 600; }
 
         @media (max-width: 768px) {
             .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; }
@@ -120,18 +118,20 @@
 </div>
 
 <div id="modal-nc" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA (TESES DINÂMICAS)</h3></div>
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA: ASSUNTOS E EXPLICAÇÕES</h3></div>
     <div class="modal-body">
         <div style="background:var(--toolbar-bg); padding:15px; border-radius:10px; margin-bottom:15px; border: 1px solid var(--border);">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="text" id="nc-a" placeholder="Peça A" class="input-nc">
-                <input type="text" id="nc-b" placeholder="Peça B" class="input-nc">
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--gold);">ASSUNTO / TESE PRINCIPAL:</label>
+            <input type="text" id="nc-assunto" placeholder="Ex: Equiparação Salarial" class="input-nc" style="margin-top:5px;">
+            
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--gold); display: block; margin-top: 15px;">EXPLICAÇÕES / DESCRIÇÃO DA DIFERENÇA:</label>
+            <div id="container-explicações">
+                <textarea class="input-nc explicação-item" placeholder="Explicação 1..." style="margin-top:5px; height: 60px;"></textarea>
             </div>
-            <div id="container-teses">
-                <input type="text" class="input-nc tese-item" placeholder="Tese / Diferença 1" style="margin-top:5px;">
-            </div>
-            <button class="btn-add-tese" onclick="window.addTeseField()">+ ADICIONAR TESE</button>
-            <button onclick="window.saveNC()" style="width:100%; background:var(--danger); color:white; padding:12px; margin-top:15px; border:none; border-radius:5px; font-weight:bold;">SALVAR COMPARAÇÃO</button>
+            
+            <button class="btn-action" onclick="window.addExplicaçãoField()">+ ADICIONAR EXPLICAÇÃO</button>
+            
+            <button onclick="window.saveNC()" style="width:100%; background:var(--danger); color:white; padding:12px; margin-top:15px; border:none; border-radius:5px; font-weight:bold; cursor: pointer;">SALVAR NO BANCO DE DADOS</button>
         </div>
         <div id="lista-nc"></div>
     </div>
@@ -194,30 +194,28 @@
         } catch (err) { }
     }
 
-    // LÓGICA DO NÃO CONFUNDA DINÂMICO
-    window.addTeseField = () => {
-        const container = document.getElementById('container-teses');
-        const count = container.querySelectorAll('.tese-item').length + 1;
-        const input = document.createElement('input');
-        input.type = "text";
-        input.className = "input-nc tese-item";
-        input.placeholder = `Tese / Diferença ${count}`;
-        input.style.marginTop = "5px";
-        container.appendChild(input);
+    // NOVA LÓGICA DO NÃO CONFUNDA (ASSUNTOS E EXPLICAÇÕES)
+    window.addExplicaçãoField = () => {
+        const container = document.getElementById('container-explicações');
+        const count = container.querySelectorAll('.explicação-item').length + 1;
+        const txt = document.createElement('textarea');
+        txt.className = "input-nc explicação-item";
+        txt.placeholder = `Explicação / Descrição ${count}...`;
+        txt.style.marginTop = "5px";
+        txt.style.height = "60px";
+        container.appendChild(txt);
     };
 
     window.saveNC = () => {
-        const a = document.getElementById('nc-a').value;
-        const b = document.getElementById('nc-b').value;
+        const assunto = document.getElementById('nc-assunto').value;
         const ex = document.getElementById('exam-select').value;
-        const teseInputs = document.querySelectorAll('.tese-item');
-        const teses = Array.from(teseInputs).map(i => i.value).filter(v => v.trim() !== "");
+        const explicaInputs = document.querySelectorAll('.explicação-item');
+        const explicações = Array.from(explicaInputs).map(i => i.value).filter(v => v.trim() !== "");
 
-        if(a && b && teses.length > 0) {
-            push(ref(db, `v6_nc/exame_${ex}`), { a, b, teses }).then(() => {
-                document.getElementById('nc-a').value = "";
-                document.getElementById('nc-b').value = "";
-                document.getElementById('container-teses').innerHTML = '<input type="text" class="input-nc tese-item" placeholder="Tese / Diferença 1" style="margin-top:5px;">';
+        if(assunto && explicações.length > 0) {
+            push(ref(db, `v7_nc/exame_${ex}`), { assunto, explicações }).then(() => {
+                document.getElementById('nc-assunto').value = "";
+                document.getElementById('container-explicações').innerHTML = '<textarea class="input-nc explicação-item" placeholder="Explicação 1..." style="margin-top:5px; height: 60px;"></textarea>';
             });
         }
     };
@@ -229,14 +227,14 @@
         get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
         
-        onValue(ref(db, `v6_nc/exame_${ex}`), (s) => {
+        onValue(ref(db, `v7_nc/exame_${ex}`), (s) => {
             const d = s.val(); const lista = document.getElementById('lista-nc'); lista.innerHTML = "";
             if(d) Object.entries(d).forEach(([id, it]) => { 
-                let tesesHtml = it.teses.map((t, idx) => `<div style="margin-top:5px; font-size:0.8rem;"><b>${idx+1}.</b> ${t}</div>`).join('');
+                let explicaHtml = it.explicações.map((t, idx) => `<div style="margin-top:8px; font-size:0.8rem; line-height:1.4;">• ${t}</div>`).join('');
                 lista.innerHTML += `
-                    <div style="background:var(--toolbar-bg); padding:15px; margin-bottom:10px; border-left:5px solid var(--danger); color:var(--text); border: 1px solid var(--border);">
-                        <b style="color:var(--gold); text-transform:uppercase;">${it.a} vs ${it.b}</b>
-                        <div style="margin-top:10px;">${tesesHtml}</div>
+                    <div style="background:var(--toolbar-bg); padding:15px; margin-bottom:10px; border-left:5px solid var(--gold); color:var(--text); border: 1px solid var(--border); border-radius: 8px;">
+                        <b style="color:var(--gold); font-size: 0.9rem; text-transform:uppercase;">${it.assunto}</b>
+                        <div style="margin-top:5px; opacity: 0.9;">${explicaHtml}</div>
                     </div>`; 
             });
         });
