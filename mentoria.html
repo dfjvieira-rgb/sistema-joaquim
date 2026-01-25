@@ -3,107 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MASTER OAB | PROJETOS ÍNTEGROS</title>
+    <title>SISTEMA MASTER OAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
-        :root {
-            --primary: #2563eb; --gold: #d4af37; --bg-site: #0f172a; --pen-blue: #1e3a8a; --rascunho: #fefce8;
-        }
+        :root { --primary: #2563eb; --gold: #d4af37; --bg: #0f172a; --pen: #1e3a8a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); color: #333; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #333; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background: #1e293b; padding: 5px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; color: white; }
+        /* HEADER */
+        header { background: #1e293b; padding: 10px 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; color: white; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         
-        .main-container { flex: 1; display: flex; overflow: hidden; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: #f1f5f9; border-right: 2px solid #334155; }
+        /* TOOLBAR */
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; align-items: center; }
+        .btn-symbol { height: 40px; min-width: 42px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: white; transition: 0.2s; }
+        .btn-symbol:hover { background: #f1f5f9; }
         
-        .toolbar { background: #fff; padding: 8px 10px; display: flex; gap: 5px; border-bottom: 1px solid #cbd5e1; align-items: center; overflow-x: auto; }
-        .btn-symbol { height: 36px; min-width: 38px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: white; }
-        
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #64748b; }
-        .paper-sheet { width: 100%; max-width: 800px; background: white; min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-        .line-nums { width: 40px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px 25px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; overflow: hidden; }
+        /* ÁREA DE ESCRITA */
+        .main-container { flex: 1; display: flex; overflow: hidden; background: #64748b; }
+        .paper-sheet { width: 95%; max-width: 800px; background: white; min-height: 2000px; display: flex; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
+        .line-nums { width: 45px; background: #f8fafc; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 11px; padding-top: 20px; line-height: 28px; font-weight: bold; }
+        .text-area { flex: 1; border: none; outline: none; padding: 20px; font-size: 16px; line-height: 28px; color: var(--pen); background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; }
 
-        /* MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        /* MODAL MENTORIA (CENTRAL ARYANNA) */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 95%; max-width: 600px; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         
-        /* CONTEÚDO DA MENTORIA */
-        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.8rem; }
+        .m-header { background: #000; color: var(--gold); padding: 15px; text-align: center; font-weight: 800; border-bottom: 4px solid var(--gold); font-size: 0.9rem; letter-spacing: 1px; }
         .m-nav { display: flex; background: #f1f5f9; border-bottom: 1px solid #ddd; }
-        .m-nav button { flex: 1; padding: 12px 5px; border: none; background: none; font-weight: 700; font-size: 0.65rem; color: #64748b; cursor: pointer; }
+        .m-nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: 700; font-size: 0.7rem; color: #64748b; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .m-nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #fff; }
-        .m-body { padding: 15px; overflow-y: auto; flex: 1; }
+        
+        .m-body { padding: 20px; overflow-y: auto; flex: 1; background: #fff; }
         .pane { display: none; }
         .pane.active { display: block; }
+        
         .fgv-card { border: 2px solid #1e293b; margin-bottom: 15px; position: relative; padding: 15px 10px 10px; background: #fff; }
-        .fgv-tag { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 5px; font-size: 9px; font-weight: 900; border: 1px solid #1e293b; }
-        .fgv-input { width: 100%; border: none; outline: none; font-size: 14px; line-height: 1.6; color: var(--pen-blue); min-height: 250px; resize: none; background-image: linear-gradient(transparent, transparent 24px, #f1f5f9 25px); background-size: 100% 25px; }
+        .fgv-tag { position: absolute; top: -10px; left: 10px; background: #fff; padding: 0 8px; font-size: 10px; font-weight: 900; border: 1px solid #1e293b; color: #000; }
+        .fgv-input { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.6; color: var(--pen); min-height: 300px; resize: none; background-image: linear-gradient(transparent, transparent 24px, #f1f5f9 25px); background-size: 100% 25px; font-family: inherit; }
 
-        .btn-vade { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+        .btn-vade { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: 800; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem; }
+        .btn-vade:hover { background: #1d4ed8; }
+        
+        #st-m { font-size: 10px; text-align: center; padding: 10px; color: #94a3b8; font-weight: bold; background: #f8fafc; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">PROJETOS ÍNTEGROS | MASTER OAB</div>
-    <div id="timer-display" style="color:var(--gold)">05:00:00</div>
+    <div style="color:var(--gold); font-weight: 800;" id="timer">05:00:00</div>
 </header>
 
+<div class="toolbar">
+    <button class="btn-symbol" title="Mentoria" style="background:var(--gold); border-color: #b8860b;" onclick="window.abrirMentoria()">🏆</button>
+    <button class="btn-symbol" title="Peças" onclick="window.abrirPecas()">⚖️</button>
+    <button class="btn-symbol" title="Histórico" onclick="window.abrirEvolucao()">📚</button>
+    <button class="btn-symbol" title="Post-it" onclick="window.abrirPostIt()">📌</button>
+    <button class="btn-symbol" style="background: #059669; color: white; margin-left: auto; font-size: 0.9rem; font-weight: bold; width: auto; padding: 0 15px;" onclick="window.finalizarEArquivar()">SALVAR TREINO</button>
+</div>
+
 <div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" title="Mentoria Aryanna" style="background:var(--gold)" onclick="window.abrirMentoria()">🏆</button>
-            <button class="btn-symbol" title="Meus Treinos" onclick="window.abrirEvolucao()">📚</button>
-            <button class="btn-symbol" title="Estruturas" onclick="window.abrirPecas()">⚖️</button>
-            <button class="btn-symbol" title="Post-it" onclick="window.abrirPostIt()">📌</button>
-            <button class="btn-symbol" style="background: #059669; color: white; margin-left: auto;" onclick="window.finalizarEArquivar()">💾</button>
+    <div style="flex: 1; overflow-y: auto;">
+        <div class="paper-sheet">
+            <div class="line-nums" id="line-nums"></div>
+            <textarea id="texto-final" class="text-area" placeholder="Comece sua peça aqui..." spellcheck="false" oninput="window.autoSave()"></textarea>
         </div>
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="line-nums-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()"></textarea>
-            </div>
-        </div>
-    </section>
+    </div>
 </div>
 
 <div id="modal-mentoria" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="modal-content">
         <div class="m-header">ARYANNA MASTER | MENTORIA & ESTRATÉGIA</div>
-        <div style="padding: 10px;">
-            <button class="btn-vade" onclick="window.open('vade.pdf', '_blank')">📖 ABRIR APOSTILA (VADE.PDF)</button>
-        </div>
-        <div class="m-nav">
-            <button id="bt1" class="active" onclick="window.tabM('t1')">📌 TESES</button>
-            <button id="bt2" onclick="window.tabM('t2')">💡 DICAS</button>
-            <button id="bt3" onclick="window.tabM('t3')">✅ CHECKLIST</button>
-        </div>
+        
         <div class="m-body">
-            <div id="t1" class="pane active">
+            <button class="btn-vade" onclick="window.open('vade.pdf', '_blank')">📖 ABRIR APOSTILA (PDF)</button>
+            
+            <div class="m-nav">
+                <button id="bt1" class="active" onclick="window.tabM('t1')">📌 Teses</button>
+                <button id="bt2" onclick="window.tabM('t2')">💡 Dicas</button>
+                <button id="bt3" onclick="window.tabM('t3')">✅ Checklist</button>
+            </div>
+
+            <div id="t1" class="pane active" style="margin-top:20px;">
                 <div class="fgv-card"><div class="fgv-tag">FUNDAMENTAÇÃO E TESES</div>
-                <textarea id="db-teses" class="fgv-input" placeholder="Anote as teses aqui..." oninput="window.saveM()"></textarea></div>
+                <textarea id="db-teses" class="fgv-input" placeholder="Ex: Equiparação Art. 461 CLT..." oninput="window.saveM()"></textarea></div>
             </div>
-            <div id="t2" class="pane">
+
+            <div id="t2" class="pane" style="margin-top:20px;">
                 <div class="fgv-card"><div class="fgv-tag">DICAS DA AULA</div>
-                <textarea id="db-dicas" class="fgv-input" placeholder="Dicas estratégicas..." oninput="window.saveM()"></textarea></div>
+                <textarea id="db-dicas" class="fgv-input" placeholder="Lembretes importantes..." oninput="window.saveM()"></textarea></div>
             </div>
-            <div id="t3" class="pane">
-                <div class="fgv-card"><div class="fgv-tag">CONFERÊNCIA FINAL (FGV)</div>
-                <textarea id="db-check" class="fgv-input" placeholder="Checklist final..." oninput="window.saveM()"></textarea></div>
+
+            <div id="t3" class="pane" style="margin-top:20px;">
+                <div class="fgv-card"><div class="fgv-tag">CONFERÊNCIA FINAL</div>
+                <textarea id="db-check" class="fgv-input" placeholder="Checklist da peça..." oninput="window.saveM()"></textarea></div>
             </div>
         </div>
-        <div id="st-m" style="font-size:10px; text-align:center; padding:5px; color:#94a3b8;">Sincronizado</div>
+        <div id="st-m">SINCRONIZADO COM A NUVEM</div>
     </div>
 </div>
 
 <div id="modal-pecas" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px;"><h3>⚖️ ESTRUTURAS</h3><br><div id="lista-pecas"></div></div></div>
 <div id="modal-evolucao" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px;"><h3>📚 MEUS TREINOS</h3><br><div id="lista-historico"></div></div></div>
-<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px; background:var(--rascunho)"><h3>📌 POST-IT</h3><br><textarea id="ras-edit" class="text-area" style="background:var(--rascunho); height:300px; border:1px solid #ddd;" oninput="window.saveR()"></textarea></div></div>
+<div id="modal-rascunho" class="modal" onclick="if(event.target==this) this.style.display='none'"><div class="modal-content" style="padding:20px;"><h3>📌 POST-IT</h3><br><textarea id="ras-edit" class="text-area" style="background:#fefce8; height:300px; border:1px solid #ddd;" oninput="window.saveR()"></textarea></div></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -112,8 +115,11 @@
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
 
-    // FUNÇÕES DA MENTORIA - ABRE O PAINEL E NÃO O PDF DIRETO
-    window.abrirMentoria = () => { document.getElementById('modal-mentoria').style.display = 'flex'; };
+    // CONTROLE DO PAINEL DE MENTORIA
+    window.abrirMentoria = () => {
+        console.log("Abrindo painel...");
+        document.getElementById('modal-mentoria').style.display = 'flex';
+    };
     
     window.tabM = (id) => {
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
@@ -123,14 +129,14 @@
     };
 
     window.saveM = () => {
-        document.getElementById('st-m').innerText = "Salvando...";
+        document.getElementById('st-m').innerText = "Salvando na nuvem...";
         clearTimeout(window.svM);
         window.svM = setTimeout(() => {
             set(ref(db, 'v5_mentoria_isolada'), {
                 t: document.getElementById('db-teses').value,
                 d: document.getElementById('db-dicas').value,
                 c: document.getElementById('db-check').value
-            }).then(() => { document.getElementById('st-m').innerText = "✓ Sincronizado"; });
+            }).then(() => { document.getElementById('st-m').innerText = "✓ TUDO SALVO"; });
         }, 1000);
     };
 
@@ -153,24 +159,26 @@
     };
     onValue(ref(db, 'v3_treino/caderno_unico'), (s) => { if(!window.isEditing) document.getElementById('texto-final').value = s.val() || ""; });
 
-    // DROPDOWN EXAMES
-    const sel = document.getElementById('exam-select');
-    for(let i=45; i>=1; i--) {
-        let num = i < 10 ? "0" + i : i;
-        let opt = document.createElement('option');
-        opt.value = num; opt.innerText = `EXAME ${num}`;
-        if(i==36) opt.selected = true;
-        sel.appendChild(opt);
-    }
-
-    // LINHAS DA FOLHA
+    // LINHAS
     let l = ""; for(let i=1; i<=300; i++) l += i + "<br>";
-    document.getElementById('line-nums-main').innerHTML = l;
+    document.getElementById('line-nums').innerHTML = l;
 
     // POST-IT
     window.abrirPostIt = () => document.getElementById('modal-rascunho').style.display = 'flex';
     window.saveR = () => set(ref(db, 'v3_rascunho/global'), document.getElementById('ras-edit').value);
     onValue(ref(db, 'v3_rascunho/global'), (s) => { document.getElementById('ras-edit').value = s.val() || ""; });
+
+    // ESTRUTURAS
+    const estruturas = [
+        { nome: "Reclamação Trabalhista", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ..." },
+        { nome: "Contestação", corpo: "AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\nPROCESSO: ..." }
+    ];
+    window.abrirPecas = () => {
+        const lista = document.getElementById('lista-pecas');
+        lista.innerHTML = estruturas.map(p => `<button style="padding:10px; width:100%; margin-bottom:5px;" onclick="window.injetar('${p.corpo}')">${p.nome}</button>`).join('');
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+    window.injetar = (t) => { document.getElementById('texto-final').value = t; document.getElementById('modal-pecas').style.display = 'none'; window.autoSave(); };
 </script>
 </body>
 </html>
