@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
-    <link rel="stylesheet" href="estilos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
 </head>
 <body class="dark-mode">
     <header>
         <div class="logo">ARYANNA MASTER 2026</div>
-        <div id="timer-display">05:00:00</div>
+        <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:800; font-size:1.2rem;">05:00:00</div>
     </header>
 
     <div class="main-container">
@@ -25,14 +25,16 @@
                 <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-nc')" title="Post-its">📌</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-calc')" title="Calculadora CLT">🧮</button>
-                <button class="btn-symbol" onclick="window.location.href='mentoria.html'" title="Mentoria Aryanna">🏆</button>
+                <button class="btn-symbol" onclick="window.toggleDarkMode()" title="Tema">🌓</button>
                 <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.finalizarManual()">💾</button>
             </div>
             
+            <div id="menu-estruturas" style="display:none;" class="menu-flutuante"></div>
+
             <div class="paper-wrapper">
                 <div class="paper-sheet">
                     <div class="line-nums" id="ln-main"></div>
-                    <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Inicie sua peça..."></textarea>
+                    <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Inicie sua peça técnica..."></textarea>
                 </div>
             </div>
         </section>
@@ -45,99 +47,106 @@
             </div>
             <div style="background:#1e293b; padding: 6px; display:flex; gap:5px;">
                 <input type="text" id="pdf-search-input" placeholder="Buscar no Vade/Prova..." style="flex:1; background:#0f172a; border:1px solid var(--border); color:white; padding:5px; border-radius:4px; font-size:12px;">
-                <button onclick="window.executarBusca()" class="btn-symbol" style="height:28px;">🔍</button>
+                <button onclick="window.executarBusca()" class="btn-symbol" style="height:28px; min-width:30px; font-size:14px;">🔍</button>
             </div>
             <div id="pdf-viewport"></div>
         </section>
     </div>
 
     <div id="modal-espelho" class="modal-full">
-        <div class="modal-header">
-            <button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button>
-            <h3>CORREÇÃO POR ESPELHO</h3>
-        </div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button><h3>ESPELHO OFICIAL</h3></div>
         <div class="modal-body">
-            <div class="nota-floating" style="position: sticky; top: 0; z-index: 10; background: var(--warning); color: #000; padding: 15px; text-align: center; font-weight: 800; font-size: 1.2rem; border-radius: 0 0 15px 15px;">
+            <div class="nota-floating" style="position:sticky; top:0; background:var(--warning); color:#000; padding:15px; text-align:center; font-weight:800; border-radius:8px; margin-bottom:20px;">
                 NOTA: <span id="nota-valor">0.00</span> / 5.00
             </div>
-            <div id="checklist-fgv" style="padding: 20px;">
-                </div>
+            <div id="checklist-fgv"></div>
         </div>
     </div>
 
     <div id="modal-calc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button><h3>CALCULADORA CLT</h3></div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button><h3>CALCULADORA DE PRESCRIÇÃO</h3></div>
         <div class="modal-body" style="padding:20px;">
-            <input type="date" id="calc-data-demissao" class="btn-symbol" style="width:100%; margin-bottom:10px;">
-            <button onclick="window.rodarCalculo()" style="width:100%; padding:10px; background:var(--primary); color:#fff; border:none; border-radius:8px;">CALCULAR</button>
-            <div id="res-calc" style="margin-top:20px; display:none; background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
-                <p>Bienal: <span id="res-bienal" style="color:var(--warning); font-weight:bold;"></span></p>
-                <p>Quinquenal: <span id="res-quinquenal" style="color:var(--warning); font-weight:bold;"></span></p>
+            <label style="display:block; margin-bottom:10px;">Data da Extinção do Contrato:</label>
+            <input type="date" id="calc-data-demissao" class="btn-symbol" style="width:100%; margin-bottom:20px; padding:10px;">
+            <button onclick="window.rodarCalculo()" style="width:100%; padding:15px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">CALCULAR MARCOS</button>
+            <div id="res-calc" style="margin-top:20px; display:none; background:rgba(0,0,0,0.1); padding:20px; border-radius:8px; border:1px solid var(--gold);">
+                <p style="margin-bottom:10px;">Limite para Ajuizar (Bienal): <br><span id="res-bienal" style="color:var(--warning); font-weight:bold; font-size:1.2rem;"></span></p>
+                <p>Marco Retroativo (Quinquenal): <br><span id="res-quinquenal" style="color:var(--warning); font-weight:bold; font-size:1.2rem;"></span></p>
             </div>
         </div>
     </div>
 
     <div id="modal-respostas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE RESPOSTAS</h3></div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE QUESTÕES</h3></div>
         <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
     </div>
 
     <div id="modal-nc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS</h3></div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS E TESES</h3></div>
         <div class="modal-body" style="padding:20px;">
             <div id="box-teses"></div>
-            <button class="btn-symbol" style="width:100%; margin-bottom:15px" onclick="window.addNCField('box-teses','input')">+ Tese</button>
+            <button class="btn-symbol" style="width:100%; margin-bottom:15px; font-size:14px;" onclick="window.addNCField('box-teses','input')">+ Adicionar Tese (Título)</button>
             <div id="box-explica"></div>
-            <button class="btn-symbol" style="width:100%;" onclick="window.addNCField('box-explica','textarea')">+ Fundamentação</button>
-            <button onclick="window.saveNC()" style="width:100%; background:var(--success); color:#fff; padding:15px; margin-top:20px; border:none; border-radius:8px; font-weight:700;">SALVAR POST-ITS</button>
+            <button class="btn-symbol" style="width:100%; font-size:14px;" onclick="window.addNCField('box-explica','textarea')">+ Adicionar Fundamentação (Texto)</button>
+            <button onclick="window.saveNC()" style="width:100%; background:var(--success); color:#fff; padding:15px; margin-top:20px; border:none; border-radius:8px; font-weight:700; cursor:pointer;">SALVAR NA NUVEM</button>
         </div>
     </div>
 
     <div id="modal-dicas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS</h3></div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS DA PEÇA</h3></div>
         <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
     </div>
-
-    <div id="menu-estruturas" style="display:none;position:absolute;top:90px;left:20px;background:var(--toolbar-bg);z-index:5000;width:260px;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5);max-height:60vh;overflow-y:auto;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { pecas, MEUS_ESPELHOS } from './estruturas.js';
-        import { Cronometro } from './cronometro.js';
-        import { CalculadoraTrabalhista } from './calculadora.js';
-        import { PDFEngine } from './pdf-engine.js';
-
-        const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-        const app = initializeApp(config); const db = getDatabase(app);
         
-        const timer = new Cronometro('timer-display', 300); timer.iniciar();
+        // Configuração Firebase
+        const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+        const app = initializeApp(config); 
+        const db = getDatabase(app);
+        
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
         let currentPdf = null;
 
-        window.executarBusca = async () => {
-            const termo = document.getElementById('pdf-search-input').value;
-            const pagina = await PDFEngine.buscarTexto(currentPdf, termo);
-            if(pagina) {
-                const alvo = document.querySelector(`[data-pagenum="${pagina}"]`);
-                if(alvo) alvo.scrollIntoView({ behavior: 'smooth' });
-            } else { alert("Não encontrado."); }
+        // --- FUNÇÕES GLOBAIS (window.) ---
+
+        window.toggleDarkMode = () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         };
+
+        window.abrirModal = id => document.getElementById(id).style.display = 'flex';
+        window.fecharModal = id => document.getElementById(id).style.display = 'none';
 
         window.carregarPDF = async (tipo) => {
             const ex = document.getElementById('exam-select').value;
-            const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
-            const v = document.getElementById('pdf-viewport'); v.innerHTML = "";
+            const v = document.getElementById('pdf-viewport'); 
+            v.innerHTML = "<p style='color:white; padding:20px;'>Carregando...</p>";
+            
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tipo}`).classList.add('active');
+
+            const urls = {
+                prova: `https://raw.githubusercontent.com/Anshul-69/PDFs/main/OAB${ex}PR.pdf`,
+                gabarito: `https://raw.githubusercontent.com/Anshul-69/PDFs/main/OAB${ex}GB.pdf`,
+                vade: `https://raw.githubusercontent.com/Anshul-69/PDFs/main/CLT.pdf`
+            };
+
             try {
-                currentPdf = await pdfjsLib.getDocument(arq).promise;
+                currentPdf = await pdfjsLib.getDocument(urls[tipo]).promise;
+                v.innerHTML = "";
                 for (let i = 1; i <= currentPdf.numPages; i++) {
-                    const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
-                    v.appendChild(c); observer.observe(c);
+                    const c = document.createElement('div'); 
+                    c.className = 'page-container'; 
+                    c.dataset.pagenum = i;
+                    c.style.marginBottom = "10px";
+                    v.appendChild(c); 
+                    observer.observe(c);
                 }
-            } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>PDF não disponível.</p>"; }
+            } catch(e) { v.innerHTML = "<p style='color:white;padding:20px'>Documento não encontrado no servidor.</p>"; }
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -147,31 +156,33 @@
         async function renderPage(num, container) {
             if (container.dataset.rendered) return; container.dataset.rendered = "true";
             const page = await currentPdf.getPage(num);
-            const scale = PDFEngine.obterEscala(document.getElementById('pdf-viewport').clientWidth, page);
+            const scale = 1.5; 
             const vp = page.getViewport({ scale });
-            container.style.height = vp.height + "px";
-            const canvas = document.createElement('canvas'); canvas.height = vp.height; canvas.width = vp.width;
+            const canvas = document.createElement('canvas'); 
+            canvas.height = vp.height; canvas.width = vp.width;
+            canvas.style.width = "100%";
             container.appendChild(canvas);
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         }
 
-        window.calcNota = () => {
-            let t = 0; document.querySelectorAll('#checklist-fgv input:checked').forEach(i => t += parseFloat(i.value));
-            document.getElementById('nota-valor').innerText = t.toFixed(2);
-        };
-
         window.saveMeta = (p, v) => set(ref(db, `${p}/exame_${document.getElementById('exam-select').value}`), v);
-        window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => window.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000); };
+
+        window.autoSave = () => { 
+            clearTimeout(window.sv); 
+            window.sv = setTimeout(() => window.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000); 
+        };
 
         window.mudarExame = () => {
             const ex = document.getElementById('exam-select').value;
             window.carregarPDF('prova');
-            document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || '<p>Aguardando espelho oficial...</p>';
+            document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || '<p style="color:white; opacity:0.6;">Aguardando espelho oficial para este exame...</p>';
+            document.getElementById('nota-valor').innerText = "0.00";
             get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
             get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
             get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
             get(ref(db, `v3_nc/exame_${ex}`)).then(s => {
-                document.getElementById('box-teses').innerHTML = ""; document.getElementById('box-explica').innerHTML = "";
+                document.getElementById('box-teses').innerHTML = ""; 
+                document.getElementById('box-explica').innerHTML = "";
                 if(s.exists()){
                     s.val().t?.forEach(v => window.addNCField('box-teses', 'input', v));
                     s.val().d?.forEach(v => window.addNCField('box-explica', 'textarea', v));
@@ -182,47 +193,70 @@
         window.toggleEstruturas = () => {
             const m = document.getElementById('menu-estruturas');
             m.style.display = m.style.display === 'none' ? 'block' : 'none';
-            m.innerHTML = Object.keys(pecas).map(k => `<div onclick="window.inserirPeça('${k}')" style="padding:15px; border-bottom:1px solid var(--border); cursor:pointer;">📄 ${k}</div>`).join('');
+            m.innerHTML = Object.keys(pecas).map(k => `<div onclick="window.inserirPeca('${k}')" style="padding:15px; border-bottom:1px solid var(--border); cursor:pointer; color:var(--text); font-weight:bold;">📄 ${k}</div>`).join('');
         };
 
-        window.inserirPeça = (k) => { if(confirm("Substituir texto?")) { document.getElementById('texto-final').value = pecas[k]; window.autoSave(); window.toggleEstruturas(); } };
-        
-        window.rodarCalculo = () => {
-            const res = CalculadoraTrabalhista.calcularPrescricao(document.getElementById('calc-data-demissao').value);
-            if(res) { 
-                document.getElementById('res-calc').style.display = 'block'; 
-                document.getElementById('res-bienal').innerText = res.limiteAjuizamento; 
-                document.getElementById('res-quinquenal').innerText = res.marcoRetroativo; 
-            }
+        window.inserirPeca = (k) => { 
+            if(confirm("Deseja carregar a estrutura de " + k + "? O texto atual será mantido abaixo.")) { 
+                const atual = document.getElementById('texto-final').value;
+                document.getElementById('texto-final').value = pecas[k] + "\n\n" + atual; 
+                window.autoSave(); 
+                window.toggleEstruturas(); 
+            } 
         };
 
         window.addNCField = (id, tag, val="") => { 
-            const el = document.createElement(tag); el.className = tag === 'input' ? "btn-symbol" : "text-area";
-            el.style.width="100%"; el.style.marginBottom="8px"; el.value = val;
-            if(tag === 'textarea') el.style.height="80px";
+            const el = document.createElement(tag); 
+            el.className = "text-area";
+            el.style.width="100%"; el.style.marginBottom="10px"; el.style.minHeight="40px";
+            el.style.background = "var(--paper)";
+            el.value = val;
             document.getElementById(id).appendChild(el); 
         };
 
         window.saveNC = () => {
             const t = [...document.querySelectorAll('#box-teses input')].map(i => i.value).filter(v => v);
             const d = [...document.querySelectorAll('#box-explica textarea')].map(i => i.value).filter(v => v);
-            set(ref(db, `v3_nc/exame_${document.getElementById('exam-select').value}`), { t, d }).then(() => alert("Salvo!"));
+            set(ref(db, `v3_nc/exame_${document.getElementById('exam-select').value}`), { t, d }).then(() => alert("Post-its salvos com sucesso!"));
         };
 
-        window.abrirModal = id => document.getElementById(id).style.display = 'flex';
-        window.fecharModal = id => document.getElementById(id).style.display = 'none';
-        window.finalizarManual = () => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); alert("Sincronizado!"); };
+        window.rodarCalculo = () => {
+            const dataFim = new Date(document.getElementById('calc-data-demissao').value);
+            if(isNaN(dataFim)) return alert("Selecione uma data válida.");
+            
+            const bienal = new Date(dataFim); bienal.setFullYear(bienal.getFullYear() + 2);
+            const quinquenal = new Date(); quinquenal.setFullYear(quinquenal.getFullYear() - 5);
 
+            document.getElementById('res-calc').style.display = 'block';
+            document.getElementById('res-bienal').innerText = bienal.toLocaleDateString('pt-BR');
+            document.getElementById('res-quinquenal').innerText = quinquenal.toLocaleDateString('pt-BR');
+        };
+
+        window.calcNota = () => {
+            let t = 0; 
+            document.querySelectorAll('#checklist-fgv input:checked').forEach(i => t += parseFloat(i.value));
+            document.getElementById('nota-valor').innerText = t.toFixed(2);
+        };
+
+        window.finalizarManual = () => {
+            window.saveMeta('v3_treino', document.getElementById('texto-final').value);
+            alert("Sincronização concluída!");
+        };
+
+        // --- INICIALIZAÇÃO ---
         const sel = document.getElementById('exam-select');
-        for(let i=45; i>=30; i--) { 
-            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; 
-            if(i==44) o.selected=true; sel.appendChild(o); 
+        for(let i=45; i>=35; i--) { 
+            let o = new Option(`EXAME ${i}`, i);
+            if(i==44) o.selected = true;
+            sel.add(o);
         }
 
-        document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+        document.getElementById('ln-main').innerHTML = Array.from({length:400}, (_,i)=>i+1).join('<br>');
         document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
         document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
 
+        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        
         window.mudarExame();
     </script>
 </body>
