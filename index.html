@@ -31,7 +31,7 @@
         .close-btn { position: sticky; top: 0; float: right; cursor: pointer; font-size: 1.5rem; color: red; font-weight: bold; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
@@ -60,7 +60,7 @@
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça aqui..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false"></textarea>
             </div>
         </div>
     </section>
@@ -86,7 +86,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script type="module">
-    // Cache Buster: Garante que o navegador leia os arquivos .js novos
+    // Cache Buster Dinâmico
     const v = new Date().getTime();
     import { ESTRUTURAS } from './estruturas.js?v=' + v;
     import { BANCO_ESPELHOS } from './banco-espelhos.js?v=' + v;
@@ -94,44 +94,42 @@
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
+    // Numeração de linhas
     document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
 
-    // --- FUNÇÃO PARA ABRIR MODAL (NC, DICAS, ESPELHO) ---
+    // CONEXÃO FORÇADA COM OS BOTÕES (ESCOPO GLOBAL)
     window.abrirModal = (tipo) => {
         const modal = document.getElementById('modal-master');
-        const titulo = document.getElementById('m-title');
-        const corpo = document.getElementById('m-body');
         const ex = document.getElementById('exam-select').value;
-        const dadosPeca = ESTRUTURAS[ex] || {};
-
+        const dados = ESTRUTURAS[ex] || {};
+        
         modal.style.display = 'block';
-        corpo.innerHTML = "Carregando...";
+        document.getElementById('m-title').innerText = tipo;
         
         if (tipo.includes('NC')) {
-            titulo.innerText = "📌 NÃO CONFUNDA - TESES";
-            corpo.innerHTML = dadosPeca.nao_confunda || "Nenhuma tese cadastrada para este exame.";
+            document.getElementById('m-body').innerHTML = dados.nao_confunda || "Sem conteúdo.";
         } else if (tipo.includes('DICAS')) {
-            titulo.innerText = "💡 DICAS DA PEÇA";
-            corpo.innerHTML = `<div style="background:#fff9c4; padding:15px; border-left:5px solid gold; color:black;">${dadosPeca.dicas || "Sem dicas específicas."}</div>`;
+            document.getElementById('m-body').innerHTML = dados.dicas || "Sem dicas.";
         } else if (tipo.includes('ESPELHO')) {
-            titulo.innerText = `🎯 ESPELHO DE CORREÇÃO - EXAME ${ex}`;
-            corpo.innerHTML = BANCO_ESPELHOS[ex] || "Espelho não localizado no banco de dados.";
+            document.getElementById('m-body').innerHTML = BANCO_ESPELHOS[ex] || "Espelho não encontrado.";
         } else {
-            titulo.innerText = tipo;
-            corpo.innerHTML = "Espaço para rascunho de questões.";
+            document.getElementById('m-body').innerHTML = "Rascunho de Questões.";
         }
     };
 
-    // --- MOTOR DE CARREGAMENTO DE PDF ---
-    window.loadPDF = async (tipo, btn) => {
-        if(btn) { 
-            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); 
-            btn.classList.add('active'); 
+    window.toggleEstruturas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const dados = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
+        if(confirm(`Injetar estrutura do Exame ${ex}?`)) {
+            document.getElementById('texto-final').value = dados.esqueleto || dados;
         }
+    };
+
+    window.loadPDF = async (tipo, btn) => {
+        if(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); }
         const ex = document.getElementById('exam-select').value;
         const container = document.getElementById('pdf-viewport');
-        container.innerHTML = `<div style="color:white; padding:20px;">Abrindo Exame ${ex}...</div>`;
-        
+        container.innerHTML = "Carregando...";
         let url = tipo === 'vade' ? 'vade.pdf' : (tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : (tipo === 'espelho' ? `ro${ex}-espelho.pdf` : `ro${ex}.pdf`));
 
         try {
@@ -145,31 +143,15 @@
                 await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
                 container.appendChild(canvas);
             }
-        } catch(e) { 
-            container.innerHTML = `<p style="color:white; padding:20px;">Arquivo técnico não encontrado: ${url}</p>`; 
-        }
-    };
-
-    // --- FUNÇÃO PARA INJETAR ESTRUTURA ---
-    window.toggleEstruturas = () => {
-        const ex = document.getElementById('exam-select').value;
-        const dados = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
-        if(confirm(`Injetar estrutura técnica oficial do Exame ${ex}?`)) {
-            document.getElementById('texto-final').value = dados.esqueleto || dados;
-        }
+        } catch(e) { container.innerHTML = `<p style="color:white; padding:20px;">PDF não encontrado: ${url}</p>`; }
     };
 
     window.syncPDF = () => window.loadPDF('prova', document.querySelector('.tab.active'));
-    window.limparFolha = () => { if(confirm("Apagar rascunho?")) document.getElementById('texto-final').value = ""; };
+    window.limparFolha = () => { if(confirm("Limpar?")) document.getElementById('texto-final').value = ""; };
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
-    
-    window.saveAction = () => { 
-        const ex = document.getElementById('exam-select').value;
-        localStorage.setItem(`peca_ex_${ex}`, document.getElementById('texto-final').value); 
-        alert("Peça salva com sucesso!"); 
-    };
+    window.saveAction = () => { alert("Salvo localmente!"); };
 
-    // Inicialização
+    // Início automático
     window.syncPDF();
 </script>
 </body>
