@@ -1,24 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { pecas, espelhosMap } from './estruturas.js';
+// Exemplo de como o app.js usa a inteligência que guardamos:
 
-const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-const app = initializeApp(config); 
-const db = getDatabase(app);
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-let currentPdf = null;
-
-// Funções de PDF, Modais, Salvamento e Troca de Exame
-// Implementadas com a lógica de camada de texto (textLayer) e 
-// salvamento de meta-dados (nota + comentários) que você enviou por último.
-
-window.mudarExame = () => {
-    const ex = document.getElementById('exam-select').value;
-    window.carregarPDF('prova');
-    document.getElementById('checklist-fgv').innerHTML = espelhosMap[ex] || '<p>Espelho indisponível.</p>';
-    // Carregar dados do Firebase...
+window.calcNota = () => {
+    const checks = document.querySelectorAll('#checklist-fgv input[type="checkbox"]:checked');
+    let total = 0;
+    checks.forEach(c => total += parseFloat(c.value));
+    
+    // Atualiza o display de nota no modal de espelho
+    const display = document.getElementById('nota-total-display');
+    if(display) display.innerText = `NOTA: ${total.toFixed(2)}`;
 };
 
-// ... Demais funções (calcNota, autoSave, finalizarManual) conforme seu código melhorado.
+window.toggleEstruturas = () => {
+    // Aqui ele lê o objeto 'pecas' do estruturas.js e gera os botões dinamicamente
+    const menu = document.getElementById('menu-estruturas');
+    menu.innerHTML = Object.keys(pecas).map(p => 
+        `<button onclick="window.inserirPeca('${p}')">${p}</button>`
+    ).join('');
+};
