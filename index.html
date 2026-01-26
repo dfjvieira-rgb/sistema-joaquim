@@ -22,7 +22,7 @@
         .text-area { flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: var(--pen); resize: none; background-image: linear-gradient(transparent, transparent 27px, #e5e7eb 27px); background-size: 100% 28px; background-attachment: local; }
         .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; }
         .tabs { display: flex; background: #1e293b; flex-shrink: 0; }
-        .tab { padding: 12px; cursor: pointer; border: none; background: transparent; color: #94a3b8; flex: 1; font-weight: bold; font-size: 0.7rem; }
+        .tab { padding: 12px; cursor: pointer; border: none; background: transparent; color: #94a3b8; flex: 1; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .tab.active { background: #525659; color: white; border-bottom: 3px solid var(--gold); }
         #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         canvas { max-width: 100%; margin-bottom: 10px; box-shadow: 0 0 10px black; }
@@ -86,6 +86,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script type="module">
+    // Cache Buster Dinâmico para atualização forçada
     const v = new Date().getTime();
     import { ESTRUTURAS } from './estruturas.js?v=' + v;
     import { BANCO_ESPELHOS } from './banco-espelhos.js?v=' + v;
@@ -93,9 +94,10 @@
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
+    // Iniciar numeração de linhas
     document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
 
-    // INVESTIGAÇÃO E CORREÇÃO DE ESCOPO:
+    // --- FUNÇÃO MODAL (NC, DICAS, ESPELHO) ---
     window.abrirModal = (tipo) => {
         const modal = document.getElementById('modal-master');
         const titulo = document.getElementById('m-title');
@@ -103,48 +105,50 @@
         const ex = document.getElementById('exam-select').value;
         
         modal.style.display = 'block';
-        
-        // CORREÇÃO: Botão 🎯 consome de BANCO_ESPELHOS
+        corpo.innerHTML = "Carregando...";
+
         if (tipo.includes('ESPELHO')) {
-            titulo.innerText = `🎯 ESPELHO OFICIAL - EXAME ${ex}`;
-            corpo.innerHTML = BANCO_ESPELHOS[ex] || `<div style="color:red">Erro: Chave "${ex}" não encontrada em banco-espelhos.js</div>`;
-        } 
-        // CORREÇÃO: Botão 💡 e 📌 consomem de ESTRUTURAS
-        else if (tipo.includes('DICAS')) {
-            titulo.innerText = "💡 DICAS TÉCNICAS (ESTRUTURAS.JS)";
-            corpo.innerHTML = ESTRUTURAS[ex]?.dicas || "Sem dicas neste arquivo.";
-        } 
-        else if (tipo.includes('NC')) {
-            titulo.innerText = "📌 NÃO CONFUNDA (ESTRUTURAS.JS)";
-            corpo.innerHTML = ESTRUTURAS[ex]?.nao_confunda || "Sem teses mapeadas.";
-        }
-        else {
+            titulo.innerText = `🎯 ESPELHO DE CORREÇÃO - EXAME ${ex}`;
+            corpo.innerHTML = BANCO_ESPELHOS[ex] || `<span style="color:red">Espelho do Exame ${ex} não encontrado no arquivo banco-espelhos.js</span>`;
+        } else if (tipo.includes('NC')) {
+            titulo.innerText = "📌 NÃO CONFUNDA - TESES";
+            corpo.innerHTML = ESTRUTURAS[ex]?.nao_confunda || "Nenhuma tese cadastrada para este exame.";
+        } else if (tipo.includes('DICAS')) {
+            titulo.innerText = "💡 DICAS DA PEÇA";
+            corpo.innerHTML = `<div style="background:#fff9c4; padding:15px; border-left:5px solid gold; color:black;">${ESTRUTURAS[ex]?.dicas || "Sem dicas para este exame."}</div>`;
+        } else {
             titulo.innerText = tipo;
-            corpo.innerHTML = "Área de rascunho de questões.";
+            corpo.innerHTML = "Área de rascunho para questões.";
         }
     };
 
-    // CORREÇÃO: Botão ⚖️ consome de ESTRUTURAS
+    // --- FUNÇÃO ESTRUTURA (INJETAR NO EDITOR) ---
     window.toggleEstruturas = () => {
         const ex = document.getElementById('exam-select').value;
-        const peca = ESTRUTURAS[ex];
+        const base = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
         
-        if(!peca) {
-            alert(`Erro: Exame ${ex} não mapeado no arquivo estruturas.js`);
+        if (!base) {
+            alert("Estrutura não encontrada para o Exame " + ex);
             return;
         }
 
-        if(confirm(`Injetar esqueleto do Exame ${ex}? (Isso apagará o texto atual)`)) {
-            // Se o arquivo tiver a chave .esqueleto usa ela, senão usa a string direta
-            document.getElementById('texto-final').value = peca.esqueleto || peca;
+        if (confirm(`Injetar estrutura técnica do Exame ${ex}?`)) {
+            // Aceita tanto objeto {esqueleto: "..."} quanto string direta
+            const conteudo = (typeof base === 'object') ? (base.esqueleto || "Erro: Chave 'esqueleto' não definida.") : base;
+            document.getElementById('texto-final').value = conteudo;
         }
     };
 
+    // --- MOTOR DE PDF ---
     window.loadPDF = async (tipo, btn) => {
-        if(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); }
+        if(btn) { 
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); 
+            btn.classList.add('active'); 
+        }
         const ex = document.getElementById('exam-select').value;
         const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "Carregando...";
+        container.innerHTML = `<div style="color:white; padding:20px;">Carregando PDF do Exame ${ex}...</div>`;
+        
         let url = tipo === 'vade' ? 'vade.pdf' : (tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : (tipo === 'espelho' ? `ro${ex}-espelho.pdf` : `ro${ex}.pdf`));
 
         try {
@@ -152,23 +156,34 @@
             container.innerHTML = '';
             for(let i=1; i<=pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
-                const canvas = document.createElement('canvas');
                 const viewport = page.getViewport({scale: 1.5});
+                const canvas = document.createElement('canvas');
                 canvas.height = viewport.height; canvas.width = viewport.width;
                 await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
                 container.appendChild(canvas);
             }
-        } catch(e) { container.innerHTML = `<p style="color:white; padding:20px;">PDF ${url} não encontrado.</p>`; }
+        } catch(e) { 
+            container.innerHTML = `<p style="color:#ff9800; padding:20px;">Atenção: O arquivo técnico <b>${url}</b> não foi localizado na pasta.</p>`; 
+        }
     };
 
-    window.syncPDF = () => window.loadPDF('prova', document.querySelector('.tab.active'));
-    window.limparFolha = () => { if(confirm("Limpar tudo?")) document.getElementById('texto-final').value = ""; };
+    // --- SINCRONIZAÇÃO GERAL ---
+    window.syncPDF = () => {
+        const activeTab = document.querySelector('.tab.active');
+        const type = activeTab.getAttribute('data-type') || 'prova';
+        window.loadPDF(type);
+    };
+
+    window.limparFolha = () => { if(confirm("Apagar peça?")) document.getElementById('texto-final').value = ""; };
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
-    window.saveAction = () => { 
-        localStorage.setItem('backup_exame_' + document.getElementById('exam-select').value, document.getElementById('texto-final').value); 
-        alert("Salvo!"); 
+    
+    window.saveAction = () => {
+        const ex = document.getElementById('exam-select').value;
+        localStorage.setItem(`save_ex_${ex}`, document.getElementById('texto-final').value);
+        alert(`Backup do Exame ${ex} realizado!`);
     };
 
+    // Inicializar
     window.syncPDF();
 </script>
 </body>
