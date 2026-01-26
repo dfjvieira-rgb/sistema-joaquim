@@ -40,8 +40,6 @@
         #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; -webkit-overflow-scrolling: touch; }
         .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden; }
         canvas { display: block; width: 100% !important; height: auto !important; }
-        .textLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1.0; }
-        .textLayer > span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
         .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; flex-shrink: 0; }
         .modal-header h3 { font-size: 0.75rem; flex: 1; color: var(--gold); }
@@ -50,7 +48,6 @@
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-        .espelho-group-title { font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 5px; }
         .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
         .espelho-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); }
         .espelho-txt { flex: 1; font-size: 0.75rem; color: var(--text); line-height: 1.2; }
@@ -105,6 +102,14 @@
     <div class="menu-item" onclick="window.gerarPeca('RT')">RECLAMAÇÃO TRABALHISTA</div>
 </div>
 
+<div id="modal-espelho" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO DE CORREÇÃO FGV</h3></div>
+    <div class="modal-body">
+        <div class="nota-floating">NOTA ATUAL: <span id="nota-valor">0.00</span> / 5.00</div>
+        <div id="checklist-fgv"></div>
+    </div>
+</div>
+
 <div id="modal-nc" class="modal-full">
     <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
     <div class="modal-body">
@@ -126,14 +131,6 @@
     <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
 </div>
 
-<div id="modal-espelho" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO DE CORREÇÃO FGV</h3></div>
-    <div class="modal-body">
-        <div class="nota-floating">NOTA ATUAL: <span id="nota-valor">0.00</span> / 5.00</div>
-        <div id="checklist-fgv"></div>
-    </div>
-</div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -142,12 +139,16 @@
     const app = initializeApp(config); const db = getDatabase(app);
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    const pecas = {
-        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n\n\n\n\n\nRECLAMAÇÃO TRABALHISTA\n\nI - PRELIMINARMENTE\nII - DO MÉRITO\nIII - REQUERIMENTOS FINAIS`
-    };
+    // 1. Constante limpa apenas com RT
+    const pecas = { 'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\n\n\n\n\n\n\n\n\nRECLAMAÇÃO TRABALHISTA\n\nI - PRELIMINARMENTE\nII - DO MÉRITO\nIII - REQUERIMENTOS FINAIS` };
 
-    const espelhosMap = {
-        "44": `<div class="espelho-group-title">Mérito</div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Periculosidade - Art. 193 CLT (0,50)</div><div class="espelho-pt">0,50</div></div>`
+    // 2. Seus espelhos integrados
+    window.MEUS_ESPELHOS = {
+        "44": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Indicação reclamados, reclamante e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Ilegitimidade passiva dos sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Inépcia do reenquadramento (Art. 330, § 1º, I ou Art. 337, IV CPC)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Prejudicial: Prescrição parcial - anterior a 28/04/2020 (Art. 7º, XXIX CF ou Art. 11 CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Ticket refeição - ausência de ultratividade (Art. 614, § 3º CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Aviso prévio - indevida redução pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Periculosidade - não era trabalhadora em moto (Art. 193, § 4º CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Reintegração - garantia encerrada ou pedido demissão (Súmula 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Vale transporte - uso de moto própria (Lei 7.418/85 ou Dec. 10.854/21)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Renovação preliminares/improcedência/provas/honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>`,
+        "41": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 41 (AGRAVO DE PETIÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Partes (Maria Serra e Jeferson Peres)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Fundamento: Art. 855-A, § 1º, II ou Art. 897, 'a' CLT</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Delimitação justificada matérias (Art. 897, § 1º CLT)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Tempestividade 8 dias (Art. 897, caput CLT)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Juiz não poderia instaurar IDPJ de ofício (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Suspensão do processo (Art. 134, § 3º CPC ou Art. 855-A, § 2º CLT)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Prazo manifestação 15 dias desrespeitado (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">Tese: Ilegitimidade (saída há +2 anos ou não era sócia na admissão) - Art. 10-A CLT</div><div class="espelho-pt">0.80</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Impenhorabilidade aposentadoria (Art. 833, IV ou Art. 529, § 3º CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Revogação tutela/levantamento penhora/conhecimento e provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>`,
+        "40": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 40 (RECLAMAÇÃO TRABALHISTA)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento VT Osasco/SP e Art. 840, § 1º CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Qualificação Espólio/Julieta e Distribuidora Capuleto Ltda.</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Gratuidade de justiça (Art. 790, § 3º ou § 4º CLT)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Prioridade tramitação idosa (Art. 1048 CPC ou Art. 71 Lei 10.741)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Reconhecimento vínculo/anotação CTPS (Art. 3º ou Art. 29 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Verbas: Saldo, 13º, Férias, FGTS e Multa Art. 477, § 8º CLT</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="1.60" onchange="window.calcNota()"><div class="espelho-txt">Dano Material: Enterro, Seguro Vida, Pensão Morte e Pensão Empregador (Art. 186/927/948 CCB)</div><div class="espelho-pt">1.60</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Dano Moral acidente (Art. 223-B/C/G CLT ou 186/927/944 CCB)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Honorários advocatícios (Art. 791-A CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Procedência/Valores estimados) e Fechamento</div><div class="espelho-pt">0.70</div></div>`,
+        "37": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 37 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (85ª VT/RJ), Peça Jorge Machado e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Adiamento audiência (Art. 841 CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Ilegitimidade Jorge (saída há +2 anos) - Art. 10-A CLT ou 1.003 CC</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Adicional transferência (sem mudança domicílio) - Art. 469 CLT</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Horas in itinere (deslocamento não é disposição) - Art. 58, § 2º CLT</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Intervalo digitador (não era a função) - Art. 72 CLT ou Súmula 346 TST</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Acúmulo de tarefas (inseridas na função) - Art. 456, p.u. CLT</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Pedidos: Renovação preliminares e extinção ex-sócio</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Improcedência/Provas/Honorários Art. 791-A) e Fechamento</div><div class="espelho-pt">0.60</div></div>`,
+        "35": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 35 (RECURSO ORDINÁRIO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (89ª VT Floriano/PI), razões ao TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Partes (Sociedade empresária recorrente e empregado recorrido)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Tempestividade (8 dias) e Preparo (Custas/Depósito Recursal)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Prescrição parcial: arguida em instância ordinária (Súmula 153 TST ou Art. 193 CC)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Intervalo interjornada de 11h observado (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Indevida reintegração (estabilidade só p/ dirigente sindical) - Art. 543 CLT ou Art. 8º, VIII CF</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: FGTS indevido por suspensão contratual (Art. 476 CLT ou Art. 15, §5º Lei 8036)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Ajuda de custo - natureza indenizatória (Art. 457, §2º CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Equiparação indevida - estabelecimentos distintos (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Insalubridade indevida por reclassificação (Art. 194 CLT ou Súmula 248 TST)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Honorários indevidos (improcedência) ou limite 15% (Art. 791-A CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Conhecimento/Provimento/Reforma/Acolhimento Prescrição) e Fechamento</div><div class="espelho-pt">0.40</div></div>`
     };
 
     window.calcNota = () => {
@@ -157,13 +158,11 @@
         return total.toFixed(2);
     };
 
-    window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
-    window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); }, 1000); };
-
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
         window.carregarPDF('prova');
-        document.getElementById('checklist-fgv').innerHTML = espelhosMap[ex] || '<p style="opacity:0.5; font-size:0.7rem;">Sem espelho.</p>';
+        document.getElementById('checklist-fgv').innerHTML = window.MEUS_ESPELHOS[ex] || '<p style="opacity:0.5; font-size:0.7rem; padding:20px;">Espelho não cadastrado.</p>';
+        document.getElementById('nota-valor').innerText = "0.00";
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
         get(ref(db, `v3_respostas/exame_${ex}`)).then(s => {
             const val = s.val();
@@ -171,6 +170,9 @@
         });
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
+
+    window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
+    window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); }, 1000); };
 
     let currentPdf = null;
     const observer = new IntersectionObserver((entries) => {
@@ -216,8 +218,7 @@
     window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
     window.finalizarManual = () => {
         const ex = document.getElementById('exam-select').value;
-        const nota = window.calcNota();
-        set(ref(db, `v3_respostas/exame_${ex}`), { nota, comentarios: document.getElementById('res-editor').value, timestamp: new Date().toISOString() }).then(() => alert("Sincronizado!"));
+        set(ref(db, `v3_respostas/exame_${ex}`), { nota: window.calcNota(), comentarios: document.getElementById('res-editor').value, timestamp: new Date().toISOString() }).then(() => alert("Sincronizado!"));
     };
     window.limparFolha = () => { if(confirm("Apagar?")) document.getElementById('texto-final').value = ""; };
 
