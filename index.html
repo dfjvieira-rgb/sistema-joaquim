@@ -3,83 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO 2026</title>
+    <title>ARYANNA MASTER - EXAME 35</title>
     
     <style>
         :root {
-            --gold: #d4af37; --bg: #0f172a; --paper: #ffffff; --text: #1e293b;
-            --primary: #2563eb; --border: #334155;
+            --gold: #d4af37; --bg: #0f172a; --paper: #ffffff; --pen: #1e3a8a;
+            --primary: #2563eb; --border: #334155; --success: #059669;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 50px; }
-        
+        .logo-text { font-weight: 800; color: var(--gold); letter-spacing: 1px; }
+
         .main-container { flex: 1; display: flex; height: calc(100vh - 50px); }
 
-        /* LADO ESQUERDO: EDITOR */
+        /* EDITOR - LADO ESQUERDO */
         .editor-section { flex: 1; display: flex; flex-direction: column; border-right: 2px solid var(--gold); background: #f8fafc; }
-        .toolbar { padding: 8px; background: #f1f5f9; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; flex-wrap: wrap; }
+        .toolbar { padding: 10px; background: #f1f5f9; display: flex; gap: 10px; border-bottom: 1px solid #cbd5e1; align-items: center; }
         
-        .btn-symbol { padding: 8px 12px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 4px; background: white; font-size: 1.2rem; }
+        .btn-action { padding: 10px 15px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 6px; background: white; font-size: 1.3rem; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-action:hover { background: #e2e8f0; transform: translateY(-1px); }
+        .btn-save { background: var(--success) !important; color: white !important; margin-left: auto; border: none; }
+
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; background: #cbd5e1; scroll-behavior: smooth; }
+        .paper-sheet { width: 100%; max-width: 850px; background: white; margin: 0 auto; display: flex; min-height: 2500px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-radius: 2px; }
         
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; background: #e2e8f0; }
-        .paper-sheet { width: 100%; max-width: 850px; background: white; margin: 0 auto; display: flex; min-height: 2000px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        .line-nums { width: 40px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; pointer-events: none; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: #1e3a8a; resize: none; font-family: 'Inter', sans-serif; background-attachment: local; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 27px); background-size: 100% 28px; }
-
-        /* LADO DIREITO: PDF */
-        .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; }
-        .tabs { display: flex; background: #1e293b; }
-        .tab { padding: 12px; cursor: pointer; border: none; background: #1e293b; color: #94a3b8; font-weight: bold; flex: 1; }
-        .tab.active { background: #525659; color: white; border-bottom: 3px solid var(--gold); }
-        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; }
-        .pdf-page { margin-bottom: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.5); background: white; width: 100%; }
-
-        /* MODAIS */
-        #menu-estruturas { display: none; position: absolute; top: 100px; left: 20px; width: 300px; background: white; border: 2px solid var(--gold); z-index: 100; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); color: #1e293b; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; }
-        .menu-item:hover { background: #f1f5f9; }
-
-        @media (max-width: 768px) {
-            .main-container { flex-direction: column; }
-            .viewer-section { display: none; } /* Mobile foca no editor */
+        .line-nums { width: 45px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 13px; padding-top: 18px; line-height: 28px; user-select: none; }
+        .text-area { 
+            flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: var(--pen); 
+            resize: none; font-family: 'Inter', sans-serif; background-color: transparent;
+            background-image: linear-gradient(transparent, transparent 27px, #e5e7eb 27px); 
+            background-size: 100% 28px; background-attachment: local;
         }
+
+        /* PDF - LADO DIREITO */
+        .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; }
+        .tabs { display: flex; background: #1e293b; border-bottom: 1px solid var(--gold); }
+        .tab { padding: 15px; cursor: pointer; border: none; background: transparent; color: #94a3b8; font-weight: 600; flex: 1; font-size: 0.8rem; }
+        .tab.active { background: #525659; color: white; position: relative; }
+        .tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--gold); }
+
+        #pdf-viewport { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        canvas { max-width: 100%; height: auto !important; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        #menu-estruturas { display: none; position: absolute; top: 110px; left: 70px; width: 320px; background: white; border: 2px solid var(--gold); z-index: 999; border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); color: #1e293b; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; font-weight: 700; }
+        .menu-item:hover { background: #f8fafc; color: var(--primary); }
+
+        @media (max-width: 1024px) { .viewer-section { display: none; } .main-container { flex-direction: column; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: 800; color: var(--gold);">ARYANNA MASTER PRO 2026</div>
-    <div id="timer" style="color: var(--gold); font-family: monospace; font-size: 1.2rem;">05:00:00</div>
+    <div class="logo-text">ARYANNA MASTER PRO <span style="color:white">| EXAME 35</span></div>
+    <div id="timer" style="font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 1.4rem; color: var(--gold);">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" class="btn-symbol" style="font-size: 0.9rem;">
-                <option value="44">EXAME 44</option>
-                <option value="41">EXAME 41</option>
-                <option value="40">EXAME 40</option>
-                <option value="35" selected>EXAME 35</option>
-            </select>
-            <button class="btn-symbol" onclick="window.toggleMenu()">⚖️</button>
-            <button class="btn-symbol" onclick="window.limpar()">🗑️</button>
-            <button class="btn-symbol" onclick="alert('Salvando...')">💾</button>
+            <button class="btn-action" title="Injetar Peça" onclick="window.toggleBalança()">⚖️</button>
+            <button class="btn-action" title="Limpar Folha" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-action btn-save" title="Salvar no Firebase" onclick="window.salvarManual()">💾 SALVAR</button>
         </div>
+        
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="line-numbers"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false"></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Selecione a peça na balança..."></textarea>
             </div>
         </div>
     </section>
 
     <section class="viewer-section">
         <div class="tabs">
-            <button class="tab active" onclick="window.switchPDF('prova', this)">PROVA</button>
-            <button class="tab" onclick="window.switchPDF('gabarito', this)">GABARITO</button>
-            <button class="tab" onclick="window.switchPDF('vade', this)">VADE</button>
+            <button class="tab active" onclick="window.loadPDF('ro35.pdf', this)">PROVA 35</button>
+            <button class="tab" onclick="window.loadPDF('ro35-gabarito.pdf', this)">GABARITO</button>
+            <button class="tab" onclick="window.loadPDF('vade.pdf', this)">VADE MECUM</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
@@ -90,27 +92,22 @@
 <script type="module">
     import { ESTRUTURAS } from './estruturas.js';
 
-    // Configuração PDF.js
+    // Configuração PDF.js interna para garantir funcionamento
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // Gerar números de linha
+    // 1. Números de Linha FGV (350 linhas)
     document.getElementById('line-numbers').innerHTML = Array.from({length: 350}, (_, i) => i + 1).join('<br>');
 
-    // Lógica de Troca de PDF
-    window.switchPDF = async (tipo, btn) => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        
-        const exame = document.getElementById('exam-select').value;
+    // 2. Motor de PDF (Fiel aos seus arquivos ro35.pdf)
+    window.loadPDF = async (url, btn) => {
+        if(btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+        }
         const container = document.getElementById('pdf-viewport');
-        container.innerHTML = "Carregando...";
-
-        let url = '';
-        if(tipo === 'prova') url = `ro${exame}.pdf`;
-        else if(tipo === 'gabarito') url = `ro${exame}-gabarito.pdf`;
-        else url = 'vade.pdf';
-
+        container.innerHTML = '<p style="color:white; margin-top:20px;">Carregando documento técnico...</p>';
+        
         try {
             const pdf = await pdfjsLib.getDocument(url).promise;
             container.innerHTML = '';
@@ -118,7 +115,6 @@
                 const page = await pdf.getPage(i);
                 const viewport = page.getViewport({scale: 1.5});
                 const canvas = document.createElement('canvas');
-                canvas.className = 'pdf-page';
                 const context = canvas.getContext('2d');
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
@@ -126,44 +122,63 @@
                 container.appendChild(canvas);
             }
         } catch (e) {
-            container.innerHTML = `<div style="color:white; padding:20px;">Arquivo ${url} não encontrado.</div>`;
+            container.innerHTML = `<p style="color:#f87171; padding:20px;">ERRO: Arquivo ${url} não encontrado na raiz.</p>`;
         }
     };
 
-    // Lógica da Balança (Estruturas)
-    window.toggleMenu = () => {
+    // 3. Lógica da Balança (⚖️) - Injetando do estruturas.js
+    window.toggleBalança = () => {
         const menu = document.getElementById('menu-estruturas');
-        const ex = document.getElementById('exam-select').value;
-        const data = ESTRUTURAS[ex] || ESTRUTURAS["RT"];
-
+        const dados35 = ESTRUTURAS["35"];
+        
         menu.innerHTML = `
-            <div class="menu-item" style="background:#f1f5f9; cursor:default;">PEÇA: ${data.nome_peca || 'Técnica'}</div>
-            <div class="menu-item" style="color:blue;" onclick="window.injetar('${ex}')">INJETAR ESQUELETO COMPLETO</div>
+            <div class="menu-item" style="background:#f1f5f9; color:var(--pen)">PEÇA ATUAL: ${dados35.nome_peca}</div>
+            <div class="menu-item" onclick="window.injetar('35')">👉 INJETAR RECURSO ORDINÁRIO (35)</div>
+            <div class="menu-item" onclick="window.injetar('RO')">👉 INJETAR ESQUELETO RO (GENÉRICO)</div>
         `;
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     };
 
-    window.injetar = (key) => {
-        const data = ESTRUTURAS[key] || ESTRUTURAS["RT"];
-        document.getElementById('texto-final').value = data.esqueleto || data;
+    window.injetar = (tipo) => {
+        const conteudo = (tipo === '35') ? ESTRUTURAS["35"].esqueleto : ESTRUTURAS["RO"];
+        document.getElementById('texto-final').value = conteudo;
         document.getElementById('menu-estruturas').style.display = 'none';
+        // Foca no texto e rola pro início
+        document.getElementById('texto-final').focus();
+        document.querySelector('.paper-wrapper').scrollTop = 0;
     };
 
-    window.limpar = () => { if(confirm("Apagar tudo?")) document.getElementById('texto-final').value = ""; };
+    // 4. Ações de Toolbar (🗑️ e 💾)
+    window.limparFolha = () => {
+        if(confirm("Deseja apagar toda a folha de resposta?")) {
+            document.getElementById('texto-final').value = "";
+        }
+    };
 
-    // Inicialização
-    window.switchPDF('prova', document.querySelector('.tab.active'));
-    
-    // Timer simples
-    let sec = 18000;
+    window.salvarManual = () => {
+        const texto = document.getElementById('texto-final').value;
+        localStorage.setItem('oab_backup_35', texto);
+        alert("Rascunho salvo localmente com sucesso!");
+        // Aqui chamaria sua função de firebase: window.saveToFirebase(texto);
+    };
+
+    // Inicialização automática
+    window.loadPDF('ro35.pdf');
+
+    // Timer de Prova (05:00:00)
+    let timeLeft = 5 * 60 * 60;
     setInterval(() => {
-        sec--;
-        let h = Math.floor(sec/3600);
-        let m = Math.floor((sec%3600)/60);
-        let s = sec%60;
-        document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if(timeLeft <= 0) return;
+        timeLeft--;
+        const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+        const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = `${h}:${m}:${s}`;
     }, 1000);
+
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
 </body>
 </html>
