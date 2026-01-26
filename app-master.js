@@ -1,4 +1,3 @@
-// app-master.js - O Maestro do Sistema
 import { db } from './firebase-config.js';
 import { NaoConfunda } from './nao-confunda.js';
 import { PDFEngine } from './pdf-engine.js';
@@ -7,91 +6,81 @@ import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
 export const App = {
     init() {
-        this.configurarGlobal();
+        this.exporGlobais();
         this.renderMenuEstruturas();
         this.mudarExame();
-        console.log("🚀 Sistema Aryanna Master Blindado e Pronto.");
+        console.log("✅ Sistema Restaurado: Todos os botões mapeados.");
     },
 
-    // Centraliza todas as funções que o HTML chama via onclick/oninput
-    configurarGlobal() {
+    exporGlobais() {
+        // 🏆 MENTORIA
+        window.irParaMentoria = () => window.location.href = 'mentoria.html';
+
+        // 📚 QUESTÕES / 🎯 ESPELHO / 📌 NC / 💡 DICAS
         window.abrirModal = (id) => {
             document.getElementById(id).style.display = 'flex';
             if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'lista-nc-dinamica');
         };
         window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
-        window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+
+        // ⚖️ ESTRUTURAS
         window.toggleEstruturas = () => {
             const m = document.getElementById('menu-estruturas');
             m.style.display = m.style.display === 'block' ? 'none' : 'block';
         };
-        window.limparFolha = () => { if(confirm("Deseja apagar todo o texto da peça?")) document.getElementById('texto-final').value = ""; };
-        
-        // Funções de PDF
-        window.loadDoc = (tipo) => this.carregarDocumentoPDF(tipo);
-        window.changePage = (off) => PDFEngine.changePage(off);
-        
-        // Funções de Sync
-        window.autoSave = () => this.autoSave();
+
+        // 🗑️ LIMPAR / 🌓 TEMA / 💾 SALVAR
+        window.limparFolha = () => { if(confirm("Apagar peça?")) document.getElementById('texto-final').value = ""; };
+        window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
         window.saveMeta = (path, val) => this.saveMeta(path, val);
+        window.autoSave = () => this.autoSave();
+
+        // ◀ ▶ PDF CONTROLS
+        window.changePage = (off) => PDFEngine.changePage(off);
+        window.loadDoc = (tipo) => this.carregarDocumentoPDF(tipo);
+
+        // EXAME SELECT
         window.mudarExame = () => this.mudarExame();
     },
 
-    getExame() {
-        return document.getElementById('exam-select').value;
-    },
+    getExame() { return document.getElementById('exam-select').value; },
 
     async carregarDocumentoPDF(tipo) {
         const ex = this.getExame();
         const arq = tipo === 'prova' ? `ro${ex}.pdf` : `vade.pdf`;
-        
-        // Atualiza UI das abas
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const tabAtiva = document.getElementById(`tab-${tipo}`);
-        if(tabAtiva) tabAtiva.classList.add('active');
-
         try {
             const resp = await fetch(arq);
             const buffer = await resp.arrayBuffer();
             PDFEngine.init(buffer);
-        } catch (e) {
-            console.error("Erro ao carregar PDF:", arq);
-        }
+        } catch (e) { console.error("Erro PDF:", arq); }
     },
 
     async mudarExame() {
         const ex = this.getExame();
-        
-        // 1. PDF
         this.carregarDocumentoPDF('prova');
-
-        // 2. Sincronização de Textos (Peça, Respostas, Dicas)
-        const mappings = [
+        
+        const mapeamento = [
             { path: `v3_treino/exame_${ex}`, id: 'texto-final' },
             { path: `v3_respostas/exame_${ex}`, id: 'res-editor' },
             { path: `v3_dicas/exame_${ex}`, id: 'dicas-editor' }
         ];
 
-        mappings.forEach(m => {
-            get(ref(db, m.path)).then(s => {
-                document.getElementById(m.id).value = s.val() || "";
-            });
+        mapeamento.forEach(m => {
+            get(ref(db, m.path)).then(s => { document.getElementById(m.id).value = s.val() || ""; });
         });
 
-        // 3. Espelho FGV
-        document.getElementById('checklist-fgv').innerHTML = DATA_MASTER.espelhos[ex] || "Gabarito ainda não disponível.";
+        if (DATA_MASTER.espelhos[ex]) {
+            document.getElementById('checklist-fgv').innerHTML = DATA_MASTER.espelhos[ex];
+        }
     },
 
     saveMeta(path, val) {
-        const ex = this.getExame();
-        set(ref(db, `${path}/exame_${ex}`), val);
+        set(ref(db, `${path}/exame_${this.getExame()}`), val);
     },
 
     autoSave() {
         clearTimeout(this.sv);
-        this.sv = setTimeout(() => {
-            this.saveMeta('v3_treino', document.getElementById('texto-final').value);
-        }, 1000);
+        this.sv = setTimeout(() => this.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000);
     },
 
     renderMenuEstruturas() {
@@ -110,6 +99,4 @@ export const App = {
         });
     }
 };
-
-// Auto-inicialização
 App.init();
