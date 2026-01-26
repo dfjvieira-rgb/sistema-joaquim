@@ -4,96 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
-    <link rel="stylesheet" href="style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a; --paper: #ffffff; --text: #1e293b; --gold: #d4af37;
+            --border: #cbd5e1; --pen: #003366; --success: #059669; --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Header */
+        header { 
+            background: #1e293b; height: 55px; display: flex; align-items: center; 
+            justify-content: space-between; padding: 0 20px; border-bottom: 2px solid var(--gold); 
+        }
+        .logo { color: var(--gold); font-weight: 800; letter-spacing: 1px; font-size: 1rem; }
+        
+        /* Toolbar com TODOS os botões */
+        .toolbar { 
+            background: #f8fafc; padding: 8px 15px; display: flex; gap: 8px; 
+            border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto;
+        }
+        .btn-symbol { 
+            background: white; border: 1px solid var(--border); padding: 8px; 
+            border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; min-width: 42px;
+        }
+        .btn-symbol:hover { border-color: var(--gold); background: #fffcf0; }
+        .btn-save { background: var(--success) !important; color: white !important; margin-left: auto; }
+
+        /* Área do Editor */
+        .main-container { flex: 1; display: flex; overflow: hidden; }
+        .editor-section { flex: 1.2; overflow-y: auto; background: #e2e8f0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .paper-sheet { 
+            background: white; width: 100%; max-width: 850px; min-height: 1100px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; position: relative;
+        }
+        .line-nums { 
+            width: 45px; border-right: 1px solid var(--gold); background: #fcfcfc;
+            text-align: center; color: #94a3b8; padding-top: 10px; 
+            font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 30px;
+        }
+        .text-area { 
+            flex: 1; border: none; outline: none; padding: 10px 20px;
+            font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 30px;
+            color: var(--pen); background: repeating-linear-gradient(transparent, transparent 29px, #e5e7eb 30px);
+            background-attachment: local; resize: none;
+        }
+
+        /* Viewer PDF */
+        .viewer-section { flex: 0.8; background: #1e293b; border-left: 2px solid var(--gold); display: flex; flex-direction: column; }
+        .tabs { display: flex; background: #0f172a; }
+        .tab { flex: 1; padding: 12px; border: none; background: transparent; color: #94a3b8; cursor: pointer; font-weight: 800; font-size: 10px; }
+        .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+
+        /* Modais */
+        .modal-full { 
+            display: none; position: fixed; inset: 0; background: #e2e8f0; z-index: 9999; 
+            flex-direction: column;
+        }
+        .modal-header { background: #1e293b; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .btn-voltar { background: var(--gold); border: none; padding: 6px 15px; border-radius: 4px; font-weight: 800; cursor: pointer; }
+
+        @media (max-width: 768px) { .viewer-section { display: none; } }
+    </style>
 </head>
-<body class="dark-mode">
+<body>
+
     <header>
         <div class="logo">ARYANNA MASTER 2026</div>
-        <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:800; font-size:1.2rem;">05:00:00</div>
+        <div id="timer-display" style="color:var(--warning); font-weight:800; font-family:'Courier Prime';">05:00:00</div>
     </header>
+
+    <div class="toolbar">
+        <select id="exam-select" style="padding:5px; font-weight:bold; border-radius:4px;" onchange="atualizarExame()">
+            <option value="44">EXAME 44</option>
+            <option value="41">EXAME 41</option>
+            <option value="40">EXAME 40</option>
+        </select>
+        
+        <button class="btn-symbol" onclick="abrirModal('modal-estruturas')" title="Estruturas">⚖️</button>
+        <button class="btn-symbol" onclick="abrirModal('modal-respostas')" title="Questões">📚</button>
+        <button class="btn-symbol" onclick="abrirModal('modal-espelho')" title="Espelho">🎯</button>
+        <button class="btn-symbol" onclick="abrirModal('modal-dicas')" title="Dicas">💡</button>
+        <button class="btn-symbol" onclick="abrirModal('modal-mentoria')" title="Mentoria">🚀</button>
+        
+        <button class="btn-symbol btn-save" onclick="salvarGeral()" title="Salvar">💾</button>
+    </div>
 
     <div class="main-container">
         <section class="editor-section">
-            <div class="toolbar">
-                <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol"></select>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-estruturas')" title="Estruturas">⚖️</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')" title="Questões">📚</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')" title="Corrigir Peça">🎯</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-mentoria')" title="Mentoria">🚀</button>
-                <button class="btn-symbol" onclick="window.toggleDarkMode()" title="Tema">🌓</button>
-                <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.autoSave()">💾</button>
-            </div>
-            
-            <div class="paper-wrapper">
-                <div class="paper-sheet">
-                    <div class="line-nums" id="ln-main"></div>
-                    <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça técnica..."></textarea>
-                </div>
+            <div class="paper-sheet">
+                <div id="ln-main" class="line-nums"></div>
+                <textarea id="texto-final" class="text-area" oninput="syncLines('texto-final', 'ln-main')"></textarea>
             </div>
         </section>
 
         <section class="viewer-section">
             <div class="tabs">
-                <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
-                <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-                <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
+                <button class="tab active" onclick="setPDF('prova')">PROVA</button>
+                <button class="tab" onclick="setPDF('gabarito')">GABARITO</button>
+                <button class="tab" onclick="window.open('https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm','_blank')">VADE</button>
             </div>
-            <div id="pdf-viewport"></div>
+            <iframe id="pdf-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
         </section>
     </div>
 
-    <div id="modal-estruturas" class="modal-full">
-        <div class="modal-header">
-            <div class="header-title-group"><span>⚖️</span><h3>Estruturas</h3></div>
-            <button class="btn-voltar" onclick="window.fecharModal('modal-estruturas')"><span>✕ Voltar</span></button>
-        </div>
-        <div class="modal-body" id="lista-pecas-content"></div>
-    </div>
-
     <div id="modal-respostas" class="modal-full">
-        <div class="modal-header">
-            <div class="header-title-group"><span>📚</span><h3>Folha de Respostas</h3></div>
-            <button class="btn-voltar" onclick="window.fecharModal('modal-respostas')"><span>✕ Voltar</span></button>
-        </div>
+        <div class="modal-header"><h3>📚 Folha de Respostas</h3><button class="btn-voltar" onclick="fecharModal('modal-respostas')">✕ VOLTAR</button></div>
         <div class="modal-body">
-            <div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div>
-        </div>
-    </div>
-
-    <div id="modal-espelho" class="modal-full">
-        <div class="modal-header">
-            <div class="header-title-group"><span>🎯</span><h3>Espelho de Correção</h3></div>
-            <button class="btn-voltar" onclick="window.fecharModal('modal-espelho')"><span>✕ Voltar</span></button>
-        </div>
-        <div class="modal-body">
-            <div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div>
-            <div id="checklist-fgv"></div>
+            <div class="paper-sheet">
+                <div id="ln-res" class="line-nums"></div>
+                <textarea id="res-editor" class="text-area" oninput="syncLines('res-editor', 'ln-res')" placeholder="Responda as questões 1 a 4 aqui..."></textarea>
+            </div>
         </div>
     </div>
 
     <div id="modal-dicas" class="modal-full">
-        <div class="modal-header">
-            <div class="header-title-group"><span>💡</span><h3>Dicas e Teses</h3></div>
-            <button class="btn-voltar" onclick="window.fecharModal('modal-dicas')"><span>✕ Voltar</span></button>
-        </div>
+        <div class="modal-header"><h3>💡 Dicas e Teses</h3><button class="btn-voltar" onclick="fecharModal('modal-dicas')">✕ VOLTAR</button></div>
         <div class="modal-body">
-            <div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div>
+            <div class="paper-sheet">
+                <div id="ln-dicas" class="line-nums"></div>
+                <textarea id="dicas-editor" class="text-area" oninput="syncLines('dicas-editor', 'ln-dicas')" placeholder="Anote teses, Súmulas e OJs..."></textarea>
+            </div>
         </div>
     </div>
 
     <div id="modal-mentoria" class="modal-full">
-        <div class="modal-header">
-            <div class="header-title-group"><span>🚀</span><h3>Mentoria Estratégica</h3></div>
-            <button class="btn-voltar" onclick="window.fecharModal('modal-mentoria')"><span>✕ Voltar</span></button>
-        </div>
+        <div class="modal-header"><h3>🚀 Mentoria Estratégica</h3><button class="btn-voltar" onclick="fecharModal('modal-mentoria')">✕ VOLTAR</button></div>
         <div class="modal-body">
-            <div class="paper-sheet"><div class="line-nums" id="ln-mentoria"></div><textarea id="mentoria-editor" class="text-area" placeholder="Anotações de ouro da mentoria..."></textarea></div>
+            <div class="paper-sheet">
+                <div id="ln-mentoria" class="line-nums"></div>
+                <textarea id="mentoria-editor" class="text-area" oninput="syncLines('mentoria-editor', 'ln-mentoria')" placeholder="Anotações da mentoria..."></textarea>
+            </div>
         </div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <div id="modal-estruturas" class="modal-full">
+        <div class="modal-header"><h3>⚖️ Estruturas</h3><button class="btn-voltar" onclick="fecharModal('modal-estruturas')">✕ VOLTAR</button></div>
+        <div class="modal-body" id="lista-pecas">
+            </div>
+    </div>
+
+    <div id="modal-espelho" class="modal-full">
+        <div class="modal-header"><h3>🎯 Espelho de Correção</h3><button class="btn-voltar" onclick="fecharModal('modal-espelho')">✕ VOLTAR</button></div>
+        <div class="modal-body">
+            <div id="checklist-fgv" style="width:100%; max-width:600px; background:white; padding:20px; border-radius:10px;">
+                <h2 style="text-align:center; color:var(--bg);">Nota: <span id="nota-valor">0.00</span></h2>
+                <hr style="margin:15px 0;">
+                <p style="text-align:center; color:#666;">Selecione os itens do gabarito oficial.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funções de Interface
+        function abrirModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            const editors = {'modal-respostas':'res-editor', 'modal-dicas':'dicas-editor', 'modal-mentoria':'mentoria-editor'};
+            if(editors[id]) syncLines(editors[id], 'ln-' + id.split('-')[1]);
+        }
+        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function syncLines(taId, lnId) {
+            const ta = document.getElementById(taId);
+            const ln = document.getElementById(lnId);
+            if(!ta || !ln) return;
+            const lines = ta.value.split('\n').length;
+            ln.innerHTML = Array.from({length: Math.max(lines, 40)}, (_, i) => i + 1).join('<br>');
+        }
+
+        function setPDF(tipo) {
+            const ex = document.getElementById('exam-select').value;
+            const frame = document.getElementById('pdf-frame');
+            frame.src = tipo === 'prova' ? 
+                `https://oab.fgv.br/exames/exame${ex}/prova_peca.pdf` : 
+                `https://oab.fgv.br/exames/exame${ex}/gabarito_peca.pdf`;
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event?.target.classList?.add('active');
+        }
+
+        // Inicialização
+        window.onload = () => {
+            syncLines('texto-final', 'ln-main');
+            setPDF('prova');
+        };
+
+        function salvarGeral() {
+            alert("Sincronizando com Firebase...");
+            // Aqui entra a chamada do seu app.js
+        }
+    </script>
 </body>
 </html>
