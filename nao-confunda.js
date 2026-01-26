@@ -1,10 +1,10 @@
-import { ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { db } from './firebase-config.js';
 import { UI } from './ui-components.js';
 
 /**
  * MÓDULO: NÃO CONFUNDA
- * Gerencia a sincronização de Post-its com o Firebase e interface.
+ * Gerencia a sincronização de Post-its dinâmicos com o Firebase.
  */
 export const NaoConfunda = {
     // Renderiza a lista usando o componente do ui-components.js
@@ -15,71 +15,103 @@ export const NaoConfunda = {
         onValue(ref(db, `v7_nc/exame_${exame}`), (snapshot) => {
             container.innerHTML = "";
             if (snapshot.exists()) {
-                Object.entries(snapshot.val()).forEach(([id, data]) => {
+                // Inverte a ordem para que o mais recente apareça primeiro
+                const entries = Object.entries(snapshot.val()).reverse();
+                
+                entries.forEach(([id, data]) => {
                     const postit = UI.criarPostItNC(id, data, (idParaDeletar) => {
                         window.removerNC(idParaDeletar);
                     });
                     container.appendChild(postit);
                 });
             } else {
-                container.innerHTML = `<p style="text-align:center; color:#64748b; padding:20px; font-size:0.8rem;">Toque no "+" para adicionar sua primeira comparação.</p>`;
+                container.innerHTML = `
+                    <div style="text-align:center; color:#64748b; padding:40px 20px; font-size:0.9rem; opacity:0.7;">
+                        <p>💡 Nenhuma tese estratégica salva para o Exame ${exame}.</p>
+                        <p style="font-size:0.75rem; margin-top:10px;">Toque no "+" para criar seu primeiro Post-it.</p>
+                    </div>`;
             }
         });
     },
 
-    salvar: (exame, titulo, teses, explicações) => {
-        return push(ref(db, `v7_nc/exame_${exame}`), {
+    salvar: (exame, titulo, teses, explicacoes) => {
+        const novaRef = push(ref(db, `v7_nc/exame_${exame}`));
+        return set(novaRef, {
             titulo,
             teses,
-            explicações,
+            explicacoes, // Note que corrigi para 'explicacoes' sem acento para evitar erros no banco
             data: new Date().getTime()
         });
     }
 };
 
-// --- FUNÇÕES DE INTERFACE (WINDOW) PARA ACESSO DIRETO NO HTML ---
+// --- FUNÇÕES DE INTERFACE (WINDOW) ---
 
 /**
- * Adiciona novos campos de input dinamicamente no modal
+ * Adiciona novos campos de input dinamicamente no modal de criação
  */
 window.adicionarCampo = (containerId, placeholder) => {
     const container = document.getElementById(containerId);
+    if (!container) return;
+
     const input = document.createElement('input');
-    
-    // Usando a classe profissional definida no seu estilos.css
-    input.className = 'input-nc'; 
+    input.type = 'text';
+    input.className = 'input-nc'; // Classe profissional do seu estilos.css
     input.placeholder = placeholder;
+    input.style.marginTop = "8px";
+    input.style.animation = "fadeIn 0.3s ease";
     
     container.appendChild(input);
     input.focus();
 };
 
 /**
- * Coleta os dados dos inputs e envia para o Firebase
+ * Coleta os dados dos inputs dinâmicos e envia para o Firebase
  */
 window.saveNC = () => {
-    // Busca o exame selecionado no select principal do App
     const selectExame = document.getElementById('exam-select');
     if (!selectExame) return console.error("Elemento 'exam-select' não encontrado.");
     
     const ex = selectExame.value;
-    const titulo = document.getElementById('nc-titulo').value;
+    const tituloInput = document.getElementById('nc-titulo');
+    const titulo = tituloInput ? tituloInput.value.trim() : "";
     
     // Mapeia múltiplos inputs de teses e explicações
-    const teses = Array.from(document.querySelectorAll('#container-teses input')).map(i => i.value).filter(v => v);
-    const explicações = Array.from(document.querySelectorAll('#container-explicações input')).map(i => i.value).filter(v => v);
+    const teses = Array.from(document.querySelectorAll('#container-teses input'))
+                       .map(i => i.value.trim())
+                       .filter(v => v !== "");
+                       
+    const explicacoes = Array.from(document.querySelectorAll('#container-explicações input'))
+                            .map(i => i.value.trim())
+                            .filter(v => v !== "");
 
-    if (!titulo || teses.length === 0) return alert("Preencha o título e ao menos uma tese!");
+    if (!titulo || teses.length === 0) {
+        return alert("⚠️ Atenção: Preencha o título e pelo menos uma tese principal!");
+    }
 
-    NaoConfunda.salvar(ex, titulo, teses, explicações).then(() => {
-        // Limpa o formulário após salvar
-        document.getElementById('nc-titulo').value = "";
-        document.getElementById('container-teses').innerHTML = '<input type="text" placeholder="Tese Principal" class="input-nc">';
-        document.getElementById('container-explicações').innerHTML = '<input type="text" placeholder="Explicação Principal" class="input-nc">';
+    NaoConfunda.salvar(ex, titulo, teses, explicacoes).then(() => {
+        console.log("✅ Post-it salvo na v7_nc");
         
-        // Se houver um modal aberto, ele pode ser fechado aqui
+        // Limpa o formulário após salvar
+        if (tituloInput) tituloInput.value = "";
+        const cTeses = document.getElementById('container-teses');
+        const cExpl = document.getElementById('container-explicações');
+        
+        if (cTeses) cTeses.innerHTML = '<input type="text" placeholder="Tese Principal" class="input-nc">';
+        if (cExpl) cExpl.innerHTML = '<input type="text" placeholder="Explicação Principal" class="input-nc">';
+        
+        // Fecha o modal de criação (ajustado para o seu ID de overlay)
         const modal = document.getElementById('modal-nc-overlay');
         if (modal) modal.remove();
+        
+        // Feedback visual
+        const feedback = document.createElement('div');
+        feedback.className = 'toast-sucesso';
+        feedback.innerText = "Post-it Adicionado!";
+        document.body.appendChild(feedback);
+        setTimeout(() => feedback.remove(), 2000);
+    }).catch(err => {
+        alert("Erro ao salvar: " + err.message);
     });
 };
 
@@ -88,7 +120,9 @@ window.saveNC = () => {
  */
 window.removerNC = (id) => {
     const ex = document.getElementById('exam-select').value;
-    if (confirm("Excluir este post-it permanentemente?")) {
-        remove(ref(db, `v7_nc/exame_${ex}/${id}`));
+    if (confirm("Deseja excluir permanentemente este Post-it estratégico?")) {
+        remove(ref(db, `v7_nc/exame_${ex}/${id}`))
+            .then(() => console.log("🗑️ Post-it removido."))
+            .catch(err => console.error("Erro ao remover:", err));
     }
 };
