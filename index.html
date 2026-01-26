@@ -24,6 +24,7 @@
                 <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')" title="Espelho">🎯</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-nc')" title="Post-its">📌</button>
+                <button class="btn-symbol" onclick="window.abrirModal('modal-calc')" title="Calculadora CLT">🧮</button>
                 <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
                 <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.finalizarManual()">💾</button>
             </div>
@@ -46,74 +47,87 @@
         </section>
     </div>
 
-    <div id="menu-estruturas" style="display:none;position:absolute;top:90px;left:20px;background:var(--toolbar-bg);border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.3);z-index:5000;width:280px;border:1px solid var(--border);max-height:70vh;overflow-y:auto"></div>
+    <div id="modal-calc" class="modal-full">
+        <div class="modal-header">
+            <button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button>
+            <h3>CALCULADORA DE PRAZOS (CLT)</h3>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+            <div style="background: var(--toolbar-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border); max-width: 500px; margin: 0 auto;">
+                <label style="display:block; margin-bottom: 10px; font-weight: bold;">Data da Extinção (Demissão):</label>
+                <input type="date" id="calc-data-demissao" class="btn-symbol" style="width: 100%; margin-bottom: 15px; padding: 10px;">
+                <button onclick="window.rodarCalculo()" style="width:100%; padding: 12px; background: var(--primary); color: white; border:none; border-radius: 5px; font-weight: bold; cursor: pointer;">CALCULAR PRESCRIÇÃO</button>
+                
+                <div id="res-calc" style="margin-top: 25px; display: none; border-top: 1px solid var(--border); padding-top: 15px;">
+                    <p style="margin-bottom:10px;"><strong>Limite para Ajuizar (2 anos):</strong><br><span id="res-bienal" style="color: var(--warning); font-size: 1.2rem;"></span></p>
+                    <p><strong>Marco Quinquenal (5 anos atrás):</strong><br><span id="res-quinquenal" style="color: var(--warning); font-size: 1.2rem;"></span></p>
+                    <p style="font-size: 0.75rem; margin-top: 15px; opacity: 0.6; line-height: 1.4;">
+                        * Bienal: Art. 7º, XXIX, CF/88 e Art. 11, CLT.<br>
+                        * Quinquenal: Contado do ajuizamento (Súmula 308, I, TST).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="modal-espelho" class="modal-full">
         <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button><h3>ESPELHO OFICIAL</h3></div>
-        <div class="modal-body">
-            <div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div>
-            <div id="checklist-fgv"></div>
-        </div>
+        <div class="modal-body"><div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div><div id="checklist-fgv"></div></div>
     </div>
 
     <div id="modal-respostas" class="modal-full">
         <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE RESPOSTAS (QUESTÕES)</h3></div>
-        <div class="modal-body">
-            <div class="paper-sheet">
-                <div class="line-nums" id="ln-res"></div>
-                <textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)" placeholder="Escreva as respostas das questões aqui..."></textarea>
-            </div>
-        </div>
+        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
     </div>
 
     <div id="modal-dicas" class="modal-full">
         <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS E MACETES</h3></div>
-        <div class="modal-body">
-            <div class="paper-sheet">
-                <div class="line-nums" id="ln-dicas"></div>
-                <textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)" placeholder="Anote dicas importantes deste exame..."></textarea>
-            </div>
-        </div>
+        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
     </div>
 
     <div id="modal-nc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS / TESES SALVAS</h3></div>
-        <div class="modal-body" style="background: var(--bg-site);">
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS / TESES</h3></div>
+        <div class="modal-body">
             <div id="box-teses"></div>
             <button class="btn-symbol" style="width:100%; margin:10px 0" onclick="window.addNCField('box-teses', 'input')">+ Nova Tese</button>
             <div id="box-explica"></div>
-            <button class="btn-symbol" style="width:100%; margin:10px 0" onclick="window.addNCField('box-explica', 'textarea')">+ Detalhe/Fundamentação</button>
-            <button onclick="window.saveNC()" style="width:100%;margin-top:20px;padding:15px;background:var(--success);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">SALVAR POST-ITS</button>
+            <button class="btn-symbol" style="width:100%; margin:10px 0" onclick="window.addNCField('box-explica', 'textarea')">+ Detalhe</button>
+            <button onclick="window.saveNC()" style="width:100%;margin-top:20px;padding:15px;background:var(--success);color:#fff;border:none;border-radius:8px;font-weight:700">SALVAR POST-ITS</button>
         </div>
     </div>
+
+    <div id="menu-estruturas" style="display:none;position:absolute;top:90px;left:20px;background:var(--toolbar-bg);border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.3);z-index:5000;width:280px;border:1px solid var(--border);max-height:70vh;overflow-y:auto"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         
-        // Importando módulos externos
+        // Importação das Engrenagens
         import { pecas, MEUS_ESPELHOS } from './estruturas.js';
         import { Cronometro } from './cronometro.js';
+        import { CalculadoraTrabalhista } from './calculadora.js';
 
-        // Configuração Firebase
-        const config = { 
-            apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-            authDomain: "masteroab-db5e1.firebaseapp.com", 
-            projectId: "masteroab-db5e1", 
-            databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-        };
-        const app = initializeApp(config); 
-        const db = getDatabase(app);
+        const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+        const app = initializeApp(config); const db = getDatabase(app);
         
-        // Inicializar Cronômetro (5 horas)
         const timer = new Cronometro('timer-display', 300);
         timer.iniciar();
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        let currentPdf = null;
+        // Funções da Calculadora
+        window.rodarCalculo = () => {
+            const data = document.getElementById('calc-data-demissao').value;
+            const res = CalculadoraTrabalhista.calcularPrescricao(data);
+            if(res) {
+                document.getElementById('res-calc').style.display = 'block';
+                document.getElementById('res-bienal').innerText = res.limiteAjuizamento;
+                document.getElementById('res-quinquenal').innerText = res.marcoRetroativo;
+            } else alert("Selecione a data de saída.");
+        };
 
-        // Gerenciamento de PDF
+        // Gerenciamento de PDF e UI
+        let currentPdf = null;
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
         }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
@@ -130,7 +144,7 @@
                     const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
                     v.appendChild(c); observer.observe(c);
                 }
-            } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>Arquivo não encontrado.</p>"; }
+            } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>Não encontrado.</p>"; }
         };
 
         async function renderPage(num, container) {
@@ -143,3 +157,75 @@
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
             const tl = document.createElement('div'); tl.className = 'textLayer'; container.appendChild(tl);
             const content = await page.getTextContent();
+            pdfjsLib.renderTextLayer({ textContent: content, container: tl, viewport: vp, textDivs: [] });
+        }
+
+        window.calcNota = () => {
+            let t = 0; document.querySelectorAll('#checklist-fgv input:checked').forEach(i => t += parseFloat(i.value));
+            document.getElementById('nota-valor').innerText = t.toFixed(2);
+        };
+
+        window.saveMeta = (p, v) => set(ref(db, `${p}/exame_${document.getElementById('exam-select').value}`), v);
+
+        window.autoSave = () => { 
+            clearTimeout(window.sv); 
+            window.sv = setTimeout(() => window.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000); 
+        };
+
+        window.mudarExame = () => {
+            const ex = document.getElementById('exam-select').value;
+            window.carregarPDF('prova');
+            document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || '<p style="padding:20px">Aguardando espelho...</p>';
+            get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
+            get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
+            get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
+            get(ref(db, `v3_nc/exame_${ex}`)).then(s => {
+                document.getElementById('box-teses').innerHTML = ""; document.getElementById('box-explica').innerHTML = "";
+                if(s.exists()){
+                    s.val().t?.forEach(v => window.addNCField('box-teses', 'input', v));
+                    s.val().d?.forEach(v => window.addNCField('box-explica', 'textarea', v));
+                }
+            });
+        };
+
+        window.toggleEstruturas = () => {
+            const m = document.getElementById('menu-estruturas');
+            m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            m.innerHTML = Object.keys(pecas).map(k => `<div onclick="window.inserirPeça('${k}')" style="padding:15px; border-bottom:1px solid var(--border); cursor:pointer;">📄 ${k}</div>`).join('');
+        };
+
+        window.inserirPeça = (k) => {
+            if(confirm("Substituir texto?")) { document.getElementById('texto-final').value = pecas[k]; window.autoSave(); window.toggleEstruturas(); }
+        };
+
+        window.addNCField = (id, tag, val="") => { 
+            const el = document.createElement(tag); el.className = tag === 'input' ? "btn-symbol" : "text-area";
+            el.style.width="100%"; el.style.marginBottom="8px"; el.value = val;
+            if(tag === 'textarea') el.style.height="80px";
+            document.getElementById(id).appendChild(el); 
+        };
+
+        window.saveNC = () => {
+            const t = [...document.querySelectorAll('#box-teses input')].map(i => i.value).filter(v => v);
+            const d = [...document.querySelectorAll('#box-explica textarea')].map(i => i.value).filter(v => v);
+            set(ref(db, `v3_nc/exame_${document.getElementById('exam-select').value}`), { t, d }).then(() => alert("Salvo!"));
+        };
+
+        window.abrirModal = id => document.getElementById(id).style.display = 'flex';
+        window.fecharModal = id => document.getElementById(id).style.display = 'none';
+        window.finalizarManual = () => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); alert("Sincronizado!"); };
+
+        const sel = document.getElementById('exam-select');
+        for(let i=45; i>=30; i--) { 
+            let o = document.createElement('option'); o.value=i; o.innerText=`EXAME ${i}`; 
+            if(i==44) o.selected=true; sel.appendChild(o); 
+        }
+
+        document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+        document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+        document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+
+        window.mudarExame();
+    </script>
+</body>
+</html>
