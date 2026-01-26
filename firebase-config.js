@@ -1,11 +1,11 @@
-// firebase-config.js - Conexão Centralizada
+// firebase-config.js - Conexão Centralizada (Versão Auditada)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// COLE ABAIXO AS SUAS CREDENCIAIS DO FIREBASE CONSOLE
+// Importante: Certifique-se de que os valores abaixo são os do seu Firebase Console
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
+    apiKey: "SUA_API_KEY", // <--- Verifique se trocou pelo seu
     authDomain: "SEU_PROJETO.firebaseapp.com",
     databaseURL: "https://SEU_PROJETO.firebaseio.com",
     projectId: "SEU_PROJETO",
@@ -14,9 +14,11 @@ const firebaseConfig = {
     appId: "SEU_APP_ID"
 };
 
-// Inicializa o Firebase
+// Inicializa o Firebase uma única vez
 const app = initializeApp(firebaseConfig);
 
-// Exporta as instâncias para uso nos outros arquivos
+// Exportações Modulares
 export const db = getDatabase(app);
 export const auth = getAuth(app);
+
+console.log("🔥 Firebase: Conexão estabelecida e módulos exportados.");
