@@ -1,65 +1,122 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { pecas, MEUS_ESPELHOS } from './estruturas.js';
+import { getDatabase, ref, set, get, onValue, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Configuração do Firebase
-const config = { databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-const app = initializeApp(config); 
+// --- CONFIGURAÇÃO ---
+const config = {
+    apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+    authDomain: "masteroab-db5e1.firebaseapp.com",
+    projectId: "masteroab-db5e1",
+    databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
+};
+const app = initializeApp(config);
 const db = getDatabase(app);
 
-// Configuração PDF.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-let currentPdf = null;
-
-// Função Universal de Salvamento
-window.saveMeta = (path, val) => {
-    const ex = document.getElementById('exam-select').value;
-    set(ref(db, `${path}/exame_${ex}`), val);
+// --- ESTRUTURAS ---
+const SALTO = "\n\n\n\n\n\n\n\n\n\n";
+const pecas = {
+    'Reclamação Trabalhista': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, qualificação completa... propor RECLAMAÇÃO TRABALHISTA...`,
+    'Contestação': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\nRECLAMADA, já qualificada, vem apresentar CONTESTAÇÃO...`,
+    'Recurso Ordinário': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\nRECORRENTE, vem interpor RECURSO ORDINÁRIO...`
 };
 
-// Atalho para salvamento da peça principal
-window.autoSave = () => window.saveMeta('v3_treino', document.getElementById('texto-final').value);
+// --- CORE ENGINE ---
+window.state = { exame: "44", modo: "escrita" };
 
-// Troca de Exame e Carregamento de Dados
-window.mudarExame = async () => {
-    const ex = document.getElementById('exam-select').value;
-    const items = [
-        {path: 'v3_treino', id: 'texto-final'},
-        {path: 'v3_respostas', id: 'res-editor'},
-        {path: 'v3_dicas', id: 'dicas-editor'},
-        {path: 'v3_mentoria', id: 'mentoria-editor'}
-    ];
+window.abrirModal = (id) => {
+    document.getElementById(id).style.display = 'flex';
+    if(id === 'modal-mentoria') carregarMuseu();
+};
 
-    for(let item of items) {
-        const snap = await get(ref(db, `${item.path}/exame_${ex}`));
-        document.getElementById(item.id).value = snap.exists() ? snap.val() : "";
+window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
+
+window.updateLines = (idArea, idLines) => {
+    const ta = document.getElementById(idArea);
+    const ln = document.getElementById(idLines);
+    const count = ta.value.split('\n').length;
+    ln.innerHTML = Array.from({length: Math.max(count, 40)}, (_, i) => i + 1).join('<br>');
+};
+
+// --- FIREBASE OPS ---
+window.autoSave = () => {
+    const data = {
+        texto: document.getElementById('texto-final').value,
+        respostas: document.getElementById('res-editor').value,
+        timestamp: new Date().toISOString()
+    };
+    set(ref(db, `v3_treino/exame_${window.state.exame}`), data);
+    console.log("Sincronizado...");
+};
+
+async function carregarDadosExame() {
+    const snap = await get(ref(db, `v3_treino/exame_${window.state.exame}`));
+    if(snap.exists()){
+        const d = snap.val();
+        document.getElementById('texto-final').value = d.texto || "";
+        document.getElementById('res-editor').value = d.respostas || "";
+    } else {
+        document.getElementById('texto-final').value = "";
+        document.getElementById('res-editor').value = "";
     }
+    window.updateLines('texto-final', 'ln-main');
+}
 
-    // Atualiza o checklist do espelho
-    document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || "Espelho não disponível para este exame.";
-    window.calcNota(); // Zera ou recalcula a nota
-    window.carregarPDF('prova');
+// --- MUSEU / HISTÓRICO ---
+function carregarMuseu() {
+    onValue(ref(db, 'v3_treino'), (snap) => {
+        const h = document.getElementById('mentoria-historico');
+        h.innerHTML = "";
+        const data = snap.val() || {};
+        Object.keys(data).reverse().forEach(ex => {
+            h.innerHTML += `
+                <div class="hist-card">
+                    <div style="display:flex; justify-content:space-between">
+                        <strong>${ex.toUpperCase()}</strong>
+                        <span class="nota-badge">SALVO</span>
+                    </div>
+                    <div style="font-size:12px; color:#94a3b8; margin-top:5px">
+                        Última alteração: ${new Date(data[ex].timestamp).toLocaleString()}
+                    </div>
+                </div>`;
+        });
+    });
+}
+
+// --- PDF ---
+window.carregarPDF = (tipo) => {
+    const ex = window.state.exame;
+    const urls = {
+        'prova': `https://oab.fgv.br/exames/exame${ex}/prova_peca.pdf`,
+        'gabarito': `https://oab.fgv.br/exames/exame${ex}/gabarito_peca.pdf`,
+        'vade': `https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm`
+    };
+    const container = document.getElementById('pdf-viewport');
+    container.innerHTML = `<iframe src="${urls[tipo]}"></iframe>`;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-${tipo}`).classList.add('active');
 };
 
-// Visualizador de PDF
-window.carregarPDF = async (tipo) => {
-    const ex = document.getElementById('exam-select').value;
-    const url = `https://raw.githubusercontent.com/Anshul-69/PDFs/main/OAB${ex}${tipo === 'prova' ? 'PR' : 'GB'}.pdf`;
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    const sel = document.getElementById('exam-select');
+    [44, 41, 40, 37, 35].forEach(n => sel.add(new Option(`EXAME ${n}`, n)));
     
-    try {
-        currentPdf = await pdfjsLib.getDocument(url).promise;
-        const viewport = document.getElementById('pdf-viewport');
-        viewport.innerHTML = "";
-        
-        for (let i = 1; i <= currentPdf.numPages; i++) {
-            const page = await currentPdf.getPage(i);
-            const canvas = document.createElement('canvas');
-            viewport.appendChild(canvas);
-            const renderCtx = { 
-                canvasContext: canvas.getContext('2d'), 
-                viewport: page.getViewport({ scale: 1.2 }) 
-            };
-            canvas.width = renderCtx.viewport.width; 
-            canvas.height = renderCtx.viewport.height;
-            await page.render(render
+    sel.onchange = (e) => { window.state.exame = e.target.value; carregarDadosExame(); window.carregarPDF('prova'); };
+
+    document.getElementById('texto-final').oninput = () => {
+        window.updateLines('texto-final', 'ln-main');
+        window.autoSave();
+    };
+
+    // Lista de Peças no Modal
+    const lista = document.getElementById('lista-pecas-content');
+    Object.keys(pecas).forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'btn-tool'; d.style.marginBottom = "5px"; d.style.display="block";
+        d.innerText = p;
+        d.onclick = () => { document.getElementById('texto-final').value = pecas[p]; window.fecharModal('modal-estruturas'); window.updateLines('texto-final', 'ln-main'); };
+        lista.appendChild(d);
+    });
+
+    carregarDadosExame();
+    window.carregarPDF('prova');
+});
