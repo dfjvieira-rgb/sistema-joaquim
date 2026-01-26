@@ -1,11 +1,12 @@
-<!DOCTYPE html><html lang="pt-br"><head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
-    <script src="dados_espelhos.js"></script>
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #e11d48;
@@ -20,192 +21,161 @@
         body { 
             font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; 
             display: flex; flex-direction: column; overflow: hidden; color: var(--text);
-            user-select: text !important; -webkit-user-select: text !important;
         }
-        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; flex-shrink: 0; }
+        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; }
         .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); min-width: 0; }
-        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto; white-space: nowrap; flex-shrink: 0; }
-        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); flex-shrink: 0; }
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.1); -webkit-overflow-scrolling: touch; }
-        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .editor-section { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); min-width: 0; }
+        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.1); }
+        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; }
         .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; user-select: none; }
-        .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; user-select: text !important; }
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; flex-shrink: 0; }
+        .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; }
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; position: relative; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; }
         .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
         .tab.active { background: var(--bg-site); color: var(--primary); font-weight: bold; }
-        #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; -webkit-overflow-scrolling: touch; }
-        .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden; }
-        canvas { display: block; width: 100% !important; height: auto !important; }
-        .textLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1.0; }
-        .textLayer > span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
+        #pdf-viewport { flex: 1; overflow-y: auto; background: #525659; padding: 10px 0; }
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
-        .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; flex-shrink: 0; }
-        .modal-header h3 { font-size: 0.75rem; flex: 1; color: var(--gold); }
+        .modal-header { background: #1e293b; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--gold); }
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
-        .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
         #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
         .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
         .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-        .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
-        .espelho-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); }
-        .espelho-txt { flex: 1; font-size: 0.75rem; color: var(--text); line-height: 1.2; }
-        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.75rem; white-space: nowrap; }
-        .nota-floating { position: sticky; top: 0; background: var(--gold); color: #000; padding: 10px; text-align: center; font-weight: 900; border-radius: 8px; margin-bottom: 15px; z-index: 10; }
-        @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
-        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
-    </style></head><body class="dark-mode"><header>
+        @media (max-width: 768px) { .viewer-section { display: none; } .viewer-section.active-mobile { display: flex; position: absolute; inset: 0; z-index: 2000; } }
+    </style>
+</head>
+<body class="dark-mode">
+<header>
     <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div></header><div class="main-container">
+    <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div>
+</header>
+
+<div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
             <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Sua peça Aryanna Linhares..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Escreva aqui a sua peça..."></textarea>
             </div>
         </div>
     </section>
+
     <section class="viewer-section" id="section-pdf">
         <div class="tabs">
             <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
             <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
-    </section></div><button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
-    <div id="modal-nc" class="modal-full"><div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div><div class="modal-body"><div id="box-teses"></div></div></div>
-    <div id="modal-respostas" class="modal-full"><div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div></div>
-    <div id="modal-dicas" class="modal-full"><div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>DICAS E POST-ITS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div></div>
-    <div id="modal-espelho" class="modal-full"><div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO DE CORREÇÃO</h3></div><div class="modal-body"><div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div><div id="checklist-fgv"></div></div></div>
-    <div id="menu-estruturas">
-        <div class="menu-category">Peças</div>
-        <div class="menu-item" onclick="window.gerarPeca('RT')">RECLAMAÇÃO TRABALHISTA</div>
-        <div class="menu-item" onclick="window.gerarPeca('CON')">CONTESTAÇÃO</div>
-        <div class="menu-item" onclick="window.gerarPeca('RO')">RECURSO ORDINÁRIO</div>
-    </div>
-        <script type="module">
+    </section>
+</div>
+
+<div id="menu-estruturas">
+    <div class="menu-category">Peças Práticas (18)</div>
+    <div class="menu-item" onclick="window.gerarPeca('RT')">1. Reclamação Trabalhista</div>
+    <div class="menu-item" onclick="window.gerarPeca('CON')">2. Contestação</div>
+    <div class="menu-item" onclick="window.gerarPeca('RECONV')">3. Reconvenção</div>
+    <div class="menu-item" onclick="window.gerarPeca('CONSIGN')">4. Consignação em Pagamento</div>
+    <div class="menu-item" onclick="window.gerarPeca('INQUERITO')">5. Inquérito Falta Grave</div>
+    <div class="menu-item" onclick="window.gerarPeca('RO')">6. Recurso Ordinário</div>
+    <div class="menu-item" onclick="window.gerarPeca('RR')">7. Recurso de Revista</div>
+    <div class="menu-item" onclick="window.gerarPeca('ED')">8. Embargos de Declaração</div>
+    <div class="menu-item" onclick="window.gerarPeca('AI')">9. Agravo de Instrumento</div>
+    <div class="menu-item" onclick="window.gerarPeca('AP')">10. Agravo de Petição</div>
+    <div class="menu-item" onclick="window.gerarPeca('EMBARGOS_EXEC')">11. Embargos à Execução</div>
+    <div class="menu-item" onclick="window.gerarPeca('EXCECAO_PRE_EXEC')">12. Exceção de Pré-Executividade</div>
+    <div class="menu-item" onclick="window.gerarPeca('MANDADO_SEG')">13. Mandado de Segurança</div>
+    <div class="menu-item" onclick="window.gerarPeca('ACAO_RESC')">14. Ação Rescisória</div>
+    <div class="menu-item" onclick="window.gerarPeca('EMBARGOS_TERCEIRO')">15. Embargos de Terceiro</div>
+    <div class="menu-item" onclick="window.gerarPeca('CONTRA_RAZOES')">16. Contrarrazões</div>
+    <div class="menu-item" onclick="window.gerarPeca('RECURSO_ADESIVO')">17. Recurso Adesivo</div>
+    <div class="menu-item" onclick="window.gerarPeca('HABEAS_CORPUS')">18. Habeas Corpus</div>
+</div>
+
+<div id="modal-respostas" class="modal-full">
+    <div class="modal-header"><button onclick="window.fecharModal('modal-respostas')">VOLTAR</button><h3>FOLHA DE RESPOSTAS (FGV)</h3></div>
+    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveRes()" placeholder="Post-its de respostas..."></textarea></div></div>
+</div>
+
+<div id="modal-dicas" class="modal-full">
+    <div class="modal-header"><button onclick="window.fecharModal('modal-dicas')">VOLTAR</button><h3>DICAS DA PEÇA</h3></div>
+    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveDicas()" placeholder="Dicas e macetes..."></textarea></div></div>
+</div>
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    let currentPdf = null;
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
-    }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
-
-    window.carregarPDF = async (tipo) => {
-        const ex = document.getElementById('exam-select').value;
-        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
-        const v = document.getElementById('pdf-viewport'); v.innerHTML = "";
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tab-${tipo}`).classList.add('active');
-        try {
-            currentPdf = await pdfjsLib.getDocument(arq).promise;
-            for (let i = 1; i <= currentPdf.numPages; i++) {
-                const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
-                v.appendChild(c); observer.observe(c);
-            }
-        } catch(e) { v.innerHTML = "<p style='color:white;padding:20px;'>PDF não disponível.</p>"; }
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
     };
+    const app = initializeApp(config); 
+    const db = getDatabase(app);
 
-    async function renderPage(num, container) {
-        if (container.dataset.rendered) return; container.dataset.rendered = "true";
-        const page = await currentPdf.getPage(num);
-        const parentWidth = document.getElementById('pdf-viewport').clientWidth;
-        const scale = (parentWidth - 30) / page.getViewport({scale:1}).width;
-        const vp = page.getViewport({ scale });
-        container.style.height = vp.height + "px"; container.style.width = vp.width + "px";
-        const canvas = document.createElement('canvas');
-        canvas.height = vp.height; canvas.width = vp.width;
-        container.appendChild(canvas);
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.className = 'textLayer';
-        container.appendChild(textLayerDiv);
-        const textContent = await page.getTextContent();
-        pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport: vp, textDivs: [] });
-    }
-
-    // LÓGICA DO ESPELHO (Usando window.MEUS_ESPELHOS do arquivo externo)
-    window.calcNota = () => {
-        let total = 0;
-        document.querySelectorAll('#checklist-fgv input:checked').forEach(i => total += parseFloat(i.value));
-        document.getElementById('nota-valor').innerText = total.toFixed(2);
-        return total.toFixed(2);
-    };
-
-    window.saveMeta = (path, val) => {
-        const ex = document.getElementById('exam-select').value;
-        set(ref(db, `${path}/exame_${ex}`), val);
-    };
-
-    window.autoSave = () => { 
-        clearTimeout(window.sv); 
-        window.sv = setTimeout(() => { window.saveMeta('v3_treino', document.getElementById('texto-final').value); }, 1000); 
+    const pecas = {
+        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nRECLAMAÇÃO TRABALHISTA\n\nI-PRELIMINARES\nII-MÉRITO\nIII-PEDIDOS`,
+        'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nCONTESTAÇÃO\n\nI-PRELIMINARES\nII-PREJUDICIAL\nIII-MÉRITO`,
+        'RECONV': `DA RECONVENÇÃO (Art. 343 CPC)\n\nFatos e fundamentos...`,
+        'CONSIGN': `AÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nArt. 539 CPC...`,
+        'INQUERITO': `INQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nArt. 853 CLT...`,
+        'RO': `RECURSO ORDINÁRIO\n\nInterposição e Razões...`,
+        'RR': `RECURSO DE REVISTA\n\nArt. 896 CLT...`,
+        'ED': `EMBARGOS DE DECLARAÇÃO\n\nArt. 897-A CLT...`,
+        'AI': `AGRAVO DE INSTRUMENTO\n\nArt. 897, 'b' CLT...`,
+        'AP': `AGRAVO DE PETIÇÃO\n\nArt. 897, 'a' CLT...`,
+        'EMBARGOS_EXEC': `EMBARGOS À EXECUÇÃO\n\nArt. 884 CLT...`,
+        'EXCECAO_PRE_EXEC': `EXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nMatéria de ordem pública...`,
+        'MANDADO_SEG': `MANDADO DE SEGURANÇA\n\nLei 12.016/09...`,
+        'ACAO_RESC': `AÇÃO RESCISÓRIA\n\nArt. 836 CLT...`,
+        'EMBARGOS_TERCEIRO': `EMBARGOS DE TERCEIRO\n\nArt. 674 CPC...`,
+        'CONTRA_RAZOES': `CONTRARRAZÕES\n\nDefesa do recurso adversário...`,
+        'RECURSO_ADESIVO': `RECURSO ADESIVO\n\nArt. 997 CPC...`,
+        'HABEAS_CORPUS': `HABEAS CORPUS\n\nArt. 5º CF...`
     };
 
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
-        window.carregarPDF('prova');
-        
-        // Injeção do espelho via window.MEUS_ESPELHOS
-        const espelhoHtml = (window.MEUS_ESPELHOS && window.MEUS_ESPELHOS[ex]) ? window.MEUS_ESPELHOS[ex] : '<p style="padding:20px; opacity:0.5;">Espelho não carregado.</p>';
-        document.getElementById('checklist-fgv').innerHTML = espelhoHtml;
-        document.getElementById('nota-valor').innerText = "0.00";
-
-        // Recuperar dados
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
-        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
+        get(ref(db, `v3_respostas_texto/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
 
+    window.saveRes = () => set(ref(db, `v3_respostas_texto/exame_${document.getElementById('exam-select').value}`), document.getElementById('res-editor').value);
+    window.saveDicas = () => set(ref(db, `v3_dicas/exame_${document.getElementById('exam-select').value}`), document.getElementById('dicas-editor').value);
+    window.autoSave = () => set(ref(db, `v3_treino/exame_${document.getElementById('exam-select').value}`), document.getElementById('texto-final').value);
+
+    window.gerarPeca = (tipo) => {
+        document.getElementById('texto-final').value = pecas[tipo];
+        window.toggleEstruturas();
+        window.autoSave();
+    };
+
+    window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display === 'block' ? 'none' : 'block'; };
     window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
     window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
-    window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
-    window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display==='block'?'none':'block'; };
-
-    window.finalizarManual = () => {
-        const ex = document.getElementById('exam-select').value;
-        const nota = window.calcNota();
-        window.finalizarManualSync(ex, nota);
-    };
-
-    window.finalizarManualSync = async (ex, nota) => {
-        await set(ref(db, `v3_respostas/exame_${ex}`), document.getElementById('res-editor').value);
-        await set(ref(db, `v3_dicas/exame_${ex}`), document.getElementById('dicas-editor').value);
-        alert(`Sincronizado! Nota: ${nota}`);
-    };
-
-    window.limparFolha = () => { if(confirm("Apagar?")) document.getElementById('texto-final').value = ""; };
 
     const sel = document.getElementById('exam-select');
-    for(let i=45; i>=1; i--) { 
-        let n = i<10?"0"+i:i; let opt = document.createElement('option'); opt.value=n; opt.innerText=`EXAME ${n}`;
-        if(i==44) opt.selected=true; sel.appendChild(opt); 
+    for(let i=45; i>=35; i--) { 
+        let opt = document.createElement('option'); opt.value=i; opt.innerText=`EXAME ${i}`;
+        if(i==44) opt.selected=true; sel.appendChild(opt);
     }
-
-    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
-    document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
-    document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+    
+    const drawL = (id, n) => document.getElementById(id).innerHTML = Array.from({length:n}, (_,i)=>i+1).join('<br>');
+    drawL('ln-main', 300); drawL('ln-res', 150); drawL('ln-dicas', 150);
 
     window.mudarExame();
-</script></body></html>
-    
+</script>
+</body>
+</html>
