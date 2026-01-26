@@ -68,14 +68,12 @@
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames Oficiais</div>
+        <div class="section-label">Exames Oficiais OAB</div>
         <div id="lista-exames"></div>
-        <div class="section-label">Estruturas Base</div>
-        <div id="lista-modelos"></div>
     </aside>
 
     <section class="work-section">
-        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE UM EXAME</div>
         <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
         <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Esqueleto Oficial"><i class="fas fa-balance-scale"></i></div>
     </section>
@@ -97,79 +95,63 @@
 
 <script>
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
-    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 
     const BANCO_DADOS = {
         "44": { 
             nome: "EXAME 44", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados..., vêm apresentar CONTESTAÇÃO (Art. 847 CLT)...\n\nI - PRELIMINARES...\nII - PREJUDICIAL...\nIII - MÉRITO...\nIV - REQUERIMENTOS...`, 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados nos autos da Reclamação Trabalhista que lhe move NEYMARA..., vêm apresentar CONTESTAÇÃO com fulcro no Art. 847 da CLT...\n\nI - PRELIMINARES...\nII - PREJUDICIAL DE MÉRITO...\nIII - MÉRITO...\nIV - REQUERIMENTOS...`, 
             espelho: [
-                ["Endereçamento: 150ª VT de Manaus", 0.10], ["Fundamento: Art. 847 da CLT", 0.10], ["Preliminar: Ilegitimidade Passiva Sócios (Art. 50 CC)", 0.60], ["Preliminar: Inépcia Pedido Reenquadramento", 0.60], ["Prejudicial: Prescrição Parcial (Art. 7, XXIX CF)", 0.50], ["Mérito: Indevido Ticket Refeição (CCT)", 0.80], ["Mérito: Vale Transporte (Ônus da Prova)", 0.80], ["Mérito: Proporcionalidade Aviso Prévio", 0.80], ["Requerimentos Finais e Honorários", 0.70]
+                ["Endereçamento: 150ª VT de Manaus", 0.10], ["Fundamento: Art. 847 da CLT", 0.10], ["Preliminar: Ilegitimidade Passiva Sócios (Art. 50 CC)", 0.60], ["Preliminar: Inépcia Reenquadramento", 0.60], ["Prejudicial: Prescrição Parcial (Art. 7, XXIX CF)", 0.50], ["Mérito: Indevido Ticket Refeição (CCT)", 0.80], ["Mérito: Vale Transporte (Ônus da Prova)", 0.80], ["Mérito: Proporcionalidade Aviso Prévio", 0.80], ["Requerimentos Finais e Honorários", 0.70]
             ] 
         },
         "41": { 
             nome: "EXAME 41", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\n\nMARIA SERRA... interpor AGRAVO DE PETIÇÃO (Art. 897, 'a' CLT)...\n\nRAZÕES DO AGRAVO...`, 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\n\nProcesso nº: ...\n\nMARIA SERRA, já qualificada..., vem interpor AGRAVO DE PETIÇÃO com base no Art. 897, 'a' da CLT...\n\nRAZÕES DO AGRAVO...`, 
             espelho: [
                 ["Interposição: 503ª VT/DF", 0.10], ["Fundamento: Art. 897, 'a' da CLT", 0.10], ["Delimitação Matéria e Valores", 0.80], ["Razões: TRT 10ª Região", 0.10], ["Nulidade: Ausência de Citação IDPJ", 1.20], ["Impenhorabilidade: Bem de Família", 1.20], ["Fundamentação: Lei 8.009/90", 0.50], ["Requerimentos de Reforma", 1.00]
             ] 
         },
         "40": { 
             nome: "EXAME 40", 
-            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., rep por JULIETA... propor RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...`, 
+            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., representado por sua inventariante JULIETA..., vem propor RECLAMAÇÃO TRABALHISTA pelo rito ordinário, com base no Art. 840, §1º da CLT...\n\nI - MÉRITO...`, 
             espelho: [
                 ["Endereçamento: VT de Osasco/SP", 0.10], ["Representação do Espólio (Inventariante)", 0.50], ["Art. 840, § 1º, da CLT", 0.10], ["Vínculo: Subordinação/Habitualidade", 1.20], ["Multa Art. 477 CLT", 1.20], ["Multa Art. 467 CLT", 1.00], ["Honorários (Art. 791-A CLT)", 0.50], ["Valor da Causa / Fechamento", 0.40]
             ] 
         },
-        "37": { 
-            nome: "EXAME 37", 
-            esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ\n\nCONTESTAÇÃO...`, 
-            espelho: [ ["Endereçamento 85ª VT/RJ", 0.10], ["Art. 847 da CLT", 0.10] ] 
-        },
-        "35": { 
-            nome: "EXAME 35", 
-            esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI\n\nRECURSO ORDINÁRIO...`, 
-            espelho: [ ["Interposição 89ª VT Floriano", 0.10], ["Art. 895, I, CLT", 0.10] ] 
-        },
+        "37": { nome: "EXAME 37", esqueleto: "AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ\n\nCONTESTAÇÃO...", espelho: [] },
+        "35": { nome: "EXAME 35", esqueleto: "AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI\n\nRECURSO ORDINÁRIO...", espelho: [] },
         "43": { nome: "EXAME 43", esqueleto: "AO JUÍZO DA...", espelho: [] },
         "42": { nome: "EXAME 42", esqueleto: "AO JUÍZO DA...", espelho: [] },
         "39": { nome: "EXAME 39", esqueleto: "AO JUÍZO DA...", espelho: [] },
         "38": { nome: "EXAME 38", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "36": { nome: "EXAME 36", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "RT": { 
-            nome: "ESTRUTURA RT", 
-            esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...\n\nRECLAMANTE, ${QUALIF}, propor RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT) em face de RECLAMADA, ${QUALIF}...` 
-        },
-        "RO": { 
-            nome: "ESTRUTURA RO", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA... VARA DO TRABALHO DE...\n\nProcesso nº: ...\n\nRECORRENTE, já qualificado..., interpor RECURSO ORDINÁRIO (Art. 895, I CLT)...` 
-        }
+        "36": { nome: "EXAME 36", esqueleto: "AO JUÍZO DA...", espelho: [] }
     };
 
     let idAtivo = null;
 
     function init() {
         const menuExames = document.getElementById('lista-exames');
-        const menuModelos = document.getElementById('lista-modelos');
+        menuExames.innerHTML = "";
         
-        Object.keys(BANCO_DADOS).sort((a,b) => b-a).forEach(key => {
-            const btn = document.createElement('button');
-            btn.className = 'exame-btn';
-            btn.innerText = BANCO_DADOS[key].nome;
-            btn.onclick = () => {
-                idAtivo = key;
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
-                if(!isNaN(key)) {
+        Object.keys(BANCO_DADOS)
+            .sort((a,b) => b-a)
+            .forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'exame-btn';
+                btn.innerText = BANCO_DADOS[key].nome;
+                btn.onclick = () => {
+                    idAtivo = key;
+                    document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
+                    
                     document.getElementById('v-enu').src = `ro${key}.pdf`;
                     document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                }
-                renderEspelho(key);
-            };
-            if(!isNaN(key)) menuExames.appendChild(btn);
-            else menuModelos.appendChild(btn);
-        });
+                    
+                    renderEspelho(key);
+                };
+                menuExames.appendChild(btn);
+            });
     }
 
     function renderEspelho(key) {
@@ -178,16 +160,21 @@
         const itens = BANCO_DADOS[key].espelho;
         if(itens && itens.length > 0) {
             itens.forEach(item => {
-                area.innerHTML += `<div class="espelho-item"><input type="checkbox" value="${item[1]}" onchange="calcNota()"> <div style="flex:1">${item[0]}</div> <b>${item[1].toFixed(2)}</b></div>`;
+                area.innerHTML += `
+                <div class="espelho-item">
+                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
+                    <div style="flex:1">${item[0]}</div>
+                    <b style="color:var(--red)">${item[1].toFixed(2)}</b>
+                </div>`;
             });
         } else {
-            area.innerHTML = "<p style='padding:20px; color:#999'>Checklist não disponível para este item.</p>";
+            area.innerHTML = "<p style='padding:20px; color:#999'>Aguardando inclusão de dados oficiais (Checklist 0 a 5.0).</p>";
         }
         calcNota();
     }
 
     function injetarConteudo() {
-        if(!idAtivo) return alert("Selecione um item!");
+        if(!idAtivo) return alert("Selecione um exame!");
         document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
     }
 
