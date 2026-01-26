@@ -1,75 +1,75 @@
-window.MEUS_ESPELHOS = {
+/**
+ * ARYANNA MASTER PRO 2026 - Banco de Dados de Espelhos (Checklists)
+ * Centralização dos critérios de correção para otimização de performance.
+ */
+
+export const BANCO_ESPELHOS = {
     "44": `
         <div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div>
-        <div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Indicação reclamados, reclamante e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Ilegitimidade passiva dos sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Inépcia do reenquadramento (Art. 330, § 1º, I ou Art. 337, IV CPC)</div><div class="espelho-pt">0.40</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Prejudicial: Prescrição parcial - anterior a 28/04/2020 (Art. 7º, XXIX CF ou Art. 11 CLT)</div><div class="espelho-pt">0.40</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Ticket refeição - ausência de ultratividade (Art. 614, § 3º CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Aviso prévio - indevida redução pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Periculosidade - não era trabalhadora em moto (Art. 193, § 4º CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Reintegração - garantia encerrada ou pedido demissão (Súmula 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Vale transporte - uso de moto própria (Lei 7.418/85 ou Dec. 10.854/21)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Renovação preliminares/improcedência/provas/honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Art. 847 da CLT</div><div class="espelho-pt">0.30</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade passiva sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">4. Preliminar: Inépcia reenquadramento (Art. 330, §1, I ou 337, IV CPC)</div><div class="espelho-pt">0.40</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">5. Prejudicial: Prescrição parcial (Art. 7, XXIX CF ou 11 CLT)</div><div class="espelho-pt">0.40</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Ticket refeição - ausência de ultratividade (Art. 614, §3 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Jornada aviso prévio no pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Periculosidade motocicleta indevida (Art. 193, §4 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Reintegração indevida (S. 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Vale transporte moto própria (L. 7418/85 ou D. 10854/21)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">11. Pedidos (Renovação/Improcedência/Provas/Honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>
     `,
-    "43": "",
-    "42": "",
+
     "41": `
         <div class="nota-floating">ESPELHO OFICIAL - EXAME 41 (AGRAVO DE PETIÇÃO)</div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Partes (Maria Serra e Jeferson Peres)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">Fundamento: Art. 855-A, § 1º, II ou Art. 897, 'a' CLT</div><div class="espelho-pt">0.10</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Delimitação justificada matérias (Art. 897, § 1º CLT)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Tempestividade 8 dias (Art. 897, caput CLT)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Juiz não poderia instaurar IDPJ de ofício (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Suspensão do processo (Art. 134, § 3º CPC ou Art. 855-A, § 2º CLT)</div><div class="espelho-pt">0.70</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Prazo manifestação 15 dias desrespeitado (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">Tese: Ilegitimidade (saída há +2 anos ou não era sócia na admissão) - Art. 10-A CLT</div><div class="espelho-pt">0.80</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Tese: Impenhorabilidade aposentadoria (Art. 833, IV ou Art. 529, § 3º CPC)</div><div class="espelho-pt">0.70</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Revogação tutela/levantamento penhora/conhecimento e provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Fundamento (Art. 855-A, §1, II ou 897, a CLT)</div><div class="espelho-pt">0.30</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Delimitação justificada: Art. 897, §1º CLT</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Tempestividade (8 dias): Art. 897, caput CLT</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">5. Tese: IDPJ de ofício vedado (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">6. Tese: Suspensão do processo (Art. 134, §3 CPC ou 855-A, §2 CLT)</div><div class="espelho-pt">0.70</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">7. Tese: Prazo manifestação 15 dias (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">8. Ilegitimidade: Sócio retirante > 2 anos (Art. 10-A CLT ou 1032 CC)</div><div class="espelho-pt">0.80</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">9. Tese: Impenhorabilidade aposentadoria (Art. 833, IV CPC)</div><div class="espelho-pt">0.70</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Pedidos (Revogação/Provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>
     `,
+
     "40": `
         <div class="nota-floating">ESPELHO OFICIAL - EXAME 40 (RECLAMAÇÃO TRABALHISTA)</div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento VT Osasco/SP e Art. 840, § 1º CLT</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Qualificação Espólio/Julieta e Distribuidora Capuleto Ltda.</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Gratuidade de justiça (Art. 790, § 3º ou § 4º CLT)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Prioridade tramitação idosa (Art. 1048 CPC ou Art. 71 Lei 10.741)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Reconhecimento vínculo/anotação CTPS (Art. 3º ou Art. 29 CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Verbas: Saldo, 13º, Férias, FGTS e Multa Art. 477, § 8º CLT</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="1.60" onchange="window.calcNota()"><div class="espelho-txt">Dano Material: Enterro, Seguro Vida, Pensão Morte e Pensão Empregador (Art. 186/927/948 CCB)</div><div class="espelho-pt">1.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Dano Moral acidente (Art. 223-B/C/G CLT ou 186/927/944 CCB)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Honorários advocatícios (Art. 791-A CLT)</div><div class="espelho-pt">0.40</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">Pedidos (Procedência/Valores estimados) e Fechamento</div><div class="espelho-pt">0.70</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento Osasco/SP e Art. 840, §1 CLT</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Qualificação Partes (Espólio e Reclamada)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Gratuidade Justiça (Art. 790, §3 ou §4 CLT)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Prioridade Idosa (Art. 1048 CPC ou L. 10741)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Vínculo Empregatício (Art. 3 ou 29 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Verbas (Saldo, 13º, Férias, FGTS, Multa 477)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="1.60" onchange="window.calcNota()"><div class="espelho-txt">7. Danos Materiais (Enterro, Seguro, Pensões) - Art. 186/927/948 CC</div><div class="espelho-pt">1.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Dano Moral Acidente (Art. 223-B CLT ou 186/927 CC)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">9. Honorários (791-A), Pedidos com Valor e Fechamento</div><div class="espelho-pt">1.10</div></div>
     `,
-    "39": "",
-    "38": "",
+
     "37": `
         <div class="nota-floating">ESPELHO OFICIAL - EXAME 37 (CONTESTAÇÃO)</div>
-        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (85ª VT/RJ), Peça Jorge Machado e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Adiamento audiência (Art. 841 CLT)</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Preliminar: Ilegitimidade Jorge (saída há +2 anos) - Art. 10-A CLT ou 1.003 CC</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Adicional transferência (sem mudança domicílio) - Art. 469 CLT</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Horas in itinere (deslocamento não é disposição) - Art. 58, § 2º CLT</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Intervalo digitador (não era a função) - Art. 72 CLT ou Súmula 346 TST</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Acúmulo de tarefas (inseridas na função) - Art. 456, p.u. CLT</div><div class="espelho-pt">0.60</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Pedidos: Renovação preliminares e extinção ex-sócio</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Improcedência/Provas/Honorários Art. 791-A) e Fechamento</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 85ª VT/RJ e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">2. Preliminar: Adiamento Audiência (Art. 841 CLT)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade ex-sócio (Art. 10-A CLT)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">4. Mérito: Adicional Transferência (Art. 469 CLT)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Horas in itinere (Art. 58, § 2º CLT)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Intervalo Digitador (Art. 72 CLT ou S. 346 TST)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Acúmulo de Função (Art. 456, p.u. CLT)</div><div class="espelho-pt">0.60</div></div>
+        <div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">8. Pedidos (Renovação/Improcedência/Honorários) e Fechamento</div><div class="espelho-pt">1.10</div></div>
     `,
-    "36": "",
+
     "35": `
         <div class="nota-floating">ESPELHO OFICIAL - EXAME 35 (RECURSO ORDINÁRIO)</div>
-        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (89ª VT Floriano/PI), razões ao TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Partes (Sociedade empresária recorrente e empregado recorrido)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Tempestividade (8 dias) e Preparo (Custas/Depósito Recursal)</div><div class="espelho-pt">0.20</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Prescrição parcial: arguida em instância ordinária (Súmula 153 TST ou Art. 193 CC)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Intervalo interjornada de 11h observado (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Indevida reintegração (estabilidade só p/ dirigente sindical) - Art. 543 CLT ou Art. 8º, VIII CF</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: FGTS indevido por suspensão contratual (Art. 476 CLT ou Art. 15, §5º Lei 8036)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Ajuda de custo - natureza indenizatória (Art. 457, §2º CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Equiparação indevida - estabelecimentos distintos (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Insalubridade indevida por reclassificação (Art. 194 CLT ou Súmula 248 TST)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Honorários indevidos (improcedência) ou limite 15% (Art. 791-A CLT)</div><div class="espelho-pt">0.40</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Conhecimento/Provimento/Reforma/Acolhimento Prescrição) e Fechamento</div><div class="espelho-pt">0.40</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 89ª VT Floriano/PI, TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Partes (Sociedade empresária e Empregado)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Tempestividade (8 dias) e Preparo</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">4. Prescrição Parcial Instância Ordinária (S. 153 TST)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Intervalo Interjornada 11h (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Reintegração Indevida (Art. 543, §3 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: FGTS Suspensão Contratual (Art. 476 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Ajuda Custo Indenizatória (Art. 457, §2 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Equiparação Salarial (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Insalubridade Reclassificação (Art. 194 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">11. Honorários (791-A), Pedidos e Fechamento</div><div class="espelho-pt">0.80</div></div>
     `
 };
