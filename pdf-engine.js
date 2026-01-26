@@ -12,21 +12,19 @@ export const PDFEngine = {
         this.canvas = document.getElementById('pdf-canvas');
         this.ctx = this.canvas.getContext('2d');
         
-        // Carrega o documento
+        // Carrega o documento usando a biblioteca PDF.js
         this.pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         
-        // Atualiza contagem de páginas na UI
         document.getElementById('page-count').textContent = this.pdfDoc.numPages;
 
-        // Ajusta o zoom inicial baseado na largura da tela
         this.ajustarZoom();
         this.renderPage(1);
     },
 
     ajustarZoom() {
         const container = document.getElementById('pdf-container');
-        if (container.clientWidth < 600) {
-            this.scale = 0.8; // Mobile
+        if (container && container.clientWidth < 600) {
+            this.scale = 0.8; // Mobile: Zoom menor para caber na tela
         } else {
             this.scale = 1.3; // Desktop
         }
@@ -59,7 +57,6 @@ export const PDFEngine = {
             this.pageNumPending = null;
         }
 
-        // Atualiza número da página no input
         document.getElementById('page-num').value = num;
     },
 
