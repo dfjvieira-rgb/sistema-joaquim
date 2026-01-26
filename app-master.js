@@ -1,4 +1,4 @@
-// app-master.js - Maestro com PDF Linkado
+// app-master.js - Maestro com PDF Linkado e Sincronização Firebase
 import { db } from './firebase-config.js';
 import { NaoConfunda } from './nao-confunda.js';
 import { PDFEngine } from './pdf-engine.js';
@@ -6,44 +6,72 @@ import { DATA_MASTER } from './estruturas.js';
 import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 export const App = {
+    sv: null, // Timer para o autoSave
+
     init() {
         this.vincularInterface();
-        this.renderMenuEstruturas();
+        // Se você tiver uma função de renderMenu no estruturas.js, chame-a aqui
+        // this.renderMenuEstruturas(); 
         this.mudarExame();
+        console.log("🚀 Maestro Pro sincronizado com sucesso.");
     },
 
     vincularInterface() {
+        // Navegação e Modais
         window.irParaMentoria = () => window.location.href = 'mentoria.html';
+        
         window.abrirModal = (id) => {
-            document.getElementById(id).style.display = 'flex';
-            if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'lista-nc-dinamica');
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'flex';
+                // Se abrir o modal de Post-its, renderiza os dados do Firebase
+                if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'lista-nc-dinamica');
+            }
         };
-        window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
+
+        window.fecharModal = (id) => {
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = 'none';
+        };
+
         window.toggleEstruturas = () => {
             const m = document.getElementById('menu-estruturas');
-            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+            if (m) m.style.display = m.style.display === 'block' ? 'none' : 'block';
         };
-        window.limparFolha = () => { if(confirm("Apagar peça?")) document.getElementById('texto-final').value = ""; };
+
+        window.limparFolha = () => { 
+            if(confirm("Deseja apagar toda a peça escrita?")) {
+                const txt = document.getElementById('texto-final');
+                if (txt) txt.value = ""; 
+            }
+        };
+
         window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
         
-        // PDF BRIDGES (Corrigido)
+        // Pontes do Motor PDF (PDF Engine)
         window.loadDoc = (tipo) => this.carregarPDF(tipo);
         window.changePage = (off) => PDFEngine.changePage(off);
         
-        window.saveMeta = (path, val) => this.saveMeta(path, val);
+        // Sincronização
         window.autoSave = () => this.autoSave();
         window.mudarExame = () => this.mudarExame();
     },
 
-    getExame() { return document.getElementById('exam-select').value; },
+    getExame() { 
+        return document.getElementById('exam-select').value; 
+    },
 
     async carregarPDF(tipo) {
         const ex = this.getExame();
+        // Define se carrega a Prova do Exame ou o Vade Mecum
         const nomeArquivo = tipo === 'prova' ? `ro${ex}.pdf` : `vade.pdf`;
         
-        // Feedback visual nos botões
-        document.getElementById('tab-prova').style.background = tipo === 'prova' ? 'var(--primary)' : 'transparent';
-        document.getElementById('tab-vade').style.background = tipo === 'vade' ? 'var(--primary)' : 'transparent';
+        // Feedback visual nos botões de Tab
+        const tabProva = document.getElementById('tab-prova');
+        const tabVade = document.getElementById('tab-vade');
+        
+        if (tabProva) tabProva.style.background = tipo === 'prova' ? 'var(--primary)' : 'transparent';
+        if (tabVade) tabVade.style.background = tipo === 'vade' ? 'var(--primary)' : 'transparent';
 
         try {
             const response = await fetch(nomeArquivo);
@@ -51,15 +79,18 @@ export const App = {
             const buffer = await response.arrayBuffer();
             PDFEngine.init(buffer);
         } catch (err) {
-            alert("Erro: O PDF " + nomeArquivo + " não foi encontrado na pasta.");
+            console.error("Erro ao carregar PDF:", err);
+            // Opcional: Alerta discreto ou log
         }
     },
 
     async mudarExame() {
         const ex = this.getExame();
-        this.carregarPDF('prova'); // Carrega a prova do exame selecionado
+        
+        // 1. Carrega o PDF da prova automaticamente ao mudar o select
+        this.carregarPDF('prova');
 
-        // Sincroniza Firebase
+        // 2. Sincroniza campos de texto com Firebase (Puxa o que foi salvo antes)
         const campos = [
             { path: `v3_treino/exame_${ex}`, id: 'texto-final' },
             { path: `v3_respostas/exame_${ex}`, id: 'res-editor' },
@@ -73,18 +104,30 @@ export const App = {
             });
         });
 
+        // 3. Atualiza o Espelho/Checklist da FGV
         const esp = document.getElementById('checklist-fgv');
-        if (esp) esp.innerHTML = DATA_MASTER.espelhos[ex] || "Pendente.";
+        if (esp) {
+            esp.innerHTML = DATA_MASTER.espelhos[ex] || "<p style='padding:20px; opacity:0.6;'>Espelho para este exame ainda não cadastrado.</p>";
+        }
     },
 
-    saveMeta(path, val) {
-        set(ref(db, `${path}/exame_${this.getExame()}`), val);
+    // Função interna de salvamento direto no Firebase
+    executarSaveFirebase(path, val) {
+        set(ref(db, path), val);
     },
 
     autoSave() {
+        const ex = this.getExame();
+        const texto = document.getElementById('texto-final').value;
+
         clearTimeout(this.sv);
-        this.sv = setTimeout(() => this.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000);
+        // Salva após 1 segundo de inatividade no teclado (Debounce)
+        this.sv = setTimeout(() => {
+            this.executarSaveFirebase(`v3_treino/exame_${ex}`, texto);
+            console.log("📝 Progresso salvo automaticamente.");
+        }, 1000);
     }
 };
 
+// Inicialização única
 App.init();
