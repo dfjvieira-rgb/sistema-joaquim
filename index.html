@@ -8,7 +8,7 @@
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --orange: #f39c12; --header-h: 60px; --gold: #fbbf24;
+            --red: #e74c3c; --header-h: 60px; --gold: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -29,10 +29,6 @@
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
 
-        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
-
-        /* Botão Justiça - A Balança */
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
             width: 60px; height: 60px; background-color: var(--primary);
@@ -42,20 +38,18 @@
             z-index: 100; border: 2px solid var(--gold);
         }
 
-        /* Container do Espelho (Modo Alvo) */
         #container-alvo { 
             display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
             background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        
-        /* Classes injetadas do banco-espelhos.js */
-        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
-        .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
-        .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
-        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
 
-        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
+        /* Estilos do Checklist FGV */
+        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.85rem; }
+        .espelho-txt { flex: 1; line-height: 1.2; }
+        .espelho-pt { font-weight: bold; color: var(--red); min-width: 40px; text-align: right; }
+        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; }
+
+        @media (max-width: 1024px) { .sidebar { display: none; } #container-alvo { width: 100%; } }
     </style>
 </head>
 <body>
@@ -67,26 +61,21 @@
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames OAB</div>
+        <div class="section-label">Exames Disponíveis</div>
         <div id="lista-exames"></div>
     </aside>
 
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
-            <span id="label-atual">📍 SELECIONE O EXAME</span>
+            <span id="label-atual">📍 AGUARDANDO EXAME</span>
             <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
-    </section>
-
-    <section class="pdf-section">
-        <iframe id="v-enu" class="pdf-frame"></iframe>
-        <iframe id="v-gab" class="pdf-frame"></iframe>
+        <textarea id="area-peca" placeholder="Selecione um exame ao lado e use a balança para carregar as teses..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section id="container-alvo">
-        <div class="alvo-header">
+        <div style="padding:15px; background:var(--red); color:white; font-weight:bold; display:flex; justify-content:space-between;">
             <span>CHECKLIST DE CORREÇÃO</span>
             <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
@@ -97,92 +86,80 @@
     </section>
 </main>
 
-<script type="module">
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+<script>
+    // 1. DADOS DE TESTE (Substituiremos pelo seu banco externo depois)
+    // Se o exame não estiver aqui, o sistema avisará "Sem espelho cadastrado"
+    const BANCO_INTERNO = {
+        "44": `<div class="nota-floating">ESPELHO EXAME 44</div>
+               <div class="espelho-item">
+                   <input type="checkbox" value="0.10" onchange="calcNota()">
+                   <div class="espelho-txt">Endereçamento: 150ª Vara do Trabalho de Manaus</div>
+                   <div class="espelho-pt">0.10</div>
+               </div>`
+    };
 
     let idAtivo = null;
 
+    // Inicializa Menu
     window.onload = () => {
-        const menuExames = document.getElementById('lista-exames');
-        // Lista fixa de exames para carregar
-        const examesParaCarregar = ["44", "41", "40", "37", "35"]; 
-
-        examesParaCarregar.forEach(key => {
+        const menu = document.getElementById('lista-exames');
+        ["44", "41", "40", "37"].forEach(ex => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
-            btn.innerText = `EXAME ${key}`;
+            btn.innerText = `EXAME ${ex}`;
             btn.onclick = () => {
-                idAtivo = key;
+                idAtivo = ex;
                 document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                document.getElementById('label-atual').innerText = `📍 EXAME ${key}`;
-                document.getElementById('v-enu').src = `ro${key}.pdf`;
-                document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                renderEspelho(key);
+                document.getElementById('label-atual').innerText = `📍 EXAME ${ex}`;
+                // Tenta carregar a correção
+                abrirCorrecao(ex);
             };
-            menuExames.appendChild(btn);
+            menu.appendChild(btn);
         });
     };
 
-    // FUNÇÃO PARA RENDERIZAR O CHECKLIST NO MODO ALVO
-    window.renderEspelho = (key) => {
-        const area = document.getElementById('injetar-espelho');
-        const dados = BANCO_ESPELHOS[key];
-
-        if (dados) {
-            area.innerHTML = dados;
-            window.calcNota(); // Atualiza a nota se houver marcações prévias
+    // BOTÃO CORREÇÃO (MODO ALVO)
+    function abrirCorrecao(key) {
+        const container = document.getElementById('injetar-espelho');
+        if (BANCO_INTERNO[key]) {
+            container.innerHTML = BANCO_INTERNO[key];
         } else {
-            // REGRA: Se não tiver dados no banco de espelhos
-            area.innerHTML = `
-                <div style="padding:40px; text-align:center; color:#999;">
-                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
-                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
-                </div>`;
-            document.getElementById('display-nota').innerText = "0.00";
+            // REGRA: Sem dados no banco
+            container.innerHTML = `<p style="padding:20px; color:#999; text-align:center;">Sem espelho cadastrado para o Exame ${key}.</p>`;
         }
-    };
+        calcNota();
+    }
 
-    // BOTÃO JUSTIÇA: REGRA DE SUBSTITUIÇÃO TOTAL (BEBE DO BANCO_ESPELHOS)
-    window.injetarJustica = () => {
+    // BOTÃO JUSTIÇA (BALANÇA)
+    function injetarJustica() {
         if(!idAtivo) return alert("Selecione um exame primeiro!");
         
-        const conteudoEspelho = BANCO_ESPELHOS[idAtivo];
-        if(!conteudoEspelho) return alert("Sem teses cadastradas para este exame!");
+        const html = BANCO_INTERNO[idAtivo];
+        if(!html) return alert("Sem teses cadastradas para este exame!");
 
-        // Processamento para converter o HTML do Banco em Texto para o Textarea
         const temp = document.createElement('div');
-        temp.innerHTML = conteudoEspelho;
-        
-        const header = temp.querySelector('.nota-floating');
-        const titulo = header ? header.innerText : `EXAME ${idAtivo}`;
+        temp.innerHTML = html;
         const itens = temp.querySelectorAll('.espelho-txt');
         
-        let textoParaInjetar = `${titulo}\n${"=".repeat(30)}\n\n`;
-        
-        itens.forEach(item => {
-            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
-        });
+        let texto = `TESES OFICIAIS - EXAME ${idAtivo}\n\n`;
+        itens.forEach(i => texto += `[ ] ${i.innerText}\n\n`);
 
-        // REGRA: Substituição Total no editor
-        document.getElementById('area-peca').value = textoParaInjetar;
-    };
+        // REGRA: SUBSTITUIÇÃO TOTAL
+        document.getElementById('area-peca').value = texto;
+    }
 
-    // CÁLCULO DE NOTA GLOBAL
-    window.calcNota = () => {
+    function calcNota() {
         let n = 0;
-        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
-            n += parseFloat(c.value);
-        });
-        const total = n.toFixed(2);
-        document.getElementById('display-nota').innerText = total;
-        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
-    };
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
+        document.getElementById('display-nota').innerText = n.toFixed(2);
+        document.getElementById('mini-nota').innerText = `NOTA: ${n.toFixed(2)}`;
+    }
 
-    window.toggleAlvo = () => {
+    function toggleAlvo() {
         const p = document.getElementById('container-alvo');
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    };
+    }
 </script>
 </body>
 </html>
