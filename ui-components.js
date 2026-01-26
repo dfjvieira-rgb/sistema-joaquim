@@ -6,9 +6,19 @@ export const UI = {
         const div = document.createElement('div');
         div.className = 'postit-container';
         
-        // Formata as teses e explicações em HTML
-        const tesesHtml = data.teses.map(t => `<div class="tese-item"><span>⚖️</span> ${t}</div>`).join('');
-        const explisHtml = data.explicações.map(e => `<div class="expli-item"><span>💡</span> ${e}</div>`).join('');
+        const tesesHtml = data.teses.map(t => `
+            <div class="tese-item">
+                <span class="icon-balanca">⚖️</span>
+                <div class="item-text">${t}</div>
+            </div>
+        `).join('');
+
+        const explisHtml = data.explicações.map(e => `
+            <div class="expli-item">
+                <span class="icon-lampada">💡</span>
+                <div class="item-text">${e}</div>
+            </div>
+        `).join('');
 
         div.innerHTML = `
             <div class="postit-header">
@@ -18,24 +28,19 @@ export const UI = {
             <h4 class="postit-title">${data.titulo}</h4>
             
             <div class="postit-section">
-                <p class="section-label">TESES / COMPARATIVO</p>
-                ${tesesHtml}
+                <p class="section-label">TESES COMPARADAS</p>
+                <div class="list-wrapper">${tesesHtml}</div>
             </div>
             
             <div class="postit-section">
-                <p class="section-label">FUNDAMENTAÇÃO</p>
-                ${explisHtml}
+                <p class="section-label">FUNDAMENTAÇÃO / DICAS</p>
+                <div class="list-wrapper">${explisHtml}</div>
             </div>
         `;
 
-        // Lógica de deleção
+        // Evento de deleção
         div.querySelector('.btn-delete').onclick = () => onDelete(id);
         
         return div;
-    },
-
-    // 🏆 COMPONENTE: CARD DE MENTORIA (Exemplo para o futuro)
-    criarCardMentoria: (titulo, progresso) => {
-        // ... lógica futura aqui
     }
 };
