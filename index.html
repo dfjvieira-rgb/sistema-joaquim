@@ -21,18 +21,18 @@
     <section class="editor-section">
         <div class="toolbar">
             <select id="exam-select" class="btn-symbol" style="width: auto; padding: 0 10px;"></select>
-            <button class="btn-symbol" id="btn-pecas">⚖️</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
+            <button class="btn-symbol" id="btn-pecas" title="Estruturas">⚖️</button>
+            <button class="btn-symbol" id="btn-respostas" title="Respostas">📚</button>
+            <button class="btn-symbol" id="btn-espelho" title="Espelho">🎯</button>
+            <button class="btn-symbol" id="btn-dicas" title="Dicas">💡</button>
+            <button class="btn-symbol" id="btn-nc" title="Post-its">📌</button>
+            <button class="btn-symbol" id="btn-mentoria" title="Mentoria">🏆</button>
             <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" id="btn-save">💾</button>
         </div>
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Selecione um exame ou use a balança ⚖️..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça..."></textarea>
             </div>
         </div>
     </section>
@@ -49,10 +49,10 @@
 
 <div id="menu-estruturas" style="display:none;position:absolute;top:95px;left:55px;background:var(--toolbar-bg);border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.3);z-index:5000;width:250px;border:1px solid var(--border);max-height:60vh;overflow-y:auto"></div>
 
-<div id="modal-espelho" class="modal-full"><div class="modal-header"><button onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO FGV</h3></div><div class="modal-body"><div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div><div id="checklist-fgv"></div></div></div>
-<div id="modal-respostas" class="modal-full"><div class="modal-header"><button onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div></div></div>
-<div id="modal-dicas" class="modal-full"><div class="modal-header"><button onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>DICAS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div></div></div>
-<div id="modal-nc" class="modal-full"><div class="modal-header"><button onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>POST-ITS</h3></div><div class="modal-body"><div id="box-teses"></div><button onclick="window.addNCField('box-teses', 'input')">+ Tese</button><div id="box-explica"></div><button onclick="window.addNCField('box-explica', 'textarea')">+ Detalhe</button></div></div>
+<div id="modal-espelho" class="modal-full"><div class="modal-header"><button class="btn-fechar" data-modal="modal-espelho">← VOLTAR</button><h3>ESPELHO FGV</h3></div><div class="modal-body"><div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div><div id="checklist-fgv"></div></div></div>
+<div id="modal-respostas" class="modal-full"><div class="modal-header"><button class="btn-fechar" data-modal="modal-respostas">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div></div></div>
+<div id="modal-dicas" class="modal-full"><div class="modal-header"><button class="btn-fechar" data-modal="modal-dicas">← VOLTAR</button><h3>DICAS</h3></div><div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div></div></div>
+<div id="modal-nc" class="modal-full"><div class="modal-header"><button class="btn-fechar" data-modal="modal-nc">← VOLTAR</button><h3>POST-ITS</h3></div><div class="modal-body"><div id="box-teses"></div><button id="add-tese">+ Tese</button><div id="box-explica"></div><button id="add-detalhe">+ Detalhe</button></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -65,40 +65,40 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-// PEÇAS IMPORTADAS DO ESTRUTURAS.JS
 const pecas = {
-    'RECLAMAÇÃO TRABALHISTA': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, ${QUALIF}, por seu advogado abaixo assinado, conforme procuração anexa, com endereço profissional na..., vem, respeitosamente, à presença de Vossa Excelência, com fulcro no Art. 840, § 1º, da CLT e Art. 319 do CPC, propor\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de RECLAMADA, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº..., com sede na..., pelos fatos e fundamentos a seguir expostos:\n\nI - DO CONTRATO DE TRABALHO\nII - DAS VERBAS RESCISÓRIAS\nIII - DOS PEDIDOS\nIV - REQUERIMENTOS FINAIS`,
-    
-    'CONTESTAÇÃO': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\n\nRECLAMADA, já qualificada nos autos em epígrafe, em que contende com RECLAMANTE, vem, respeitosamente, à presença de Vossa Excelência, por seu advogado abaixo assinado, com fulcro no Art. 847 da CLT, apresentar\n\nCONTESTAÇÃO\n\npelos fatos e fundamentos a seguir expostos:\n\nI - PRELIMINARES\nII - PREJUDICIAL DE MÉRITO (PRESCRIÇÃO)\nIII - MÉRITO\nIV - REQUERIMENTOS FINAIS`,
-    
-    'RECURSO ORDINÁRIO': `AO JUÍZO DA... VARA DO TRABALHO DE... (Interposição)${SALTO}Processo nº...\n\nRECORRENTE, já qualificado nos autos, vem, por seu advogado, com fulcro no Art. 895, I, da CLT, interpor\n\nRECURSO ORDINÁRIO\n\npara o Egrégio Tribunal Regional do Trabalho da... Região. Seguem anexas as razões recursais e a prova do preparo.\n\n------------------------------\nEGRÉGIO TRIBUNAL REGIONAL DO TRABALHO (Razões)\n\nI - PRELIMINARES\nII - MÉRITO\nIII - PEDIDO DE REFORMA`,
-    
-    'AGRAVO DE PETIÇÃO': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\n\nAGRAVANTE, inconformado com a decisão de fls..., vem, tempestivamente, com fulcro no Art. 897, 'a', da CLT, interpor\n\nAGRAVO DE PETIÇÃO\n\ndelimitando, desde já, as matérias e os valores impugnados, nos termos do Art. 897, § 1º, da CLT.`
+    'RECLAMAÇÃO TRABALHISTA': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, ${QUALIF}, vem propor RT...`,
+    'CONTESTAÇÃO': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\nRECLAMADA, já qualificada, vem apresentar CONTESTAÇÃO...`,
+    'RECURSO ORDINÁRIO': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\nRECORRENTE, vem interpor RECURSO ORDINÁRIO...`,
+    'AGRAVO DE PETIÇÃO': `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}Processo nº...\nAGRAVANTE, vem interpor AGRAVO DE PETIÇÃO...`
 };
 
 window.MEUS_ESPELHOS = {
-    "44": `<div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><span>Endereçamento 150ª VT Manaus (0.10)</span></div>`,
-    "41": `<div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><span>IDPJ de Ofício - Ilegal (0.70)</span></div>`,
-    "40": `<div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><span>Reconhecimento Vínculo (0.50)</span></div>`
+    "44": `<div class="espelho-item"><input type="checkbox" value="0.10" class="chk-nota"><span>Endereçamento 150ª VT Manaus (0.10)</span></div>`,
+    "41": `<div class="espelho-item"><input type="checkbox" value="0.70" class="chk-nota"><span>IDPJ de Ofício - Ilegal (0.70)</span></div>`,
+    "40": `<div class="espelho-item"><input type="checkbox" value="0.50" class="chk-nota"><span>Reconhecimento Vínculo (0.50)</span></div>`
 };
 
-window.abrirModal = id => document.getElementById(id).style.display = 'flex';
-window.fecharModal = id => document.getElementById(id).style.display = 'none';
+// --- FUNÇÕES DE NAVEGAÇÃO E MODAIS ---
+const abrirModal = id => document.getElementById(id).style.display = 'flex';
+const fecharModal = id => document.getElementById(id).style.display = 'none';
 
-window.calcNota = () => {
-    let t = 0; document.querySelectorAll('#checklist-fgv input:checked').forEach(i => t += parseFloat(i.value));
+// --- CÁLCULO DE NOTA ---
+const atualizarNota = () => {
+    let t = 0; document.querySelectorAll('.chk-nota:checked').forEach(i => t += parseFloat(i.value));
     document.getElementById('nota-valor').innerText = t.toFixed(2);
 };
 
+// --- LÓGICA DE PDF ---
 let currentPdf = null;
-window.carregarPDF = async (tipo) => {
+const carregarPDF = async (tipo) => {
     const ex = document.getElementById('exam-select').value;
     const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
-    const v = document.getElementById('pdf-viewport'); v.innerHTML = "";
+    const v = document.getElementById('pdf-viewport'); v.innerHTML = "Carregando...";
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-${tipo}`).classList.add('active');
     try {
         currentPdf = await pdfjsLib.getDocument(arq).promise;
+        v.innerHTML = "";
         for (let i = 1; i <= currentPdf.numPages; i++) {
             const page = await currentPdf.getPage(i);
             const vp = page.getViewport({ scale: 1.5 });
@@ -108,44 +108,78 @@ window.carregarPDF = async (tipo) => {
             c.appendChild(canvas); v.appendChild(c);
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         }
-    } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>Arquivo não encontrado.</p>"; }
+    } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>Arquivo não disponível.</p>"; }
 };
 
-window.mudarExame = () => {
+// --- SINCRONIZAÇÃO FIREBASE ---
+const mudarExame = () => {
     const ex = document.getElementById('exam-select').value;
-    window.carregarPDF('prova');
+    carregarPDF('prova');
     document.getElementById('checklist-fgv').innerHTML = window.MEUS_ESPELHOS[ex] || 'Espelho não cadastrado.';
+    document.getElementById('nota-valor').innerText = "0.00";
+    
     get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
     get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
     get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
 };
 
-document.getElementById('btn-pecas').onclick = () => {
-    const m = document.getElementById('menu-estruturas');
-    m.style.display = m.style.display === 'none' ? 'block' : 'none';
-    m.innerHTML = Object.keys(pecas).map(k => `<div style="padding:12px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="document.getElementById('texto-final').value = \`${pecas[k]}\`; document.getElementById('menu-estruturas').style.display = 'none'; window.saveMeta('v3_treino', \`${pecas[k]}\`);">${k}</div>`).join('');
-};
-
-document.getElementById('btn-save').onclick = () => {
+const salvarTudo = () => {
     const ex = document.getElementById('exam-select').value;
     set(ref(db, `v3_treino/exame_${ex}`), document.getElementById('texto-final').value);
     set(ref(db, `v3_respostas/exame_${ex}`), document.getElementById('res-editor').value);
     set(ref(db, `v3_dicas/exame_${ex}`), document.getElementById('dicas-editor').value);
-    alert("Dados salvos com sucesso!");
+    alert("Progresso salvo!");
 };
 
-document.getElementById('exam-select').onchange = window.mudarExame;
-document.getElementById('tab-prova').onclick = () => window.carregarPDF('prova');
-document.getElementById('tab-gabarito').onclick = () => window.carregarPDF('gabarito');
-document.getElementById('tab-vade').onclick = () => window.carregarPDF('vade');
+// --- BINDING DE EVENTOS (MAIS SEGURO) ---
+document.getElementById('btn-pecas').onclick = () => {
+    const m = document.getElementById('menu-estruturas');
+    m.style.display = m.style.display === 'none' ? 'block' : 'none';
+    m.innerHTML = Object.keys(pecas).map(k => `<div style="padding:12px; border-bottom:1px solid var(--border); cursor:pointer;" class="item-peca" data-key="${k}">${k}</div>`).join('');
+    
+    document.querySelectorAll('.item-peca').forEach(el => {
+        el.onclick = () => {
+            const txt = pecas[el.dataset.key];
+            document.getElementById('texto-final').value = txt;
+            m.style.display = 'none';
+        };
+    });
+};
 
+document.getElementById('btn-respostas').onclick = () => abrirModal('modal-respostas');
+document.getElementById('btn-espelho').onclick = () => abrirModal('modal-espelho');
+document.getElementById('btn-dicas').onclick = () => abrirModal('modal-dicas');
+document.getElementById('btn-nc').onclick = () => abrirModal('modal-nc');
+document.getElementById('btn-mentoria').onclick = () => window.location.href = 'mentoria.html';
+document.getElementById('btn-save').onclick = salvarTudo;
+
+document.querySelectorAll('.btn-fechar').forEach(btn => {
+    btn.onclick = () => fecharModal(btn.dataset.modal);
+});
+
+document.getElementById('exam-select').onchange = mudarExame;
+document.getElementById('tab-prova').onclick = () => carregarPDF('prova');
+document.getElementById('tab-gabarito').onclick = () => carregarPDF('gabarito');
+document.getElementById('tab-vade').onclick = () => carregarPDF('vade');
+
+// Escuta cliques no checklist (delegação de evento)
+document.getElementById('checklist-fgv').addEventListener('change', (e) => {
+    if(e.target.classList.contains('chk-nota')) atualizarNota();
+});
+
+// --- SETUP INICIAL ---
 const sel = document.getElementById('exam-select');
-[44, 41, 40, 35].forEach(ex => { let o = document.createElement('option'); o.value=ex; o.innerText=`EXAME ${ex}`; sel.appendChild(o); });
+[44, 41, 40, 35].forEach(ex => { 
+    let o = document.createElement('option'); o.value=ex; o.innerText=`EXAME ${ex}`; 
+    if(ex==44) o.selected = true;
+    sel.appendChild(o); 
+});
+
 document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
 document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
 document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
 
-window.mudarExame();
+mudarExame();
 </script>
 </body>
 </html>
