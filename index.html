@@ -8,94 +8,82 @@
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --orange: #f39c12; --green: #27ae60; --yellow: #f1c40f; 
-            --red: #e74c3c; --header-h: 60px;
+            --red: #e74c3c; --yellow: #f1c40f; --header-h: 60px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        
-        .nav-group { display: flex; gap: 8px; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
-        
-        main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 230px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
-        
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 4px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.7rem; text-align: left; font-weight: bold; display: block; color: #333; }
-        .exame-btn:hover { background: #f9f9f9; border-color: var(--accent); }
-        .exame-btn.active { background: var(--accent); color: white; border-color: var(--primary); }
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
 
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        main { display: flex; flex: 1; overflow: hidden; }
+        
+        /* COLUNA 1: SIDEBAR */
+        .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
+        .exame-btn.active { background: var(--accent); color: white; }
+
+        /* COLUNA 2: TRABALHO */
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ccc; }
         #area-peca { 
             flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
-            resize: none;
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
+
+        /* COLUNA 3: PDFs */
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
 
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
-            width: 65px; height: 65px; background-color: var(--primary);
+            width: 60px; height: 60px; background-color: var(--primary);
             color: white; border-radius: 50%; display: flex;
             justify-content: center; align-items: center;
-            font-size: 28px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 100; border: 3px solid var(--accent);
+            font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 100; border: 2px solid var(--accent);
         }
 
         #container-alvo { 
-            display: none; width: 380px; background: white; border-left: 2px solid #ccc; 
-            flex-direction: column; z-index: 2000;
+            display: none; position: fixed; right: 0; top: 60px; width: 380px; height: calc(100vh - 60px);
+            background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
-        .espelho-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
-        .resultado-nota { padding: 15px; background: #f8f9fa; text-align: center; border-top: 2px solid #ddd; }
 
         @media (max-width: 1024px) {
-            main { flex-direction: column; }
-            .sidebar { width: 100%; height: 160px; border-bottom: 1px solid #ccc; }
-            #container-alvo { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); }
-            .btn-justica-fab { width: 55px; height: 55px; font-size: 22px; bottom: 15px; right: 15px; }
+            .sidebar { width: 100px; font-size: 0.6rem; }
+            .pdf-section { display: none; }
+            #container-alvo { width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold; font-size: 0.9rem;">ARYANNA <span style="color:var(--accent)">MASTER</span></div>
-    <div class="nav-group">
-        <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
-    </div>
+    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
+    <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
 </header>
 
 <main>
-    <aside class="sidebar">
-        <div class="section-label">Exames OAB (Oficiais)</div>
-        <div id="lista-exames"></div>
-        
-        <div class="section-label">Estruturas Técnicas</div>
-        <div id="lista-modelos"></div>
-    </aside>
+    <aside class="sidebar" id="lista-exames"></aside>
 
     <section class="work-section">
-        <div style="padding:6px 15px; background:#f1f1f1; font-size:0.7rem; font-weight:bold; color:var(--primary)" id="label-atual">📍 SELECIONE UMA PEÇA NA LATERAL</div>
-        <textarea id="area-peca" placeholder="Comece a digitar sua peça..."></textarea>
-        
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Texto Oficial">
-            <i class="fas fa-balance-scale"></i>
-        </div>
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
+        <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarConteudo()"><i class="fas fa-balance-scale"></i></div>
+    </section>
+
+    <section class="pdf-section" id="bloco-pdfs">
+        <iframe id="v-enu" class="pdf-frame" title="Enunciado"></iframe>
+        <iframe id="v-gab" class="pdf-frame" title="Gabarito"></iframe>
     </section>
 
     <section id="container-alvo">
-        <div class="alvo-header">
-            <span>CHECKLIST OFICIAL FGV</span>
-            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer">✖</button>
-        </div>
+        <div class="alvo-header"><span>CHECKLIST FGV</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none;">✖</button></div>
         <div class="alvo-scroll" id="injetar-espelho"></div>
-        <div class="resultado-nota">
-            <div id="display-nota" style="font-size:2.8rem; font-weight:bold; color:var(--red)">0.00</div>
+        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
+            <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
         </div>
     </section>
 </main>
@@ -104,106 +92,55 @@
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 
-    // BANCO DE DADOS COMPLETO - Tudo que você colocar aqui vai aparecer na tela.
     const BANCO_DADOS = {
-        // EXAMES OFICIAIS
-        "44": {
-            nome: "EXAME 44 - CONTESTAÇÃO",
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS${SALTO}Processo nº: ...\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados..., apresentar CONTESTAÇÃO (Art. 847 CLT)...`,
-            espelho: [["Endereçamento 150ª VT", 0.1], ["Art. 847 CLT", 0.3], ["Ilegitimidade Sócios", 0.4]]
-        },
-        "41": {
-            nome: "EXAME 41 - AGRAVO DE PETIÇÃO",
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL${SALTO}MARIA SERRA... AGRAVO DE PETIÇÃO (Art. 897, 'a' CLT)...`,
-            espelho: [["Interposição 503ª VT", 0.2], ["Art. 897, a CLT", 0.3]]
-        },
-        "40": {
-            nome: "EXAME 40 - RECLAMAÇÃO",
-            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP${SALTO}ESPÓLIO DE..., rep por JULIETA... RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...`,
-            espelho: [["VT Osasco + Art 840", 0.2]]
-        },
-        "37": {
-            nome: "EXAME 37 - CONTESTAÇÃO",
-            esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ${SALTO}JORGE MACHADO... CONTESTAÇÃO (Art. 847 CLT)...`,
-            espelho: [["85ª VT Rio", 0.10], ["Art. 841 (Audiência)", 0.20]]
-        },
-        "35": {
-            nome: "EXAME 35 - RECURSO ORDINÁRIO",
-            esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI${SALTO}SOCIEDADE EMPRESÁRIA... RECURSO ORDINÁRIO (Art. 895, I CLT)...`,
-            espelho: [["Interposição 89ª VT", 0.10], ["Razões ao TRT 22", 0.10]]
-        },
-        
-        // ESTRUTURAS TÉCNICAS (PULO DO GATO)
-        "RT": { nome: "ESTRUTURA: RECLAMAÇÃO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, ${QUALIF}, propor RT (Art. 840, §1º CLT)...` },
-        "RO": { nome: "ESTRUTURA: REC. ORDINÁRIO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECORRENTE, interpor RO (Art. 895, I CLT)...` },
-        "AP": { nome: "ESTRUTURA: AGRAVO DE PETIÇÃO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}AGRAVANTE, interpor AP (Art. 897, 'a' CLT)...` },
-        "CON": { nome: "ESTRUTURA: CONTESTAÇÃO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMADA, apresentar CONTESTAÇÃO (Art. 847 CLT)...` }
+        "44": { nome: "EXAME 44", esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS${SALTO}Processo nº: ...\nCONTESTAÇÃO (Art. 847 CLT)...`, espelho: [["Endereçamento 150ª VT", 0.1], ["Ilegitimidade Sócios", 0.4]] },
+        "41": { nome: "EXAME 41", esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL${SALTO}AGRAVO DE PETIÇÃO (Art. 897, 'a' CLT)...`, espelho: [["Interposição 503ª VT", 0.2]] },
+        "40": { nome: "EXAME 40", esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP${SALTO}RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...`, espelho: [["VT Osasco", 0.2]] },
+        "37": { nome: "EXAME 37", esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ${SALTO}CONTESTAÇÃO...`, espelho: [["85ª VT Rio", 0.1]] },
+        "35": { nome: "EXAME 35", esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI${SALTO}RECURSO ORDINÁRIO...`, espelho: [["89ª VT PI", 0.1]] },
+        "RT": { nome: "ESTRUTURA RT", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMAÇÃO TRABALHISTA...` },
+        "RO": { nome: "ESTRUTURA RO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECURSO ORDINÁRIO...` }
     };
 
     let idAtivo = null;
 
     function init() {
-        const menuExames = document.getElementById('lista-exames');
-        const menuModelos = document.getElementById('lista-modelos');
-
-        // Limpa menus antes de carregar
-        menuExames.innerHTML = "";
-        menuModelos.innerHTML = "";
-
-        // Percorre TODO o banco de dados sem filtros restritivos
+        const menu = document.getElementById('lista-exames');
+        menu.innerHTML = "";
         Object.keys(BANCO_DADOS).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
             btn.id = "btn-" + key;
-            btn.innerText = BANCO_DADOS[key].nome || key;
-            btn.onclick = () => selecionar(key);
-            
-            // Se a chave for um número (exame) vai pra lista de exames, se for texto (RT, RO) vai pra modelos
-            if (!isNaN(key)) {
-                menuExames.appendChild(btn);
-            } else {
-                menuModelos.appendChild(btn);
-            }
+            btn.innerText = BANCO_DADOS[key].nome;
+            btn.onclick = () => {
+                idAtivo = key;
+                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('label-atual').innerText = `📍 ATIVO: ${BANCO_DADOS[key].nome}`;
+                
+                // CARREGAR PDFs
+                if(!isNaN(key)) {
+                    document.getElementById('v-enu').src = `ro${key}.pdf`;
+                    document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
+                }
+
+                // CARREGAR ESPELHO
+                const espelhoArea = document.getElementById('injetar-espelho');
+                espelhoArea.innerHTML = "";
+                if(BANCO_DADOS[key].espelho) {
+                    BANCO_DADOS[key].espelho.forEach(item => {
+                        espelhoArea.innerHTML += `<div class="espelho-item"><input type="checkbox" value="${item[1]}" onchange="calcNota()"> <div style="flex:1">${item[0]}</div> <b>${item[1].toFixed(2)}</b></div>`;
+                    });
+                }
+                calcNota();
+            };
+            menu.appendChild(btn);
         });
     }
 
-    function selecionar(key) {
-        idAtivo = key;
-        
-        // Destaca o botão clicado
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-        const btnAtivo = document.getElementById('btn-' + key);
-        if(btnAtivo) btnAtivo.classList.add('active');
-
-        document.getElementById('label-atual').innerText = `📍 ATIVO: ${BANCO_DADOS[key].nome}`;
-        
-        // Carrega o Checklist (Modo Alvo)
-        const espelhoArea = document.getElementById('injetar-espelho');
-        espelhoArea.innerHTML = "";
-        if(BANCO_DADOS[key].espelho) {
-            BANCO_DADOS[key].espelho.forEach(item => {
-                espelhoArea.innerHTML += `
-                <div class="espelho-item">
-                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
-                    <div style="flex:1">${item[0]}</div>
-                    <div style="font-weight:bold; color:var(--red)">${item[1].toFixed(2)}</div>
-                </div>`;
-            });
-        } else {
-            espelhoArea.innerHTML = "<p style='padding:20px; font-size:0.8rem; color:#999'>Sem espelho oficial vinculado.</p>";
-        }
-        calcNota();
-    }
-
     function injetarConteudo() {
-        if(!idAtivo) return alert("Clique em um Exame ou Estrutura primeiro!");
-        
-        const texto = BANCO_DADOS[idAtivo].esqueleto;
-        if(texto) {
-            document.getElementById('area-peca').value = texto;
-            // Scroll automático para o início do texto injetado
-            document.getElementById('area-peca').scrollTop = 0;
-        }
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
     }
 
     function toggleAlvo() {
