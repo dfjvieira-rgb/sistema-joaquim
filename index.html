@@ -40,208 +40,6 @@
         #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; -webkit-overflow-scrolling: touch; }
         .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden; }
         canvas { display: block; width: 100% !important; height: auto !important; }
-        
-        .textLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1.0; }
-        .textLayer > span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
-
-        .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
-        .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; flex-shrink: 0; }
-        .modal-header h3 { font-size: 0.75rem; flex: 1; color: var(--gold); }
-        .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
-        .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
-        #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
-        .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
-        .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
-        
-        /* ESTILOS ESPELHO FGV */
-        .espelho-group-title { font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 5px; }
-        .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
-        .espelho-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); }
-        .espelho-txt { flex: 1; font-size: 0.75rem; color: var(--text); line-height: 1.2; }
-        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.75rem; white-space: nowrap; }
-        .nota-floating { position: sticky; top: 0; background: var(--gold); color: #000; padding: 10px; text-align: center; font-weight: 900; border-radius: 8px; margin-bottom: 15px; z-index: 10; }
-
-        @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
-        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
-    </style>
-</head>
-<body class="dark-mode">
-
-<header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div>
-</header>
-
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
-        </div>
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Sua peça Aryanna Linhares..."></textarea>
-            </div>
-        </div>
-    </section>
-
-    <section class="viewer-section" id="section-pdf">
-        <div class="tabs">
-            <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
-            <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
-        </div>
-        <div id="pdf-viewport"></div>
-    </section>
-</div>
-
-<button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
-
-<div id="menu-estruturas">
-    <div class="menu-category">Conhecimento</div>
-    <div class="menu-item" onclick="window.gerarPeca('RT')">RECLAMAÇÃO TRABALHISTA</div>
-    <div class="menu-item" onclick="window.gerarPeca('CON')">CONTESTAÇÃO</div>
-    <div class="menu-item" onclick="window.gerarPeca('ACP')">CONSIGNAÇÃO EM PAGAMENTO</div>
-    <div class="menu-item" onclick="window.gerarPeca('INQUERITO')">INQUÉRITO FALTA GRAVE</div>
-    <div class="menu-item" onclick="window.gerarPeca('HOMOLOG')">HOMOLOGAÇÃO DE ACORDO</div>
-    <div class="menu-category">Recursos</div>
-    <div class="menu-item" onclick="window.gerarPeca('RO')">RECURSO ORDINÁRIO (RO)</div>
-    <div class="menu-item" onclick="window.gerarPeca('RR')">RECURSO DE REVISTA (RR)</div>
-    <div class="menu-item" onclick="window.gerarPeca('AI')">AGRAVO DE INSTRUMENTO</div>
-    <div class="menu-item" onclick="window.gerarPeca('ED')">EMBARGOS DE DECLARAÇÃO</div>
-    <div class="menu-item" onclick="window.gerarPeca('AG_INTERNO')">AGRAVO INTERNO</div>
-    <div class="menu-item" onclick="window.gerarPeca('CONTRA')">CONTRARRAZÕES</div>
-    <div class="menu-category">Execução</div>
-    <div class="menu-item" onclick="window.gerarPeca('AP')">AGRAVO DE PETIÇÃO</div>
-    <div class="menu-item" onclick="window.gerarPeca('EEX')">EMBARGOS À EXECUÇÃO</div>
-    <div class="menu-item" onclick="window.gerarPeca('EX_PRE')">EXCEÇÃO PRÉ-EXECUTIVIDADE</div>
-    <div class="menu-item" onclick="window.gerarPeca('IDPJ')">IDPJ (PERSONALIDADE JUR.)</div>
-    <div class="menu-category">Ações Especiais</div>
-    <div class="menu-item" onclick="window.gerarPeca('MS')">MANDADO DE SEGURANÇA</div>
-    <div class="menu-item" onclick="window.gerarPeca('AR')">AÇÃO RESCISÓRIA</div>
-    <div class="menu-item" onclick="window.gerarPeca('ACUM')">AÇÃO DE CUMPRIMENTO</div>
-</div>
-
-<div id="modal-nc" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
-    <div class="modal-body">
-        <div id="box-teses"><input type="text" placeholder="Tese Principal..." class="nc-assunto-item" style="width:100%; padding:10px; margin-bottom:5px; border-radius:5px; border:1px solid var(--border);"></div>
-        <button onclick="window.addNCField('box-teses', 'input')" style="padding:5px 10px; margin-bottom:10px;">+ Campo</button>
-        <div id="box-explicações"><textarea placeholder="Diferença técnica..." class="nc-explica-item" style="width:100%; padding:10px; height:80px; border-radius:5px; border:1px solid var(--border);"></textarea></div>
-        <button onclick="window.addNCField('box-explicações', 'textarea')" style="padding:5px 10px; margin-bottom:10px;">+ Descrição</button>
-        <button onclick="window.saveNC()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">SALVAR TESE</button>
-    </div>
-</div>
-
-<div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div>
-    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
-</div>
-
-<div id="modal-dicas" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>DICAS: QUAL É A PEÇA</h3></div>
-    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
-</div>
-
-<div id="modal-espelho" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO DE CORREÇÃO FGV</h3></div>
-    <div class="modal-body">
-        <div class="nota-floating">NOTA ATUAL: <span id="nota-valor">0.00</span> / 5.00</div>
-        <div id="checklist-fgv">
-            </div>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
-    const SALTO = "\n\n\n\n\n\n\n\n\n\n";
-
-    const pecas = {
-        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
-        'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
-        'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor:\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nI - DO DEPÓSITO\nRequer o depósito da quantia/objeto no prazo de 5 dias (Art. 542, I CPC).\n\nII - DO MÉRITO\n(Explicar recusa ou dúvida no pagamento - Art. 544 CPC).\n\nIII - REQUERIMENTOS FINAIS\na) Deferimento do depósito;\nb) Notificação do consignatário para levantar ou contestar;\nc) PROCEDÊNCIA para declarar extinta a obrigação e dar quitação das parcelas;\nd) Honorários.\n\nValor da causa: R$ ...\nNestes Termos, Pede Deferimento.`,
-        'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor:\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nI - DA SUSPENSÃO (Prazo de 30 dias - Art. 853 CLT).\nII - DO MÉRITO (Falta grave - Art. 482 CLT).\nIII - REQUERIMENTOS FINAIS\na) Notificação do requerido;\nb) Oitiva de até 6 testemunhas (Art. 821 CLT);\nc) Procedência para rescindir o contrato por justa causa.\n\nNestes Termos, Pede Deferimento.`,
-        'HOMOLOG': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE 1 e NOME DO REQUERENTE 2, por seus advogados distintos, vêm, com fulcro no Art. 855-B da CLT, requerer:\n\nHOMOLOGAÇÃO DE TRANSAÇÃO EXTRAJUDICIAL\n\nI - DOS TERMOS (Verbas, valores e prazos).\nII - DOS PEDIDOS\na) Suspensão do prazo prescricional (Art. 855-E CLT);\nb) Homologação por sentença (Título Executivo);\nc) Justiça gratuita.\n\nNestes Termos, Pedem Deferimento.`,
-        'RO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 895, I da CLT, interpor:\n\nRECURSO ORDINÁRIO\n\npara o Egrégio TRT. Pressupostos de admissibilidade presentes (Tempestividade e Preparo anexos). Requer intimação da parte contrária e remessa ao Tribunal.\n\n----------\n\nRAZÕES DO RECURSO ORDINÁRIO\n\nI - PRELIMINARES/PREJUDICIAIS RECURSAIS\nII - MÉRITO (REFORMA DO JULGADO)\n(Tese: Fato, Fundamento e Pedido de Reforma).\n\nIII - CONCLUSÃO\nRequer o CONHECIMENTO e PROVIMENTO do recurso.\n\nLocal e Data. Advogado... OAB...`,
-        'RR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO RECORRENTE, já qualificado, vem, com fulcro no Art. 896 da CLT, interpor RECURSO DE REVISTA.\n\n----------\n\nRAZÕES DO RECURSO DE REVISTA\n\nI - TRANSCENDÊNCIA (Art. 896-A CLT);\nII - PRESSUPOSTOS INTRÍNSECOS (Divergência ou Violação);\nIII - PREQUESTIONAMENTO (Transcrição do trecho da decisão - Art. 896, §1º-A CLT).\nIV - CONCLUSÃO: Conhecimento e Provimento.`,
-        'AI': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'b' da CLT, interpor AGRAVO DE INSTRUMENTO. Declara a formação do instrumento (Art. 897, § 5º CLT). Preparo recolhido (Art. 899, §7º CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE INSTRUMENTO\n\nI - DA REFORMA (Demonstrar cabimento do recurso destrancado).\nII - CONCLUSÃO: Provimento para processar o recurso denegado.`,
-        'ED': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DA PARTE, já qualificada, vem, com fulcro no Art. 897-A da CLT e Art. 1.022 do CPC, opor:\n\nEMBARGOS DE DECLARAÇÃO\n\nI - CABIMENTO (Omissão, Contradição, Obscuridade ou Erro Material).\nII - RAZÕES e PEDIDO: Sanar o vício com efeito modificativo.`,
-        'AG_INTERNO': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR RELATOR DO EGRÉGIO TRT DA ... REGIÃO\n\nProcesso nº ...${SALTO}NOME DO AGRAVANTE, vem, com fulcro no Art. 1.021 do CPC, interpor AGRAVO INTERNO.\n\nI - RAZÕES: Impugnação específica dos fundamentos da decisão monocrática.\nII - CONCLUSÃO: Retratação ou Provimento.`,
-        'CONTRA': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO RECORRIDO, já qualificado, vem, com fulcro no Art. 900 da CLT, apresentar:\n\nCONTRARRAZÕES AO RECURSO (...)\n\nI - MÉRITO: Manutenção da decisão.\nII - CONCLUSÃO: Não provimento do recurso adverso.`,
-        'AP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO AGRAVANTE, já qualificado, vem, com fulcro no Art. 897, 'a' da CLT, interpor AGRAVO DE PETIÇÃO. O Agravante delimita, justificadamente, as matérias e os valores impugnados (Art. 897, § 1º da CLT).\n\n----------\n\nRAZÕES DO AGRAVO DE PETIÇÃO\n\nI - MÉRITO (Reforma na execução).\nII - CONCLUSÃO: Conhecimento e Provimento.`,
-        'EEX': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ... (Execução)${SALTO}NOME DO EXECUTADO, já qualificado, vem, com fulcro no Art. 884 da CLT, opor:\n\nEMBARGOS À EXECUÇÃO\n\n(Garantia do juízo comprovada).\nI - MÉRITO (Art. 884 CLT).\nII - PEDIDO: Procedência para ajustar a execução.`,
-        'EX_PRE': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DO EXECUTADO, vem, com base na Súmula 393 do TST, opor:\n\nEXCEÇÃO DE PRÉ-EXECUTIVIDADE\n\nI - CABIMENTO (Ordem pública - sem garantia do juízo).\nII - MÉRITO E PEDIDO: Extinção da execução.`,
-        'IDPJ': `AO DOUTO JUÍZO DA ...\n\nProcesso nº ...${SALTO}NOME DO REQUERENTE, vem, com fulcro no Art. 855-A da CLT, suscitar:\n\nINCIDENTE DE DESCONSIDERAÇÃO DA PERSONALIDADE JURÍDICA\n\nI - MÉRITO (Art. 50 CC / Art. 28 CDC).\nII - PEDIDO: Citação dos sócios e suspensão do processo (Art. 134, §3º CPC).`,
-        'MS': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO IMPETRANTE, ${QUALIF}, vem, com fulcro no Art. 5º, LXIX da CF/88 e Lei 12.016/09, impetrar:\n\nMANDADO DE SEGURANÇA COM PEDIDO LIMINAR\n\nI - CABIMENTO (OJ 92 SDI-2).\nII - DA LIMINAR (Fumus boni iuris e Periculum in mora).\nIII - MÉRITO (Direito Líquido e Certo).\nIV - PEDIDOS: Liminar, Notificação da Autoridade Coatora, Ciência ao Órgão de Representação, Oitiva do MPT e Segurança Definitiva.\n\nValor da causa: R$ ...`,
-        'AR': `AO EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR PRESIDENTE DO EGRÉGIO TRT DA ... REGIÃO${SALTO}NOME DO AUTOR, ${QUALIF}, vem, com fulcro no Art. 836 da CLT e Art. 966 do CPC, propor:\n\nAÇÃO RESCISÓRIA\n\nI - DEPÓSITO PRÉVIO (20% - Art. 836 CLT).\nII - CABIMENTO (Art. 966 CPC - Trânsito em julgado).\nIII - PEDIDOS: Juízo Rescindente (desconstituição) e Juízo Rescisório (novo julgamento).\n\nValor da causa: R$ ...`,
-        'ACUM': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO SINDICATO, substituto processual, vem, com fulcro no Art. 872 da CLT, propor:\n\nAÇÃO DE CUMPRIMENTO\n\nI - MÉRITO (Título Normativo).\nII - PEDIDO: Cumprimento e multa normativa.\n\nValor da causa: R$ ...`
-    };
-
-    window.gerarPeca = (tipo) => {
-        const texto = pecas[tipo] || "Peça não mapeada.";
-        document.getElementById('texto-final').value = texto;
-        window.autoSave(); 
-        window.toggleEstruturas();
-    };
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
-    <style>
-        :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #e11d48;
-            --bg-site: #f8fafc; --gold: #d4af37; --pen-blue: #1e3a8a; --paper: #ffffff; --text: #1e293b;
-            --toolbar-bg: #ffffff; --border: #cbd5e1;
-        }
-        .dark-mode { 
-            --paper: #1e293b; --pen-blue: #93c5fd; --bg-site: #0f172a; --text: #f1f5f9; 
-            --toolbar-bg: #1e293b; --border: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; 
-            display: flex; flex-direction: column; overflow: hidden; color: var(--text);
-            user-select: text !important; -webkit-user-select: text !important;
-        }
-        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; flex-shrink: 0; }
-        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
-        .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); min-width: 0; }
-        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto; white-space: nowrap; flex-shrink: 0; }
-        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); flex-shrink: 0; }
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.1); -webkit-overflow-scrolling: touch; }
-        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; user-select: none; }
-        .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; user-select: text !important; }
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; flex-shrink: 0; }
-        .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
-        .tab.active { background: var(--bg-site); color: var(--primary); font-weight: bold; }
-        #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; -webkit-overflow-scrolling: touch; }
-        .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden; }
-        canvas { display: block; width: 100% !important; height: auto !important; }
         .textLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1.0; }
         .textLayer > span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
@@ -290,6 +88,7 @@
             </div>
         </div>
     </section>
+
     <section class="viewer-section" id="section-pdf">
         <div class="tabs">
             <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
@@ -361,22 +160,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
-    const config = { 
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-        authDomain: "masteroab-db5e1.firebaseapp.com", 
-        projectId: "masteroab-db5e1", 
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-    };
-    const app = initializeApp(config); 
-    const db = getDatabase(app);
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const app = initializeApp(config); const db = getDatabase(app);
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito some CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
+    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador do RG n..., inscrito no CPF n..., endereço eletrônico..., residente e domiciliado na Rua..., por seu advogado infra-assinado...";
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
 
-    // PEÇAS EXATAMENTE COMO VOCÊ ENVIOU
     const pecas = {
-        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\nd) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
+        'RT': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO RECLAMANTE, ${QUALIF}, vem, com fulcro no Art. 840, § 1º da CLT, propor:\n\nRECLAMAÇÃO TRABALHISTA (RITO ...)\n\nem face de NOME DA RECLAMADA, (qualificação).\n\nI - PRELIMINARMENTE\na) Justiça Gratuita (Art. 790, §3º CLT);\nb) Tramitação Prioritária (Art. 1.048 CPC);\nc) Antecipação de Tutela (Art. 300 CPC / Art. 273 CLT).\n\nII - DO MÉRITO (Fato, Fundamento e Pedido)\n1. (TÍTULO DO PEDIDO)\nFato: ...\nFundamento: (Artigo/Súmula/OJ) ...\nPedido: Requer a condenação ao pagamento de ...\n\nIII - REQUERIMENTOS FINAIS\na) Notificação da reclamada (Súmula 74 TST);\nb) Produção de provas (documental, testemunhal e pericial);\nc) PROCEDÊNCIA TOTAL com juros e correção;\ d) Honorários de sucumbência de 15% (Art. 791-A da CLT);\ne) Recolhimentos previdenciários e fiscais.\n\nAtribui-se à causa o valor de R$ ...\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
         'CON': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...${SALTO}NOME DA RECLAMADA, já qualificada, vem, com fulcro no Art. 847 da CLT, apresentar:\n\nCONTESTAÇÃO\n\nem face de NOME DO RECLAMANTE.\n\nI - PRELIMINARES DE MÉRITO (Art. 337 do CPC)\n(Inépcia, Ilegitimidade, Perempção, Litispendência, Coisa Julgada).\n\nII - PREJUDICIAIS DE MÉRITO\n(Prescrição Bienal ou Quinquenal - Art. 7º, XXIX, CF/88).\n\nIII - DO MÉRITO\n(Impugnação específica para cada item - Fato, Fundamento e Pedido de Improcedência).\n\nIV - REQUERIMENTOS FINAIS\na) Acolhimento das preliminares e prejudiciais;\nb) No mérito, a TOTAL IMPROCEDÊNCIA;\nc) Produção de provas;\nd) Honorários de sucumbência (Art. 791-A, §3º CLT).\n\nNestes Termos, Pede Deferimento. Local e Data. Advogado... OAB...`,
         'ACP': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO CONSIGNANTE, ${QUALIF}, vem, com fulcro no Art. 539 do CPC e Art. 769 da CLT, propor:\n\nAÇÃO DE CONSIGNAÇÃO EM PAGAMENTO\n\nI - DO DEPÓSITO\nRequer o depósito da quantia/objeto no prazo de 5 dias (Art. 542, I CPC).\n\nII - DO MÉRITO\n(Explicar recusa ou dúvida no pagamento - Art. 544 CPC).\n\nIII - REQUERIMENTOS FINAIS\na) Deferimento do depósito;\nb) Notificação do consignatário para levantar ou contestar;\nc) PROCEDÊNCIA para declarar extinta a obrigação e dar quitação das parcelas;\nd) Honorários.\n\nValor da causa: R$ ...\nNestes Termos, Pede Deferimento.`,
         'INQUERITO': `AO DOUTO JUÍZO DA ... VARA DO TRABALHO DE ...${SALTO}NOME DO REQUERENTE, ${QUALIF}, vem, com fulcro no Art. 853 da CLT, propor:\n\nINQUÉRITO PARA APURAÇÃO DE FALTA GRAVE\n\nI - DA SUSPENSÃO (Prazo de 30 dias - Art. 853 CLT).\nII - DO MÉRITO (Falta grave - Art. 482 CLT).\nIII - REQUERIMENTOS FINAIS\na) Notificação do requerido;\nb) Oitiva de até 6 testemunhas (Art. 821 CLT);\nc) Procedência para rescindir o contrato por justa causa.\n\nNestes Termos, Pede Deferimento.`,
@@ -397,55 +189,80 @@
     };
 
     window.gerarPeca = (tipo) => {
-        document.getElementById('texto-final').value = pecas[tipo];
+        const texto = pecas[tipo] || "Peça não mapeada.";
+        document.getElementById('texto-final').value = texto;
         window.autoSave(); 
         window.toggleEstruturas();
     };
 
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
+        // CORREÇÃO AQUI: Agora ele busca no arquivo externo
         const baseDados = window.MEUS_ESPELHOS || {};
-        document.getElementById('checklist-fgv').innerHTML = baseDados[ex] || '<p style="padding:20px; opacity:0.5;">Espelho não cadastrado no arquivo dados_espelhos.js</p>';
+        const checklistContainer = document.getElementById('checklist-fgv');
+        
+        if (baseDados[ex]) {
+            checklistContainer.innerHTML = baseDados[ex];
+        } else {
+            checklistContainer.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Aguardando cadastro do espelho no arquivo dados_espelhos.js</p>';
+        }
+        
         document.getElementById('nota-valor').innerText = "0.00";
 
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
-        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = (s.val()?.comentarios || s.val() || ""));
+        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => {
+            const val = s.val();
+            document.getElementById('res-editor').value = (val && val.comentarios) ? val.comentarios : (val || "");
+        });
         get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
 
     window.calcNota = () => {
         let total = 0;
-        document.querySelectorAll('#checklist-fgv input:checked').forEach(i => total += parseFloat(i.value));
+        document.querySelectorAll('#checklist-fgv input:checked').forEach(i => {
+            total += parseFloat(i.value);
+        });
         document.getElementById('nota-valor').innerText = total.toFixed(2);
     };
 
     window.autoSave = () => {
         clearTimeout(window.sv);
         window.sv = setTimeout(() => {
-            set(ref(db, `v3_treino/exame_${document.getElementById('exam-select').value}`), document.getElementById('texto-final').value);
+            const ex = document.getElementById('exam-select').value;
+            set(ref(db, `v3_treino/exame_${ex}`), document.getElementById('texto-final').value);
         }, 1000);
     };
 
-    window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
-    
+    window.saveMeta = (path, val) => {
+        const ex = document.getElementById('exam-select').value;
+        set(ref(db, `${path}/exame_${ex}`), val);
+    };
+
     window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
     window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
-    window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display==='block'?'none':'block'; };
+    window.toggleEstruturas = () => {
+        const m = document.getElementById('menu-estruturas');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    };
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
     window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
 
-    // Inicialização
+    // Inicialização do Select de Exames
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) {
-        let n = i<10?"0"+i:i;
-        let opt = document.createElement('option'); opt.value=n; opt.innerText=`EXAME ${n}`;
-        if(i==44) opt.selected=true;
+        let n = i < 10 ? "0" + i : i;
+        let opt = document.createElement('option');
+        opt.value = n;
+        opt.innerText = `EXAME ${n}`;
+        if(i === 44) opt.selected = true;
         sel.appendChild(opt);
     }
+
+    // Gerar linhas
     document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
     document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
     document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
-    
+
     window.mudarExame();
 </script>
 </body>
