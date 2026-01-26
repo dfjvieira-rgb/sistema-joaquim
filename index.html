@@ -13,40 +13,44 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .nav-btns { display: flex; gap: 10px; }
-        .btn-header { color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        /* HEADER */
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .nav-btns { display: flex; gap: 8px; }
+        .btn-header { color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
         .btn-alvo { background-color: var(--red); }
         .btn-pecas { background-color: var(--accent); }
+        .btn-confunda { background-color: var(--orange); }
+        .btn-header:hover { opacity: 0.8; transform: translateY(-1px); }
 
         main { display: flex; flex: 1; overflow: hidden; }
         
+        /* SIDEBAR EXAMES */
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
         .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
         .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; display: block; }
-        .exame-btn.active { background: var(--accent); color: white; }
+        .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
+        /* ÁREA DE TRABALHO */
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ccc; }
+        .label-topo { padding: 10px; background: #eee; font-size: 0.7rem; font-weight: bold; color: #555; display: flex; justify-content: space-between; align-items: center; }
         #area-peca { 
             flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
 
-        /* Modal de Peças Estruturais */
-        #modal-pecas {
-            display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
-            width: 350px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 3000; border: 1px solid #ccc;
+        /* MODAIS E PAINÉIS */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
+        .modal-content { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 350px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
+        #painel-confunda { 
+            display: none; position: fixed; right: 0; top: 60px; width: 380px; height: calc(100vh - 60px); 
+            background: #f8fafc; border-left: 3px solid var(--orange); z-index: 1500; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
         }
-        .pecas-grid { display: grid; grid-template-columns: 1fr; max-height: 400px; overflow-y: auto; padding: 10px; }
-        .peca-item-btn { padding: 10px; border: none; background: #fff; text-align: left; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.8rem; font-weight: 500; }
-        .peca-item-btn:hover { background: #f0f7ff; color: var(--accent); }
+        .panel-header { padding: 15px; background: var(--orange); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .panel-scroll { flex: 1; padding: 15px; overflow-y: auto; }
 
-        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
-        .vade-btn { background: var(--orange); color: white; padding: 5px; text-align: center; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-decoration: none; border-radius: 3px; margin-bottom: 2px; }
-
+        /* BOTÃO FLUTUANTE */
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
             width: 60px; height: 60px; background-color: var(--primary);
@@ -56,38 +60,35 @@
             z-index: 100; border: 2px solid var(--accent);
         }
 
-        #container-alvo { 
-            display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
-            background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
-        }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
-        .espelho-item { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; align-items: center; }
+        /* PDF SECTION */
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
+        .vade-btn { background: var(--orange); color: white; padding: 8px; text-align: center; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-decoration: none; border-radius: 3px; }
 
         @media (max-width: 1024px) {
-            .sidebar { width: 100%; height: auto; max-height: 120px; display: flex; flex-wrap: wrap; gap: 5px; }
-            .exame-btn { width: calc(33% - 5px); font-size: 0.6rem; padding: 5px; margin-bottom: 0; }
-            .pdf-section { display: none; }
-            #container-alvo { width: 100%; }
+            .sidebar, .pdf-section { display: none; }
+            #painel-confunda { width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
+    <div style="font-weight: bold; letter-spacing: 1px;">ARYANNA <span style="color:var(--accent)">MASTER</span></div>
     <div class="nav-btns">
-        <button class="btn-header btn-pecas" onclick="toggleModalPecas()"><i class="fas fa-list"></i> PEÇAS</button>
-        <button class="btn-header btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
+        <button class="btn-header btn-confunda" onclick="toggleConfunda()"><i class="fas fa-lightbulb"></i> NÃO CONFUNDA</button>
+        <button class="btn-header btn-pecas" onclick="toggleModalPecas()"><i class="fas fa-file-contract"></i> PEÇAS</button>
+        <button class="btn-header btn-alvo" onclick="toggleAlvo()"><i class="fas fa-crosshairs"></i> ALVO</button>
     </div>
 </header>
 
-<div id="modal-pecas">
-    <div style="padding: 10px; background: var(--accent); color: white; font-weight: bold; font-size: 0.8rem; display: flex; justify-content: space-between;">
-        MODELOS ESTRUTURAIS <span onclick="toggleModalPecas()" style="cursor:pointer">✖</span>
-    </div>
-    <div class="pecas-grid" id="grid-pecas-js">
+<div id="modal-pecas" class="modal-overlay" onclick="if(event.target == this) toggleModalPecas()">
+    <div class="modal-content">
+        <div style="padding:12px; background:var(--accent); color:white; font-weight:bold; display:flex; justify-content:space-between;">
+            ESCOLHA A ESTRUTURA <span onclick="toggleModalPecas()" style="cursor:pointer">×</span>
         </div>
+        <div id="grid-pecas-js" style="max-height:400px; overflow-y:auto; padding:10px; display:grid; gap:5px;"></div>
+    </div>
 </div>
 
 <main>
@@ -97,72 +98,56 @@
     </aside>
 
     <section class="work-section">
-        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE UM EXAME OU ESTRUTURA</div>
+        <div class="label-topo">
+            <span id="label-atual">📍 SELECIONE UM EXAME</span>
+            <span id="relogio" style="color:var(--accent)">00:00</span>
+        </div>
         <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar do Exame Selecionado"><i class="fas fa-balance-scale"></i></div>
+        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Esqueleto do Exame"><i class="fas fa-balance-scale"></i></div>
+    </section>
+
+    <section id="painel-confunda">
+        <div class="panel-header">
+            <span>💡 TESES "NÃO CONFUNDA"</span>
+            <button onclick="toggleConfunda()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer">×</button>
+        </div>
+        <div style="padding:10px; border-bottom:1px solid #eee; background:#fff">
+             <button onclick="abrirCriadorNC()" style="width:100%; padding:8px; background:var(--green); color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer">+ ADICIONAR NOVO POST-IT</button>
+        </div>
+        <div id="container-nc-lista" class="panel-scroll">
+            </div>
     </section>
 
     <section class="pdf-section">
-        <a href="vade.pdf" target="v-gab" class="vade-btn">ABRIR VADE MECUM (vade.pdf)</a>
-        <iframe id="v-enu" class="pdf-frame"></iframe>
-        <iframe id="v-gab" class="pdf-frame"></iframe>
-    </section>
-
-    <section id="container-alvo">
-        <div class="alvo-header"><span>CHECKLIST OFICIAL (0 a 5.0)</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none;">✖</button></div>
-        <div class="alvo-scroll" id="injetar-espelho"></div>
-        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
-            <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
-        </div>
+        <a href="vade.pdf" target="_blank" class="vade-btn"><i class="fas fa-book"></i> ABRIR VADE MECUM</a>
+        <iframe id="v-enu" class="pdf-frame" title="Enunciado"></iframe>
+        <iframe id="v-gab" class="pdf-frame" title="Gabarito"></iframe>
     </section>
 </main>
 
 <script type="module">
-    // Importando do seu arquivo de dados puros
+    // Importação dos seus módulos
     import { pecas } from './estruturas.js';
+    import { NaoConfunda } from './nao-confunda.js';
 
+    // Banco de Dados Local dos Exames
     const BANCO_DADOS = {
-        "44": { 
-            nome: "EXAME 44", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados nos autos da Reclamação Trabalhista que lhe move NEYMARA..., vêm apresentar CONTESTAÇÃO com fulcro no Art. 847 da CLT...\n\nI - PRELIMINARES...\nII - PREJUDICIAL DE MÉRITO...\nIII - MÉRITO...\nIV - REQUERIMENTOS...`, 
-            espelho: [
-                ["Endereçamento: 150ª VT de Manaus", 0.10], ["Fundamento: Art. 847 da CLT", 0.10], ["Preliminar: Ilegitimidade Passiva Sócios (Art. 50 CC)", 0.60], ["Preliminar: Inépcia Reenquadramento", 0.60], ["Prejudicial: Prescrição Parcial (Art. 7, XXIX CF)", 0.50], ["Mérito: Indevido Ticket Refeição (CCT)", 0.80], ["Mérito: Vale Transporte (Ônus da Prova)", 0.80], ["Mérito: Proporcionalidade Aviso Prévio", 0.80], ["Requerimentos Finais e Honorários", 0.70]
-            ] 
-        },
-        "41": { 
-            nome: "EXAME 41", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\n\nProcesso nº: ...\n\nMARIA SERRA, já qualificada..., vem interpor AGRAVO DE PETIÇÃO com base no Art. 897, 'a' da CLT...\n\nRAZÕES DO AGRAVO...`, 
-            espelho: [
-                ["Interposição: 503ª VT/DF", 0.10], ["Fundamento: Art. 897, 'a' da CLT", 0.10], ["Delimitação Matéria e Valores", 0.80], ["Razões: TRT 10ª Região", 0.10], ["Nulidade: Ausência de Citação IDPJ", 1.20], ["Impenhorabilidade: Bem de Família", 1.20], ["Fundamentação: Lei 8.009/90", 0.50], ["Requerimentos de Reforma", 1.00]
-            ] 
-        },
-        "40": { 
-            nome: "EXAME 40", 
-            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., representado por sua inventariante JULIETA..., vem propor RECLAMAÇÃO TRABALHISTA pelo rito ordinário, com base no Art. 840, §1º da CLT...\n\nI - MÉRITO...`, 
-            espelho: [
-                ["Endereçamento: VT de Osasco/SP", 0.10], ["Representação do Espólio (Inventariante)", 0.50], ["Art. 840, § 1º, da CLT", 0.10], ["Vínculo: Subordinação/Habitualidade", 1.20], ["Multa Art. 477 CLT", 1.20], ["Multa Art. 467 CLT", 1.00], ["Honorários (Art. 791-A CLT)", 0.50], ["Valor da Causa / Fechamento", 0.40]
-            ] 
-        },
-        "37": { nome: "EXAME 37", esqueleto: "AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ\n\nCONTESTAÇÃO...", espelho: [] },
-        "35": { nome: "EXAME 35", esqueleto: "AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI\n\nRECURSO ORDINÁRIO...", espelho: [] },
-        "43": { nome: "EXAME 43", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "42": { nome: "EXAME 42", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "39": { nome: "EXAME 39", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "38": { nome: "EXAME 38", esqueleto: "AO JUÍZO DA...", espelho: [] },
-        "36": { nome: "EXAME 36", esqueleto: "AO JUÍZO DA...", espelho: [] }
+        "44": { nome: "EXAME 44", esqueleto: "AO JUÍZO DA 150ª VARA... \nCONTESTAÇÃO...", espelho: [] },
+        "41": { nome: "EXAME 41", esqueleto: "AO JUÍZO DA 503ª VARA... \nAGRAVO DE PETIÇÃO...", espelho: [] },
+        "40": { nome: "EXAME 40", esqueleto: "AO JUÍZO DA VARA DO TRABALHO DE OSASCO... \nRECLAMAÇÃO...", espelho: [] }
     };
 
-    let idAtivo = null;
+    let idAtivo = "44";
 
-    // Inicializa o sistema
     window.onload = () => {
         initExames();
         popularMenuPecas();
+        // Inicia o Firebase do Não Confunda para o Exame 44 por padrão
+        NaoConfunda.renderizar(idAtivo, 'container-nc-lista');
     };
 
     function initExames() {
-        const menuExames = document.getElementById('lista-exames');
-        menuExames.innerHTML = "";
+        const menu = document.getElementById('lista-exames');
         Object.keys(BANCO_DADOS).sort((a,b) => b-a).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
@@ -174,18 +159,18 @@
                 document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
                 document.getElementById('v-enu').src = `ro${key}.pdf`;
                 document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                renderEspelho(key);
+                // Atualiza o Não Confunda para o Exame selecionado
+                NaoConfunda.renderizar(key, 'container-nc-lista');
             };
-            menuExames.appendChild(btn);
+            menu.appendChild(btn);
         });
     }
 
-    // Alimenta o modal de 18 peças com os dados do estruturas.js
     function popularMenuPecas() {
         const grid = document.getElementById('grid-pecas-js');
         Object.keys(pecas).forEach(nome => {
             const btn = document.createElement('button');
-            btn.className = 'peca-item-btn';
+            btn.style = "padding:12px; border:1px solid #eee; background:white; text-align:left; cursor:pointer; font-weight:bold; font-size:0.8rem;";
             btn.innerText = nome;
             btn.onclick = () => {
                 document.getElementById('area-peca').value = pecas[nome];
@@ -196,44 +181,27 @@
         });
     }
 
-    // Globais para o HTML conseguir chamar
+    // Funções de Interface
     window.toggleModalPecas = () => {
         const m = document.getElementById('modal-pecas');
         m.style.display = (m.style.display === 'block') ? 'none' : 'block';
-    }
+    };
 
-    window.toggleAlvo = () => {
-        const p = document.getElementById('container-alvo');
+    window.toggleConfunda = () => {
+        const p = document.getElementById('painel-confunda');
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    }
+    };
 
     window.injetarConteudo = () => {
-        if(!idAtivo) return alert("Selecione um exame na lateral ou use o botão PEÇAS.");
-        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
-    }
-
-    function renderEspelho(key) {
-        const area = document.getElementById('injetar-espelho');
-        area.innerHTML = "";
-        const itens = BANCO_DADOS[key].espelho;
-        if(itens && itens.length > 0) {
-            itens.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'espelho-item';
-                div.innerHTML = `<input type="checkbox" value="${item[1]}" onchange="calcNota()"><div style="flex:1">${item[0]}</div><b style="color:var(--red)">${item[1].toFixed(2)}</b>`;
-                area.appendChild(div);
-            });
-        } else {
-            area.innerHTML = "<p style='padding:20px; color:#999'>Checklist indisponível para este exame.</p>";
+        if(BANCO_DADOS[idAtivo]) {
+            document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
         }
-        calcNota();
-    }
+    };
 
-    window.calcNota = () => {
-        let n = 0;
-        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
-        document.getElementById('display-nota').innerText = n.toFixed(2);
-    }
+    window.toggleAlvo = () => {
+        alert("Modo Alvo Ativado! Verifique o checklist no PDF de Gabarito.");
+    };
 </script>
+
 </body>
 </html>
