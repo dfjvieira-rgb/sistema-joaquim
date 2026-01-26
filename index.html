@@ -2,133 +2,167 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ARYANNA MASTER PRO 2026</title>
     
-    <link rel="stylesheet" href="estilos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        :root {
+            --gold: #d4af37; --bg: #0f172a; --paper: #ffffff; --text: #1e293b;
+            --primary: #2563eb; --border: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        
+        .main-container { flex: 1; display: flex; height: calc(100vh - 50px); }
+
+        /* LADO ESQUERDO: EDITOR */
+        .editor-section { flex: 1; display: flex; flex-direction: column; border-right: 2px solid var(--gold); background: #f8fafc; }
+        .toolbar { padding: 8px; background: #f1f5f9; display: flex; gap: 8px; border-bottom: 1px solid #cbd5e1; flex-wrap: wrap; }
+        
+        .btn-symbol { padding: 8px 12px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 4px; background: white; font-size: 1.2rem; }
+        
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; background: #e2e8f0; }
+        .paper-sheet { width: 100%; max-width: 850px; background: white; margin: 0 auto; display: flex; min-height: 2000px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .line-nums { width: 40px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; pointer-events: none; }
+        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: #1e3a8a; resize: none; font-family: 'Inter', sans-serif; background-attachment: local; background-image: linear-gradient(transparent, transparent 27px, #e2e8f0 27px); background-size: 100% 28px; }
+
+        /* LADO DIREITO: PDF */
+        .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; }
+        .tabs { display: flex; background: #1e293b; }
+        .tab { padding: 12px; cursor: pointer; border: none; background: #1e293b; color: #94a3b8; font-weight: bold; flex: 1; }
+        .tab.active { background: #525659; color: white; border-bottom: 3px solid var(--gold); }
+        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; }
+        .pdf-page { margin-bottom: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.5); background: white; width: 100%; }
+
+        /* MODAIS */
+        #menu-estruturas { display: none; position: absolute; top: 100px; left: 20px; width: 300px; background: white; border: 2px solid var(--gold); z-index: 100; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); color: #1e293b; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; }
+        .menu-item:hover { background: #f1f5f9; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .viewer-section { display: none; } /* Mobile foca no editor */
+        }
+    </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display">05:00:00</div>
+    <div style="font-weight: 800; color: var(--gold);">ARYANNA MASTER PRO 2026</div>
+    <div id="timer" style="color: var(--gold); font-family: monospace; font-size: 1.2rem;">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;">
+            <select id="exam-select" class="btn-symbol" style="font-size: 0.9rem;">
                 <option value="44">EXAME 44</option>
-                <option value="43">EXAME 43</option>
-                <option value="42">EXAME 42</option>
                 <option value="41">EXAME 41</option>
                 <option value="40">EXAME 40</option>
-                <option value="39">EXAME 39</option>
-                <option value="38">EXAME 38</option>
-                <option value="37">EXAME 37</option>
-                <option value="36">EXAME 36</option>
                 <option value="35" selected>EXAME 35</option>
             </select>
-            
-            <button class="btn-symbol" onclick="location.href='mentoria.html'">🏆</button>
-            <button class="btn-symbol" title="Questões" id="btn-questoes">📚</button>
-            <button class="btn-symbol" title="Estruturas" id="btn-balanca">⚖️</button>
-            <button class="btn-symbol" title="Espelho" id="btn-espelho">🎯</button>
-            <button class="btn-symbol" title="Calculadora" id="btn-prazos">📅</button>
-            <button class="btn-symbol" title="Post-its" id="btn-nc">📌</button>
-            <button class="btn-symbol" id="btn-limpar">🗑️</button>
-            <button class="btn-symbol" id="btn-tema">🌓</button>
-            <button class="btn-symbol" id="btn-salvar" style="background:var(--success); color:white; margin-left:auto;">💾</button>
+            <button class="btn-symbol" onclick="window.toggleMenu()">⚖️</button>
+            <button class="btn-symbol" onclick="window.limpar()">🗑️</button>
+            <button class="btn-symbol" onclick="alert('Salvando...')">💾</button>
         </div>
-        
         <div class="paper-wrapper">
             <div class="paper-sheet">
-                <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça..."></textarea>
+                <div class="line-nums" id="line-numbers"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false"></textarea>
             </div>
         </div>
     </section>
 
-    <section class="viewer-section" id="section-pdf">
+    <section class="viewer-section">
         <div class="tabs">
-            <button class="tab active" data-type="prova">PROVA</button>
-            <button class="tab" data-type="gabarito">GABARITO</button>
-            <button class="tab" data-type="espelho">ESPELHO</button>
-            <button class="tab" data-type="vade">VADE</button>
+            <button class="tab active" onclick="window.switchPDF('prova', this)">PROVA</button>
+            <button class="tab" onclick="window.switchPDF('gabarito', this)">GABARITO</button>
+            <button class="tab" onclick="window.switchPDF('vade', this)">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
 </div>
 
-<button class="floating-toggle" id="mobile-switch">⇄</button>
-
-<div id="menu-estruturas" class="modal-context"></div>
-
-<div id="modal-geral" class="modal-full">
-    <div class="modal-header">
-        <button class="btn-back" id="close-modal">← VOLTAR</button>
-        <h3 id="modal-titulo">TÍTULO</h3>
-    </div>
-    <div class="modal-body" id="modal-conteudo"></div>
-</div>
+<div id="menu-estruturas"></div>
 
 <script type="module">
     import { ESTRUTURAS } from './estruturas.js';
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { loadPDF } from './pdf-engine.js';
-    import { initDatabase } from './firebase-config.js';
 
-    // 1. Inicializa PDF Engine
+    // Configuração PDF.js
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // 2. Funções de Controle de PDF
-    const updatePDF = (tipo = 'prova') => {
-        const ex = document.getElementById('exam-select').value;
-        let file = '';
-        if (tipo === 'prova') file = `ro${ex}.pdf`;
-        else if (tipo === 'gabarito') file = `ro${ex}-gabarito.pdf`;
-        else if (tipo === 'espelho') file = `ro${ex}-espelho.pdf`;
-        else file = `vade.pdf`;
+    // Gerar números de linha
+    document.getElementById('line-numbers').innerHTML = Array.from({length: 350}, (_, i) => i + 1).join('<br>');
+
+    // Lógica de Troca de PDF
+    window.switchPDF = async (tipo, btn) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
         
-        loadPDF(file); // Chama a inteligência do seu pdf-engine.js
+        const exame = document.getElementById('exam-select').value;
+        const container = document.getElementById('pdf-viewport');
+        container.innerHTML = "Carregando...";
+
+        let url = '';
+        if(tipo === 'prova') url = `ro${exame}.pdf`;
+        else if(tipo === 'gabarito') url = `ro${exame}-gabarito.pdf`;
+        else url = 'vade.pdf';
+
+        try {
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            container.innerHTML = '';
+            for(let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({scale: 1.5});
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdf-page';
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                await page.render({canvasContext: context, viewport: viewport}).promise;
+                container.appendChild(canvas);
+            }
+        } catch (e) {
+            container.innerHTML = `<div style="color:white; padding:20px;">Arquivo ${url} não encontrado.</div>`;
+        }
     };
 
-    // 3. Eventos de UI
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = (e) => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            updatePDF(e.target.dataset.type);
-        };
-    });
-
-    // 4. Injeção da Balança ⚖️ (Estruturas.js)
-    document.getElementById('btn-balanca').onclick = () => {
+    // Lógica da Balança (Estruturas)
+    window.toggleMenu = () => {
         const menu = document.getElementById('menu-estruturas');
         const ex = document.getElementById('exam-select').value;
-        const dados = ESTRUTURAS[ex] || ESTRUTURAS["RT"];
-        
+        const data = ESTRUTURAS[ex] || ESTRUTURAS["RT"];
+
         menu.innerHTML = `
-            <div style="padding:15px; border-bottom:1px solid #ddd; font-weight:bold;">${dados.nome_peca || 'PEÇA TÉCNICA'}</div>
-            <div class="menu-item" id="inject-action" style="color:blue; padding:15px; cursor:pointer;">INJETAR ESTRUTURA COMPLETA</div>
+            <div class="menu-item" style="background:#f1f5f9; cursor:default;">PEÇA: ${data.nome_peca || 'Técnica'}</div>
+            <div class="menu-item" style="color:blue;" onclick="window.injetar('${ex}')">INJETAR ESQUELETO COMPLETO</div>
         `;
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        
-        document.getElementById('inject-action').onclick = () => {
-            document.getElementById('texto-final').value = dados.esqueleto || dados;
-            menu.style.display = 'none';
-        };
     };
 
-    // 5. Linhas e Inicialização
-    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
-    document.getElementById('exam-select').onchange = () => updatePDF('prova');
+    window.injetar = (key) => {
+        const data = ESTRUTURAS[key] || ESTRUTURAS["RT"];
+        document.getElementById('texto-final').value = data.esqueleto || data;
+        document.getElementById('menu-estruturas').style.display = 'none';
+    };
+
+    window.limpar = () => { if(confirm("Apagar tudo?")) document.getElementById('texto-final').value = ""; };
+
+    // Inicialização
+    window.switchPDF('prova', document.querySelector('.tab.active'));
     
-    // Início imediato
-    updatePDF('prova');
+    // Timer simples
+    let sec = 18000;
+    setInterval(() => {
+        sec--;
+        let h = Math.floor(sec/3600);
+        let m = Math.floor((sec%3600)/60);
+        let s = sec%60;
+        document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }, 1000);
 </script>
 
 </body>
