@@ -70,6 +70,6 @@ export const BANCO_ESPELHOS = {
         <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Ajuda Custo Indenizatória (Art. 457, §2 CLT)</div><div class="espelho-pt">0.50</div></div>
         <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Equiparação Salarial (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div>
         <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Insalubridade Reclassificação (Art. 194 CLT)</div><div class="espelho-pt">0.50</div></div>
-        <div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">11. Honorários (791-A), Pedidos e Fechamento</div><div class="espelho-pt">0.80</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-pt">0.80</div><div class="espelho-txt">11. Honorários (791-A), Pedidos e Fechamento</div></div>
     `
 };
