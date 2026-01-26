@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
 </head>
 <body class="dark-mode">
     <header>
@@ -19,22 +18,19 @@
         <section class="editor-section">
             <div class="toolbar">
                 <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol"></select>
-                <button class="btn-symbol" onclick="window.toggleEstruturas()" title="Estruturas">⚖️</button>
+                <button class="btn-symbol" onclick="window.abrirModal('modal-estruturas')" title="Estruturas">⚖️</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')" title="Questões">📚</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')" title="Corrigir Peça">🎯</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-nc')" title="Post-its">📌</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-calc')" title="Calculadora CLT">🧮</button>
                 <button class="btn-symbol" onclick="window.toggleDarkMode()" title="Alternar Tema">🌓</button>
-                <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.finalizarManual()">💾</button>
+                <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.autoSave()">💾</button>
             </div>
             
-            <div id="menu-estruturas" style="display:none;" class="menu-flutuante"></div>
-
             <div class="paper-wrapper">
                 <div class="paper-sheet">
                     <div class="line-nums" id="ln-main"></div>
-                    <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Inicie sua peça técnica..."></textarea>
+                    <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça técnica..."></textarea>
                 </div>
             </div>
         </section>
@@ -45,58 +41,61 @@
                 <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
                 <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
             </div>
-            <div style="background:#1e293b; padding: 6px; display:flex; gap:5px;">
-                <input type="text" id="pdf-search-input" placeholder="Buscar no Vade/Prova..." style="flex:1; background:#0f172a; border:1px solid var(--border); color:white; padding:5px; border-radius:4px; font-size:12px;">
-                <button onclick="window.executarBusca()" class="btn-symbol" style="height:28px; min-width:30px; font-size:14px;">🔍</button>
-            </div>
             <div id="pdf-viewport"></div>
         </section>
     </div>
 
-    <div id="modal-espelho" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button><h3>ESPELHO OFICIAL</h3></div>
+    <div id="modal-estruturas" class="modal-full">
+        <div class="modal-header">
+            <div class="header-title-group"><span>⚖️</span><h3>Estruturas</h3></div>
+            <button class="btn-voltar" onclick="window.fecharModal('modal-estruturas')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Voltar</span>
+            </button>
+        </div>
+        <div class="modal-body" id="lista-pecas-content"></div>
+    </div>
+
+    <div id="modal-respostas" class="modal-full">
+        <div class="modal-header">
+            <div class="header-title-group"><span>📚</span><h3>Folha de Respostas</h3></div>
+            <button class="btn-voltar" onclick="window.fecharModal('modal-respostas')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Voltar</span>
+            </button>
+        </div>
         <div class="modal-body">
-            <div class="nota-floating" style="position:sticky; top:0; background:var(--warning); color:#000; padding:15px; text-align:center; font-weight:800; border-radius:8px; margin-bottom:20px;">
-                NOTA: <span id="nota-valor">0.00</span> / 5.00
-            </div>
+            <div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div>
+        </div>
+    </div>
+
+    <div id="modal-espelho" class="modal-full">
+        <div class="modal-header">
+            <div class="header-title-group"><span>🎯</span><h3>Espelho de Correção</h3></div>
+            <button class="btn-voltar" onclick="window.fecharModal('modal-espelho')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Voltar</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="nota-floating" id="nota-box">NOTA: <span id="nota-valor">0.00</span> / 5.00</div>
             <div id="checklist-fgv"></div>
         </div>
     </div>
 
-    <div id="modal-calc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button><h3>CALCULADORA DE PRESCRIÇÃO</h3></div>
-        <div class="modal-body" style="padding:20px;">
-            <label style="display:block; margin-bottom:10px;">Data da Extinção do Contrato:</label>
-            <input type="date" id="calc-data-demissao" class="btn-symbol" style="width:100%; margin-bottom:20px; padding:10px;">
-            <button onclick="window.rodarCalculo()" style="width:100%; padding:15px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">CALCULAR MARCOS</button>
-            <div id="res-calc" style="margin-top:20px; display:none; background:rgba(0,0,0,0.1); padding:20px; border-radius:8px; border:1px solid var(--gold);">
-                <p style="margin-bottom:10px;">Limite para Ajuizar (Bienal): <br><span id="res-bienal" style="color:var(--warning); font-weight:bold; font-size:1.2rem;"></span></p>
-                <p>Marco Retroativo (Quinquenal): <br><span id="res-quinquenal" style="color:var(--warning); font-weight:bold; font-size:1.2rem;"></span></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-respostas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE QUESTÕES</h3></div>
-        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
-    </div>
-
-    <div id="modal-nc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS E TESES</h3></div>
-        <div class="modal-body" style="padding:20px;">
-            <div id="box-teses"></div>
-            <button class="btn-symbol" style="width:100%; margin-bottom:15px; font-size:14px;" onclick="window.addNCField('box-teses','input')">+ Adicionar Tese (Título)</button>
-            <div id="box-explica"></div>
-            <button class="btn-symbol" style="width:100%; font-size:14px;" onclick="window.addNCField('box-explica','textarea')">+ Adicionar Fundamentação (Texto)</button>
-            <button onclick="window.saveNC()" style="width:100%; background:var(--success); color:#fff; padding:15px; margin-top:20px; border:none; border-radius:8px; font-weight:700; cursor:pointer;">SALVAR NA NUVEM</button>
-        </div>
-    </div>
-
     <div id="modal-dicas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS DA PEÇA</h3></div>
-        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
+        <div class="modal-header">
+            <div class="header-title-group"><span>💡</span><h3>Dicas e Teses</h3></div>
+            <button class="btn-voltar" onclick="window.fecharModal('modal-dicas')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Voltar</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, get } from "
+    <script type="module" src="app.js"></script>
+</body>
+</html>
