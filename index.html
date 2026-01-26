@@ -3,14 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM | ARYANNA MASTER</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>ARYANNA MASTER | SISTEMA JOAQUIM</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        :root { --primary: #1e293b; --gold: #c5a059; --bg: #0f172a; --paper: #ffffff; --wine: #800000; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Travamento de Scroll do Body para Mobile */
+        body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
+        
+        header { background: var(--primary); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); min-height: 60px; }
+        .timer { font-family: monospace; background: #000; padding: 5px 10px; color: #ef4444; border-radius: 4px; font-size: 1.2rem; border: 1px solid #333; }
+
+        /* NAV E BOTÕES */
+        .top-nav { display: flex; gap: 10px; }
+        select, button { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        #exam-select { background: white; color: var(--primary); }
+        .btn-save { background: #10b981; color: white; }
+        .btn-nc { background: var(--gold); color: white; }
+
+        /* ESTRUTURA DASHBOARD */
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+        
+        #pdf-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: #334155; border-right: 2px solid #1e293b; }
+        .pdf-toolbar { position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); width: 100%; padding: 10px; display: flex; justify-content: center; gap: 20px; z-index: 5; }
+
+        #section-folha { flex: 1; background: var(--paper); display: flex; flex-direction: column; position: relative; }
+        .folha-topo { background: #f1f5f9; color: #64748b; font-size: 11px; padding: 8px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; }
+        
+        /* TEXTAREA ESTILO FGV */
+        #texto-final { flex: 1; width: 100%; border: none; padding: 40px; font-family: 'Courier Prime', monospace; font-size: 18px; line-height: 28px; background-attachment: local; background-image: linear-gradient(transparent 27px, #e2e8f0 28px); background-size: 100% 28px; resize: none; outline: none; color: #1e293b; }
+
+        /* FOOTER FIXO */
+        footer { background: var(--primary); padding: 12px; display: flex; gap: 10px; border-top: 2px solid #334155; }
+        .btn-footer { flex: 1; background: #475569; color: white; font-size: 12px; height: 45px; display: flex; align-items: center; justify-content: center; }
+
+        /* MODAL OVERLAY */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; color: #333; width: 90%; max-width: 600px; border-radius: 12px; padding: 25px; position: relative; animation: slideUp 0.3s ease; }
+        .modal h3 { border-bottom: 3px solid var(--gold); margin-bottom: 15px; padding-bottom: 10px; color: var(--primary); }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* MOBILE RESPONSIVITY */
+        @media (max-width: 1024px) {
+            main { flex-direction: column; }
+            #pdf-container, #section-folha { flex: none; height: 50vh; }
+            footer { padding: 5px; gap: 5px; }
+            .btn-footer { font-size: 10px; padding: 5px; }
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <div class="brand">ARYANNA MASTER 2026</div>
+    <div style="font-weight: 900; color: var(--gold); letter-spacing: 1px;">ARYANNA MASTER 2026</div>
     <div class="timer" id="cronometro">05:00:00</div>
     <div class="top-nav">
         <select id="exam-select">
@@ -21,41 +67,41 @@
             <option value="40">RO - EXAME 40</option>
             <option value="35">RO - EXAME 35</option>
         </select>
-        <button class="btn-action btn-save" id="btn-salvar">SALVAR</button>
-        <button class="btn-action btn-nc" id="btn-add-nc">+ POST-IT</button>
+        <button class="btn-save" id="btn-salvar">SALVAR</button>
+        <button class="btn-nc" id="btn-add-nc">+ POST-IT</button>
     </div>
 </header>
 
 <main>
     <section id="pdf-container">
         <div class="pdf-toolbar">
-            <button id="prev-page" class="btn-util">◀</button>
-            <span>PÁG: <span id="page-num">1</span> / <span id="page-count">0</span></span>
-            <button id="next-page" class="btn-util">▶</button>
-            <button onclick="window.location.href='mentoria.html'" class="btn-util">MUSEU</button>
+            <button id="prev-page" style="background: #1e293b; color: white;">◀</button>
+            <span style="font-size:12px; font-weight: bold;">PÁG: <span id="page-num">1</span> / <span id="page-count">0</span></span>
+            <button id="next-page" style="background: #1e293b; color: white;">▶</button>
+            <button onclick="window.location.href='mentoria.html'" style="background: var(--gold); color: white;">MUSEU</button>
         </div>
         <canvas id="pdf-canvas"></canvas>
     </section>
 
     <section id="section-folha">
-        <div class="folha-identificacao">CADERNO DE RESPOSTAS - OAB 2ª FASE | PEÇA PROFISSIONAL</div>
+        <div class="folha-topo">CADERNO DE RESPOSTAS - OAB 2ª FASE | PEÇA PROFISSIONAL</div>
         <div id="container-postits"></div>
-        <textarea id="texto-final" spellcheck="false" placeholder="Inicie sua peça aqui..."></textarea>
+        <textarea id="texto-final" spellcheck="false" placeholder="EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA..."></textarea>
     </section>
 </main>
 
 <footer>
-    <button class="btn-footer" data-tipo="questoes">❓ QUESTÕES</button>
-    <button class="btn-footer" data-tipo="espelho">🎯 ESPELHO</button>
-    <button class="btn-footer" data-tipo="prazos">📅 PRAZOS</button>
-    <button class="btn-footer" data-tipo="vade">📚 VADE MECUM</button>
+    <button class="btn-footer" id="btn-questoes">❓ QUESTÕES</button>
+    <button class="btn-footer" id="btn-espelho">🎯 ESPELHO</button>
+    <button class="btn-footer" id="btn-prazos">📅 PRAZOS</button>
+    <button class="btn-footer" id="btn-vade">📚 VADE MECUM</button>
 </footer>
 
-<div id="modal-container" class="modal-overlay" style="display:none;">
+<div id="modal-gen" class="modal">
     <div class="modal-content">
         <h3 id="modal-titulo">Título</h3>
-        <div id="modal-body"></div>
-        <button onclick="document.getElementById('modal-container').style.display='none'" class="btn-close">FECHAR</button>
+        <div id="modal-corpo" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
+        <button class="modal-close" style="width: 100%; margin-top: 20px; background: #1e293b; color: white; padding: 12px; border-radius: 6px;" onclick="fecharModal()">VOLTAR À PEÇA</button>
     </div>
 </div>
 
@@ -73,76 +119,95 @@
 
     const App = {
         exame: "44",
-        
         async init() {
-            this.setupEvents();
-            await this.carregarTudo();
-            console.log("Sistema Sincronizado com Inteligências.");
+            this.bindEvents();
+            await this.refresh();
+            console.log("Sistema Joaquim Conectado com Sucesso.");
         },
 
-        setupEvents() {
-            document.getElementById('exam-select').onchange = (e) => {
-                this.exame = e.target.value;
-                this.carregarTudo();
-            };
-
+        bindEvents() {
+            document.getElementById('exam-select').onchange = (e) => { this.exame = e.target.value; this.refresh(); };
+            
             document.getElementById('btn-salvar').onclick = () => {
                 const txt = document.getElementById('texto-final').value;
-                set(ref(db, `v3_treino/exame_${this.exame}`), txt).then(() => alert("💾 Salvo no Firebase!"));
+                set(ref(db, `v3_treino/exame_${this.exame}`), txt)
+                    .then(() => alert("✅ Sincronizado com o Firebase!"));
             };
 
             document.getElementById('btn-add-nc').onclick = () => UI.abrirModalNC(this.exame);
             document.getElementById('prev-page').onclick = () => PDFEngine.changePage(-1);
             document.getElementById('next-page').onclick = () => PDFEngine.changePage(1);
-
-            // Botoes do Footer
-            document.querySelectorAll('.btn-footer').forEach(btn => {
-                btn.onclick = () => this.abrirModal(btn.dataset.tipo);
-            });
+            
+            // Ativação dos Modais
+            document.getElementById('btn-questoes').onclick = () => this.abrir('questoes');
+            document.getElementById('btn-espelho').onclick = () => this.abrir('espelho');
+            document.getElementById('btn-prazos').onclick = () => this.abrir('prazos');
+            document.getElementById('btn-vade').onclick = () => this.abrir('vade');
         },
 
-        async carregarTudo() {
-            // PDF
+        async refresh() {
+            // PDF: Busca roXX.pdf conforme sua lista de arquivos
             try {
                 const resp = await fetch(`./ro${this.exame}.pdf`);
-                const buf = await resp.arrayBuffer();
-                await PDFEngine.init(buf);
-            } catch (e) { console.error("Falha ao carregar enunciado PDF."); }
-
-            // Firebase + Estrutura Aryanna
+                if(!resp.ok) throw new Error();
+                await PDFEngine.init(await resp.arrayBuffer());
+            } catch (e) { 
+                console.error(`Erro: ro${this.exame}.pdf não encontrado.`);
+                // Fallback para arquivo padrão se roXX falhar
+                const fallback = await fetch(`./ro44.pdf`);
+                await PDFEngine.init(await fallback.arrayBuffer());
+            }
+            
+            // Carrega Texto (Firebase ou Estrutura padrão)
             onValue(ref(db, `v3_treino/exame_${this.exame}`), (snap) => {
                 const area = document.getElementById('texto-final');
-                if (snap.exists()) area.value = snap.val();
-                else area.value = ESTRUTURAS[this.exame]?.esqueleto || ESTRUTURAS["PADRAO"].esqueleto;
+                if(snap.exists()) {
+                    area.value = snap.val();
+                } else {
+                    area.value = ESTRUTURAS[this.exame]?.esqueleto || ESTRUTURAS["PADRAO"]?.esqueleto || "";
+                }
             });
 
             // Post-its
             NaoConfunda.renderizar(this.exame, 'container-postits');
         },
 
-        abrirModal(tipo) {
-            const modal = document.getElementById('modal-container');
-            const titulo = document.getElementById('modal-titulo');
-            const body = document.getElementById('modal-body');
-            modal.style.display = 'flex';
+        abrir(tipo) {
+            const m = document.getElementById('modal-gen');
+            const t = document.getElementById('modal-titulo');
+            const c = document.getElementById('modal-corpo');
+            m.style.display = 'flex'; // Centraliza com flex
 
-            if (tipo === 'espelho') {
-                titulo.innerText = `🎯 ESPELHO DE CORREÇÃO - EXAME ${this.exame}`;
-                const dados = BANCO_ESPELHOS[this.exame] || ["Espelho não localizado."];
-                body.innerHTML = `<ul>${dados.map(i => `<li>${i}</li>`).join('')}</ul>`;
-            } else if (tipo === 'prazos') {
-                titulo.innerText = "📅 CALCULADORA DE PRAZOS (CLT)";
-                body.innerHTML = CalculadoraPrazos.exibirPainel();
-            } else if (tipo === 'questoes') {
-                titulo.innerText = "❓ QUESTÕES DISSERTATIVAS";
-                const q = ESTRUTURAS[this.exame]?.questoes || ["Sem questões cadastradas."];
-                body.innerHTML = q.map(item => `<p style='margin-bottom:15px; border-bottom:1px solid #eee'>${item}</p>`).join('');
-            } else if (tipo === 'vade') {
-                titulo.innerText = "📚 VADE MECUM DIGITAL";
-                body.innerHTML = `<iframe src="vade.pdf" style="width:100%; height:400px;"></iframe>`;
+            if(tipo === 'espelho') {
+                t.innerText = `🎯 ESPELHO FGV - EXAME ${this.exame}`;
+                const dados = BANCO_ESPELHOS[this.exame] || ["Espelho de correção não cadastrado para este exame."];
+                c.innerHTML = `<ul style="list-style: none;">${dados.map(i => `<li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 14px;">✅ ${i}</li>`).join('')}</ul>`;
+            } 
+            else if(tipo === 'prazos') {
+                t.innerText = "📅 CALCULADORA DE PRAZOS";
+                c.innerHTML = CalculadoraPrazos.exibirPainel();
+            } 
+            else if(tipo === 'questoes') {
+                t.innerText = "❓ QUESTÕES DISSERTATIVAS";
+                const q = ESTRUTURAS[this.exame]?.questoes || ["Questões não localizadas no arquivo estruturas.js"];
+                c.innerHTML = q.map(i => `<div style="background: #f8fafc; padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--gold);">${i}</div>`).join('');
+            } 
+            else if(tipo === 'vade') {
+                t.innerText = "📚 VADE MECUM DIGITAL";
+                c.innerHTML = `<iframe src="vade.pdf" style="width:100%; height:400px; border: none;"></iframe>`;
             }
         }
     };
+
+    window.fecharModal = () => document.getElementById('modal-gen').style.display = 'none';
+    
+    // Inicia o cronômetro
+    let tempo = 18000; 
+    setInterval(() => {
+        tempo--;
+        let h = Math.floor(tempo / 3600), m = Math.floor((tempo % 3600) / 60), s = tempo % 60;
+        document.getElementById('cronometro').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }, 1000);
 
     App.init();
 </script>
