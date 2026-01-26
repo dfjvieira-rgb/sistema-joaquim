@@ -1,15 +1,16 @@
-/* estilos.css */
+/* sistema-joaquim/style.css */
 :root {
     --primary: #2563eb;
     --success: #059669;
     --warning: #f59e0b;
-    --bg-site: #f8fafc;
     --gold: #d4af37;
+    --bg-site: #f8fafc;
     --pen-blue: #1e3a8a;
     --paper: #ffffff;
     --text: #1e293b;
     --toolbar-bg: #ffffff;
     --border: #cbd5e1;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
 }
 
 .dark-mode {
@@ -30,77 +31,69 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    color: var(--text);
 }
 
-/* Header & Timer */
+/* HEADER & TOOLBAR */
 header {
     background: #1e293b;
-    padding: 0 15px;
-    border-bottom: 2px solid var(--gold);
+    color: white;
+    padding: 0 20px;
+    height: 50px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    height: 45px;
-    z-index: 1001;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--gold);
+    z-index: 1000;
 }
 
-.logo { font-weight: 800; color: var(--gold); font-size: .8rem; }
-
-#timer-display {
-    font-family: 'Courier Prime', monospace;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-.timer-low { background: #7f1d1d; color: #fecaca !important; animation: blink 1s infinite; }
-
-@keyframes blink { 50% { opacity: 0.5; } }
-
-/* Layout Principal */
-.main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
-
-/* Toolbar Mobile Friendly */
 .toolbar {
     background: var(--toolbar-bg);
-    padding: 8px;
+    padding: 10px;
     display: flex;
-    gap: 5px;
+    gap: 8px;
     border-bottom: 1px solid var(--border);
     align-items: center;
     overflow-x: auto;
-    white-space: nowrap;
 }
 
 .btn-symbol {
-    height: 38px;
+    height: 40px;
     min-width: 42px;
     border-radius: 8px;
     border: 1px solid var(--border);
+    background: var(--toolbar-bg);
     cursor: pointer;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    background: var(--toolbar-bg);
-    color: var(--text);
-    flex-shrink: 0;
+    transition: 0.2s;
 }
 
-/* Folha de Resposta Estilo FGV */
-.paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.05); }
+.btn-symbol:hover { background: var(--bg-site); border-color: var(--primary); }
+
+/* LAYOUT PRINCIPAL */
+.main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+.editor-section { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+
+/* PAPEL OAB */
+.paper-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 10px;
+    background: rgba(0,0,0,0.05);
+}
 
 .paper-sheet {
     width: 100%;
     max-width: 850px;
     background: var(--paper);
     min-height: 1500px;
-    display: flex;
     margin: 0 auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    position: relative;
+    display: flex;
+    box-shadow: var(--shadow);
+    border-radius: 4px;
 }
 
 .line-nums {
@@ -110,7 +103,7 @@ header {
     text-align: center;
     color: #94a3b8;
     font-size: 12px;
-    padding-top: 15px;
+    padding-top: 14px;
     line-height: 28px;
     user-select: none;
 }
@@ -119,8 +112,9 @@ header {
     flex: 1;
     border: none;
     outline: none;
-    padding: 13px 20px;
-    font-size: 17px;
+    padding: 10px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 18px;
     line-height: 28px;
     color: var(--pen-blue);
     background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px);
@@ -130,18 +124,66 @@ header {
     background-color: transparent;
 }
 
-/* Modais e UI */
+/* VIEWER PDF */
+.viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; }
+
+.tabs { display: flex; background: #1e293b; padding: 5px 10px 0; gap: 5px; }
+
+.tab {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: #0f172a;
+    color: #94a3b8;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tab.active { background: var(--bg-site); color: var(--primary); }
+
+#pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; }
+
+/* MODAIS */
 .modal-full {
     display: none;
     position: fixed;
     inset: 0;
     background: var(--bg-site);
-    z-index: 9999;
+    z-index: 2000;
     flex-direction: column;
 }
 
+.modal-header {
+    background: #1e293b;
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-content { flex: 1; overflow-y: auto; padding: 20px; }
+
+/* MOBILE ADJUSTMENTS */
 @media (max-width: 768px) {
-    .main-container { flex-direction: column; }
-    .viewer-section { height: 40%; }
-    .paper-sheet { width: 100%; margin: 0; }
+    .viewer-section {
+        position: absolute;
+        inset: 0;
+        z-index: 100;
+        display: none;
+    }
+    .viewer-section.active-mobile { display: flex; }
+    
+    .floating-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1001;
+        background: var(--primary);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
 }
