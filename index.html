@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SISTEMA JOAQUIM - MODO ALVO</title>
     <style>
-        /* CSS preservando sua identidade visual e adaptando para mobile */
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
             --orange: #f39c12; --green: #27ae60; --yellow: #f1c40f; 
@@ -15,18 +14,13 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        #timer { font-family: monospace; font-size: 1.3rem; color: var(--yellow); }
-
-        .nav-group { display: flex; gap: 8px; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; animation: pulse 2s infinite; }
         
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .nav-group { display: flex; gap: 8px; }
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
 
-        main { display: flex; flex: 1; overflow: hidden; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
-        .exame-btn:hover { background: var(--accent); color: white; }
-
+        
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; }
         #area-peca { 
             flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
@@ -34,129 +28,98 @@
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
         }
 
-        /* ÁREA DO CHECKLIST (ESTILO FGV) */
-        #container-alvo { 
-            display: none; width: 400px; background: white; border-left: 2px solid #ccc; 
-            flex-direction: column; z-index: 2000;
-        }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
-        
-        /* Classes que o seu banco-espelhos utiliza */
-        .nota-floating { background: #333; color: white; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 0.8rem; text-align: center; }
-        .espelho-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; align-items: flex-start; }
-        .espelho-txt { flex: 1; font-size: 0.8rem; color: #333; }
-        .espelho-pt { font-weight: bold; color: var(--red); font-size: 0.8rem; }
-        .resultado-nota { padding: 20px; background: #f8f9fa; text-align: center; border-top: 2px solid #ddd; }
-
-        .pdf-section { width: 30%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
 
-        @media (max-width: 1024px) {
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar, .pdf-section, #container-alvo { width: 100%; }
-            #container-alvo { position: fixed; top: var(--header-h); left: 0; height: calc(100vh - var(--header-h)); }
+        /* PAINEL ALVO - GAVETA RETRÁTIL (OVERLAY) */
+        #painel-alvo { 
+            position: absolute;
+            top: 0;
+            right: -400px; /* Escondido fora da tela */
+            width: 400px; 
+            height: 100%;
+            background: white; 
+            border-left: 3px solid var(--red); 
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            z-index: 5000;
+            transition: right 0.3s ease; /* Animação suave */
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
         }
+        #painel-alvo.ativo { right: 0; } /* Mostra o painel */
+
+        /* Estilos do seu Banco de Espelhos */
+        .nota-floating { background: #333; color: white; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; text-align: center; }
+        .espelho-item { display: flex; gap: 8px; padding: 10px 0; border-bottom: 1px solid #eee; align-items: flex-start; font-size: 0.85rem; }
+        .espelho-pt { font-weight: bold; color: var(--red); }
+        #total-container { position: sticky; bottom: -20px; background: white; padding: 15px; border-top: 2px solid #ddd; text-align: center; }
+
+        @media (max-width: 768px) { #painel-alvo { width: 100%; right: -100%; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div id="timer">05:00:00</div>
+    <div style="font-family: monospace; color: var(--yellow);">05:00:00</div>
     <div class="nav-group">
-        <button class="btn-alvo" onclick="toggleAlvo()">🎯 ALVO / CORREÇÃO</button>
+        <button class="btn-alvo" onclick="toggleAlvo()">🎯 ALVO</button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div id="lista-exames"></div>
+        <button onclick="carregarExame('44')" style="width:100%; padding:10px; margin-bottom:5px;">OAB XXXLIV (44)</button>
+        <button onclick="carregarExame('41')" style="width:100%; padding:10px; margin-bottom:5px;">OAB XXXLI (41)</button>
+        <button onclick="carregarExame('40')" style="width:100%; padding:10px; margin-bottom:5px;">OAB XXXL (40)</button>
     </aside>
 
     <section class="work-section">
-        <div style="padding:10px; background:#f1f1f1; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
         <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
     </section>
 
-    <section id="container-alvo">
-        <div class="alvo-header">
-            <span>CHECKLIST OFICIAL FGV</span>
-            <button onclick="toggleAlvo()" style="background:none; border:none; color:white; cursor:pointer">✖</button>
-        </div>
-        <div class="alvo-scroll" id="injetar-espelho">
-            </div>
-        <div class="resultado-nota">
-            <div style="font-size:0.7rem; color:#666">PONTUAÇÃO TOTAL</div>
-            <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
-        </div>
-    </section>
-
-    <section class="pdf-section" id="pdfs">
+    <section class="pdf-section">
         <iframe id="v-enu" class="pdf-frame"></iframe>
         <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
+
+    <div id="painel-alvo">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+            <h3 style="color:var(--red)">Checklist de Correção</h3>
+            <button onclick="toggleAlvo()" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer">Fechar</button>
+        </div>
+        <div id="conteudo-espelho"></div>
+        <div id="total-container">
+            <h2 id="total" style="color:red">Nota: 0.00</h2>
+        </div>
+    </div>
 </main>
 
 <script>
-    // SEU BANCO DE ESPELHOS (PRESERVADO INTEGRALMENTE)
+    // SEU BANCO DE ESPELHOS PRESERVADO
     const BANCO_ESPELHOS = {
-        "44": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Art. 847 da CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade passiva sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">4. Preliminar: Inépcia reenquadramento (Art. 330, §1, I ou 337, IV CPC)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">5. Prejudicial: Prescrição parcial (Art. 7, XXIX CF ou 11 CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Ticket refeição - ausência de ultratividade (Art. 614, §3 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Jornada aviso prévio no pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Periculosidade motocicleta indevida (Art. 193, §4 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Reintegração indevida (S. 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Vale transporte moto própria (L. 7418/85 ou D. 10854/21)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">11. Pedidos (Renovação/Improcedência/Provas/Honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>`,
-        "41": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 41 (AGRAVO DE PETIÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Fundamento (Art. 855-A, §1, II ou 897, a CLT)</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Delimitação justificada: Art. 897, §1º CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Tempestividade (8 dias): Art. 897, caput CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">5. Tese: IDPJ de ofício vedado (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">6. Tese: Suspensão do processo (Art. 134, §3 CPC ou 855-A, §2 CLT)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">7. Tese: Prazo manifestação 15 dias (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">8. Ilegitimidade: Sócio retirante > 2 anos (Art. 10-A CLT ou 1032 CC)</div><div class="espelho-pt">0.80</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">9. Tese: Impenhorabilidade aposentadoria (Art. 833, IV CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Pedidos (Revogação/Provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>`,
-        "40": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 40 (RECLAMAÇÃO TRABALHISTA)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento Osasco/SP e Art. 840, §1 CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Qualificação Partes (Espólio e Reclamada)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Gratuidade Justiça (Art. 790, §3 ou §4 CLT)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Prioridade Idosa (Art. 1048 CPC ou L. 10741)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Vínculo Empregatício (Art. 3 ou 29 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Verbas (Saldo, 13º, Férias, FGTS, Multa 477)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="1.60" onchange="window.calcNota()"><div class="espelho-txt">7. Danos Materiais (Enterro, Seguro, Pensões) - Art. 186/927/948 CC</div><div class="espelho-pt">1.60</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Dano Moral Acidente (Art. 223-B CLT ou 186/927 CC)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">9. Honorários (791-A), Pedidos com Valor e Fechamento</div><div class="espelho-pt">1.10</div></div>`,
-        "37": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 37 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 85ª VT/RJ e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">2. Preliminar: Adiamento Audiência (Art. 841 CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade ex-sócio (Art. 10-A CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">4. Mérito: Adicional Transferência (Art. 469 CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Horas in itinere (Art. 58, § 2º CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Intervalo Digitador (Art. 72 CLT ou S. 346 TST)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Acúmulo de Função (Art. 456, p.u. CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">8. Pedidos (Renovação/Improcedência/Honorários) e Fechamento</div><div class="espelho-pt">1.10</div></div>`,
-        "35": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 35 (RECURSO ORDINÁRIO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 89ª VT Floriano/PI, TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Partes (Sociedade empresária e Empregado)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Tempestividade (8 dias) e Preparo</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">4. Prescrição Parcial Instância Ordinária (S. 153 TST)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Intervalo Interjornada 11h (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Reintegração Indevida (Art. 543, §3 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: FGTS Suspensão Contratual (Art. 476 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Ajuda Custo Indenizatória (Art. 457, §2 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Equiparação Salarial (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Insalubridade Reclassificação (Art. 194 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">11. Honorários (791-A), Pedidos e Fechamento</div><div class="espelho-pt">0.80</div></div>`
+        "44": `<div class="nota-floating">ESPELHO 44</div><div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Art. 847 da CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade passiva sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">4. Preliminar: Inépcia reenquadramento (Art. 330, §1, I ou 337, IV CPC)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">5. Prejudicial: Prescrição parcial (Art. 7, XXIX CF ou 11 CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Ticket refeição - ausência de ultratividade (Art. 614, §3 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Jornada aviso prévio no pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Periculosidade motocicleta indevida (Art. 193, §4 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Reintegração indevida (S. 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Vale transporte moto própria (L. 7418/85 ou D. 10854/21)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">11. Pedidos (Renovação/Improcedência/Provas/Honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>`,
+        "41": `<div class="nota-floating">ESPELHO 41</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Fundamento (Art. 855-A, §1, II ou 897, a CLT)</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Delimitação justificada: Art. 897, §1º CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Tempestividade (8 dias): Art. 897, caput CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">5. Tese: IDPJ de ofício vedado (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">6. Tese: Suspensão do processo (Art. 134, §3 CPC ou 855-A, §2 CLT)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">7. Tese: Prazo manifestação 15 dias (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">8. Ilegitimidade: Sócio retirante > 2 anos (Art. 10-A CLT ou 1032 CC)</div><div class="espelho-pt">0.80</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">9. Tese: Impenhorabilidade aposentadoria (Art. 833, IV CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Pedidos (Revogação/Provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>`
     };
 
-    let idAtivo = null;
-
-    // Inicializa os botões de exames
-    function carregarMenu() {
-        const menu = document.getElementById('lista-exames');
-        Object.keys(BANCO_ESPELHOS).sort((a,b)=>b-a).forEach(ex => {
-            const b = document.createElement('button');
-            b.className = 'exame-btn';
-            b.innerText = `EXAME XXX${ex}`;
-            b.onclick = () => selecionarExame(ex);
-            menu.appendChild(b);
-        });
-    }
-
-    function selecionarExame(num) {
-        idAtivo = num;
-        document.getElementById('label-atual').innerText = `📍 EXAME XXX${num}`;
-        document.getElementById('v-enu').src = `ro${num}.pdf`;
-        document.getElementById('v-gab').src = `ro${num}-gabarito.pdf`;
-        
-        // Injeta o espelho no container invisível
-        document.getElementById('injetar-espelho').innerHTML = BANCO_ESPELHOS[num];
-        window.calcNota(); // Zera a nota
+    function carregarExame(id) {
+        document.getElementById('v-enu').src = `ro${id}.pdf`;
+        document.getElementById('v-gab').src = `ro${id}-gabarito.pdf`;
+        document.getElementById('conteudo-espelho').innerHTML = BANCO_ESPELHOS[id];
+        window.calcNota();
     }
 
     function toggleAlvo() {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        const painel = document.getElementById('container-alvo');
-        const pdfs = document.getElementById('pdfs');
-        
-        if(painel.style.display === 'flex') {
-            painel.style.display = 'none';
-            pdfs.style.display = 'flex';
-        } else {
-            painel.style.display = 'flex';
-            pdfs.style.display = 'none'; // Oculta PDFs para dar foco total à correção
-        }
+        document.getElementById('painel-alvo').classList.toggle('ativo');
     }
 
-    // A FUNÇÃO QUE O SEU BANCO EXIGE
     window.calcNota = function() {
-        const checkboxes = document.querySelectorAll('#injetar-espelho input[type="checkbox"]');
         let nota = 0;
-        checkboxes.forEach(c => {
-            if(c.checked) nota += parseFloat(c.value);
-        });
-        document.getElementById('display-nota').innerText = nota.toFixed(2);
+        const checks = document.querySelectorAll('#conteudo-espelho input[type="checkbox"]');
+        checks.forEach(c => { if(c.checked) nota += parseFloat(c.value); });
+        document.getElementById('total').innerText = "Nota: " + nota.toFixed(2);
     };
-
-    window.onload = carregarMenu;
 </script>
 </body>
 </html>
