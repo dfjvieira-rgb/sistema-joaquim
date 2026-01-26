@@ -36,7 +36,7 @@
         
         #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; }
 
-        /* Estilos do Espelho injetado do banco-espelhos.js */
+        /* Estilos Estritos para o Banco de Espelhos */
         .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
         .espelho-txt { flex: 1; line-height: 1.2; }
         .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
@@ -58,17 +58,17 @@
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames Oficiais</div>
+        <div class="section-label">Exames Disponíveis</div>
         <div id="lista-exames"></div>
     </aside>
 
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
-            <span id="label-atual">📍 SELECIONE O EXAME</span>
+            <span id="label-atual">📍 AGUARDANDO SELEÇÃO</span>
             <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Selecione um exame e use a balança para injetar as teses oficiais direto do banco de espelhos..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Conteúdo do Espelho"><i class="fas fa-balance-scale"></i></div>
+        <textarea id="area-peca" placeholder="Selecione um exame ao lado. O Botão Justiça injetará as teses do banco de espelhos selecionado."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Banco"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
@@ -77,7 +77,7 @@
     </section>
 
     <div id="modal-pecas" class="modal">
-        <div class="modal-header" style="background: var(--accent);"><span>🧩 ESTRUTURAS (ESTRUTURAS.JS)</span><span onclick="toggleModal('modal-pecas')" style="cursor:pointer">×</span></div>
+        <div class="modal-header" style="background: var(--accent);"><span>🧩 ESTRUTURAS TÉCNICAS</span><span onclick="toggleModal('modal-pecas')" style="cursor:pointer">×</span></div>
         <div id="grid-pecas-js" style="padding:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
     </div>
 
@@ -103,7 +103,7 @@
         const menuExames = document.getElementById('lista-exames');
         const gridPecas = document.getElementById('grid-pecas-js');
 
-        // Renderiza lista lateral baseada no BANCO_ESPELHOS
+        // REGRA: A lista lateral só puxa o que existe no BANCO_ESPELHOS
         Object.keys(BANCO_ESPELHOS).sort((a,b) => b-a).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
@@ -120,10 +120,10 @@
             menuExames.appendChild(btn);
         });
 
-        // Botão PEÇAS: Bebe do estruturas.js
+        // Botões do Modal Peças (Carga do estruturas.js)
         Object.keys(pecas).forEach(nome => {
             const btn = document.createElement('button');
-            btn.className = 'exame-btn'; // Reutilizando estilo
+            btn.className = 'exame-btn';
             btn.style.textAlign = "center";
             btn.innerText = nome;
             btn.onclick = () => {
@@ -134,36 +134,33 @@
         });
     };
 
-    // BOTÃO JUSTIÇA: EXTRAI O TEXTO DAS TESES DO BANCO_ESPELHOS.JS
+    // BOTÃO JUSTIÇA: Puxa o conteúdo exclusivamente do Banco de Espelhos
     window.injetarJustica = () => {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        if(!idAtivo) return alert("Selecione um exame no menu lateral!");
         
-        const htmlConteudo = BANCO_ESPELHOS[idAtivo];
-        if(!htmlConteudo) return;
+        const conteudoRaw = BANCO_ESPELHOS[idAtivo];
+        if(!conteudoRaw) return;
 
-        // Criamos um elemento temporário para converter o HTML do banco em texto limpo
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlConteudo;
+        // Limpeza do HTML para extrair apenas as teses textuais
+        const temp = document.createElement('div');
+        temp.innerHTML = conteudoRaw;
         
-        // Removemos o cabeçalho "ESPELHO OFICIAL..." para não sujar a peça
-        const header = tempDiv.querySelector('.nota-floating');
-        if(header) header.remove();
+        const cabecalho = temp.querySelector('.nota-floating');
+        const titulo = cabecalho ? cabecalho.innerText : `EXAME ${idAtivo}`;
+        if(cabecalho) cabecalho.remove();
 
-        // Extraímos apenas o texto dos itens do espelho (teses)
-        let textoLimpo = "";
-        const itens = tempDiv.querySelectorAll('.espelho-txt');
+        let teseTexto = `${titulo}\n${"=".repeat(30)}\n\n`;
+        const itens = temp.querySelectorAll('.espelho-txt');
         itens.forEach(item => {
-            textoLimpo += item.innerText + "\n\n";
+            teseTexto += `[ ] ${item.innerText}\n\n`;
         });
 
-        // Injeta na área de trabalho
-        const area = document.getElementById('area-peca');
-        area.value = `AO JUÍZO DA ...\n\nEXAME ${idAtivo} - TESES OFICIAIS:\n\n` + textoLimpo;
+        document.getElementById('area-peca').value = teseTexto;
     };
 
     window.renderEspelho = (key) => {
         const container = document.getElementById('injetar-espelho');
-        container.innerHTML = BANCO_ESPELHOS[key] || "<p style='padding:20px'>Dados não encontrados.</p>";
+        container.innerHTML = BANCO_ESPELHOS[key] || "<p style='padding:20px'>Sem dados de correção.</p>";
         window.calcNota();
     };
 
