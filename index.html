@@ -21,11 +21,11 @@
                 <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol"></select>
                 <button class="btn-symbol" onclick="window.toggleEstruturas()" title="Estruturas">⚖️</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')" title="Questões">📚</button>
-                <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')" title="Espelho">🎯</button>
+                <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')" title="Corrigir Peça">🎯</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')" title="Dicas">💡</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-nc')" title="Post-its">📌</button>
                 <button class="btn-symbol" onclick="window.abrirModal('modal-calc')" title="Calculadora CLT">🧮</button>
-                <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
+                <button class="btn-symbol" onclick="window.location.href='mentoria.html'" title="Mentoria Aryanna">🏆</button>
                 <button class="btn-symbol" style="background:var(--success);color:#fff;margin-left:auto;" onclick="window.finalizarManual()">💾</button>
             </div>
             
@@ -43,94 +43,87 @@
                 <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
                 <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
             </div>
+            <div style="background:#1e293b; padding: 6px; display:flex; gap:5px;">
+                <input type="text" id="pdf-search-input" placeholder="Buscar no Vade/Prova..." style="flex:1; background:#0f172a; border:1px solid var(--border); color:white; padding:5px; border-radius:4px; font-size:12px;">
+                <button onclick="window.executarBusca()" class="btn-symbol" style="height:28px;">🔍</button>
+            </div>
             <div id="pdf-viewport"></div>
         </section>
     </div>
 
-    <div id="modal-calc" class="modal-full">
+    <div id="modal-espelho" class="modal-full">
         <div class="modal-header">
-            <button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button>
-            <h3>CALCULADORA DE PRAZOS (CLT)</h3>
+            <button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button>
+            <h3>CORREÇÃO POR ESPELHO</h3>
         </div>
-        <div class="modal-body" style="padding: 20px;">
-            <div style="background: var(--toolbar-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border); max-width: 500px; margin: 0 auto;">
-                <label style="display:block; margin-bottom: 10px; font-weight: bold;">Data da Extinção (Demissão):</label>
-                <input type="date" id="calc-data-demissao" class="btn-symbol" style="width: 100%; margin-bottom: 15px; padding: 10px;">
-                <button onclick="window.rodarCalculo()" style="width:100%; padding: 12px; background: var(--primary); color: white; border:none; border-radius: 5px; font-weight: bold; cursor: pointer;">CALCULAR PRESCRIÇÃO</button>
-                
-                <div id="res-calc" style="margin-top: 25px; display: none; border-top: 1px solid var(--border); padding-top: 15px;">
-                    <p style="margin-bottom:10px;"><strong>Limite para Ajuizar (2 anos):</strong><br><span id="res-bienal" style="color: var(--warning); font-size: 1.2rem;"></span></p>
-                    <p><strong>Marco Quinquenal (5 anos atrás):</strong><br><span id="res-quinquenal" style="color: var(--warning); font-size: 1.2rem;"></span></p>
-                    <p style="font-size: 0.75rem; margin-top: 15px; opacity: 0.6; line-height: 1.4;">
-                        * Bienal: Art. 7º, XXIX, CF/88 e Art. 11, CLT.<br>
-                        * Quinquenal: Contado do ajuizamento (Súmula 308, I, TST).
-                    </p>
+        <div class="modal-body">
+            <div class="nota-floating" style="position: sticky; top: 0; z-index: 10; background: var(--warning); color: #000; padding: 15px; text-align: center; font-weight: 800; font-size: 1.2rem; border-radius: 0 0 15px 15px;">
+                NOTA: <span id="nota-valor">0.00</span> / 5.00
+            </div>
+            <div id="checklist-fgv" style="padding: 20px;">
                 </div>
+        </div>
+    </div>
+
+    <div id="modal-calc" class="modal-full">
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-calc')">✕</button><h3>CALCULADORA CLT</h3></div>
+        <div class="modal-body" style="padding:20px;">
+            <input type="date" id="calc-data-demissao" class="btn-symbol" style="width:100%; margin-bottom:10px;">
+            <button onclick="window.rodarCalculo()" style="width:100%; padding:10px; background:var(--primary); color:#fff; border:none; border-radius:8px;">CALCULAR</button>
+            <div id="res-calc" style="margin-top:20px; display:none; background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
+                <p>Bienal: <span id="res-bienal" style="color:var(--warning); font-weight:bold;"></span></p>
+                <p>Quinquenal: <span id="res-quinquenal" style="color:var(--warning); font-weight:bold;"></span></p>
             </div>
         </div>
     </div>
 
-    <div id="modal-espelho" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-espelho')">✕</button><h3>ESPELHO OFICIAL</h3></div>
-        <div class="modal-body"><div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div><div id="checklist-fgv"></div></div>
-    </div>
-
     <div id="modal-respostas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE RESPOSTAS (QUESTÕES)</h3></div>
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-respostas')">✕</button><h3>FOLHA DE RESPOSTAS</h3></div>
         <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
     </div>
 
-    <div id="modal-dicas" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS E MACETES</h3></div>
-        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
-    </div>
-
     <div id="modal-nc" class="modal-full">
-        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS / TESES</h3></div>
-        <div class="modal-body">
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-nc')">✕</button><h3>POST-ITS</h3></div>
+        <div class="modal-body" style="padding:20px;">
             <div id="box-teses"></div>
-            <button class="btn-symbol" style="width:100%; margin:10px 0" onclick="window.addNCField('box-teses', 'input')">+ Nova Tese</button>
+            <button class="btn-symbol" style="width:100%; margin-bottom:15px" onclick="window.addNCField('box-teses','input')">+ Tese</button>
             <div id="box-explica"></div>
-            <button class="btn-symbol" style="width:100%; margin:10px 0" onclick="window.addNCField('box-explica', 'textarea')">+ Detalhe</button>
-            <button onclick="window.saveNC()" style="width:100%;margin-top:20px;padding:15px;background:var(--success);color:#fff;border:none;border-radius:8px;font-weight:700">SALVAR POST-ITS</button>
+            <button class="btn-symbol" style="width:100%;" onclick="window.addNCField('box-explica','textarea')">+ Fundamentação</button>
+            <button onclick="window.saveNC()" style="width:100%; background:var(--success); color:#fff; padding:15px; margin-top:20px; border:none; border-radius:8px; font-weight:700;">SALVAR POST-ITS</button>
         </div>
     </div>
 
-    <div id="menu-estruturas" style="display:none;position:absolute;top:90px;left:20px;background:var(--toolbar-bg);border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.3);z-index:5000;width:280px;border:1px solid var(--border);max-height:70vh;overflow-y:auto"></div>
+    <div id="modal-dicas" class="modal-full">
+        <div class="modal-header"><button class="btn-symbol" onclick="window.fecharModal('modal-dicas')">✕</button><h3>DICAS</h3></div>
+        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
+    </div>
+
+    <div id="menu-estruturas" style="display:none;position:absolute;top:90px;left:20px;background:var(--toolbar-bg);z-index:5000;width:260px;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5);max-height:60vh;overflow-y:auto;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        
-        // Importação das Engrenagens
         import { pecas, MEUS_ESPELHOS } from './estruturas.js';
         import { Cronometro } from './cronometro.js';
         import { CalculadoraTrabalhista } from './calculadora.js';
+        import { PDFEngine } from './pdf-engine.js';
 
         const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
         const app = initializeApp(config); const db = getDatabase(app);
         
-        const timer = new Cronometro('timer-display', 300);
-        timer.iniciar();
-
+        const timer = new Cronometro('timer-display', 300); timer.iniciar();
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // Funções da Calculadora
-        window.rodarCalculo = () => {
-            const data = document.getElementById('calc-data-demissao').value;
-            const res = CalculadoraTrabalhista.calcularPrescricao(data);
-            if(res) {
-                document.getElementById('res-calc').style.display = 'block';
-                document.getElementById('res-bienal').innerText = res.limiteAjuizamento;
-                document.getElementById('res-quinquenal').innerText = res.marcoRetroativo;
-            } else alert("Selecione a data de saída.");
-        };
-
-        // Gerenciamento de PDF e UI
         let currentPdf = null;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
-        }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
+
+        window.executarBusca = async () => {
+            const termo = document.getElementById('pdf-search-input').value;
+            const pagina = await PDFEngine.buscarTexto(currentPdf, termo);
+            if(pagina) {
+                const alvo = document.querySelector(`[data-pagenum="${pagina}"]`);
+                if(alvo) alvo.scrollIntoView({ behavior: 'smooth' });
+            } else { alert("Não encontrado."); }
+        };
 
         window.carregarPDF = async (tipo) => {
             const ex = document.getElementById('exam-select').value;
@@ -144,20 +137,22 @@
                     const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
                     v.appendChild(c); observer.observe(c);
                 }
-            } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>Não encontrado.</p>"; }
+            } catch(e) { v.innerHTML = "<p style='color:#fff;padding:20px'>PDF não disponível.</p>"; }
         };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
+        }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
 
         async function renderPage(num, container) {
             if (container.dataset.rendered) return; container.dataset.rendered = "true";
             const page = await currentPdf.getPage(num);
-            const vp = page.getViewport({ scale: (document.getElementById('pdf-viewport').clientWidth - 30) / page.getViewport({scale:1}).width });
+            const scale = PDFEngine.obterEscala(document.getElementById('pdf-viewport').clientWidth, page);
+            const vp = page.getViewport({ scale });
             container.style.height = vp.height + "px";
             const canvas = document.createElement('canvas'); canvas.height = vp.height; canvas.width = vp.width;
             container.appendChild(canvas);
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-            const tl = document.createElement('div'); tl.className = 'textLayer'; container.appendChild(tl);
-            const content = await page.getTextContent();
-            pdfjsLib.renderTextLayer({ textContent: content, container: tl, viewport: vp, textDivs: [] });
         }
 
         window.calcNota = () => {
@@ -166,16 +161,12 @@
         };
 
         window.saveMeta = (p, v) => set(ref(db, `${p}/exame_${document.getElementById('exam-select').value}`), v);
-
-        window.autoSave = () => { 
-            clearTimeout(window.sv); 
-            window.sv = setTimeout(() => window.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000); 
-        };
+        window.autoSave = () => { clearTimeout(window.sv); window.sv = setTimeout(() => window.saveMeta('v3_treino', document.getElementById('texto-final').value), 1000); };
 
         window.mudarExame = () => {
             const ex = document.getElementById('exam-select').value;
             window.carregarPDF('prova');
-            document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || '<p style="padding:20px">Aguardando espelho...</p>';
+            document.getElementById('checklist-fgv').innerHTML = MEUS_ESPELHOS[ex] || '<p>Aguardando espelho oficial...</p>';
             get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
             get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
             get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
@@ -194,8 +185,15 @@
             m.innerHTML = Object.keys(pecas).map(k => `<div onclick="window.inserirPeça('${k}')" style="padding:15px; border-bottom:1px solid var(--border); cursor:pointer;">📄 ${k}</div>`).join('');
         };
 
-        window.inserirPeça = (k) => {
-            if(confirm("Substituir texto?")) { document.getElementById('texto-final').value = pecas[k]; window.autoSave(); window.toggleEstruturas(); }
+        window.inserirPeça = (k) => { if(confirm("Substituir texto?")) { document.getElementById('texto-final').value = pecas[k]; window.autoSave(); window.toggleEstruturas(); } };
+        
+        window.rodarCalculo = () => {
+            const res = CalculadoraTrabalhista.calcularPrescricao(document.getElementById('calc-data-demissao').value);
+            if(res) { 
+                document.getElementById('res-calc').style.display = 'block'; 
+                document.getElementById('res-bienal').innerText = res.limiteAjuizamento; 
+                document.getElementById('res-quinquenal').innerText = res.marcoRetroativo; 
+            }
         };
 
         window.addNCField = (id, tag, val="") => { 
@@ -221,11 +219,4 @@
             if(i==44) o.selected=true; sel.appendChild(o); 
         }
 
-        document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
-        document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
-        document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
-
-        window.mudarExame();
-    </script>
-</body>
-</html>
+        document.getElementById('ln-main').
