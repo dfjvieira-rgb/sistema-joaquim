@@ -55,7 +55,7 @@
             <button class="btn-symbol" title="Dicas" onclick="window.abrirModal('💡 DICAS')">💡</button>
             <button class="btn-symbol" title="Limpar" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" title="Tema" onclick="window.toggleDarkMode()">🌓</button>
-            <button class="btn-symbol" onclick="window.saveAction()" style="background:var(--gold); color:white; margin-left:auto; border:none; padding: 0 10px;">💾 SALVAR</button>
+            <button class="btn-symbol" onclick="window.saveAction()" style="background:var(--gold); color:white; margin-left:auto; border:none; padding: 0 10px; font-weight:bold;">💾 SALVAR</button>
         </div>
         <div class="paper-wrapper">
             <div class="paper-sheet">
@@ -67,10 +67,10 @@
 
     <section class="viewer-section">
         <div class="tabs">
-            <button class="tab active" onclick="window.loadPDF('prova', this)">PROVA</button>
-            <button class="tab" onclick="window.loadPDF('gabarito', this)">GABARITO</button>
-            <button class="tab" onclick="window.loadPDF('espelho', this)">ESPELHO</button>
-            <button class="tab" onclick="window.loadPDF('vade', this)">VADE</button>
+            <button class="tab active" data-type="prova" onclick="window.loadPDF('prova', this)">PROVA</button>
+            <button class="tab" data-type="gabarito" onclick="window.loadPDF('gabarito', this)">GABARITO</button>
+            <button class="tab" data-type="espelho" onclick="window.loadPDF('espelho', this)">ESPELHO</button>
+            <button class="tab" data-type="vade" onclick="window.loadPDF('vade', this)">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
@@ -86,36 +86,57 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script type="module">
-    import { ESTRUTURAS } from './estruturas.js';
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    const v = new Date().getTime();
+    import { ESTRUTURAS } from './estruturas.js?v=' + v;
+    import { BANCO_ESPELHOS } from './banco-espelhos.js?v=' + v;
 
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
     document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
 
-    // --- FUNÇÕES DE CARREGAMENTO REAL ---
+    // INVESTIGAÇÃO E CORREÇÃO DE ESCOPO:
     window.abrirModal = (tipo) => {
         const modal = document.getElementById('modal-master');
         const titulo = document.getElementById('m-title');
         const corpo = document.getElementById('m-body');
         const ex = document.getElementById('exam-select').value;
-        const dadosPeca = ESTRUTURAS[ex] || {};
-
+        
         modal.style.display = 'block';
         
-        if (tipo.includes('NC')) {
-            titulo.innerText = "📌 NÃO CONFUNDA - TESES ARYANNA";
-            corpo.innerHTML = dadosPeca.nao_confunda || `<div style="color:gray">Nenhuma tese de "Não Confunda" cadastrada para o Exame ${ex}.</div>`;
-        } else if (tipo.includes('DICAS')) {
-            titulo.innerText = "💡 DICAS DA PEÇA";
-            corpo.innerHTML = `<div style="background:#fff9c4; padding:15px; border-left:5px solid gold;">${dadosPeca.dicas || "Sem dicas específicas para esta peça."}</div>`;
-        } else if (tipo.includes('ESPELHO')) {
-            titulo.innerText = `🎯 ESPELHO DE CORREÇÃO - EXAME ${ex}`;
-            corpo.innerHTML = BANCO_ESPELHOS[ex] || "Espelho não localizado no banco de dados.";
-        } else {
+        // CORREÇÃO: Botão 🎯 consome de BANCO_ESPELHOS
+        if (tipo.includes('ESPELHO')) {
+            titulo.innerText = `🎯 ESPELHO OFICIAL - EXAME ${ex}`;
+            corpo.innerHTML = BANCO_ESPELHOS[ex] || `<div style="color:red">Erro: Chave "${ex}" não encontrada em banco-espelhos.js</div>`;
+        } 
+        // CORREÇÃO: Botão 💡 e 📌 consomem de ESTRUTURAS
+        else if (tipo.includes('DICAS')) {
+            titulo.innerText = "💡 DICAS TÉCNICAS (ESTRUTURAS.JS)";
+            corpo.innerHTML = ESTRUTURAS[ex]?.dicas || "Sem dicas neste arquivo.";
+        } 
+        else if (tipo.includes('NC')) {
+            titulo.innerText = "📌 NÃO CONFUNDA (ESTRUTURAS.JS)";
+            corpo.innerHTML = ESTRUTURAS[ex]?.nao_confunda || "Sem teses mapeadas.";
+        }
+        else {
             titulo.innerText = tipo;
-            corpo.innerHTML = "Conteúdo em sincronização...";
+            corpo.innerHTML = "Área de rascunho de questões.";
+        }
+    };
+
+    // CORREÇÃO: Botão ⚖️ consome de ESTRUTURAS
+    window.toggleEstruturas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const peca = ESTRUTURAS[ex];
+        
+        if(!peca) {
+            alert(`Erro: Exame ${ex} não mapeado no arquivo estruturas.js`);
+            return;
+        }
+
+        if(confirm(`Injetar esqueleto do Exame ${ex}? (Isso apagará o texto atual)`)) {
+            // Se o arquivo tiver a chave .esqueleto usa ela, senão usa a string direta
+            document.getElementById('texto-final').value = peca.esqueleto || peca;
         }
     };
 
@@ -124,7 +145,6 @@
         const ex = document.getElementById('exam-select').value;
         const container = document.getElementById('pdf-viewport');
         container.innerHTML = "Carregando...";
-        
         let url = tipo === 'vade' ? 'vade.pdf' : (tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : (tipo === 'espelho' ? `ro${ex}-espelho.pdf` : `ro${ex}.pdf`));
 
         try {
@@ -138,21 +158,16 @@
                 await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
                 container.appendChild(canvas);
             }
-        } catch(e) { container.innerHTML = `<p style="color:white; padding:20px;">Arquivo ${url} não encontrado.</p>`; }
-    };
-
-    window.toggleEstruturas = () => {
-        const ex = document.getElementById('exam-select').value;
-        const dados = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
-        if(confirm(`Injetar estrutura técnica oficial do Exame ${ex}?`)) {
-            document.getElementById('texto-final').value = dados.esqueleto || dados;
-        }
+        } catch(e) { container.innerHTML = `<p style="color:white; padding:20px;">PDF ${url} não encontrado.</p>`; }
     };
 
     window.syncPDF = () => window.loadPDF('prova', document.querySelector('.tab.active'));
-    window.limparFolha = () => { if(confirm("Apagar tudo?")) document.getElementById('texto-final').value = ""; };
+    window.limparFolha = () => { if(confirm("Limpar tudo?")) document.getElementById('texto-final').value = ""; };
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
-    window.saveAction = () => { localStorage.setItem('backup_peca', document.getElementById('texto-final').value); alert("Salvo!"); };
+    window.saveAction = () => { 
+        localStorage.setItem('backup_exame_' + document.getElementById('exam-select').value, document.getElementById('texto-final').value); 
+        alert("Salvo!"); 
+    };
 
     window.syncPDF();
 </script>
