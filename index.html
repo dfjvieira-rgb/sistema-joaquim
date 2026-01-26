@@ -8,24 +8,22 @@
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --orange: #f39c12; --header-h: 60px;
+            --red: #e74c3c; --orange: #f39c12; --header-h: 60px; --gold: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .nav-group { display: flex; gap: 10px; align-items: center; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
-        .btn-mentoria { background: #fbbf24; color: #000; text-decoration: none; padding: 8px 12px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; }
+        .nav-btns { display: flex; gap: 8px; }
+        .btn-header { color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 5px; }
 
         main { display: flex; flex: 1; overflow: hidden; }
-        
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
         .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; display: block; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
         .exame-btn.active { background: var(--accent); color: white; }
 
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ccc; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { 
             flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
@@ -34,39 +32,35 @@
 
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
-        .vade-btn { background: var(--orange); color: white; padding: 5px; text-align: center; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-decoration: none; border-radius: 3px; margin-bottom: 2px; }
 
-        /* FAB JUSTIÇA - INJETOR DE CONTEÚDO */
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
             width: 60px; height: 60px; background-color: var(--primary);
             color: white; border-radius: 50%; display: flex;
             justify-content: center; align-items: center;
             font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 100; border: 2px solid #fbbf24;
+            z-index: 100; border: 2px solid var(--gold);
         }
 
+        .modal { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 450px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; border: 1px solid #ccc; }
+        .modal-header { padding: 12px; color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+        
         #container-alvo { 
             display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
             background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
-        .espelho-item { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; align-items: center; }
 
-        @media (max-width: 1024px) {
-            .sidebar, .pdf-section { display: none; }
-            #container-alvo { width: 100%; }
-        }
+        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
     </style>
 </head>
 <body>
 
 <header>
     <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
-    <div class="nav-group">
-        <a href="mentoria.html" class="btn-mentoria">🏆 QG MENTORIA</a>
-        <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
+    <div class="nav-btns">
+        <a href="mentoria.html" class="btn-header" style="background: var(--gold); color: #000;"><i class="fas fa-trophy"></i> QG MENTORIA</a>
+        <button class="btn-header" style="background: var(--accent);" onclick="toggleModal('modal-pecas')"><i class="fas fa-file-contract"></i> PEÇAS</button>
+        <button class="btn-header" style="background: var(--red);" onclick="toggleAlvo()"><i class="fas fa-bullseye"></i> MODO ALVO</button>
     </div>
 </header>
 
@@ -77,23 +71,30 @@
     </aside>
 
     <section class="work-section">
-        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;" id="status-bar">
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
             <span id="label-atual">📍 SELECIONE UM EXAME</span>
             <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
         <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Esqueleto Oficial"><i class="fas fa-balance-scale"></i></div>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Inteligência do Exame"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
-        <a href="vade.pdf" target="_blank" class="vade-btn">ABRIR VADE MECUM</a>
         <iframe id="v-enu" class="pdf-frame"></iframe>
         <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
 
+    <div id="modal-pecas" class="modal">
+        <div class="modal-header" style="background: var(--accent);"><span>🧩 ESTRUTURAS TÉCNICAS</span><span onclick="toggleModal('modal-pecas')" style="cursor:pointer">×</span></div>
+        <div id="grid-pecas-js" style="padding:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+    </div>
+
     <section id="container-alvo">
-        <div class="alvo-header"><span>CHECKLIST OFICIAL (0 a 5.0)</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button></div>
-        <div class="alvo-scroll" id="injetar-espelho"></div>
+        <div class="alvo-header" style="padding:15px; background:var(--red); color:white; font-weight:bold; display:flex; justify-content:space-between;">
+            <span>CHECKLIST OFICIAL</span>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
+        </div>
+        <div id="injetar-espelho" style="flex:1; padding:15px; overflow-y:auto;"></div>
         <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
             <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
         </div>
@@ -101,86 +102,90 @@
 </main>
 
 <script src="banco-espelhos.js"></script>
+<script type="module">
+    // Importação crucial do arquivo de estruturas técnicas
+    import { pecas } from './estruturas.js';
 
-<script>
     let idAtivo = null;
 
-    // Inicializa a lista de exames
     function init() {
         const menuExames = document.getElementById('lista-exames');
-        menuExames.innerHTML = "";
-        
-        // BANCO_DADOS deve estar definido no seu arquivo banco-espelhos.js
+        const gridPecas = document.getElementById('grid-pecas-js');
+
+        // Renderiza lista de exames (do banco-espelhos.js)
         if (typeof BANCO_DADOS !== 'undefined') {
-            Object.keys(BANCO_DADOS)
-                .sort((a,b) => b-a)
-                .forEach(key => {
-                    const btn = document.createElement('button');
-                    btn.className = 'exame-btn';
-                    btn.innerText = BANCO_DADOS[key].nome;
-                    btn.onclick = () => {
-                        idAtivo = key;
-                        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
-                        
-                        // Atualiza PDFs
-                        document.getElementById('v-enu').src = `ro${key}.pdf`;
-                        document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                        
-                        renderEspelho(key);
-                    };
-                    menuExames.appendChild(btn);
-                });
-        } else {
-            console.error("Erro: BANCO_DADOS não encontrado em banco-espelhos.js");
+            Object.keys(BANCO_DADOS).sort((a,b) => b-a).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'exame-btn';
+                btn.innerText = BANCO_DADOS[key].nome;
+                btn.onclick = () => {
+                    idAtivo = key;
+                    document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
+                    document.getElementById('v-enu').src = `ro${key}.pdf`;
+                    document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
+                    renderEspelho(key);
+                };
+                menuExames.appendChild(btn);
+            });
         }
+
+        // Renderiza os botões do Modal PEÇAS (do estruturas.js)
+        // Aqui é onde restauramos a inteligência de buscar os conteúdos técnicos salvos
+        Object.keys(pecas).forEach(nome => {
+            const btn = document.createElement('button');
+            btn.style = "padding:12px; border:1px solid #ddd; border-radius:6px; cursor:pointer; font-weight:800; font-size:0.75rem; background:#fff; text-transform:uppercase;";
+            btn.innerText = nome;
+            btn.onclick = () => {
+                document.getElementById('area-peca').value = pecas[nome];
+                toggleModal('modal-pecas');
+            };
+            gridPecas.appendChild(btn);
+        });
     }
 
-    // Renderiza o checklist no Modo Alvo
-    function renderEspelho(key) {
+    // Botão Justiça: Bebe do banco-espelhos.js (Teses específicas do exame)
+    window.injetarJustica = () => {
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        const esqueletoExame = BANCO_DADOS[idAtivo].esqueleto;
+        if(esqueletoExame) {
+            document.getElementById('area-peca').value = esqueletoExame;
+        }
+    };
+
+    window.renderEspelho = (key) => {
         const area = document.getElementById('injetar-espelho');
         area.innerHTML = "";
-        const itens = BANCO_DADOS[key].espelho;
-        
-        if(itens && itens.length > 0) {
-            itens.forEach(item => {
+        if(BANCO_DADOS[key].espelho) {
+            BANCO_DADOS[key].espelho.forEach(item => {
                 area.innerHTML += `
-                <div class="espelho-item">
-                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
-                    <div style="flex:1">${item[0]}</div>
-                    <b style="color:var(--red)">${item[1].toFixed(2)}</b>
-                </div>`;
+                    <div style="display:flex; gap:10px; padding:10px 0; border-bottom:1px solid #eee; font-size:0.85rem; align-items:center;">
+                        <input type="checkbox" value="${item[1]}" onchange="calcNota()">
+                        <div style="flex:1">${item[0]}</div>
+                        <b style="color:var(--red)">${item[1].toFixed(2)}</b>
+                    </div>`;
             });
-        } else {
-            area.innerHTML = "<p style='padding:20px; color:#999'>Checklist oficial não disponível para este exame.</p>";
         }
         calcNota();
-    }
+    };
 
-    // FUNÇÃO DO BOTÃO JUSTIÇA: Injeta o esqueleto gravado no banco-espelhos.js
-    function injetarConteudo() {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        const esqueleto = BANCO_DADOS[idAtivo].esqueleto;
-        if(esqueleto) {
-            document.getElementById('area-peca').value = esqueleto;
-        } else {
-            alert("Esqueleto não encontrado para este exame.");
-        }
-    }
-
-    function toggleAlvo() {
-        const p = document.getElementById('container-alvo');
-        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function calcNota() {
+    window.calcNota = () => {
         let n = 0;
         document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
-        const total = n.toFixed(2);
-        document.getElementById('display-nota').innerText = total;
-        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
-    }
+        document.getElementById('display-nota').innerText = n.toFixed(2);
+        document.getElementById('mini-nota').innerText = `NOTA: ${n.toFixed(2)}`;
+    };
+
+    window.toggleModal = (id) => {
+        const m = document.getElementById(id);
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    };
+
+    window.toggleAlvo = () => {
+        const p = document.getElementById('container-alvo');
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    };
 
     window.onload = init;
 </script>
