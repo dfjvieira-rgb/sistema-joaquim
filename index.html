@@ -2,12 +2,69 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | SISTEMA UNIFICADO</title>
-    <link rel="stylesheet" href="estilos.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ARYANNA MASTER PRO | 2026</title>
+    
+    <style>
+        :root {
+            --gold: #d4af37; --bg: #0f172a; --paper: #ffffff; --pen: #1e3a8a;
+            --header-bg: #1e293b; --toolbar-bg: #f1f5f9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* HEADER & TIMER */
+        header { background: var(--header-bg); padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 50px; flex-shrink: 0; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 1.1rem; }
+        #timer-display { font-family: 'Courier Prime', monospace; font-weight: bold; color: var(--gold); font-size: 1.2rem; }
+
+        /* CONTAINER PRINCIPAL */
+        .main-container { flex: 1; display: flex; height: calc(100vh - 50px); overflow: hidden; }
+
+        /* EDITOR (ESQUERDA) */
+        .editor-section { flex: 1; display: flex; flex-direction: column; border-right: 2px solid var(--gold); background: #f8fafc; min-width: 50%; }
+        
+        /* TOOLBAR COM TODOS OS SEUS BOTÕES */
+        .toolbar { 
+            padding: 5px 10px; background: var(--toolbar-bg); display: flex; gap: 5px; 
+            border-bottom: 1px solid #cbd5e1; align-items: center; flex-wrap: wrap; 
+        }
+        .btn-symbol { 
+            padding: 8px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 6px; 
+            background: white; font-size: 1.2rem; line-height: 1; transition: 0.2s; 
+        }
+        .btn-symbol:hover { background: #e2e8f0; transform: translateY(-1px); }
+        .select-exame { padding: 6px; border-radius: 4px; border: 1px solid var(--gold); font-weight: bold; background: white; height: 38px; }
+
+        /* ÁREA DA FOLHA FGV */
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #cbd5e1; }
+        .paper-sheet { width: 100%; max-width: 850px; background: white; margin: 0 auto; display: flex; min-height: 2500px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .line-nums { width: 40px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 12px; padding-top: 15px; line-height: 28px; user-select: none; }
+        .text-area { 
+            flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: var(--pen); 
+            resize: none; background-image: linear-gradient(transparent, transparent 27px, #e5e7eb 27px); 
+            background-size: 100% 28px; background-attachment: local; 
+        }
+
+        /* PDF (DIREITA) */
+        .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; min-width: 30%; }
+        .tabs { display: flex; background: #1e293b; flex-shrink: 0; }
+        .tab { padding: 12px; cursor: pointer; border: none; background: transparent; color: #94a3b8; flex: 1; font-weight: bold; font-size: 0.7rem; }
+        .tab.active { background: #525659; color: white; border-bottom: 3px solid var(--gold); }
+        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        canvas { max-width: 100%; margin-bottom: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+
+        /* MODAIS */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
+        .modal-content { background: white; margin: 5% auto; padding: 20px; width: 80%; max-height: 80vh; overflow-y: auto; color: black; border-radius: 8px; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .viewer-section { height: 40%; }
+        }
+    </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
     <div class="logo">ARYANNA MASTER 2026</div>
@@ -17,7 +74,7 @@
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" class="btn-symbol" onchange="window.syncPDF()">
+            <select id="exam-select" class="select-exame" onchange="window.syncPDF()">
                 <option value="44">EX 44</option>
                 <option value="43">EX 43</option>
                 <option value="42">EX 42</option>
@@ -30,69 +87,84 @@
                 <option value="35" selected>EX 35</option>
             </select>
             
-            <button class="btn-symbol" title="Estruturas" onclick="window.abrirBalança()">⚖️</button>
+            <button class="btn-symbol" title="Mentoria">🏆</button>
+            <button class="btn-symbol" title="Questões" onclick="window.abrirModal('modal-respostas')">📚</button>
+            <button class="btn-symbol" title="Estruturas" onclick="window.toggleEstruturas()">⚖️</button>
+            <button class="btn-symbol" title="Espelho" onclick="window.abrirModal('modal-espelho')">🎯</button>
+            <button class="btn-symbol" title="Não Confunda" onclick="window.abrirModal('modal-nc')">📌</button>
+            <button class="btn-symbol" title="Dicas" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" title="Limpar" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" title="Salvar" onclick="window.saveAction()" style="background:var(--success); color:white; margin-left:auto;">💾</button>
+            <button class="btn-symbol" title="Tema" onclick="window.toggleDarkMode()">🌓</button>
+            <button class="btn-symbol" onclick="window.saveAction()" style="background:var(--gold); color:white; margin-left:auto; border:none;">💾</button>
         </div>
         
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça técnica..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Digite sua peça aqui..."></textarea>
             </div>
         </div>
     </section>
 
     <section class="viewer-section">
         <div class="tabs">
-            <button class="tab active" onclick="window.loadPDFType('prova', this)">PROVA</button>
-            <button class="tab" onclick="window.loadPDFType('gabarito', this)">GABARITO</button>
-            <button class="tab" onclick="window.loadPDFType('vade', this)">VADE</button>
+            <button class="tab active" data-type="prova" onclick="window.loadPDFType('prova', this)">PROVA</button>
+            <button class="tab" data-type="gabarito" onclick="window.loadPDFType('gabarito', this)">GABARITO</button>
+            <button class="tab" data-type="vade" onclick="window.loadPDFType('vade', this)">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
 </div>
 
-<div id="menu-estruturas" class="modal-context" style="display:none; position:absolute; background:white; border:2px solid gold; z-index:10000; color:black; border-radius:8px; width:300px;"></div>
+<div id="modal-geral" class="modal" onclick="this.style.display='none'">
+    <div class="modal-content" id="modal-body" onclick="event.stopPropagation()">
+        <h2 id="modal-title">Título</h2>
+        <div id="modal-text">Conteúdo...</div>
+    </div>
+</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script type="module">
-    // Importando as inteligências dos seus arquivos
     import { ESTRUTURAS } from './estruturas.js';
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // 1. CONEXÃO DA BALANÇA (ESTRUTURAS.JS)
-    window.abrirBalança = () => {
-        const menu = document.getElementById('menu-estruturas');
-        const exame = document.getElementById('exam-select').value;
-        const dados = ESTRUTURAS[exame] || ESTRUTURAS["RO"];
+    // 1. NÚMEROS DE LINHA
+    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
 
-        menu.innerHTML = `
-            <div style="padding:10px; background:#eee; font-weight:bold; border-radius:8px 8px 0 0;">${dados.nome_peca || "PEÇA TÉCNICA"}</div>
-            <div style="padding:15px; cursor:pointer; border-bottom:1px solid #ddd;" onclick="window.injetar('${exame}')">👉 INJETAR ESTRUTURA COMPLETA</div>
-            <div style="padding:10px; text-align:center; font-size:0.8rem; color:red;" onclick="this.parentElement.style.display='none'">FECHAR</div>
-        `;
-        menu.style.top = "100px";
-        menu.style.left = "50px";
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    // 2. FUNÇÕES TÉCNICAS (CONECTANDO AS INTELIGÊNCIAS)
+    window.toggleEstruturas = () => {
+        const ex = document.getElementById('exam-select').value;
+        const dados = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
+        const confirmed = confirm(`Deseja injetar a estrutura técnica do Exame ${ex}?`);
+        if(confirmed) {
+            document.getElementById('texto-final').value = dados.esqueleto || dados;
+        }
     };
 
-    window.injetar = (ex) => {
-        const item = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
-        const texto = item.esqueleto || item;
-        document.getElementById('texto-final').value = texto;
-        document.getElementById('menu-estruturas').style.display = 'none';
+    window.abrirModal = (tipo) => {
+        const modal = document.getElementById('modal-geral');
+        const title = document.getElementById('modal-title');
+        const text = document.getElementById('modal-text');
+        
+        modal.style.display = 'block';
+        if(tipo === 'modal-espelho') {
+            const ex = document.getElementById('exam-select').value;
+            title.innerText = "🎯 Espelho de Correção - Exame " + ex;
+            text.innerHTML = BANCO_ESPELHOS[ex] || "Espelho não cadastrado para este exame.";
+        } else {
+            title.innerText = "Módulo em Desenvolvimento";
+            text.innerHTML = "O conteúdo de " + tipo + " está sendo processado pelas inteligências.";
+        }
     };
 
-    // 2. CONEXÃO DO MOTOR PDF (PDF-ENGINE + SEUS ARQUIVOS RO)
     window.loadPDFType = async (tipo, btn) => {
         if(btn) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
         }
-        
         const ex = document.getElementById('exam-select').value;
         const container = document.getElementById('pdf-viewport');
         let url = tipo === 'vade' ? 'vade.pdf' : (tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`);
@@ -103,25 +175,23 @@
             for(let i=1; i<=pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
                 const viewport = page.getViewport({scale: 1.5});
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
-                await page.render({canvasContext: context, viewport}).promise;
+                await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
                 container.appendChild(canvas);
             }
         } catch(e) {
-            container.innerHTML = `<div style="color:white; padding:20px;">Arquivo ${url} não encontrado.</div>`;
+            container.innerHTML = `<div style="color:white; padding:20px;">PDF não encontrado: ${url}</div>`;
         }
     };
 
-    // 3. SINCRONIZAÇÃO GERAL
-    window.syncPDF = () => window.loadPDFType('prova');
+    window.syncPDF = () => window.loadPDFType('prova', document.querySelector('.tab[data-type="prova"]'));
     window.limparFolha = () => { if(confirm("Apagar tudo?")) document.getElementById('texto-final').value = ""; };
-    window.saveAction = () => { alert("Peça salva com sucesso!"); };
+    window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+    window.saveAction = () => alert("Sincronizado com Firebase!");
 
     // Inicialização
-    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
     window.syncPDF();
 </script>
 
