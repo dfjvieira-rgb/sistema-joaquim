@@ -57,5 +57,19 @@ window.MEUS_ESPELHOS = {
         <div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Improcedência/Provas/Honorários Art. 791-A) e Fechamento</div><div class="espelho-pt">0.60</div></div>
     `,
     "36": "",
-    "35": ""
+    "35": `
+        <div class="nota-floating">ESPELHO OFICIAL - EXAME 35 (RECURSO ORDINÁRIO)</div>
+        <div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">Endereçamento (89ª VT Floriano/PI), razões ao TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Partes (Sociedade empresária recorrente e empregado recorrido)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">Tempestividade (8 dias) e Preparo (Custas/Depósito Recursal)</div><div class="espelho-pt">0.20</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Prescrição parcial: arguida em instância ordinária (Súmula 153 TST ou Art. 193 CC)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Intervalo interjornada de 11h observado (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Indevida reintegração (estabilidade só p/ dirigente sindical) - Art. 543 CLT ou Art. 8º, VIII CF</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: FGTS indevido por suspensão contratual (Art. 476 CLT ou Art. 15, §5º Lei 8036)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Ajuda de custo - natureza indenizatória (Art. 457, §2º CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Equiparação indevida - estabelecimentos distintos (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">Mérito: Insalubridade indevida por reclassificação (Art. 194 CLT ou Súmula 248 TST)</div><div class="espelho-pt">0.50</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Honorários indevidos (improcedência) ou limite 15% (Art. 791-A CLT)</div><div class="espelho-pt">0.40</div></div>
+        <div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">Requerimentos (Conhecimento/Provimento/Reforma/Acolhimento Prescrição) e Fechamento</div><div class="espelho-pt">0.40</div></div>
+    `
 };
