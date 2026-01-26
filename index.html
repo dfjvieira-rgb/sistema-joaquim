@@ -3,75 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM | ARYANNA MASTER</title>
+    <title>ARYANNA MASTER | MENTORIA 2026</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Courier+Prime&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary: #1e293b; --gold: #c5a059; --wine: #800000;
             --bg: #0f172a; --paper: #ffffff; --success: #10b981;
+            --danger: #ef4444; --sidebar: #1e293b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
 
-        /* HEADER FIXO */
+        /* HEADER PREMIUM */
         header { 
-            background: var(--primary); color: white; padding: 12px 20px;
+            background: var(--primary); padding: 10px 20px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid var(--gold); z-index: 100;
         }
 
-        .brand { font-weight: 800; color: var(--gold); letter-spacing: 1px; }
-        .controls { display: flex; gap: 12px; }
+        .brand { font-weight: 900; color: var(--gold); font-size: 1.2rem; }
+        
+        .timer { font-family: 'Courier Prime', monospace; background: #000; padding: 5px 15px; border-radius: 4px; color: var(--danger); font-size: 1.1rem; border: 1px solid #444; }
 
-        select, button { 
-            padding: 10px 15px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 13px;
+        .top-nav { display: flex; gap: 8px; }
+
+        select, .btn-action { 
+            padding: 8px 12px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.2s;
         }
 
-        #exam-select { background: #f8fafc; color: var(--primary); outline: none; }
-        .btn-save { background: var(--success); color: #064e3b; }
+        #exam-select { background: white; color: var(--primary); }
+        .btn-save { background: var(--success); color: white; }
         .btn-nc { background: var(--gold); color: white; }
+        .btn-util { background: #475569; color: white; }
 
-        /* ÁREA DE TRABALHO */
-        main { display: flex; flex: 1; overflow: hidden; background: #334155; }
+        /* MAIN LAYOUT */
+        main { display: flex; flex: 1; overflow: hidden; }
 
+        /* LADO ESQUERDO: PDF */
         #pdf-container { 
-            flex: 1; overflow-y: auto; display: flex; flex-direction: column; 
-            align-items: center; border-right: 2px solid #1e293b; position: relative;
+            flex: 1.2; overflow-y: auto; display: flex; flex-direction: column; 
+            align-items: center; border-right: 2px solid #334155; position: relative; background: #334155;
         }
 
         .pdf-toolbar {
-            position: sticky; top: 0; background: rgba(15, 23, 42, 0.9); width: 100%;
-            padding: 8px; display: flex; justify-content: center; gap: 15px; z-index: 10;
+            position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); width: 100%;
+            padding: 10px; display: flex; justify-content: center; gap: 20px; z-index: 10;
         }
 
+        /* LADO DIREITO: FOLHA */
         #section-folha { 
-            flex: 1; background: var(--paper); display: flex; flex-direction: column; padding: 20px; position: relative;
+            flex: 1; background: var(--paper); display: flex; flex-direction: column; position: relative;
         }
 
-        /* FOLHA ESTILO FGV */
+        .folha-header {
+            background: #eee; padding: 5px 20px; color: #666; font-size: 10px; 
+            display: flex; justify-content: space-between; border-bottom: 1px solid #ddd;
+        }
+
         #texto-final {
-            flex: 1; width: 100%; border: 1px solid #cbd5e1; border-radius: 4px;
-            padding: 40px; font-family: 'Courier New', monospace; font-size: 18px;
+            flex: 1; width: 100%; border: none;
+            padding: 40px 50px; font-family: 'Courier Prime', monospace; font-size: 17px;
             line-height: 28px; background-attachment: local;
             background-image: linear-gradient(transparent 27px, #e2e8f0 28px);
             background-size: 100% 28px; resize: none; outline: none; color: #1e293b;
         }
 
-        /* POST-ITS */
+        /* WIDGETS */
         #container-postits {
-            position: absolute; right: 30px; top: 30px; width: 240px; 
-            z-index: 50; pointer-events: none;
+            position: absolute; right: 20px; top: 50px; width: 220px; 
+            z-index: 50; pointer-events: none; display: flex; flex-direction: column; gap: 10px;
         }
 
-        /* AJUSTE MOBILE */
-        @media (max-width: 900px) {
+        /* FOOTER DE ATALHOS */
+        footer {
+            background: var(--primary); padding: 8px 20px; display: flex; gap: 15px; border-top: 1px solid #334155;
+        }
+
+        /* MODAIS */
+        .modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 600px; background: white; color: #333; padding: 25px;
+            border-radius: 12px; z-index: 200; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* MOBILE */
+        @media (max-width: 1024px) {
             main { flex-direction: column; }
-            #pdf-container { height: 40vh; flex: none; }
-            #section-folha { height: 60vh; flex: none; }
-            #container-postits { width: 180px; top: 10px; right: 10px; }
+            #pdf-container, #section-folha { flex: none; height: 50vh; }
         }
     </style>
 </head>
@@ -79,33 +101,54 @@
 
 <header>
     <div class="brand">ARYANNA MASTER 2026</div>
-    <div class="controls">
+    <div class="timer" id="cronometro">05:00:00</div>
+    <div class="top-nav">
         <select id="exam-select">
-            <option value="44">Exame 44</option>
-            <option value="43">Exame 43</option>
-            <option value="40">Exame 40</option>
-            <option value="35">Exame 35</option>
+            <option value="44">RO - EXAME 44</option>
+            <option value="43">RO - EXAME 43</option>
+            <option value="42">RO - EXAME 42</option>
+            <option value="41">RO - EXAME 41</option>
+            <option value="40">RO - EXAME 40</option>
+            <option value="35">RO - EXAME 35</option>
         </select>
-        <button class="btn-save" id="btn-salvar">SALVAR</button>
-        <button class="btn-nc" id="btn-add-nc">+ NC</button>
+        <button class="btn-action btn-save" id="btn-salvar">SALVAR</button>
+        <button class="btn-action btn-nc" id="btn-add-nc">+ POST-IT</button>
     </div>
 </header>
 
 <main>
     <section id="pdf-container">
         <div class="pdf-toolbar">
-            <button id="prev-page">◀</button>
-            <span style="color:white; font-size:12px;">Pág <span id="page-num">1</span> / <span id="page-count">0</span></span>
-            <button id="next-page">▶</button>
+            <button id="prev-page" class="btn-util">◀</button>
+            <span style="font-size:12px;">PÁG: <span id="page-num">1</span> / <span id="page-count">0</span></span>
+            <button id="next-page" class="btn-util">▶</button>
+            <button onclick="window.location.href='mentoria.html'" class="btn-util" style="background:var(--gold)">MUSEU</button>
         </div>
         <canvas id="pdf-canvas"></canvas>
     </section>
 
     <section id="section-folha">
+        <div class="folha-header">
+            <span>CADERNO DE RESPOSTAS - OAB 2ª FASE</span>
+            <span>PEÇA PROFISSIONAL</span>
+        </div>
         <div id="container-postits"></div>
-        <textarea id="texto-final" spellcheck="false" placeholder="Inicie a peça aqui..."></textarea>
+        <textarea id="texto-final" spellcheck="false" placeholder="EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA..."></textarea>
     </section>
 </main>
+
+<footer>
+    <button class="btn-util" onclick="toggleModal('modal-questoes')">❓ QUESTÕES</button>
+    <button class="btn-util" onclick="toggleModal('modal-espelho')">🎯 ESPELHO</button>
+    <button class="btn-util" onclick="toggleModal('modal-calculadora')">📅 PRAZOS</button>
+    <button class="btn-util" onclick="toggleModal('modal-vade')">📚 VADE MECUM</button>
+</footer>
+
+<div id="modal-espelho" class="modal">
+    <h3>Checklist de Pontuação (FGV)</h3>
+    <div id="conteudo-espelho" style="margin-top:15px; max-height:400px; overflow-y:auto;"></div>
+    <button onclick="toggleModal('modal-espelho')" style="margin-top:15px;">FECHAR</button>
+</div>
 
 <script type="module">
     import { PDFEngine } from './pdf-engine.js';
@@ -121,19 +164,19 @@
         
         async init() {
             this.setupEvents();
-            await this.atualizarView();
+            await this.refresh();
         },
 
         setupEvents() {
             document.getElementById('exam-select').onchange = (e) => {
                 this.exame = e.target.value;
-                this.atualizarView();
+                this.refresh();
             };
 
             document.getElementById('btn-salvar').onclick = () => {
                 const content = document.getElementById('texto-final').value;
                 set(ref(db, `v3_treino/exame_${this.exame}`), content)
-                    .then(() => alert("Sincronizado no Firebase!"));
+                    .then(() => alert("✅ Peça Sincronizada com Sucesso!"));
             };
 
             document.getElementById('btn-add-nc').onclick = () => UI.abrirModalNC(this.exame);
@@ -141,22 +184,28 @@
             document.getElementById('next-page').onclick = () => PDFEngine.changePage(1);
         },
 
-        async atualizarView() {
-            // PDF
+        async refresh() {
+            // 1. Carregar PDF Oficial
             try {
                 const response = await fetch(`./pdfs/ro${this.exame}.pdf`);
                 const arrayBuffer = await response.arrayBuffer();
                 await PDFEngine.init(arrayBuffer);
-            } catch (err) { console.error("PDF não carregado. Verifique a pasta /pdfs/"); }
+            } catch (err) { console.error("PDF não encontrado."); }
 
-            // Post-its
+            // 2. Renderizar Post-its Específicos
             NaoConfunda.renderizar(this.exame, 'container-postits');
 
-            // Texto (Firebase)
-            onValue(ref(db, `v3_treino/exame_${this.exame}`), (snapshot) => {
-                if(snapshot.exists()) document.getElementById('texto-final').value = snapshot.val();
+            // 3. Sincronizar Texto do Firebase
+            onValue(ref(db, `v3_treino/exame_${this.exame}`), (snap) => {
+                if(snap.exists()) document.getElementById('texto-final').value = snap.val();
+                else document.getElementById('texto-final').value = "";
             });
         }
+    };
+
+    window.toggleModal = (id) => {
+        const m = document.getElementById(id);
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
     };
 
     App.init();
