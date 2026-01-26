@@ -8,13 +8,16 @@
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --orange: #f39c12; --header-h: 60px;
+            --red: #e74c3c; --orange: #f39c12; --green: #27ae60; --header-h: 60px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .nav-btns { display: flex; gap: 10px; }
+        .btn-header { color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        .btn-alvo { background-color: var(--red); }
+        .btn-pecas { background-color: var(--accent); }
 
         main { display: flex; flex: 1; overflow: hidden; }
         
@@ -29,6 +32,16 @@
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
+
+        /* Modal de Peças Estruturais */
+        #modal-pecas {
+            display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+            width: 350px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 3000; border: 1px solid #ccc;
+        }
+        .pecas-grid { display: grid; grid-template-columns: 1fr; max-height: 400px; overflow-y: auto; padding: 10px; }
+        .peca-item-btn { padding: 10px; border: none; background: #fff; text-align: left; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.8rem; font-weight: 500; }
+        .peca-item-btn:hover { background: #f0f7ff; color: var(--accent); }
 
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
@@ -63,8 +76,19 @@
 
 <header>
     <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
-    <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
+    <div class="nav-btns">
+        <button class="btn-header btn-pecas" onclick="toggleModalPecas()"><i class="fas fa-list"></i> PEÇAS</button>
+        <button class="btn-header btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
+    </div>
 </header>
+
+<div id="modal-pecas">
+    <div style="padding: 10px; background: var(--accent); color: white; font-weight: bold; font-size: 0.8rem; display: flex; justify-content: space-between;">
+        MODELOS ESTRUTURAIS <span onclick="toggleModalPecas()" style="cursor:pointer">✖</span>
+    </div>
+    <div class="pecas-grid" id="grid-pecas-js">
+        </div>
+</div>
 
 <main>
     <aside class="sidebar">
@@ -73,9 +97,9 @@
     </aside>
 
     <section class="work-section">
-        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE UM EXAME</div>
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE UM EXAME OU ESTRUTURA</div>
         <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Esqueleto Oficial"><i class="fas fa-balance-scale"></i></div>
+        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar do Exame Selecionado"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
@@ -93,8 +117,9 @@
     </section>
 </main>
 
-<script>
-    const SALTO = "\n\n\n\n\n\n\n\n\n\n";
+<script type="module">
+    // Importando do seu arquivo de dados puros
+    import { pecas } from './estruturas.js';
 
     const BANCO_DADOS = {
         "44": { 
@@ -129,29 +154,62 @@
 
     let idAtivo = null;
 
-    function init() {
+    // Inicializa o sistema
+    window.onload = () => {
+        initExames();
+        popularMenuPecas();
+    };
+
+    function initExames() {
         const menuExames = document.getElementById('lista-exames');
         menuExames.innerHTML = "";
-        
-        Object.keys(BANCO_DADOS)
-            .sort((a,b) => b-a)
-            .forEach(key => {
-                const btn = document.createElement('button');
-                btn.className = 'exame-btn';
-                btn.innerText = BANCO_DADOS[key].nome;
-                btn.onclick = () => {
-                    idAtivo = key;
-                    document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
-                    
-                    document.getElementById('v-enu').src = `ro${key}.pdf`;
-                    document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                    
-                    renderEspelho(key);
-                };
-                menuExames.appendChild(btn);
-            });
+        Object.keys(BANCO_DADOS).sort((a,b) => b-a).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'exame-btn';
+            btn.innerText = BANCO_DADOS[key].nome;
+            btn.onclick = () => {
+                idAtivo = key;
+                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('label-atual').innerText = `📍 ${BANCO_DADOS[key].nome}`;
+                document.getElementById('v-enu').src = `ro${key}.pdf`;
+                document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
+                renderEspelho(key);
+            };
+            menuExames.appendChild(btn);
+        });
+    }
+
+    // Alimenta o modal de 18 peças com os dados do estruturas.js
+    function popularMenuPecas() {
+        const grid = document.getElementById('grid-pecas-js');
+        Object.keys(pecas).forEach(nome => {
+            const btn = document.createElement('button');
+            btn.className = 'peca-item-btn';
+            btn.innerText = nome;
+            btn.onclick = () => {
+                document.getElementById('area-peca').value = pecas[nome];
+                document.getElementById('label-atual').innerText = `🧩 ESTRUTURA: ${nome.toUpperCase()}`;
+                toggleModalPecas();
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    // Globais para o HTML conseguir chamar
+    window.toggleModalPecas = () => {
+        const m = document.getElementById('modal-pecas');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.toggleAlvo = () => {
+        const p = document.getElementById('container-alvo');
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    window.injetarConteudo = () => {
+        if(!idAtivo) return alert("Selecione um exame na lateral ou use o botão PEÇAS.");
+        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
     }
 
     function renderEspelho(key) {
@@ -160,36 +218,22 @@
         const itens = BANCO_DADOS[key].espelho;
         if(itens && itens.length > 0) {
             itens.forEach(item => {
-                area.innerHTML += `
-                <div class="espelho-item">
-                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
-                    <div style="flex:1">${item[0]}</div>
-                    <b style="color:var(--red)">${item[1].toFixed(2)}</b>
-                </div>`;
+                const div = document.createElement('div');
+                div.className = 'espelho-item';
+                div.innerHTML = `<input type="checkbox" value="${item[1]}" onchange="calcNota()"><div style="flex:1">${item[0]}</div><b style="color:var(--red)">${item[1].toFixed(2)}</b>`;
+                area.appendChild(div);
             });
         } else {
-            area.innerHTML = "<p style='padding:20px; color:#999'>Aguardando inclusão de dados oficiais (Checklist 0 a 5.0).</p>";
+            area.innerHTML = "<p style='padding:20px; color:#999'>Checklist indisponível para este exame.</p>";
         }
         calcNota();
     }
 
-    function injetarConteudo() {
-        if(!idAtivo) return alert("Selecione um exame!");
-        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
-    }
-
-    function toggleAlvo() {
-        const p = document.getElementById('container-alvo');
-        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function calcNota() {
+    window.calcNota = () => {
         let n = 0;
         document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
         document.getElementById('display-nota').innerText = n.toFixed(2);
     }
-
-    window.onload = init;
 </script>
 </body>
 </html>
