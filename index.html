@@ -5,45 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
+    
+    <script src="dados_espelhos.js"></script>
+
     <style>
         :root {
             --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #e11d48;
             --bg-site: #f8fafc; --gold: #d4af37; --pen-blue: #1e3a8a; --paper: #ffffff; --text: #1e293b;
             --toolbar-bg: #ffffff; --border: #cbd5e1;
         }
-        .dark-mode { --paper: #1e293b; --pen-blue: #93c5fd; --bg-site: #0f172a; --text: #f1f5f9; --toolbar-bg: #1e293b; --border: #334155; }
+        .dark-mode { 
+            --paper: #1e293b; --pen-blue: #93c5fd; --bg-site: #0f172a; --text: #f1f5f9; 
+            --toolbar-bg: #1e293b; --border: #334155;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: var(--text); }
-        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; }
+        body { 
+            font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden; color: var(--text);
+        }
+        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; flex-shrink: 0; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
         .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
-        .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); }
-        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); overflow-x: auto; align-items: center; }
-        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); min-width: 0; }
+        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto; white-space: nowrap; flex-shrink: 0; }
+        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); flex-shrink: 0; }
+        
         .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.1); }
-        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2000px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
+        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; user-select: none; }
         .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; }
         
-        /* Modais */
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
-        .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; }
+        .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; flex-shrink: 0; }
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
-        .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
         
-        /* Espelho Checklist */
+        /* ESTILO DO ESPELHO FGV */
         .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 12px; margin-bottom: 8px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
-        .espelho-item input { width: 22px; height: 22px; accent-color: var(--success); cursor: pointer; }
-        .espelho-txt { flex: 1; font-size: 0.8rem; color: var(--text); font-weight: 500; }
-        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.8rem; background: rgba(37,99,235,0.1); padding: 4px 8px; border-radius: 4px; }
-        
-        #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); }
-        .menu-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text); font-weight: 600; }
+        .espelho-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--success); cursor: pointer; }
+        .espelho-txt { flex: 1; font-size: 0.8rem; color: var(--text); line-height: 1.3; }
+        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.8rem; background: rgba(37,99,235,0.1); padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+
+        #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
+        .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
-    <div style="font-weight: 800; color: var(--gold); font-size: 0.8rem;">ARYANNA MASTER 2026</div>
+    <div class="logo">ARYANNA MASTER 2026</div>
     <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div>
 </header>
 
@@ -54,33 +66,40 @@
             <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
             <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📝</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
             <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
         </div>
         <div class="paper-wrapper">
             <div class="paper-sheet">
                 <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Sua peça aqui..."></textarea>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Sua peça Aryanna Linhares..."></textarea>
             </div>
         </div>
     </section>
 </div>
 
-<div id="menu-estruturas"></div>
-
 <div id="modal-espelho" class="modal-full">
     <div class="modal-header">
         <button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button>
-        <div style="flex:1; text-align:right; font-weight:900; color:var(--gold);">NOTA: <span id="nota-valor" style="background:var(--gold); color:black; padding:2px 8px; border-radius:4px;">0.00</span></div>
-    </div>
-    <div class="modal-body" id="checklist-fgv">
+        <div style="flex:1; text-align:center; font-weight:900; background:var(--gold); color:black; padding:8px; border-radius:5px;">
+            NOTA ATUAL: <span id="nota-valor">0.00</span> / 5.00
         </div>
+    </div>
+    <div class="modal-body" id="checklist-fgv"></div>
 </div>
 
 <div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>RESPOSTAS / POST-ITS</h3></div>
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div>
     <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
 </div>
+
+<div id="modal-dicas" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>DICAS QUAL É A PEÇA</h3></div>
+    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
+</div>
+
+<div id="menu-estruturas"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -90,26 +109,11 @@
     const app = initializeApp(config); const db = getDatabase(app);
 
     // ==========================================
-    // 1. ESPAÇO PARA AS PEÇAS (COLE AQUI)
+    // ESTRUTURAS DE PEÇAS
     // ==========================================
     const pecas = {
         'RT': 'AO DOUTO JUÍZO...',
-        // Adicione as outras aqui
-    };
-
-    // ==========================================
-    // 2. ESPAÇO PARA OS ESPELHOS (DADOS DA CORREÇÃO)
-    // ==========================================
-    const espelhosDados = {
-        "44": [
-            { txt: "Endereçamento ao Juízo da ... Vara do Trabalho de ...", pts: 0.10 },
-            { txt: "Qualificação das partes e indicação do Art. 840, § 1º, da CLT", pts: 0.40 },
-            { txt: "Tese de Mérito 01 (Exemplo: Verbas Rescisórias)", pts: 0.50 }
-        ],
-        "default": [
-            { txt: "Item de correção padrão 01", pts: 0.50 },
-            { txt: "Item de correção padrão 02", pts: 0.50 }
-        ]
+        // Cole suas outras peças aqui
     };
 
     window.gerarPeca = (tipo) => {
@@ -123,22 +127,37 @@
         document.getElementById('nota-valor').innerText = total.toFixed(2);
     };
 
+    // FUNÇÃO QUE CORRIGE O ERRO DO TEXTO PURO
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
         const container = document.getElementById('checklist-fgv');
-        const dados = espelhosDados[ex] || espelhosDados["default"];
         
-        // GERA O HTML DO ESPELHO DINAMICAMENTE
-        container.innerHTML = dados.map(item => `
-            <div class="espelho-item">
-                <input type="checkbox" value="${item.pts}" onchange="window.calcNota()">
-                <div class="espelho-txt">${item.txt}</div>
-                <div class="espelho-pt">${item.pts.toFixed(2)}</div>
-            </div>
-        `).join('');
+        let rawContent = (window.MEUS_ESPELHOS && window.MEUS_ESPELHOS[ex]) ? window.MEUS_ESPELHOS[ex] : "";
+
+        if (rawContent && !rawContent.includes('checkbox')) {
+            // Se o conteúdo for texto puro, converte para checklist automaticamente
+            const lines = rawContent.split('\n').filter(l => l.trim() !== "");
+            let html = "";
+            for (let i = 0; i < lines.length; i += 2) {
+                let txt = lines[i] || "";
+                let pts = lines[i+1] || "0.00";
+                pts = pts.replace(',', '.'); // Garante que 0,10 vire 0.10
+                html += `
+                    <div class="espelho-item">
+                        <input type="checkbox" value="${parseFloat(pts) || 0}" onchange="window.calcNota()">
+                        <div class="espelho-txt">${txt}</div>
+                        <div class="espelho-pt">${pts}</div>
+                    </div>`;
+            }
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = rawContent || '<p style="text-align:center; opacity:0.5; margin-top:20px;">Espelho não configurado.</p>';
+        }
 
         document.getElementById('nota-valor').innerText = "0.00";
         get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
+        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
+        get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
 
     window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
@@ -148,7 +167,12 @@
     window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
     window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display==='block'?'none':'block'; };
 
-    // Criar menu de peças
+    window.finalizarManual = () => {
+        const nota = document.getElementById('nota-valor').innerText;
+        alert("Sincronizado! Nota: " + nota);
+    };
+
+    // Menu lateral
     const menu = document.getElementById('menu-estruturas');
     Object.keys(pecas).forEach(k => {
         const d = document.createElement('div'); d.className = 'menu-item'; d.innerText = k;
@@ -163,6 +187,7 @@
     }
     document.getElementById('ln-main').innerHTML = Array.from({length:300}, (_,i)=>i+1).join('<br>');
     document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
     window.mudarExame();
 </script>
 </body>
