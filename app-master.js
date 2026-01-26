@@ -1,82 +1,76 @@
-import { db, auth } from './firebase-config.js';
-import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { Maestro } from './app-master.js'; // Caso queira auto-referência ou export
 import { PDFEngine } from './pdf-engine.js';
 import { UI } from './ui-components.js';
 import { NaoConfunda } from './nao-confunda.js';
 import { ESTRUTURAS } from './estruturas.js';
+import { db } from './firebase-config.js';
+import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const Maestro = {
-    exameAtual: "44",
+const App = {
+    exame: "44",
 
-    init() {
+    async init() {
         this.bindEvents();
-        this.loadInitialData();
-        console.log("🚀 Sistema Joaquim: Operacional (RO35-RO44)");
+        await this.carregarExame();
+        NaoConfunda.renderizar(this.exame, 'container-postits');
+        this.sincronizarFirebase();
     },
 
     bindEvents() {
-        // Troca de Exame
-        document.getElementById('exam-select').addEventListener('change', (e) => {
-            this.exameAtual = e.target.value;
-            this.switchExame();
+        // Troca de exame no select
+        document.getElementById('exam-select').addEventListener('change', async (e) => {
+            this.exame = e.target.value;
+            await this.carregarExame();
+            NaoConfunda.renderizar(this.exame, 'container-postits');
+            this.sincronizarFirebase();
         });
 
-        // Botão Salvar Rascunho (Firebase)
-        document.getElementById('btn-salvar').onclick = () => this.salvarProgresso();
+        // Botão Salvar
+        document.getElementById('btn-salvar').onclick = () => this.salvarManual();
 
-        // Botão Novo Post-it
-        document.getElementById('btn-add-nc').onclick = () => UI.abrirModalNC(this.exameAtual);
-        
-        // Controle de PDF
+        // Botão Post-it
+        document.getElementById('btn-add-nc').onclick = () => UI.abrirModalNC(this.exame);
+
+        // PDF Nav
         document.getElementById('prev-page').onclick = () => PDFEngine.changePage(-1);
         document.getElementById('next-page').onclick = () => PDFEngine.changePage(1);
     },
 
-    async switchExame() {
-        const path = `./pdfs/ro${this.exameAtual}.pdf`;
+    async carregarExame() {
+        // Mapeamento exato conforme seus nomes de arquivos
+        const url = `./pdfs/ro${this.exame}.pdf`;
         try {
-            const response = await fetch(path);
-            const data = await response.arrayBuffer();
-            await PDFEngine.init(data);
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error("Arquivo PDF não encontrado");
+            const buffer = await resp.arrayBuffer();
+            await PDFEngine.init(buffer);
             
-            // Carrega Post-its e Rascunhos específicos do exame
-            this.loadInitialData();
-            NaoConfunda.renderizar(this.exameAtual, 'container-postits');
-            
-            // Injeta Estrutura Sugerida se a folha estiver vazia
-            this.sugerirEstrutura();
-        } catch (e) {
-            console.error("Erro ao carregar PDF do Exame:", e);
+            // Se a folha estiver vazia, injeta o esqueleto da Aryanna
+            const area = document.getElementById('texto-final');
+            if (area.value.length < 5) {
+                area.value = ESTRUTURAS[this.exame]?.esqueleto || "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ...";
+            }
+        } catch (err) {
+            console.error("Erro ao carregar exame:", err);
+            alert("Erro ao carregar o PDF: " + url);
         }
     },
 
-    loadInitialData() {
-        const textoRef = ref(db, `v3_treino/exame_${this.exameAtual}`);
-        onValue(textoRef, (snapshot) => {
-            if (snapshot.exists()) {
-                document.getElementById('texto-final').value = snapshot.val();
+    sincronizarFirebase() {
+        const r = ref(db, `v3_treino/exame_${this.exame}`);
+        onValue(r, (snap) => {
+            if (snap.exists()) {
+                document.getElementById('texto-final').value = snap.val();
             }
         });
     },
 
-    salvarProgresso() {
-        const texto = document.getElementById('texto-final').value;
-        set(ref(db, `v3_treino/exame_${this.exameAtual}`), texto)
-            .then(() => alert("✅ Sincronizado com Firebase (Mobile/PC)"))
-            .catch(err => alert("❌ Erro ao sincronizar: " + err.message));
-    },
-
-    sugerirEstrutura() {
-        const area = document.getElementById('texto-final');
-        if (area.value.length < 10) {
-            const estrutura = ESTRUTURAS[this.exameAtual] || ESTRUTURAS["PADRAO"];
-            area.value = estrutura.esqueleto;
-        }
+    salvarManual() {
+        const txt = document.getElementById('texto-final').value;
+        set(ref(db, `v3_treino/exame_${this.exame}`), txt)
+            .then(() => alert("Sincronizado!"))
+            .catch(e => console.error(e));
     }
 };
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => Maestro.init());
-
-// Exportação para uso global nos botões do HTML
-window.Maestro = Maestro;
+document.addEventListener('DOMContentLoaded', () => App.init());
