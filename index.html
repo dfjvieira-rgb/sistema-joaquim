@@ -1,151 +1,229 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<!DOCTYPE html><html lang="pt-br"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ARYANNA MASTER PRO | 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
     <script src="dados_espelhos.js"></script>
-
     <style>
         :root {
-            --primary: #2563eb; --success: #059669; --warning: #f59e0b; 
-            --bg-site: #0f172a; --gold: #d4af37; --paper: #1e293b; --text: #f1f5f9; 
-            --toolbar-bg: #1e293b; --border: #334155; --pen-blue: #93c5fd;
+            --primary: #2563eb; --success: #059669; --warning: #f59e0b; --danger: #e11d48;
+            --bg-site: #f8fafc; --gold: #d4af37; --pen-blue: #1e3a8a; --paper: #ffffff; --text: #1e293b;
+            --toolbar-bg: #ffffff; --border: #cbd5e1;
+        }
+        .dark-mode { 
+            --paper: #1e293b; --pen-blue: #93c5fd; --bg-site: #0f172a; --text: #f1f5f9; 
+            --toolbar-bg: #1e293b; --border: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: var(--text); }
-        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; flex-shrink: 0; }
-        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); overflow-x: auto; align-items: center; }
-        .btn-symbol { height: 38px; min-width: 42px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: var(--toolbar-bg); color: var(--text); }
-        
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; }
-        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 1500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-radius: 4px; }
-        .line-nums { width: 35px; background: rgba(0,0,0,0.2); border-right: 1px solid var(--border); text-align: center; color: #64748b; font-size: 11px; padding-top: 15px; line-height: 28px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-site); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: var(--text); user-select: text !important; }
+        header { background: #1e293b; padding: 0 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 45px; z-index: 1001; }
+        .logo { font-weight: 800; color: var(--gold); font-size: 0.8rem; }
+        .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .editor-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-site); border-right: 1px solid var(--border); min-width: 0; }
+        .toolbar { background: var(--toolbar-bg); padding: 8px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); align-items: center; overflow-x: auto; white-space: nowrap; }
+        .btn-symbol { height: 36px; min-width: 40px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--toolbar-bg); color: var(--text); }
+        .paper-wrapper { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.1); }
+        .paper-sheet { width: 100%; max-width: 800px; background: var(--paper); min-height: 2500px; display: flex; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .line-nums { width: 35px; background: rgba(0,0,0,0.03); border-right: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 11px; padding-top: 15px; line-height: 28px; }
         .text-area { flex: 1; border: none; outline: none; padding: 11px 15px; font-size: 16px; line-height: 28px; color: var(--pen-blue); background-image: linear-gradient(transparent, transparent 27px, var(--border) 28px); background-size: 100% 28px; background-attachment: local; resize: none; background-color: transparent; }
-        
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; z-index: 10; }
+        .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
+        .tab.active { background: var(--bg-site); color: var(--primary); font-weight: bold; }
+        #pdf-viewport { flex: 1; overflow-y: auto; display: block; width: 100%; background: #525659; padding: 10px 0; }
+        .page-container { position: relative; margin: 0 auto 15px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden; }
+        canvas { display: block; width: 100% !important; height: auto !important; }
+        .textLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1.0; }
         .modal-full { display: none; position: fixed; inset: 0; background: var(--bg-site); z-index: 9999; flex-direction: column; }
-        .modal-header { background: #1e293b; color: white; padding: 10px 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 60px; gap: 10px; }
-        
-        /* ESTILO FGV */
-        .espelho-item { background: #2d3748; border: 1px solid var(--border); padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; align-items: center; gap: 15px; cursor: pointer; }
-        .espelho-item input { width: 24px; height: 24px; accent-color: var(--success); flex-shrink: 0; }
-        .espelho-txt { flex: 1; font-size: 0.85rem; line-height: 1.4; color: #fff; }
-        .espelho-pt { font-weight: 800; color: var(--gold); background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; }
-    </style>
-</head>
-<body>
+        .modal-header { background: #1e293b; color: white; padding: 0 15px; display: flex; align-items: center; border-bottom: 2px solid var(--gold); height: 50px; gap: 10px; }
+        .modal-header h3 { font-size: 0.75rem; flex: 1; color: var(--gold); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
+        .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
+        #menu-estruturas { display: none; position: absolute; top: 50px; left: 20px; background: var(--toolbar-bg); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 5000; width: 280px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto; }
+        .menu-item { padding: 12px 15px; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; }
+        .menu-category { background: #f1f5f9; padding: 6px 15px; font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; }
+        .espelho-group-title { font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 5px; }
+        .espelho-item { background: var(--paper); border: 1px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
+        .espelho-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); }
+        .espelho-txt { flex: 1; font-size: 0.75rem; color: var(--text); line-height: 1.2; }
+        .espelho-pt { font-weight: 800; color: var(--primary); font-size: 0.75rem; white-space: nowrap; }
+        .nota-floating { position: sticky; top: 0; background: var(--gold); color: #000; padding: 10px; text-align: center; font-weight: 900; border-radius: 8px; margin-bottom: 15px; z-index: 10; }
+        @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
+        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.6rem; }
+    </style></head><body class="dark-mode"><header>
+    <div class="logo">ARYANNA MASTER 2026</div>
+    <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div></header><div class="main-container">
+    <section class="editor-section">
+        <div class="toolbar">
+            <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
+            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📚</button>
+            <button class="btn-symbol" onclick="window.toggleEstruturas()">⚖️</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-nc')">📌</button>
+            <button class="btn-symbol" onclick="window.abrirModal('modal-dicas')">💡</button>
+            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
+            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
+        </div>
+        <div class="paper-wrapper">
+            <div class="paper-sheet">
+                <div class="line-nums" id="ln-main"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Sua peça Aryanna Linhares..."></textarea>
+            </div>
+        </div>
+    </section>
 
-<header>
-    <div style="font-weight:800; color:var(--gold); font-size:0.8rem;">ARYANNA MASTER 2026</div>
-    <div id="timer" style="color:var(--warning); font-weight:bold;">05:00:00</div>
-</header>
-
-<div class="toolbar">
-    <select id="exam-select" onchange="window.mudarExame()" class="btn-symbol" style="width:auto; font-size:0.8rem; font-weight:bold; padding:0 10px;"></select>
-    <button class="btn-symbol" onclick="window.abrirModal('modal-espelho')">🎯</button>
-    <button class="btn-symbol" onclick="window.abrirModal('modal-respostas')">📝</button>
-    <button class="btn-symbol" onclick="window.saveToFirebase()" style="background:var(--success); color:white; margin-left:auto;">💾</button>
-</div>
-
-<div class="paper-wrapper">
-    <div class="paper-sheet">
-        <div class="line-nums" id="ln-main"></div>
-        <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça prática..."></textarea>
+    <section class="viewer-section" id="section-pdf">
+        <div class="tabs">
+            <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
+            <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
+            <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
+        </div>
+        <div id="pdf-viewport"></div>
+    </section></div><button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
+    
+    <div id="modal-nc" class="modal-full">
+        <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
+        <div class="modal-body"><div id="box-teses"></div></div>
     </div>
-</div>
-
-<div id="modal-espelho" class="modal-full">
-    <div class="modal-header">
-        <button onclick="window.fecharModal('modal-espelho')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 15px; border-radius:5px;">← VOLTAR</button>
-        <div style="flex:1; text-align:center;">
-            <div style="font-size:0.7rem; color:var(--gold)">NOTA DO EXAME</div>
-            <div id="nota-valor" style="font-size:1.4rem; font-weight:900; color:#fff;">0.00</div>
+    <div id="modal-respostas" class="modal-full">
+        <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>FOLHA DE RESPOSTAS</h3></div>
+        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div></div>
+    </div>
+    <div id="modal-dicas" class="modal-full">
+        <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>DICAS E POST-ITS</h3></div>
+        <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div></div>
+    </div>
+    <div id="modal-espelho" class="modal-full">
+        <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>CORREÇÃO FGV</h3></div>
+        <div class="modal-body">
+            <div class="nota-floating">NOTA: <span id="nota-valor">0.00</span> / 5.00</div>
+            <div id="checklist-fgv"></div>
         </div>
     </div>
-    <div class="modal-body" id="checklist-fgv" style="padding: 15px; overflow-y: auto;"></div>
-</div>
-
-<div id="modal-respostas" class="modal-full">
-    <div class="modal-header">
-        <button onclick="window.fecharModal('modal-respostas')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 15px; border-radius:5px;">← VOLTAR</button>
-        <h3 style="font-size:0.9rem;">FOLHA DE RESPOSTAS / DICAS</h3>
-    </div>
-    <div class="modal-body">
-        <textarea id="res-editor" class="text-area" style="width:100%; height:95%; background:rgba(0,0,0,0.2);" placeholder="Salve aqui suas dicas e post-its..."></textarea>
-    </div>
-</div>
-
-<script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config); const db = getDatabase(app);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // DADOS PADRÃO CASO O GITHUB NÃO CARREGUE
-    const backupEspelhos = {
-        "44": `Endereçamento ao Juízo da ... Vara do Trabalho de ...\n0.10\nQualificação das partes e indicação do Art. 840, § 1º, da CLT\n0.40\nTese de Mérito 01 (Exemplo: Verbas Rescisórias)\n0.50`
+    let currentPdf = null;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) renderPage(parseInt(entry.target.dataset.pagenum), entry.target); });
+    }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
+
+    window.carregarPDF = async (tipo) => {
+        const ex = document.getElementById('exam-select').value;
+        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
+        const v = document.getElementById('pdf-viewport'); v.innerHTML = "";
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`tab-${tipo}`).classList.add('active');
+        try {
+            currentPdf = await pdfjsLib.getDocument(arq).promise;
+            for (let i = 1; i <= currentPdf.numPages; i++) {
+                const c = document.createElement('div'); c.className = 'page-container'; c.dataset.pagenum = i;
+                v.appendChild(c); observer.observe(c);
+            }
+        } catch(e) { v.innerHTML = "<p style='color:white;padding:20px;'>Indisponível.</p>"; }
     };
 
+    async function renderPage(num, container) {
+        if (container.dataset.rendered) return; container.dataset.rendered = "true";
+        const page = await currentPdf.getPage(num);
+        const parentWidth = document.getElementById('pdf-viewport').clientWidth;
+        const scale = (parentWidth - 30) / page.getViewport({scale:1}).width;
+        const vp = page.getViewport({ scale });
+        container.style.height = vp.height + "px"; container.style.width = vp.width + "px";
+        const canvas = document.createElement('canvas');
+        canvas.height = vp.height; canvas.width = vp.width;
+        container.appendChild(canvas);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        const textLayerDiv = document.createElement('div');
+        textLayerDiv.className = 'textLayer';
+        container.appendChild(textLayerDiv);
+        const textContent = await page.getTextContent();
+        pdfjsLib.renderTextLayer({ textContent: textContent, container: textLayerDiv, viewport: vp, textDivs: [] });
+    }
+
+    // FUNÇÃO DE CÁLCULO DE NOTA
     window.calcNota = () => {
         let total = 0;
         document.querySelectorAll('#checklist-fgv input:checked').forEach(i => total += parseFloat(i.value));
         document.getElementById('nota-valor').innerText = total.toFixed(2);
+        return total.toFixed(2);
     };
 
+    window.saveMeta = (path, val) => set(ref(db, `${path}/exame_${document.getElementById('exam-select').value}`), val);
+    
+    window.autoSave = () => { 
+        clearTimeout(window.sv); 
+        window.sv = setTimeout(() => { 
+            window.saveMeta('v3_treino', document.getElementById('texto-final').value); 
+        }, 1000); 
+    };
+
+    // MUDAR EXAME - AGORA BUSCANDO DO SEU ARQUIVO EXTERNO
     window.mudarExame = () => {
         const ex = document.getElementById('exam-select').value;
-        const container = document.getElementById('checklist-fgv');
+        window.carregarPDF('prova');
         
-        // Tenta pegar do GitHub, se não houver, pega do Backup local
-        let raw = (window.MEUS_ESPELHOS && window.MEUS_ESPELHOS[ex]) ? window.MEUS_ESPELHOS[ex] : backupEspelhos[ex];
-
-        if (raw) {
-            const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== "");
-            let html = "";
-            for (let i = 0; i < lines.length; i += 2) {
-                let desc = lines[i];
-                let nota = lines[i+1] || "0.00";
-                html += `
-                    <div class="espelho-item" onclick="const ck=this.querySelector('input'); ck.checked=!ck.checked; window.calcNota();">
-                        <input type="checkbox" value="${parseFloat(nota.replace(',','.')) || 0}" onclick="event.stopPropagation(); window.calcNota();">
-                        <div class="espelho-txt">${desc}</div>
-                        <div class="espelho-pt">${nota}</div>
-                    </div>`;
-            }
-            container.innerHTML = html;
-        } else {
-            container.innerHTML = `<p style="text-align:center; padding:20px; opacity:0.5;">Aguardando dados do Exame ${ex} no arquivo dados_espelhos.js...</p>`;
-        }
-
+        // Verifica se window.MEUS_ESPELHOS existe (veio do seu dados_espelhos.js)
+        const espelhoHtml = (window.MEUS_ESPELHOS && window.MEUS_ESPELHOS[ex]) 
+                            ? window.MEUS_ESPELHOS[ex] 
+                            : '<p style="opacity:0.5; font-size:0.7rem; padding:20px;">Espelho ainda não disponível para este exame.</p>';
+        
+        document.getElementById('checklist-fgv').innerHTML = espelhoHtml;
         document.getElementById('nota-valor').innerText = "0.00";
-        get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
-        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
-    };
 
-    window.saveToFirebase = () => {
-        const ex = document.getElementById('exam-select').value;
-        set(ref(db, `v3_treino/exame_${ex}`), document.getElementById('texto-final').value);
-        set(ref(db, `v3_respostas/exame_${ex}`), document.getElementById('res-editor').value);
-        alert("Peça e Respostas salvas com sucesso!");
+        // Carrega dados salvos do Firebase
+        get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
+        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => {
+            const val = s.val();
+            document.getElementById('res-editor').value = (typeof val === 'object') ? (val.comentarios || "") : (val || "");
+        });
+        get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
     };
 
     window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
     window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
+    window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+    window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
+    window.toggleEstruturas = () => { const m = document.getElementById('menu-estruturas'); m.style.display = m.style.display==='block'?'none':'block'; };
 
-    // Gerar lista de exames
+    window.finalizarManual = () => {
+        const ex = document.getElementById('exam-select').value;
+        const nota = window.calcNota();
+        const peca = document.getElementById('texto-final').value;
+        const folha = document.getElementById('res-editor').value;
+        const dicas = document.getElementById('dicas-editor').value;
+
+        Promise.all([
+            set(ref(db, `v3_treino/exame_${ex}`), peca),
+            set(ref(db, `v3_respostas/exame_${ex}`), { nota, comentarios: folha, timestamp: new Date().toISOString() }),
+            set(ref(db, `v3_dicas/exame_${ex}`), dicas)
+        ]).then(() => alert(`Sincronizado! Nota: ${nota}`));
+    };
+
+    window.limparFolha = () => { if(confirm("Apagar?")) document.getElementById('texto-final').value = ""; };
+
+    // Inicialização do Select de Exames
     const sel = document.getElementById('exam-select');
     for(let i=45; i>=1; i--) { 
-        let n = i<10?"0"+i:i; let opt = document.createElement('option');
+        let n = i<10?"0"+i:i; 
+        let opt = document.createElement('option'); 
         opt.value=n; opt.innerText=`EXAME ${n}`; 
-        if(i==44) opt.selected=true; // Começa no 44 para você ver os dados
+        if(i==44) opt.selected=true; 
         sel.appendChild(opt); 
     }
-    
-    document.getElementById('ln-main').innerHTML = Array.from({length:300}, (_,i)=>i+1).join('<br>');
+
+    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+
     window.mudarExame();
-</script>
-</body>
-</html>
+</script></body></html>
