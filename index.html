@@ -3,132 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aryanna Master Pro - OAB</title>
+    <title>Aryanna Master Pro 2026 - Edição Vade Mecum Otimizada</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+    
     <style>
         :root { --primary: #2c3e50; --accent: #e74c3c; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar lateral */
-        #sidebar { width: 300px; background: var(--primary); color: white; padding: 15px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-        .btn-peca { background: #34495e; border: none; color: white; padding: 10px; text-align: left; cursor: pointer; border-radius: 4px; transition: 0.3s; }
-        .btn-peca:hover { background: var(--accent); }
+        /* Layout */
+        #sidebar { width: 260px; background: var(--primary); color: white; padding: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+        #main-content { flex: 1; display: flex; flex-direction: column; padding: 15px; gap: 10px; background: #e8ecef; }
+        #pdf-panel { flex: 1.2; background: #525659; display: flex; flex-direction: column; border-left: 2px solid #333; position: relative; }
         
-        /* Área de Prática (Folha de Respostas) */
-        #main-content { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 15px; position: relative; }
-        #editor { flex: 1; width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; line-height: 1.5; resize: none; background: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* Espelho de Correção (FGV Style) */
-        #espelho-container { width: 350px; background: #fff; border-left: 2px solid #ddd; padding: 15px; overflow-y: auto; }
-        .espelho-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-        .espelho-txt { flex: 1; }
-        .espelho-pt { font-weight: bold; color: var(--accent); }
-        #nota-final { font-size: 24px; font-bold; text-align: center; padding: 20px; background: var(--primary); color: white; border-radius: 8px; margin-top: 10px; }
+        /* Estilo Editor */
+        #editor { flex: 1; padding: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; line-height: 1.6; resize: none; font-family: 'Times New Roman', serif; }
 
-        /* Post-its e Dicas */
-        .post-it { background: #fffa90; padding: 10px; border-radius: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); margin-bottom: 10px; color: #333; font-size: 14px; }
-        
-        .header-controls { display: flex; justify-content: space-between; align-items: center; }
-        select { padding: 8px; border-radius: 4px; }
+        /* Controles PDF */
+        #pdf-controls { background: #333; color: white; padding: 8px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .nav-btn { background: #444; border: 1px solid #666; color: white; padding: 4px 10px; cursor: pointer; border-radius: 3px; }
+        .nav-btn:hover { background: var(--accent); }
+        #page-num { width: 45px; text-align: center; }
+
+        /* Container do PDF com Camada de Texto */
+        #pdf-viewer { flex: 1; overflow: auto; position: relative; background: #525659; display: flex; justify-content: center; }
+        .pdf-page-container { position: relative; margin: 10px auto; box-shadow: 0 0 10px rgba(0,0,0,0.5); background: white; }
+        .textLayer { opacity: 0.2; } /* Camada que permite selecionar texto */
+
+        /* Espelho e Post-its */
+        #espelho-container { width: 300px; background: white; border-left: 1px solid #ddd; padding: 15px; overflow-y: auto; font-size: 12px; }
+        .post-it { background: #fff9c4; padding: 8px; border-radius: 4px; margin-bottom: 8px; border-left: 4px solid #fbc02d; color: #333; }
+        .btn-peca { background: #34495e; border: none; color: white; padding: 8px; text-align: left; cursor: pointer; border-radius: 4px; width: 100%; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <aside id="sidebar">
         <h3>Peças Base</h3>
-        <button class="btn-peca" onclick="carregarEstrutura('RT')">Reclamação Trabalhista</button>
+        <button class="btn-peca" onclick="carregarEstrutura('RT')">Reclamação</button>
         <button class="btn-peca" onclick="carregarEstrutura('CON')">Contestação</button>
-        <button class="btn-peca" onclick="carregarEstrutura('RO')">Recurso Ordinário</button>
-        <button class="btn-peca" onclick="carregarEstrutura('AP')">Agravo de Petição</button>
-        <button class="btn-peca" onclick="carregarEstrutura('MS')">Mandado de Segurança</button>
-        
+        <button class="btn-peca" onclick="carregarEstrutura('RO')">Recurso Ord.</button>
         <hr>
-        <h3>Post-its / Dicas</h3>
-        <div class="post-it">📌 <b>Dica FGV:</b> Sempre indique o fundamento legal (Artigo/Súmula) para pontuar no mérito.</div>
         <div id="meus-postits"></div>
-        <button class="btn-peca" style="background:var(--accent)" onclick="addPostIt()">+ Novo Lembrete</button>
+        <button class="btn-peca" style="background:var(--accent)" onclick="addPostIt()">+ Novo Post-it</button>
+        <hr>
+        <label>Vade Mecum (PDF):</label>
+        <input type="file" id="file-upload" accept="application/pdf" style="width:100%; font-size:10px;">
     </aside>
 
     <main id="main-content">
-        <div class="header-controls">
-            <h2>Folha de Respostas (Simulado)</h2>
-            <div>
-                <label>Carregar Espelho FGV:</label>
-                <select id="select-espelho" onchange="carregarEspelho(this.value)">
-                    <option value="">Selecione a Prova...</option>
-                    <option value="44">44º Exame (Contestação)</option>
-                    <option value="41">41º Exame (Agravo de Petição)</option>
-                    <option value="40">40º Exame (Reclamação)</option>
-                    <option value="37">37º Exame (Contestação)</option>
-                    <option value="35">35º Exame (Recurso Ordinário)</option>
-                </select>
-                <button onclick="salvarProgresso()">💾 Salvar Treino</button>
-            </div>
+        <div style="display:flex; justify-content:space-between;">
+            <select id="select-espelho" onchange="window.carregarEspelho(this.value)">
+                <option value="">Escolher Espelho...</option>
+                <option value="44">44º Exame</option>
+                <option value="41">41º Exame</option>
+                <option value="40">40º Exame</option>
+            </select>
+            <button onclick="salvarProgresso()">💾 Salvar Tudo</button>
         </div>
-        <textarea id="editor" placeholder="Comece a redigir sua peça aqui..."></textarea>
+        <textarea id="editor" placeholder="Redija sua peça..."></textarea>
     </main>
 
-    <section id="espelho-container">
-        <h3>Espelho de Correção</h3>
-        <div id="itens-espelho">
-            <p style="color:gray">Selecione uma prova acima para corrigir.</p>
+    <section id="pdf-panel">
+        <div id="pdf-controls">
+            <button class="nav-btn" onclick="changePage(-1)">❮</button>
+            <input type="number" id="page-num" value="1" min="1" onchange="goToPage(this.value)"> 
+            <span>/ <span id="page-count">0</span></span>
+            <button class="nav-btn" onclick="changePage(1)">❯</button>
         </div>
-        <div id="nota-final">Nota: 0,00</div>
+        <div id="pdf-viewer">
+            <div id="page-wrapper" class="pdf-page-container">
+                <canvas id="pdf-canvas"></canvas>
+                <div id="text-layer" class="textLayer"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="espelho-container">
+        <div id="itens-espelho"></div>
+        <div id="nota-final" style="font-size:20px; font-weight:bold; color:var(--accent); text-align:center; margin-top:10px;">Nota: 0,00</div>
     </section>
 
     <script type="module">
         import { DATA_MASTER } from './estruturas.js';
 
-        // Torna as funções globais para o HTML acessar
-        window.carregarEstrutura = (tipo) => {
-            const editor = document.getElementById('editor');
-            if(confirm("Isso limpará seu texto atual. Continuar?")) {
-                editor.value = DATA_MASTER.estruturas[tipo];
-            }
-        };
+        // Configurações PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        window.carregarEspelho = (id) => {
-            const container = document.getElementById('itens-espelho');
-            if (DATA_MASTER.espelhos[id]) {
-                container.innerHTML = DATA_MASTER.espelhos[id];
-                window.calcNota();
-            }
-        };
+        let pdfDoc = null, pageNum = 1, pageRendering = false;
+        const scale = 1.5;
 
-        window.calcNota = () => {
-            const checks = document.querySelectorAll('#itens-espelho input[type="checkbox"]');
-            let total = 0;
-            checks.forEach(c => {
-                if(c.checked) total += parseFloat(c.value);
+        async function renderPage(num) {
+            pageRendering = true;
+            const page = await pdfDoc.getPage(num);
+            const viewport = page.getViewport({ scale });
+            
+            const canvas = document.getElementById('pdf-canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // Renderizar Imagem
+            const renderContext = { canvasContext: context, viewport: viewport };
+            await page.render(renderContext).promise;
+
+            // Renderizar Camada de Texto (PARA COPIAR)
+            const textLayerDiv = document.getElementById('text-layer');
+            textLayerDiv.innerHTML = "";
+            textLayerDiv.style.height = viewport.height + "px";
+            textLayerDiv.style.width = viewport.width + "px";
+            
+            const textContent = await page.getTextContent();
+            pdfjsLib.renderTextLayer({
+                textContent: textContent,
+                container: textLayerDiv,
+                viewport: viewport,
+                textDivs: []
             });
+
+            pageRendering = false;
+            document.getElementById('page-num').value = num;
+        }
+
+        window.changePage = (offset) => {
+            if (!pdfDoc || pageRendering) return;
+            const newPage = pageNum + offset;
+            if (newPage >= 1 && newPage <= pdfDoc.numPages) {
+                pageNum = newPage;
+                renderPage(pageNum);
+            }
+        };
+
+        window.goToPage = (num) => {
+            const n = parseInt(num);
+            if (pdfDoc && n >= 1 && n <= pdfDoc.numPages) {
+                pageNum = n;
+                renderPage(pageNum);
+            }
+        };
+
+        document.getElementById('file-upload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const arrayBuffer = await file.arrayBuffer();
+                pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                renderPage(1);
+            }
+        });
+
+        // Funções de Interface
+        window.carregarEstrutura = (t) => document.getElementById('editor').value = DATA_MASTER.estruturas[t];
+        window.carregarEspelho = (id) => {
+            document.getElementById('itens-espelho').innerHTML = DATA_MASTER.espelhos[id];
+            window.calcNota();
+        }
+        window.calcNota = () => {
+            let total = 0;
+            document.querySelectorAll('#itens-espelho input:checked').forEach(i => total += parseFloat(i.value));
             document.getElementById('nota-final').innerText = `Nota: ${total.toFixed(2)}`;
-        };
-
+        }
         window.addPostIt = () => {
-            const msg = prompt("Digite seu lembrete de estudo:");
-            if(msg) {
-                const div = document.createElement('div');
-                div.className = 'post-it';
-                div.innerHTML = `📝 ${msg}`;
-                document.getElementById('meus-postits').appendChild(div);
-                localStorage.setItem('meus_postits', document.getElementById('meus-postits').innerHTML);
+            const m = prompt("Dica:");
+            if(m) {
+                const d = document.createElement('div'); d.className='post-it'; d.innerText=`📌 ${m}`;
+                document.getElementById('meus-postits').appendChild(d);
             }
-        };
-
+        }
         window.salvarProgresso = () => {
-            const texto = document.getElementById('editor').value;
-            localStorage.setItem('ultimo_treino', texto);
-            alert("Progresso salvo no navegador!");
-        };
-
-        // Carregar dados salvos ao abrir
-        window.onload = () => {
-            if(localStorage.getItem('ultimo_treino')) {
-                document.getElementById('editor').value = localStorage.getItem('ultimo_treino');
-            }
-            if(localStorage.getItem('meus_postits')) {
-                document.getElementById('meus-postits').innerHTML = localStorage.getItem('meus_postits');
-            }
-        };
+            localStorage.setItem('treino_texto', document.getElementById('editor').value);
+            alert("Progresso salvo!");
+        }
     </script>
 </body>
 </html>
