@@ -3,167 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO 2026</title>
-    <style>
-        :root { --gold: #d4af37; --bg: #0f172a; --paper: #ffffff; --pen: #1e3a8a; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: #1e293b; padding: 10px 20px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; height: 50px; }
-        .main-container { flex: 1; display: flex; height: calc(100vh - 50px); }
-        
-        /* EDITOR */
-        .editor-section { flex: 1; display: flex; flex-direction: column; border-right: 2px solid var(--gold); background: #f8fafc; }
-        .toolbar { padding: 10px; background: #f1f5f9; display: flex; gap: 10px; border-bottom: 1px solid #cbd5e1; align-items: center; }
-        .btn-action { padding: 10px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 6px; background: white; font-size: 1.4rem; line-height: 1; }
-        .select-exame { padding: 8px; border-radius: 4px; border: 2px solid var(--gold); font-weight: bold; }
-
-        .paper-wrapper { flex: 1; overflow-y: auto; padding: 20px; background: #cbd5e1; }
-        .paper-sheet { width: 100%; max-width: 850px; background: white; margin: 0 auto; display: flex; min-height: 2500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .line-nums { width: 45px; background: #f1f5f9; border-right: 1px solid #ddd; text-align: center; color: #94a3b8; font-size: 13px; padding-top: 18px; line-height: 28px; }
-        .text-area { flex: 1; border: none; outline: none; padding: 15px; font-size: 18px; line-height: 28px; color: var(--pen); resize: none; background-image: linear-gradient(transparent, transparent 27px, #e5e7eb 27px); background-size: 100% 28px; background-attachment: local; }
-
-        /* PDF */
-        .viewer-section { flex: 1; background: #525659; display: flex; flex-direction: column; }
-        .tabs { display: flex; background: #1e293b; }
-        .tab { padding: 15px; cursor: pointer; border: none; background: transparent; color: #94a3b8; flex: 1; font-weight: bold; font-size: 0.8rem; }
-        .tab.active { background: #525659; color: white; border-bottom: 3px solid var(--gold); }
-        #pdf-viewport { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        canvas { max-width: 100%; margin-bottom: 15px; box-shadow: 0 0 10px black; }
-
-        /* MENU BALANÇA */
-        #menu-estruturas { display: none; position: absolute; top: 110px; left: 20px; width: 320px; background: white; border: 2px solid var(--gold); z-index: 1000; border-radius: 8px; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .menu-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; }
-        .menu-item:hover { background: #f1f5f9; color: blue; }
-    </style>
+    <title>ARYANNA MASTER PRO | SISTEMA UNIFICADO</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
-    <div style="font-weight: 800; color: var(--gold);">ARYANNA MASTER PRO 2026</div>
-    <div id="timer" style="color: var(--gold); font-weight: bold;">05:00:00</div>
+    <div class="logo">ARYANNA MASTER 2026</div>
+    <div id="timer-display">05:00:00</div>
 </header>
 
 <div class="main-container">
     <section class="editor-section">
         <div class="toolbar">
-            <select id="exam-select" class="select-exame" onchange="window.atualizarGeral()">
-                <option value="44">EXAME 44</option>
-                <option value="43">EXAME 43</option>
-                <option value="42">EXAME 42</option>
-                <option value="41">EXAME 41</option>
-                <option value="40">EXAME 40</option>
-                <option value="39">EXAME 39</option>
-                <option value="38">EXAME 38</option>
-                <option value="37">EXAME 37</option>
-                <option value="36">EXAME 36</option>
-                <option value="35">EXAME 35</option>
+            <select id="exam-select" class="btn-symbol" onchange="window.syncPDF()">
+                <option value="44">EX 44</option>
+                <option value="43">EX 43</option>
+                <option value="42">EX 42</option>
+                <option value="41">EX 41</option>
+                <option value="40">EX 40</option>
+                <option value="39">EX 39</option>
+                <option value="38">EX 38</option>
+                <option value="37">EX 37</option>
+                <option value="36">EX 36</option>
+                <option value="35" selected>EX 35</option>
             </select>
-            <button class="btn-action" onclick="window.abrirBalança()">⚖️</button>
-            <button class="btn-action" onclick="window.limparTudo()">🗑️</button>
-            <button class="btn-action" onclick="window.salvarPeca()" style="margin-left:auto; background:var(--gold); color:white;">💾</button>
+            
+            <button class="btn-symbol" title="Estruturas" onclick="window.abrirBalança()">⚖️</button>
+            <button class="btn-symbol" title="Limpar" onclick="window.limparFolha()">🗑️</button>
+            <button class="btn-symbol" title="Salvar" onclick="window.saveAction()" style="background:var(--success); color:white; margin-left:auto;">💾</button>
         </div>
+        
         <div class="paper-wrapper">
             <div class="paper-sheet">
-                <div class="line-nums" id="line-numbers"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Selecione a peça na balança..."></textarea>
+                <div class="line-nums" id="ln-main"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça técnica..."></textarea>
             </div>
         </div>
     </section>
 
     <section class="viewer-section">
         <div class="tabs">
-            <button class="tab active" data-type="prova" onclick="window.mudarAba(this)">PROVA</button>
-            <button class="tab" data-type="gabarito" onclick="window.mudarAba(this)">GABARITO</button>
-            <button class="tab" data-type="vade" onclick="window.mudarAba(this)">VADE</button>
+            <button class="tab active" onclick="window.loadPDFType('prova', this)">PROVA</button>
+            <button class="tab" onclick="window.loadPDFType('gabarito', this)">GABARITO</button>
+            <button class="tab" onclick="window.loadPDFType('vade', this)">VADE</button>
         </div>
         <div id="pdf-viewport"></div>
     </section>
 </div>
 
-<div id="menu-estruturas"></div>
+<div id="menu-estruturas" class="modal-context" style="display:none; position:absolute; background:white; border:2px solid gold; z-index:10000; color:black; border-radius:8px; width:300px;"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script type="module">
-    import { DATA_MASTER } from './estruturas.js';
+    // Importando as inteligências dos seus arquivos
+    import { ESTRUTURAS } from './estruturas.js';
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // Gerar Linhas
-    document.getElementById('line-numbers').innerHTML = Array.from({length: 350}, (_, i) => i + 1).join('<br>');
-
-    // Lógica do PDF
-    window.renderPDF = async (tipo) => {
-        const exame = document.getElementById('exam-select').value;
-        const container = document.getElementById('pdf-viewport');
-        container.innerHTML = '<p style="color:white; padding:20px;">Carregando...</p>';
-        
-        let file = '';
-        if (tipo === 'prova') file = `ro${exame}.pdf`;
-        else if (tipo === 'gabarito') file = `ro${exame}-gabarito.pdf`;
-        else file = 'vade.pdf';
-
-        try {
-            const pdf = await pdfjsLib.getDocument(file).promise;
-            container.innerHTML = '';
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const viewport = page.getViewport({scale: 1.4});
-                const canvas = document.createElement('canvas');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
-                container.appendChild(canvas);
-            }
-        } catch (e) {
-            container.innerHTML = `<p style="color:#ff6b6b; padding:20px;">Arquivo não encontrado: ${file}</p>`;
-        }
-    };
-
-    window.mudarAba = (btn) => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        window.renderPDF(btn.dataset.type);
-    };
-
-    window.atualizarGeral = () => {
-        const aba = document.querySelector('.tab.active').dataset.type;
-        window.renderPDF(aba);
-    };
-
-    // Lógica da Balança ⚖️
+    // 1. CONEXÃO DA BALANÇA (ESTRUTURAS.JS)
     window.abrirBalança = () => {
         const menu = document.getElementById('menu-estruturas');
         const exame = document.getElementById('exam-select').value;
-        const dados = DATA_MASTER.estruturas[exame];
-        
+        const dados = ESTRUTURAS[exame] || ESTRUTURAS["RO"];
+
         menu.innerHTML = `
-            <div class="menu-item" style="background:#f1f5f9; color:#1e293b; cursor:default;">
-                ${dados ? dados.titulo : "ESQUELETO TÉCNICO"}
-            </div>
-            ${dados ? `<div class="menu-item" onclick="window.injetarTexto('${exame}')">👉 INJETAR CONTEÚDO OFICIAL</div>` : ''}
-            <div class="menu-item" onclick="window.injetarTexto('RT')">👉 INJETAR ESQUELETO RECLAMAÇÃO</div>
-            <div class="menu-item" onclick="window.injetarTexto('CON')">👉 INJETAR ESQUELETO CONTESTAÇÃO</div>
-            <div class="menu-item" onclick="window.injetarTexto('RO')">👉 INJETAR ESQUELETO RECURSO</div>
+            <div style="padding:10px; background:#eee; font-weight:bold; border-radius:8px 8px 0 0;">${dados.nome_peca || "PEÇA TÉCNICA"}</div>
+            <div style="padding:15px; cursor:pointer; border-bottom:1px solid #ddd;" onclick="window.injetar('${exame}')">👉 INJETAR ESTRUTURA COMPLETA</div>
+            <div style="padding:10px; text-align:center; font-size:0.8rem; color:red;" onclick="this.parentElement.style.display='none'">FECHAR</div>
         `;
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        menu.style.top = "100px";
+        menu.style.left = "50px";
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     };
 
-    window.injetarTexto = (chave) => {
-        let conteudo = "";
-        if (DATA_MASTER.estruturas[chave]) {
-            conteudo = DATA_MASTER.estruturas[chave].modelo || DATA_MASTER.estruturas[chave];
-        }
-        document.getElementById('texto-final').value = conteudo;
+    window.injetar = (ex) => {
+        const item = ESTRUTURAS[ex] || ESTRUTURAS["RO"];
+        const texto = item.esqueleto || item;
+        document.getElementById('texto-final').value = texto;
         document.getElementById('menu-estruturas').style.display = 'none';
-        document.getElementById('texto-final').focus();
     };
 
-    window.limparTudo = () => { if(confirm("Deseja apagar sua peça?")) document.getElementById('texto-final').value = ""; };
-    window.salvarPeca = () => { alert("Peça salva no cache local!"); };
+    // 2. CONEXÃO DO MOTOR PDF (PDF-ENGINE + SEUS ARQUIVOS RO)
+    window.loadPDFType = async (tipo, btn) => {
+        if(btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        
+        const ex = document.getElementById('exam-select').value;
+        const container = document.getElementById('pdf-viewport');
+        let url = tipo === 'vade' ? 'vade.pdf' : (tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `ro${ex}.pdf`);
 
-    // Início
-    window.renderPDF('prova');
+        try {
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            container.innerHTML = '';
+            for(let i=1; i<=pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const viewport = page.getViewport({scale: 1.5});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                await page.render({canvasContext: context, viewport}).promise;
+                container.appendChild(canvas);
+            }
+        } catch(e) {
+            container.innerHTML = `<div style="color:white; padding:20px;">Arquivo ${url} não encontrado.</div>`;
+        }
+    };
+
+    // 3. SINCRONIZAÇÃO GERAL
+    window.syncPDF = () => window.loadPDFType('prova');
+    window.limparFolha = () => { if(confirm("Apagar tudo?")) document.getElementById('texto-final').value = ""; };
+    window.saveAction = () => { alert("Peça salva com sucesso!"); };
+
+    // Inicialização
+    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+    window.syncPDF();
 </script>
+
 </body>
 </html>
