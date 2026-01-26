@@ -3,6 +3,7 @@ import { db } from './firebase-config.js';
 import { NaoConfunda } from './nao-confunda.js';
 import { PDFEngine } from './pdf-engine.js';
 import { DATA_MASTER } from './estruturas.js';
+import { UI } from './ui-components.js'; // Importante para o novo modal de Post-its
 import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 export const App = {
@@ -10,24 +11,25 @@ export const App = {
 
     init() {
         this.vincularInterface();
-        // Se você tiver uma função de renderMenu no estruturas.js, chame-a aqui
-        // this.renderMenuEstruturas(); 
         this.mudarExame();
-        console.log("🚀 Maestro Pro sincronizado com sucesso.");
+        console.log("🚀 Maestro Pro: Sistema sincronizado e pronto para o mobile.");
     },
 
     vincularInterface() {
-        // Navegação e Modais
+        // --- NAVEGAÇÃO E MODAIS ---
         window.irParaMentoria = () => window.location.href = 'mentoria.html';
         
         window.abrirModal = (id) => {
             const modal = document.getElementById(id);
             if (modal) {
                 modal.style.display = 'flex';
-                // Se abrir o modal de Post-its, renderiza os dados do Firebase
+                // Se abrir o modal de Post-its, renderiza a lista do Firebase
                 if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'lista-nc-dinamica');
             }
         };
+
+        // Ponte para o Modal Luxo de Criação de Post-its
+        window.abrirModalNC = () => UI.abrirModalNC(this.getExame());
 
         window.fecharModal = (id) => {
             const modal = document.getElementById(id);
@@ -42,19 +44,28 @@ export const App = {
         window.limparFolha = () => { 
             if(confirm("Deseja apagar toda a peça escrita?")) {
                 const txt = document.getElementById('texto-final');
-                if (txt) txt.value = ""; 
+                if (txt) {
+                    txt.value = ""; 
+                    this.autoSave(); // Sincroniza a limpeza no Firebase
+                }
             }
         };
 
         window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
         
-        // Pontes do Motor PDF (PDF Engine)
+        // --- PONTES DO MOTOR PDF (PDF ENGINE) ---
         window.loadDoc = (tipo) => this.carregarPDF(tipo);
         window.changePage = (off) => PDFEngine.changePage(off);
         
-        // Sincronização
+        // --- SINCRONIZAÇÃO ---
         window.autoSave = () => this.autoSave();
         window.mudarExame = () => this.mudarExame();
+        
+        // Ponte para salvar Questões e Dicas (Modais)
+        window.saveMeta = (pasta, valor) => {
+            const ex = this.getExame();
+            set(ref(db, `${pasta}/exame_${ex}`), valor);
+        };
     },
 
     getExame() { 
@@ -63,7 +74,6 @@ export const App = {
 
     async carregarPDF(tipo) {
         const ex = this.getExame();
-        // Define se carrega a Prova do Exame ou o Vade Mecum
         const nomeArquivo = tipo === 'prova' ? `ro${ex}.pdf` : `vade.pdf`;
         
         // Feedback visual nos botões de Tab
@@ -74,23 +84,23 @@ export const App = {
         if (tabVade) tabVade.style.background = tipo === 'vade' ? 'var(--primary)' : 'transparent';
 
         try {
-            const response = await fetch(nomeArquivo);
+            // Busca o PDF na pasta local /pdfs/
+            const response = await fetch(`./pdfs/${nomeArquivo}`);
             if (!response.ok) throw new Error("Arquivo não encontrado");
             const buffer = await response.arrayBuffer();
             PDFEngine.init(buffer);
         } catch (err) {
-            console.error("Erro ao carregar PDF:", err);
-            // Opcional: Alerta discreto ou log
+            console.warn(`[UX] PDF ${nomeArquivo} não disponível.`);
         }
     },
 
     async mudarExame() {
         const ex = this.getExame();
         
-        // 1. Carrega o PDF da prova automaticamente ao mudar o select
+        // 1. Carrega o PDF da prova
         this.carregarPDF('prova');
 
-        // 2. Sincroniza campos de texto com Firebase (Puxa o que foi salvo antes)
+        // 2. Sincroniza campos de texto (Peça, Questões, Dicas)
         const campos = [
             { path: `v3_treino/exame_${ex}`, id: 'texto-final' },
             { path: `v3_respostas/exame_${ex}`, id: 'res-editor' },
@@ -104,16 +114,12 @@ export const App = {
             });
         });
 
-        // 3. Atualiza o Espelho/Checklist da FGV
+        // 3. Atualiza o Espelho da FGV via estruturas.js
         const esp = document.getElementById('checklist-fgv');
         if (esp) {
-            esp.innerHTML = DATA_MASTER.espelhos[ex] || "<p style='padding:20px; opacity:0.6;'>Espelho para este exame ainda não cadastrado.</p>";
+            esp.innerHTML = DATA_MASTER.espelhos[ex] || 
+            "<p style='padding:20px; opacity:0.6;'>Espelho para este exame ainda não cadastrado.</p>";
         }
-    },
-
-    // Função interna de salvamento direto no Firebase
-    executarSaveFirebase(path, val) {
-        set(ref(db, path), val);
     },
 
     autoSave() {
@@ -121,13 +127,13 @@ export const App = {
         const texto = document.getElementById('texto-final').value;
 
         clearTimeout(this.sv);
-        // Salva após 1 segundo de inatividade no teclado (Debounce)
+        // Debounce de 1.5s para economizar processamento mobile
         this.sv = setTimeout(() => {
-            this.executarSaveFirebase(`v3_treino/exame_${ex}`, texto);
-            console.log("📝 Progresso salvo automaticamente.");
-        }, 1000);
+            set(ref(db, `v3_treino/exame_${ex}`), texto);
+            console.log("📝 Progresso sincronizado.");
+        }, 1500);
     }
 };
 
-// Inicialização única
+// Inicialização
 App.init();
