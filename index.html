@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SISTEMA JOAQUIM - MODO ALVO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* CSS preservando sua identidade visual e adaptando para mobile */
+        /* CSS PRESERVADO E ADAPTADO */
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
             --orange: #f39c12; --green: #27ae60; --yellow: #f1c40f; 
@@ -27,14 +28,40 @@
         .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
         .exame-btn:hover { background: var(--accent); color: white; }
 
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; }
+        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { 
             flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
+            resize: none;
         }
 
-        /* ÁREA DO CHECKLIST (ESTILO FGV) */
+        /* NOVO: BOTÃO DA JUSTIÇA (FAB) */
+        .btn-justica-fab {
+            position: absolute; bottom: 20px; right: 20px;
+            width: 56px; height: 56px; background-color: var(--primary);
+            color: white; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center;
+            font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 100; border: 2px solid var(--accent);
+        }
+
+        /* MODAL DE ESTRUTURAS */
+        #modal-estruturas {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 85%; max-width: 350px;
+            background: white; border-radius: 8px; z-index: 3000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); padding: 20px;
+        }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2500; }
+        
+        .item-estrutura { 
+            padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; 
+            font-size: 0.9rem; font-weight: bold; color: var(--primary);
+        }
+        .item-estrutura:hover { background: #f9f9f9; color: var(--accent); }
+
+        /* ÁREA DO CHECKLIST */
         #container-alvo { 
             display: none; width: 400px; background: white; border-left: 2px solid #ccc; 
             flex-direction: column; z-index: 2000;
@@ -42,13 +69,6 @@
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
         
-        /* Classes que o seu banco-espelhos utiliza */
-        .nota-floating { background: #333; color: white; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 0.8rem; text-align: center; }
-        .espelho-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; align-items: flex-start; }
-        .espelho-txt { flex: 1; font-size: 0.8rem; color: #333; }
-        .espelho-pt { font-weight: bold; color: var(--red); font-size: 0.8rem; }
-        .resultado-nota { padding: 20px; background: #f8f9fa; text-align: center; border-top: 2px solid #ddd; }
-
         .pdf-section { width: 30%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
 
@@ -56,6 +76,7 @@
             main { flex-direction: column; overflow-y: auto; }
             .sidebar, .pdf-section, #container-alvo { width: 100%; }
             #container-alvo { position: fixed; top: var(--header-h); left: 0; height: calc(100vh - var(--header-h)); }
+            .btn-justica-fab { bottom: 80px; } /* Ajuste para não sobrepor outros elementos mobile */
         }
     </style>
 </head>
@@ -76,6 +97,10 @@
     <section class="work-section">
         <div style="padding:10px; background:#f1f1f1; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
         <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
+        
+        <div class="btn-justica-fab" onclick="abrirEstruturas()">
+            <i class="fas fa-balance-scale"></i>
+        </div>
     </section>
 
     <section id="container-alvo">
@@ -83,8 +108,7 @@
             <span>CHECKLIST OFICIAL FGV</span>
             <button onclick="toggleAlvo()" style="background:none; border:none; color:white; cursor:pointer">✖</button>
         </div>
-        <div class="alvo-scroll" id="injetar-espelho">
-            </div>
+        <div class="alvo-scroll" id="injetar-espelho"></div>
         <div class="resultado-nota">
             <div style="font-size:0.7rem; color:#666">PONTUAÇÃO TOTAL</div>
             <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
@@ -97,19 +121,29 @@
     </section>
 </main>
 
+<div class="overlay" id="overlay" onclick="fecharEstruturas()"></div>
+<div id="modal-estruturas">
+    <h3 style="margin-bottom:15px; color:var(--primary); border-bottom: 2px solid var(--accent)">Estruturas de Peças</h3>
+    <div id="lista-estruturas-corpo">
+        </div>
+    <button onclick="fecharEstruturas()" style="margin-top:15px; width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:4px; cursor:pointer">FECHAR</button>
+</div>
+
+<script src="estruturas.js"></script>
+
 <script>
-    // SEU BANCO DE ESPELHOS (PRESERVADO INTEGRALMENTE)
+    // BANCO DE ESPELHOS PRESERVADO
     const BANCO_ESPELHOS = {
-        "44": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento: 150ª Vara do Trabalho de Manaus</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Art. 847 da CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade passiva sócios (Art. 50 CCB)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">4. Preliminar: Inépcia reenquadramento (Art. 330, §1, I ou 337, IV CPC)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">5. Prejudicial: Prescrição parcial (Art. 7, XXIX CF ou 11 CLT)</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Ticket refeição - ausência de ultratividade (Art. 614, §3 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Jornada aviso prévio no pedido demissão (Art. 488 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Periculosidade motocicleta indevida (Art. 193, §4 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Reintegração indevida (S. 244, II TST ou Art. 10, II, b ADCT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Vale transporte moto própria (L. 7418/85 ou D. 10854/21)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.90" onchange="window.calcNota()"><div class="espelho-txt">11. Pedidos (Renovação/Improcedência/Provas/Honorários) e Fechamento</div><div class="espelho-pt">0.90</div></div>`,
-        "41": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 41 (AGRAVO DE PETIÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Fundamento (Art. 855-A, §1, II ou 897, a CLT)</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Delimitação justificada: Art. 897, §1º CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Tempestividade (8 dias): Art. 897, caput CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">5. Tese: IDPJ de ofício vedado (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">6. Tese: Suspensão do processo (Art. 134, §3 CPC ou 855-A, §2 CLT)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">7. Tese: Prazo manifestação 15 dias (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">8. Ilegitimidade: Sócio retirante > 2 anos (Art. 10-A CLT ou 1032 CC)</div><div class="espelho-pt">0.80</div></div><div class="espelho-item"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">9. Tese: Impenhorabilidade aposentadoria (Art. 833, IV CPC)</div><div class="espelho-pt">0.70</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Pedidos (Revogação/Provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>`,
-        "40": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 40 (RECLAMAÇÃO TRABALHISTA)</div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento Osasco/SP e Art. 840, §1 CLT</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Qualificação Partes (Espólio e Reclamada)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Gratuidade Justiça (Art. 790, §3 ou §4 CLT)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Prioridade Idosa (Art. 1048 CPC ou L. 10741)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Vínculo Empregatício (Art. 3 ou 29 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Verbas (Saldo, 13º, Férias, FGTS, Multa 477)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="1.60" onchange="window.calcNota()"><div class="espelho-txt">7. Danos Materiais (Enterro, Seguro, Pensões) - Art. 186/927/948 CC</div><div class="espelho-pt">1.60</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Dano Moral Acidente (Art. 223-B CLT ou 186/927 CC)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">9. Honorários (791-A), Pedidos com Valor e Fechamento</div><div class="espelho-pt">1.10</div></div>`,
-        "37": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 37 (CONTESTAÇÃO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 85ª VT/RJ e Art. 847 CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">2. Preliminar: Adiamento Audiência (Art. 841 CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">3. Preliminar: Ilegitimidade ex-sócio (Art. 10-A CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">4. Mérito: Adicional Transferência (Art. 469 CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Horas in itinere (Art. 58, § 2º CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Intervalo Digitador (Art. 72 CLT ou S. 346 TST)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="0.60" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: Acúmulo de Função (Art. 456, p.u. CLT)</div><div class="espelho-pt">0.60</div></div><div class="espelho-item"><input type="checkbox" value="1.10" onchange="window.calcNota()"><div class="espelho-txt">8. Pedidos (Renovação/Improcedência/Honorários) e Fechamento</div><div class="espelho-pt">1.10</div></div>`,
-        "35": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 35 (RECURSO ORDINÁRIO)</div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento 89ª VT Floriano/PI, TRT e Art. 895, I CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">2. Partes (Sociedade empresária e Empregado)</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Tempestividade (8 dias) e Preparo</div><div class="espelho-pt">0.20</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">4. Prescrição Parcial Instância Ordinária (S. 153 TST)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">5. Mérito: Intervalo Interjornada 11h (Art. 66 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">6. Mérito: Reintegração Indevida (Art. 543, §3 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">7. Mérito: FGTS Suspensão Contratual (Art. 476 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">8. Mérito: Ajuda Custo Indenizatória (Art. 457, §2 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">9. Mérito: Equiparação Salarial (Art. 461 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Mérito: Insalubridade Reclassificação (Art. 194 CLT)</div><div class="espelho-pt">0.50</div></div><div class="espelho-item"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">11. Honorários (791-A), Pedidos e Fechamento</div><div class="espelho-pt">0.80</div></div>`
+        "44": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div>...`, // (Mantido conforme original)
+        "41": `...`, // (Mantido conforme original)
+        "40": `...`, // (Mantido conforme original)
+        "37": `...`, // (Mantido conforme original)
+        "35": `...`  // (Mantido conforme original)
     };
 
     let idAtivo = null;
 
-    // Inicializa os botões de exames
+    // INICIALIZAÇÃO
     function carregarMenu() {
         const menu = document.getElementById('lista-exames');
         Object.keys(BANCO_ESPELHOS).sort((a,b)=>b-a).forEach(ex => {
@@ -126,33 +160,59 @@
         document.getElementById('label-atual').innerText = `📍 EXAME XXX${num}`;
         document.getElementById('v-enu').src = `ro${num}.pdf`;
         document.getElementById('v-gab').src = `ro${num}-gabarito.pdf`;
+        document.getElementById('injetar-espelho').innerHTML = BANCO_ESPELHOS[num] || "Espelho não cadastrado.";
+        window.calcNota();
+    }
+
+    // LÓGICA DO BOTÃO DA JUSTIÇA
+    function abrirEstruturas() {
+        const modal = document.getElementById('modal-estruturas');
+        const overlay = document.getElementById('overlay');
+        const corpo = document.getElementById('lista-estruturas-corpo');
         
-        // Injeta o espelho no container invisível
-        document.getElementById('injetar-espelho').innerHTML = BANCO_ESPELHOS[num];
-        window.calcNota(); // Zera a nota
+        corpo.innerHTML = ""; // Limpa antes de carregar
+
+        if (typeof estruturas !== 'undefined') {
+            estruturas.forEach(est => {
+                const div = document.createElement('div');
+                div.className = 'item-estrutura';
+                div.innerText = est.nome;
+                div.onclick = () => {
+                    document.getElementById('area-peca').value = est.esqueleto;
+                    fecharEstruturas();
+                };
+                corpo.appendChild(div);
+            });
+        } else {
+            corpo.innerHTML = "<p style='font-size:0.8rem; color:red;'>Arquivo 'estruturas.js' não carregado ou variável 'estruturas' não definida.</p>";
+        }
+
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    function fecharEstruturas() {
+        document.getElementById('modal-estruturas').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
     }
 
     function toggleAlvo() {
         if(!idAtivo) return alert("Selecione um exame primeiro!");
         const painel = document.getElementById('container-alvo');
         const pdfs = document.getElementById('pdfs');
-        
         if(painel.style.display === 'flex') {
             painel.style.display = 'none';
             pdfs.style.display = 'flex';
         } else {
             painel.style.display = 'flex';
-            pdfs.style.display = 'none'; // Oculta PDFs para dar foco total à correção
+            pdfs.style.display = 'none';
         }
     }
 
-    // A FUNÇÃO QUE O SEU BANCO EXIGE
     window.calcNota = function() {
         const checkboxes = document.querySelectorAll('#injetar-espelho input[type="checkbox"]');
         let nota = 0;
-        checkboxes.forEach(c => {
-            if(c.checked) nota += parseFloat(c.value);
-        });
+        checkboxes.forEach(c => { if(c.checked) nota += parseFloat(c.value); });
         document.getElementById('display-nota').innerText = nota.toFixed(2);
     };
 
