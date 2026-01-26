@@ -8,7 +8,7 @@
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --yellow: #f1c40f; --header-h: 60px;
+            --red: #e74c3c; --orange: #f39c12; --header-h: 60px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -18,12 +18,11 @@
 
         main { display: flex; flex: 1; overflow: hidden; }
         
-        /* COLUNA 1: SIDEBAR */
-        .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
+        .sidebar { width: 200px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
+        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; display: block; }
         .exame-btn.active { background: var(--accent); color: white; }
 
-        /* COLUNA 2: TRABALHO */
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ccc; }
         #area-peca { 
             flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
@@ -31,9 +30,9 @@
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
 
-        /* COLUNA 3: PDFs */
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
+        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
+        .vade-btn { background: var(--orange); color: white; padding: 5px; text-align: center; font-size: 0.7rem; font-weight: bold; cursor: pointer; text-decoration: none; border-radius: 3px; margin-bottom: 2px; }
 
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
@@ -52,7 +51,8 @@
         .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
 
         @media (max-width: 1024px) {
-            .sidebar { width: 100px; font-size: 0.6rem; }
+            .sidebar { width: 100%; height: auto; max-height: 120px; display: flex; flex-wrap: wrap; gap: 5px; }
+            .exame-btn { width: calc(33% - 5px); font-size: 0.6rem; padding: 5px; margin-bottom: 0; }
             .pdf-section { display: none; }
             #container-alvo { width: 100%; }
         }
@@ -66,21 +66,27 @@
 </header>
 
 <main>
-    <aside class="sidebar" id="lista-exames"></aside>
+    <aside class="sidebar">
+        <div class="section-label">Exames OAB</div>
+        <div id="lista-exames"></div>
+        <div class="section-label">Estruturas</div>
+        <div id="lista-modelos"></div>
+    </aside>
 
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
         <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()"><i class="fas fa-balance-scale"></i></div>
+        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Inteligência Técnica"><i class="fas fa-balance-scale"></i></div>
     </section>
 
-    <section class="pdf-section" id="bloco-pdfs">
+    <section class="pdf-section">
+        <a href="vade.pdf" target="v-gab" class="vade-btn">ABRIR VADE MECUM (vade.pdf)</a>
         <iframe id="v-enu" class="pdf-frame" title="Enunciado"></iframe>
         <iframe id="v-gab" class="pdf-frame" title="Gabarito"></iframe>
     </section>
 
     <section id="container-alvo">
-        <div class="alvo-header"><span>CHECKLIST FGV</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none;">✖</button></div>
+        <div class="alvo-header"><span>CHECKLIST OFICIAL</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none;">✖</button></div>
         <div class="alvo-scroll" id="injetar-espelho"></div>
         <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
             <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
@@ -92,55 +98,87 @@
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 
+    // BANCO DE DADOS INTEGRADO COM CONTEÚDO TÉCNICO DOS EXAMES ANALISADOS
     const BANCO_DADOS = {
-        "44": { nome: "EXAME 44", esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS${SALTO}Processo nº: ...\nCONTESTAÇÃO (Art. 847 CLT)...`, espelho: [["Endereçamento 150ª VT", 0.1], ["Ilegitimidade Sócios", 0.4]] },
-        "41": { nome: "EXAME 41", esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL${SALTO}AGRAVO DE PETIÇÃO (Art. 897, 'a' CLT)...`, espelho: [["Interposição 503ª VT", 0.2]] },
-        "40": { nome: "EXAME 40", esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP${SALTO}RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...`, espelho: [["VT Osasco", 0.2]] },
+        "44": { 
+            nome: "EXAME 44", 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados..., vêm apresentar CONTESTAÇÃO (Art. 847 CLT)...\n\nI - PRELIMINARES\n1. Ilegitimidade Passiva (Art. 50 CC / 10-A CLT).\n2. Inépcia (Art. 330, §1º, I CPC).\n\nII - PREJUDICIAL\n1. Prescrição Parcial (Art. 7º, XXIX CF).\n\nIII - MÉRITO\n1. Ticket Refeição (Art. 614, §3º CLT).\n2. Vale Transporte (Lei 7.418/85).\n3. Aviso Prévio...`, 
+            espelho: [["Endereçamento 150ª VT", 0.1], ["Art. 847 CLT", 0.3], ["Ilegitimidade Sócios", 0.4], ["Inépcia Reenquadramento", 0.4], ["Prescrição Parcial", 0.4]] 
+        },
+        "41": { 
+            nome: "EXAME 41", 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\nProcesso nº: ...\n\nMARIA SERRA, já qualificada..., interpor AGRAVO DE PETIÇÃO (Art. 897, 'a', CLT)...\n\nRAZÕES DO AGRAVO\n1. Delimitação de Matéria e Valores (Art. 897, §1º CLT).\n2. Nulidade do IDPJ (Art. 855-A CLT).\n3. Impenhorabilidade do Bem de Família (Lei 8.009/90)...`, 
+            espelho: [["Interposição 503ª VT", 0.2], ["Art. 897, a CLT", 0.3], ["Delimitação", 0.2], ["Nulidade IDPJ", 0.7]] 
+        },
+        "40": { 
+            nome: "EXAME 40", 
+            esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., representado por JULIETA, ${QUALIF}, propor RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...\n\nI - MÉRITO\n1. Vínculo Empregatício (Art. 3º CLT).\n2. Diferenças Salariais.\n3. Honorários Advocatícios (Art. 791-A CLT)...`, 
+            espelho: [["VT Osasco + Art 840", 0.2], ["Qualificação Espólio", 0.2], ["Vínculo Art 3 CLT", 0.5]] 
+        },
         "37": { nome: "EXAME 37", esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ${SALTO}CONTESTAÇÃO...`, espelho: [["85ª VT Rio", 0.1]] },
         "35": { nome: "EXAME 35", esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI${SALTO}RECURSO ORDINÁRIO...`, espelho: [["89ª VT PI", 0.1]] },
-        "RT": { nome: "ESTRUTURA RT", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMAÇÃO TRABALHISTA...` },
-        "RO": { nome: "ESTRUTURA RO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECURSO ORDINÁRIO...` }
+        "36": { nome: "EXAME 36", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
+        "38": { nome: "EXAME 38", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
+        "39": { nome: "EXAME 39", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
+        "42": { nome: "EXAME 42", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
+        "43": { nome: "EXAME 43", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
+        "RT": { nome: "ESTRUTURA RT", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, ${QUALIF}, propor RT (Art. 840, §1º CLT)...` },
+        "RO": { nome: "ESTRUTURA RO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECORRENTE, interpor RO (Art. 895, I CLT)...` }
     };
 
     let idAtivo = null;
 
     function init() {
-        const menu = document.getElementById('lista-exames');
-        menu.innerHTML = "";
+        const menuExames = document.getElementById('lista-exames');
+        const menuModelos = document.getElementById('lista-modelos');
+        
         Object.keys(BANCO_DADOS).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
             btn.id = "btn-" + key;
             btn.innerText = BANCO_DADOS[key].nome;
-            btn.onclick = () => {
-                idAtivo = key;
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('label-atual').innerText = `📍 ATIVO: ${BANCO_DADOS[key].nome}`;
-                
-                // CARREGAR PDFs
-                if(!isNaN(key)) {
-                    document.getElementById('v-enu').src = `ro${key}.pdf`;
-                    document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                }
-
-                // CARREGAR ESPELHO
-                const espelhoArea = document.getElementById('injetar-espelho');
-                espelhoArea.innerHTML = "";
-                if(BANCO_DADOS[key].espelho) {
-                    BANCO_DADOS[key].espelho.forEach(item => {
-                        espelhoArea.innerHTML += `<div class="espelho-item"><input type="checkbox" value="${item[1]}" onchange="calcNota()"> <div style="flex:1">${item[0]}</div> <b>${item[1].toFixed(2)}</b></div>`;
-                    });
-                }
-                calcNota();
-            };
-            menu.appendChild(btn);
+            btn.onclick = () => selecionarExame(key, btn);
+            
+            if(!isNaN(key)) menuExames.appendChild(btn);
+            else menuModelos.appendChild(btn);
         });
     }
 
+    function selecionarExame(key, btn) {
+        idAtivo = key;
+        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('label-atual').innerText = `📍 ATIVO: ${BANCO_DADOS[key].nome}`;
+        
+        // Carregar PDFs
+        if(!isNaN(key)) {
+            document.getElementById('v-enu').src = `ro${key}.pdf`;
+            document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
+        }
+
+        // Carregar Espelho
+        const espelhoArea = document.getElementById('injetar-espelho');
+        espelhoArea.innerHTML = "";
+        if(BANCO_DADOS[key].espelho) {
+            BANCO_DADOS[key].espelho.forEach(item => {
+                espelhoArea.innerHTML += `<div class="espelho-item"><input type="checkbox" value="${item[1]}" onchange="calcNota()"> <div style="flex:1">${item[0]}</div> <b>${item[1].toFixed(2)}</b></div>`;
+            });
+        } else {
+            espelhoArea.innerHTML = "<p style='padding:20px; font-size:0.8rem; color:#999'>Consulte os arquivos PDF ro" + key + " ao lado.</p>";
+        }
+        calcNota();
+    }
+
     function injetarConteudo() {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
+        if(!idAtivo) return alert("Selecione um exame na lateral primeiro!");
+        
+        const info = BANCO_DADOS[idAtivo];
+        document.getElementById('area-peca').value = info.esqueleto;
+        
+        // Efeito visual de confirmação
+        const area = document.getElementById('area-peca');
+        area.style.backgroundColor = "#e8f4fd";
+        setTimeout(() => area.style.backgroundColor = "white", 500);
     }
 
     function toggleAlvo() {
