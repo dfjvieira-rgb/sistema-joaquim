@@ -49,6 +49,7 @@
         }
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
+        .espelho-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; align-items: center; }
 
         @media (max-width: 1024px) {
             .sidebar { width: 100%; height: auto; max-height: 120px; display: flex; flex-wrap: wrap; gap: 5px; }
@@ -76,7 +77,7 @@
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
         <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Inteligência Técnica"><i class="fas fa-balance-scale"></i></div>
+        <div class="btn-justica-fab" onclick="injetarConteudo()"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
@@ -98,32 +99,50 @@
     const SALTO = "\n\n\n\n\n\n\n\n\n\n";
     const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 
-    // BANCO DE DADOS INTEGRADO COM CONTEÚDO TÉCNICO DOS EXAMES ANALISADOS
     const BANCO_DADOS = {
         "44": { 
             nome: "EXAME 44", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados..., vêm apresentar CONTESTAÇÃO (Art. 847 CLT)...\n\nI - PRELIMINARES\n1. Ilegitimidade Passiva (Art. 50 CC / 10-A CLT).\n2. Inépcia (Art. 330, §1º, I CPC).\n\nII - PREJUDICIAL\n1. Prescrição Parcial (Art. 7º, XXIX CF).\n\nIII - MÉRITO\n1. Ticket Refeição (Art. 614, §3º CLT).\n2. Vale Transporte (Lei 7.418/85).\n3. Aviso Prévio...`, 
-            espelho: [["Endereçamento 150ª VT", 0.1], ["Art. 847 CLT", 0.3], ["Ilegitimidade Sócios", 0.4], ["Inépcia Reenquadramento", 0.4], ["Prescrição Parcial", 0.4]] 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados..., vêm apresentar CONTESTAÇÃO (Art. 847 CLT)...\n\nI - PRELIMINARES...`, 
+            espelho: [
+                ["Endereçamento 150ª VT Manaus", 0.10], ["Art. 847 da CLT", 0.10], ["Preliminar Ilegitimidade Passiva Sócios", 0.50], ["Indicação Art. 50 CC ou 10-A CLT", 0.10], ["Preliminar Inépcia Reenquadramento", 0.50], ["Mérito: Indevido Ticket Refeição (CCT)", 0.60], ["Mérito: Indevido Vale Transporte", 0.60], ["Prescrição Parcial (5 anos)", 0.10]
+            ] 
         },
         "41": { 
             nome: "EXAME 41", 
-            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\nProcesso nº: ...\n\nMARIA SERRA, já qualificada..., interpor AGRAVO DE PETIÇÃO (Art. 897, 'a', CLT)...\n\nRAZÕES DO AGRAVO\n1. Delimitação de Matéria e Valores (Art. 897, §1º CLT).\n2. Nulidade do IDPJ (Art. 855-A CLT).\n3. Impenhorabilidade do Bem de Família (Lei 8.009/90)...`, 
-            espelho: [["Interposição 503ª VT", 0.2], ["Art. 897, a CLT", 0.3], ["Delimitação", 0.2], ["Nulidade IDPJ", 0.7]] 
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\n\nMARIA SERRA... AGRAVO DE PETIÇÃO...`, 
+            espelho: [
+                ["Interposição ao Juízo da 503ª VT/DF", 0.10], ["Art. 897, 'a', da CLT", 0.10], ["Delimitação de Matéria e Valores", 0.20], ["Razões ao TRT da 10ª Região", 0.10], ["Nulidade IDPJ (Ausência Citação)", 0.60], ["Impenhorabilidade Bem de Família", 0.60], ["Art. 1º ou 5º Lei 8009/90", 0.10]
+            ] 
         },
         "40": { 
             nome: "EXAME 40", 
-            esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., representado por JULIETA, ${QUALIF}, propor RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...\n\nI - MÉRITO\n1. Vínculo Empregatício (Art. 3º CLT).\n2. Diferenças Salariais.\n3. Honorários Advocatícios (Art. 791-A CLT)...`, 
-            espelho: [["VT Osasco + Art 840", 0.2], ["Qualificação Espólio", 0.2], ["Vínculo Art 3 CLT", 0.5]] 
+            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP\n\nESPÓLIO DE..., rep por JULIETA... RECLAMAÇÃO TRABALHISTA...`, 
+            espelho: [
+                ["Endereçamento VT de Osasco/SP", 0.10], ["Qualificação do Espólio/Representante", 0.20], ["Art. 840, § 1º, da CLT", 0.10], ["Vínculo de Emprego (Art. 3º CLT)", 0.60], ["Multa Art. 477 CLT", 0.50], ["Honorários Advocatícios", 0.10]
+            ] 
         },
-        "37": { nome: "EXAME 37", esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ${SALTO}CONTESTAÇÃO...`, espelho: [["85ª VT Rio", 0.1]] },
-        "35": { nome: "EXAME 35", esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI${SALTO}RECURSO ORDINÁRIO...`, espelho: [["89ª VT PI", 0.1]] },
-        "36": { nome: "EXAME 36", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
-        "38": { nome: "EXAME 38", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
-        "39": { nome: "EXAME 39", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
-        "42": { nome: "EXAME 42", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
-        "43": { nome: "EXAME 43", esqueleto: `AO JUÍZO DA...${SALTO}`, espelho: null },
-        "RT": { nome: "ESTRUTURA RT", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECLAMANTE, ${QUALIF}, propor RT (Art. 840, §1º CLT)...` },
-        "RO": { nome: "ESTRUTURA RO", esqueleto: `AO JUÍZO DA... VARA DO TRABALHO DE...${SALTO}RECORRENTE, interpor RO (Art. 895, I CLT)...` }
+        "37": { 
+            nome: "EXAME 37", 
+            esqueleto: `AO JUÍZO DA 85ª VARA DO TRABALHO DO RIO DE JANEIRO/RJ\n\nJORGE MACHADO... CONTESTAÇÃO...`, 
+            espelho: [
+                ["Endereçamento 85ª VT/RJ", 0.10], ["Art. 847 da CLT", 0.10], ["Inexistência Estabilidade CIPA", 0.60], ["Art. 10, II, 'a' ADCT", 0.10], ["Indevida Devolução Descontos", 0.50]
+            ] 
+        },
+        "35": { 
+            nome: "EXAME 35", 
+            esqueleto: `AO JUÍZO DA 89ª VARA DO TRABALHO DE FLORIANO/PI\n\nRECURSO ORDINÁRIO...`, 
+            espelho: [
+                ["Interposição 89ª VT Floriano", 0.10], ["Art. 895, I, CLT", 0.10], ["Razões ao TRT 22ª Região", 0.10], ["Custas e Depósito Recursal", 0.20], ["Inexistência Grupo Econômico", 0.60]
+            ] 
+        },
+        // Itens que você listou mas que ainda vamos preencher os detalhes técnicos conforme o PDF
+        "43": { nome: "EXAME 43", esqueleto: "AO JUÍZO DA...", espelho: [["Verificar ro43-gabarito.pdf", 0.0]] },
+        "42": { nome: "EXAME 42", esqueleto: "AO JUÍZO DA...", espelho: [["Verificar ro42-gabarito.pdf", 0.0]] },
+        "39": { nome: "EXAME 39", esqueleto: "AO JUÍZO DA...", espelho: [["Verificar ro39-gabarito.pdf", 0.0]] },
+        "38": { nome: "EXAME 38", esqueleto: "AO JUÍZO DA...", espelho: [["Verificar ro38-gabarito.pdf", 0.0]] },
+        "36": { nome: "EXAME 36", esqueleto: "AO JUÍZO DA...", espelho: [["Verificar ro36-gabarito.pdf", 0.0]] },
+        "RT": { nome: "ESTRUTURA RT", esqueleto: `AO JUÍZO DA...${SALTO}RECLAMANTE... propor RT...`, espelho: null },
+        "RO": { nome: "ESTRUTURA RO", esqueleto: `AO JUÍZO DA...${SALTO}RECORRENTE... interpor RO...`, espelho: null }
     };
 
     let idAtivo = null;
@@ -131,14 +150,13 @@
     function init() {
         const menuExames = document.getElementById('lista-exames');
         const menuModelos = document.getElementById('lista-modelos');
+        menuExames.innerHTML = ""; menuModelos.innerHTML = "";
         
-        Object.keys(BANCO_DADOS).forEach(key => {
+        Object.keys(BANCO_DADOS).sort((a, b) => b - a).forEach(key => {
             const btn = document.createElement('button');
-            btn.className = 'exame-btn';
-            btn.id = "btn-" + key;
+            btn.className = 'exame-btn'; btn.id = "btn-" + key;
             btn.innerText = BANCO_DADOS[key].nome;
             btn.onclick = () => selecionarExame(key, btn);
-            
             if(!isNaN(key)) menuExames.appendChild(btn);
             else menuModelos.appendChild(btn);
         });
@@ -148,37 +166,35 @@
         idAtivo = key;
         document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('label-atual').innerText = `📍 ATIVO: ${BANCO_DADOS[key].nome}`;
+        document.getElementById('label-atual').innerText = `📍 EXAME ${key} SELECIONADO`;
         
-        // Carregar PDFs
         if(!isNaN(key)) {
             document.getElementById('v-enu').src = `ro${key}.pdf`;
             document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
         }
 
-        // Carregar Espelho
         const espelhoArea = document.getElementById('injetar-espelho');
         espelhoArea.innerHTML = "";
-        if(BANCO_DADOS[key].espelho) {
-            BANCO_DADOS[key].espelho.forEach(item => {
-                espelhoArea.innerHTML += `<div class="espelho-item"><input type="checkbox" value="${item[1]}" onchange="calcNota()"> <div style="flex:1">${item[0]}</div> <b>${item[1].toFixed(2)}</b></div>`;
+        const lista = BANCO_DADOS[key].espelho;
+        
+        if(lista && lista.length > 0) {
+            lista.forEach(item => {
+                espelhoArea.innerHTML += `
+                <div class="espelho-item">
+                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
+                    <div style="flex:1">${item[0]}</div>
+                    <b style="color:var(--red)">${item[1].toFixed(2)}</b>
+                </div>`;
             });
         } else {
-            espelhoArea.innerHTML = "<p style='padding:20px; font-size:0.8rem; color:#999'>Consulte os arquivos PDF ro" + key + " ao lado.</p>";
+            espelhoArea.innerHTML = "<p style='padding:15px; color:#666'>Sem checklist cadastrado.</p>";
         }
         calcNota();
     }
 
     function injetarConteudo() {
-        if(!idAtivo) return alert("Selecione um exame na lateral primeiro!");
-        
-        const info = BANCO_DADOS[idAtivo];
-        document.getElementById('area-peca').value = info.esqueleto;
-        
-        // Efeito visual de confirmação
-        const area = document.getElementById('area-peca');
-        area.style.backgroundColor = "#e8f4fd";
-        setTimeout(() => area.style.backgroundColor = "white", 500);
+        if(!idAtivo) return alert("Selecione um exame!");
+        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
     }
 
     function toggleAlvo() {
