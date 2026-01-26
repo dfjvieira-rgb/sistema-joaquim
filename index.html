@@ -47,26 +47,20 @@
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
         .btn-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; }
         
-        .bloco-tese { background: var(--paper); padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px; position: relative; }
-        .btn-remover-tese { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold; }
-        .input-nc { background: var(--bg-site); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; }
-        
-        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
-        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; }
-        .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
-        .tab.active { background: var(--bg-site); color: var(--primary); font-weight: bold; }
-        #pdf-viewport { flex: 1; overflow-y: auto; background: #525659; }
-
-        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.5rem; }
-        
         #menu-estruturas { 
             display: none; position: absolute; top: 50px; left: 20px; 
             background: var(--paper); border: 1px solid var(--border); border-radius: 8px; 
             z-index: 5000; width: 280px; max-height: 70vh; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
         }
         .menu-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text); font-weight: bold; }
-        .menu-item:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
         
+        .viewer-section { flex: 1.2; display: flex; flex-direction: column; background: #334155; min-width: 0; position: relative; }
+        .tabs { display: flex; background: #1e293b; padding: 5px 5px 0; gap: 3px; }
+        .tab { padding: 8px 12px; border: none; border-radius: 5px 5px 0 0; background: #0f172a; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
+        .tab.active { background: var(--bg-site); color: var(--primary); font-weight: bold; }
+        #pdf-viewport { flex: 1; overflow-y: auto; background: #525659; }
+        .floating-toggle { position: fixed; bottom: 20px; left: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: white; border: none; z-index: 2000; display: none; align-items: center; justify-content: center; font-size: 1.5rem; }
+
         @media (max-width: 768px) { .viewer-section { position: absolute; inset: 0; z-index: 100; display: none; } .viewer-section.active-mobile { display: flex; } .floating-toggle { display: flex !important; } }
     </style>
 </head>
@@ -89,4 +83,179 @@
             <button class="btn-symbol" title="Qual é a Peça" onclick="window.abrirModal('modal-dicas')">💡</button>
             <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
             <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
-            <button class="
+            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
+        </div>
+        <div class="paper-wrapper">
+            <div class="paper-sheet">
+                <div class="line-nums" id="ln-main"></div>
+                <textarea id="texto-final" class="text-area" spellcheck="false" oninput="window.autoSave()" placeholder="Inicie sua peça..."></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="viewer-section" id="section-pdf">
+        <div class="tabs">
+            <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
+            <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
+            <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
+        </div>
+        <div id="pdf-viewport"></div>
+    </section>
+</div>
+
+<button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
+<div id="menu-estruturas"></div>
+
+<div id="modal-espelho" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-espelho')">← VOLTAR</button><h3>ESPELHO FGV</h3></div>
+    <div class="modal-body" id="checklist-fgv"></div>
+</div>
+
+<div id="modal-respostas" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>QUESTÕES</h3></div>
+    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area" oninput="window.saveMeta('v3_respostas', this.value)"></textarea></div></div>
+</div>
+
+<div id="modal-dicas" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>QUAL É A PEÇA</h3></div>
+    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area" oninput="window.saveMeta('v3_dicas', this.value)"></textarea></div></div>
+</div>
+
+<div id="modal-nc" class="modal-full">
+    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>NÃO CONFUNDA</h3></div>
+    <div class="modal-body" id="lista-nc" style="padding:20px;"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { DATA_MASTER } from './estruturas.js';
+    
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const app = initializeApp(config); const db = getDatabase(app);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    let currentPdf = null;
+    let totalSeconds = 5 * 60 * 60;
+
+    // --- ANEXANDO FUNÇÕES AO WINDOW (CORREÇÃO PARA OS BOTÕES) ---
+    window.abrirModal = (id) => document.getElementById(id).style.display = 'flex';
+    window.fecharModal = (id) => document.getElementById(id).style.display = 'none';
+    window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+    window.toggleMobileView = () => document.getElementById('section-pdf').classList.toggle('active-mobile');
+    
+    window.toggleEstruturas = () => {
+        const m = document.getElementById('menu-estruturas');
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    };
+
+    window.limparFolha = () => { if(confirm("Deseja apagar tudo?")) { document.getElementById('texto-final').value = ""; window.autoSave(); } };
+    
+    window.saveMeta = (path, val) => {
+        const ex = document.getElementById('exam-select').value;
+        set(ref(db, `${path}/exame_${ex}`), val);
+    };
+
+    window.autoSave = () => {
+        clearTimeout(window.sv);
+        window.sv = setTimeout(() => {
+            const val = document.getElementById('texto-final').value;
+            window.saveMeta('v3_treino', val);
+        }, 1000);
+    };
+
+    window.finalizarManual = () => {
+        const val = document.getElementById('texto-final').value;
+        window.saveMeta('v3_treino', val);
+        alert("Sincronizado com Sucesso!");
+    };
+
+    window.injetar = (sigla) => {
+        const texto = DATA_MASTER.estruturas[sigla];
+        if(texto) {
+            if(confirm(`Carregar estrutura de ${sigla}?`)) {
+                document.getElementById('texto-final').value = texto;
+                window.autoSave();
+                window.toggleEstruturas();
+            }
+        }
+    };
+
+    window.mudarExame = () => {
+        const ex = document.getElementById('exam-select').value;
+        window.carregarPDF('prova');
+        document.getElementById('checklist-fgv').innerHTML = DATA_MASTER.espelhos[ex] || 'Espelho não disponível.';
+        
+        get(ref(db, `v3_treino/exame_${ex}`)).then(s => document.getElementById('texto-final').value = s.val() || "");
+        get(ref(db, `v3_respostas/exame_${ex}`)).then(s => document.getElementById('res-editor').value = s.val() || "");
+        get(ref(db, `v3_dicas/exame_${ex}`)).then(s => document.getElementById('dicas-editor').value = s.val() || "");
+    };
+
+    // PDF e Renderização
+    window.carregarPDF = async (tipo) => {
+        const ex = document.getElementById('exam-select').value;
+        const arq = tipo === 'prova' ? `ro${ex}.pdf` : tipo === 'gabarito' ? `ro${ex}-gabarito.pdf` : `vade.pdf`;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if(document.getElementById(`tab-${tipo}`)) document.getElementById(`tab-${tipo}`).classList.add('active');
+        const viewport = document.getElementById('pdf-viewport'); viewport.innerHTML = "";
+        try {
+            currentPdf = await pdfjsLib.getDocument(arq).promise;
+            for (let i = 1; i <= currentPdf.numPages; i++) {
+                const div = document.createElement('div'); div.className = 'page-container'; div.dataset.pagenum = i; div.style.height = "800px";
+                viewport.appendChild(div); observer.observe(div);
+            }
+        } catch(e) { viewport.innerHTML = "<p style='color:white;padding:20px;'>Arquivo não encontrado.</p>"; }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) renderizarPaginaLazy(parseInt(entry.target.dataset.pagenum), entry.target); });
+    }, { root: document.getElementById('pdf-viewport'), threshold: 0.1 });
+
+    async function renderizarPaginaLazy(num, container) {
+        if (container.dataset.rendered === "true") return;
+        container.dataset.rendered = "true";
+        const page = await currentPdf.getPage(num);
+        const vp = page.getViewport({ scale: (document.getElementById('pdf-viewport').clientWidth - 20) / page.getViewport({scale:1}).width });
+        container.style.height = "auto"; 
+        const canvas = document.createElement('canvas'); canvas.height = vp.height; canvas.width = vp.width;
+        container.appendChild(canvas);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    }
+
+    // Inicialização da UI
+    const popularMenu = () => {
+        const menu = document.getElementById('menu-estruturas');
+        menu.innerHTML = "";
+        Object.keys(DATA_MASTER.estruturas).forEach(key => {
+            const item = document.createElement('div');
+            item.className = 'menu-item';
+            item.innerText = key;
+            item.onclick = () => window.injetar(key);
+            menu.appendChild(item);
+        });
+    };
+
+    const timer = setInterval(() => {
+        if(totalSeconds > 0) {
+            totalSeconds--;
+            document.getElementById('timer-display').innerText = new Date(totalSeconds * 1000).toISOString().substr(11, 8);
+        }
+    }, 1000);
+
+    // Setup de Exames
+    const sel = document.getElementById('exam-select');
+    for(let i=45; i>=1; i--) { 
+        let n = i<10?"0"+i:i; let opt = document.createElement('option'); opt.value=n; opt.innerText=`EXAME ${n}`; if(i==44) opt.selected=true; sel.appendChild(opt); 
+    }
+    sel.onchange = window.mudarExame;
+
+    // Linhas
+    document.getElementById('ln-main').innerHTML = Array.from({length:350}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-res').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+    document.getElementById('ln-dicas').innerHTML = Array.from({length:100}, (_,i)=>i+1).join('<br>');
+    
+    popularMenu();
+    window.mudarExame();
+</script>
+</body>
+</html>
