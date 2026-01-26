@@ -3,7 +3,7 @@
  * Fidelidade Absoluta: Conteúdo Oficial FGV Sem Supressões.
  */
 
-const SALTO = "\n\n\n\n\n\n\n\n\n\n";
+onst SALTO = "\n\n\n\n\n\n\n\n\n\n";
 const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
 
 export const DATA_MASTER = {
@@ -113,3 +113,4 @@ export const DATA_MASTER = {
         `
     }
 };
+
