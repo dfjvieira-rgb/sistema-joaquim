@@ -22,19 +22,27 @@
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
 
-        /* Painel Não Confunda Integrado */
+        /* BOTÃO JUSTIÇA FLUTUANTE (FAB) */
+        .btn-justica-fab {
+            position: absolute; bottom: 25px; right: 25px;
+            width: 60px; height: 60px; background-color: var(--primary);
+            color: white; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center;
+            font-size: 26px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 100; border: 2px solid var(--accent); transition: 0.3s;
+        }
+        .btn-justica-fab:hover { transform: scale(1.1); background-color: var(--accent); }
+
         #painel-confunda { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: #fdfdfd; border-left: 4px solid var(--orange); z-index: 2000; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
         .form-nc { padding: 15px; background: #fff5e6; border-bottom: 2px solid #ffd8a8; }
         .form-nc input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; }
         .list-nc { flex: 1; overflow-y: auto; padding: 10px; }
 
-        /* PDF Section Simplificada */
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-tools { display: flex; gap: 5px; margin-bottom: 5px; }
         .pdf-tools a { flex: 1; padding: 8px; background: var(--orange); color: white; text-align: center; font-size: 0.65rem; font-weight: bold; text-decoration: none; border-radius: 4px; }
         .pdf-frame { width: 100%; flex: 1; border: none; background: white; }
 
-        /* Modal Peças */
         .modal-pecas { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 320px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; border: 1px solid #ccc; }
 
         @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #painel-confunda { width: 100%; } }
@@ -59,6 +67,10 @@
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold" id="label-atual">📍 TREINO LIVRE</div>
         <textarea id="area-peca" placeholder="Escreva aqui..."></textarea>
+        
+        <div class="btn-justica-fab" onclick="injetarConteudoExame()" title="Injetar Esqueleto do Exame Selecionado">
+            <i class="fas fa-balance-scale"></i>
+        </div>
     </section>
 
     <aside id="painel-confunda">
@@ -76,8 +88,8 @@
 
     <section class="pdf-section">
         <div class="pdf-tools">
-            <a href="#" id="link-enu" target="_blank">📄 VER ENUNCIADO COMPLETO</a>
-            <a href="#" id="link-gab" target="_blank">⚖️ VER GABARITO COMPLETO</a>
+            <a href="#" id="link-enu" target="_blank">📄 VER ENUNCIADO</a>
+            <a href="#" id="link-gab" target="_blank">⚖️ VER GABARITO</a>
         </div>
         <iframe id="v-enu" class="pdf-frame"></iframe>
         <iframe id="v-gab" class="pdf-frame"></iframe>
@@ -93,6 +105,16 @@
     import { pecas } from './estruturas.js';
     import { NaoConfunda } from './nao-confunda.js';
 
+    // Banco de Dados de Esqueletos Oficiais
+    const BANCO_EXAMES = {
+        "44": { esqueleto: "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nCONTESTAÇÃO..." },
+        "41": { esqueleto: "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL\nProcesso nº: ...\n\nAGRAVO DE PETIÇÃO..." },
+        "40": { esqueleto: "AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP\n\nRECLAMAÇÃO TRABALHISTA..." },
+        "39": { esqueleto: "AO JUÍZO DA... \nEXAME 39..." },
+        "38": { esqueleto: "AO JUÍZO DA... \nEXAME 38..." },
+        "37": { esqueleto: "AO JUÍZO DA... \nEXAME 37..." }
+    };
+
     const EXAMES = ["44", "41", "40", "39", "38", "37"];
     let exameAtivo = "44";
 
@@ -100,7 +122,6 @@
         const grid = document.getElementById('grid-pecas-js');
         const lista = document.getElementById('lista-exames');
 
-        // Popular Exames
         EXAMES.forEach(ex => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
@@ -109,7 +130,6 @@
             lista.appendChild(btn);
         });
 
-        // Popular Peças (estruturas.js)
         Object.keys(pecas).forEach(nome => {
             const btn = document.createElement('button');
             btn.style = "padding:10px; text-align:left; border:1px solid #eee; cursor:pointer; font-size:0.8rem; font-weight:bold;";
@@ -131,7 +151,6 @@
         
         document.getElementById('label-atual').innerText = `📍 EXAME ${ex}`;
         
-        // Atualiza PDFs e Links
         const enu = `ro${ex}.pdf`;
         const gab = `ro${ex}-gabarito.pdf`;
         document.getElementById('v-enu').src = enu;
@@ -139,9 +158,17 @@
         document.getElementById('link-enu').href = enu;
         document.getElementById('link-gab').href = gab;
 
-        // Carrega Teses do Firebase
         NaoConfunda.renderizar(ex, 'container-nc-lista');
     }
+
+    // Função que o Botão Justiça chama
+    window.injetarConteudoExame = () => {
+        if (BANCO_EXAMES[exameAtivo]) {
+            document.getElementById('area-peca').value = BANCO_EXAMES[exameAtivo].esqueleto;
+        } else {
+            alert("Esqueleto não disponível para este exame.");
+        }
+    };
 
     window.toggleElement = (id) => {
         const el = document.getElementById(id);
@@ -159,7 +186,6 @@
             document.getElementById('nc-titulo').value = "";
             document.getElementById('nc-tese').value = "";
             document.getElementById('nc-expl').value = "";
-            alert("Tese salva!");
         });
     };
 </script>
