@@ -3,7 +3,7 @@ import { db } from './firebase-config.js';
 import { NaoConfunda } from './nao-confunda.js';
 import { PDFEngine } from './pdf-engine.js';
 import { DATA_MASTER } from './estruturas.js';
-import { UI } from './ui-components.js'; // Importante para o novo modal de Post-its
+import { UI } from './ui-components.js'; 
 import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 export const App = {
@@ -17,14 +17,14 @@ export const App = {
 
     vincularInterface() {
         // --- NAVEGAÇÃO E MODAIS ---
-        window.irParaMentoria = () => window.location.href = 'mentoria.html';
+        window.irParaMentoria = () => alert("Redirecionando para Mentoria Aryanna...");
         
         window.abrirModal = (id) => {
             const modal = document.getElementById(id);
             if (modal) {
                 modal.style.display = 'flex';
                 // Se abrir o modal de Post-its, renderiza a lista do Firebase
-                if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'lista-nc-dinamica');
+                if(id === 'modal-nc') NaoConfunda.renderizar(this.getExame(), 'container-postits-nc');
             }
         };
 
@@ -46,21 +46,31 @@ export const App = {
                 const txt = document.getElementById('texto-final');
                 if (txt) {
                     txt.value = ""; 
-                    this.autoSave(); // Sincroniza a limpeza no Firebase
+                    this.autoSave(); 
                 }
             }
         };
 
         window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
         
-        // --- PONTES DO MOTOR PDF (PDF ENGINE) ---
+        // --- PONTES DO MOTOR PDF ---
         window.loadDoc = (tipo) => this.carregarPDF(tipo);
-        window.changePage = (off) => PDFEngine.changePage(off);
+        window.changePage = (off) => {
+            if (typeof PDFEngine !== 'undefined' && PDFEngine.changePage) {
+                PDFEngine.changePage(off);
+            }
+        };
         
         // --- SINCRONIZAÇÃO ---
         window.autoSave = () => this.autoSave();
         window.mudarExame = () => this.mudarExame();
         
+        // Listener para o Select de Exames
+        document.getElementById('exam-select').onchange = () => this.mudarExame();
+
+        // Listener para AutoSave no digitar
+        document.getElementById('texto-final').oninput = () => this.autoSave();
+
         // Ponte para salvar Questões e Dicas (Modais)
         window.saveMeta = (pasta, valor) => {
             const ex = this.getExame();
@@ -76,21 +86,20 @@ export const App = {
         const ex = this.getExame();
         const nomeArquivo = tipo === 'prova' ? `ro${ex}.pdf` : `vade.pdf`;
         
-        // Feedback visual nos botões de Tab
-        const tabProva = document.getElementById('tab-prova');
-        const tabVade = document.getElementById('tab-vade');
+        // Ajuste de IDs para bater com o seu HTML
+        const btnProva = document.getElementById('btn-prova');
+        const btnVade = document.getElementById('btn-vade');
         
-        if (tabProva) tabProva.style.background = tipo === 'prova' ? 'var(--primary)' : 'transparent';
-        if (tabVade) tabVade.style.background = tipo === 'vade' ? 'var(--primary)' : 'transparent';
+        if (btnProva) btnProva.style.background = tipo === 'prova' ? 'var(--primary)' : 'transparent';
+        if (btnVade) btnVade.style.background = tipo === 'vade' ? 'var(--primary)' : 'transparent';
 
         try {
-            // Busca o PDF na pasta local /pdfs/
             const response = await fetch(`./pdfs/${nomeArquivo}`);
             if (!response.ok) throw new Error("Arquivo não encontrado");
             const buffer = await response.arrayBuffer();
             PDFEngine.init(buffer);
         } catch (err) {
-            console.warn(`[UX] PDF ${nomeArquivo} não disponível.`);
+            console.warn(`[UX] PDF ${nomeArquivo} não disponível na pasta /pdfs/`);
         }
     },
 
@@ -117,8 +126,10 @@ export const App = {
         // 3. Atualiza o Espelho da FGV via estruturas.js
         const esp = document.getElementById('checklist-fgv');
         if (esp) {
-            esp.innerHTML = DATA_MASTER.espelhos[ex] || 
-            "<p style='padding:20px; opacity:0.6;'>Espelho para este exame ainda não cadastrado.</p>";
+            // Verifica se DATA_MASTER e espelhos existem para evitar erro
+            const conteudoEspelho = (DATA_MASTER && DATA_MASTER.espelhos) ? DATA_MASTER.espelhos[ex] : null;
+            esp.innerHTML = conteudoEspelho || 
+            "<p style='padding:20px; opacity:0.6; text-align:center;'>Espelho oficial para o Exame " + ex + " ainda não carregado.</p>";
         }
     },
 
@@ -127,10 +138,9 @@ export const App = {
         const texto = document.getElementById('texto-final').value;
 
         clearTimeout(this.sv);
-        // Debounce de 1.5s para economizar processamento mobile
         this.sv = setTimeout(() => {
             set(ref(db, `v3_treino/exame_${ex}`), texto);
-            console.log("📝 Progresso sincronizado.");
+            console.log("📝 Progresso do Exame " + ex + " salvo no Firebase.");
         }, 1500);
     }
 };
