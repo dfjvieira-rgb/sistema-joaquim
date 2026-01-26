@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MODO ALVO 2026</title>
+    <title>SISTEMA JOAQUIM - ARYANNA MASTER PRO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -14,201 +14,174 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        #timer { font-family: monospace; font-size: 1.3rem; color: var(--yellow); }
-
-        .nav-group { display: flex; gap: 8px; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; animation: pulse 2s infinite; }
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
+        .nav-group { display: flex; gap: 8px; }
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
+        .section-label { font-size: 0.65rem; font-weight: bold; color: #666; margin: 10px 0 5px; text-transform: uppercase; }
+        .exame-btn { width: 100%; padding: 8px; margin-bottom: 4px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.7rem; text-align: left; font-weight: bold; }
         .exame-btn:hover, .exame-btn.active { background: var(--accent); color: white; }
 
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { 
-            flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
+            flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
-            resize: none; overflow-y: auto;
+            resize: none;
         }
 
-        /* BOTÃO DA JUSTIÇA (FAB) - IDENTIDADE VISUAL */
         .btn-justica-fab {
-            position: absolute; bottom: 30px; right: 30px;
-            width: 65px; height: 65px; background-color: var(--primary);
+            position: absolute; bottom: 25px; right: 25px;
+            width: 60px; height: 60px; background-color: var(--primary);
             color: white; border-radius: 50%; display: flex;
             justify-content: center; align-items: center;
-            font-size: 28px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            font-size: 26px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 100; border: 3px solid var(--accent);
-            transition: transform 0.2s ease;
         }
-        .btn-justica-fab:active { transform: scale(0.9); }
 
-        /* CONTAINER ALVO / CORREÇÃO */
         #container-alvo { 
-            display: none; width: 400px; background: white; border-left: 2px solid #ccc; 
+            display: none; width: 380px; background: white; border-left: 2px solid #ccc; 
             flex-direction: column; z-index: 2000;
         }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
-        
-        .espelho-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; align-items: flex-start; }
-        .espelho-txt { flex: 1; font-size: 0.85rem; color: #333; }
-        .espelho-pt { font-weight: bold; color: var(--red); }
-        .resultado-nota { padding: 20px; background: #f8f9fa; text-align: center; border-top: 2px solid #ddd; }
+        .espelho-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+        .resultado-nota { padding: 15px; background: #f8f9fa; text-align: center; border-top: 2px solid #ddd; }
 
-        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
-
-        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 1024px) {
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; height: 150px; }
-            .pdf-section { width: 100%; height: 400px; }
-            #container-alvo { position: fixed; top: var(--header-h); left: 0; width: 100%; height: calc(100vh - var(--header-h)); }
-            .btn-justica-fab { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 22px; }
+            main { flex-direction: column; }
+            .sidebar { width: 100%; height: 130px; border-bottom: 1px solid #ccc; }
+            #container-alvo { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div id="timer">05:00:00</div>
+    <div style="font-weight: bold; font-size: 0.9rem;">ARYANNA <span style="color:var(--accent)">PRO</span></div>
     <div class="nav-group">
-        <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO / CORREÇÃO</button>
+        <button class="btn-alvo" onclick="toggleAlvo()">🎯 MODO ALVO</button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; color: var(--primary);">EXAMES DISPONÍVEIS:</div>
+        <div class="section-label">Exames Oficiais</div>
         <div id="lista-exames"></div>
+        <div class="section-label">Pulo do Gato (Modelos)</div>
+        <div id="lista-modelos"></div>
     </aside>
 
     <section class="work-section">
-        <div style="padding:10px; background:#e1e1e1; font-size:0.75rem; font-weight:bold; color:#333; display:flex; justify-content:space-between;" id="status-bar">
-            <span id="label-atual">📍 SELECIONE UM EXAME NA LATERAL</span>
-        </div>
+        <div style="padding:6px 15px; background:#f1f1f1; font-size:0.7rem; font-weight:bold; color:var(--primary)" id="label-atual">📍 AGUARDANDO SELEÇÃO</div>
+        <textarea id="area-peca" placeholder="Inicie sua peça técnica..."></textarea>
         
-        <textarea id="area-peca" placeholder="Inicie a redação da sua peça aqui..."></textarea>
-        
-        <div class="btn-justica-fab" id="btnJustica" onclick="injetarEstruturaOficial()" title="Injetar Esqueleto Oficial">
+        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Beber da Estrutura">
             <i class="fas fa-balance-scale"></i>
         </div>
     </section>
 
     <section id="container-alvo">
         <div class="alvo-header">
-            <span>CHECKLIST OFICIAL FGV</span>
-            <button onclick="toggleAlvo()" style="background:none; border:none; color:white; font-size: 1.2rem; cursor:pointer">✖</button>
+            <span>CHECKLIST DE CORREÇÃO</span>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer">✖</button>
         </div>
-        <div class="alvo-scroll" id="injetar-espelho">
-            <p style="text-align:center; color:#999; margin-top:20px;">Selecione um exame para carregar o espelho.</p>
-        </div>
+        <div class="alvo-scroll" id="injetar-espelho"></div>
         <div class="resultado-nota">
-            <div style="font-size:0.7rem; color:#666">PONTUAÇÃO ATUAL</div>
-            <div id="display-nota" style="font-size:2.8rem; font-weight:bold; color:var(--red)">0.00</div>
+            <div style="font-size:0.7rem; color:#666">PONTUAÇÃO</div>
+            <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
         </div>
-    </section>
-
-    <section class="pdf-section" id="pdfs">
-        <iframe id="v-enu" class="pdf-frame" title="Enunciado"></iframe>
-        <iframe id="v-gab" class="pdf-frame" title="Gabarito"></iframe>
     </section>
 </main>
 
-<script src="estruturas.js"></script>
-
 <script>
-    // BANCO DE ESPELHOS (Para correção no Modo Alvo)
-    const BANCO_ESPELHOS = {
-        "44": `<div class="espelho-item"><input type="checkbox" value="0.10" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento: 150ª VT de Manaus</div><div class="espelho-pt">0.10</div></div><div class="espelho-item"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Art. 847 da CLT</div><div class="espelho-pt">0.30</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">3. Ilegitimidade Passiva Sócios</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">4. Inépcia Reenquadramento</div><div class="espelho-pt">0.40</div></div><div class="espelho-item"><input type="checkbox" value="0.40" onchange="window.calcNota()"><div class="espelho-txt">5. Prescrição Parcial</div><div class="espelho-pt">0.40</div></div>`,
-        "41": `<div class="espelho-item"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">1. Agravo de Petição Art. 897, a CLT</div><div class="espelho-pt">0.50</div></div>`,
-        "40": `<div class="espelho-item"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Reclamação Trabalhista Art. 840 CLT</div><div class="espelho-pt">0.20</div></div>`
-        // Adicionar os demais conforme sua necessidade
+    const SALTO = "\n\n\n\n\n\n\n\n\n\n";
+    const QUALIF = "nacionalidade..., estado civil..., profissão..., portador da cédula de identidade RG nº..., inscrito no CPF sob o nº..., endereço eletrônico..., residente e domiciliado na...";
+
+    const BANCO_DADOS = {
+        "44": {
+            nome: "CONTESTAÇÃO - EXAME 44",
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 150ª VARA DO TRABALHO DE MANAUS${SALTO}Processo nº: ...\nXYZ LTDA, SANDRA PI e WALMIR LÉ, já qualificados nos autos da Reclamação Trabalhista que lhe move RECLAMANTE, vêm apresentar CONTESTAÇÃO (Art. 847 CLT)...\n\nI - PRELIMINARES\n1. Ilegitimidade Passiva dos Sócios (Art. 50 CC).\n2. Inépcia do Reenquadramento (Art. 330, §1º, I CPC).\n\nII - PREJUDICIAL\n1. Prescrição Parcial (Art. 7º, XXIX CF).\n\nIII - MÉRITO\n1. Ticket Refeição (Art. 614, §3º CLT).\n2. Aviso Prévio (Art. 488 CLT).\n3. Vale Transporte (Lei 7.418/85).\n\nIV - REQUERIMENTOS...`,
+            espelho: [["Endereçamento 150ª VT", 0.1], ["Art. 847 CLT", 0.3], ["Ilegitimidade Sócios", 0.4], ["Inépcia Reenquadramento", 0.4], ["Prescrição Parcial", 0.4]]
+        },
+        "41": {
+            nome: "AGRAVO DE PETIÇÃO - EXAME 41",
+            esqueleto: `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA 503ª VARA DO TRABALHO DO DISTRITO FEDERAL${SALTO}MARIA SERRA vem interpor AGRAVO DE PETIÇÃO (Art. 897, 'a' CLT)...\n\nRAZÕES DO AGRAVO...`,
+            espelho: [["Interposição 503ª VT", 0.2], ["Art. 897, a CLT", 0.3], ["Delimitação Matéria/Valor", 0.2], ["Nulidade IDPJ", 0.7]]
+        },
+        "40": {
+            nome: "RECLAMAÇÃO TRABALHISTA - EXAME 40",
+            esqueleto: `AO JUÍZO DA VARA DO TRABALHO DE OSASCO/SP${SALTO}ESPÓLIO DE... rep por JULIETA, ${QUALIF}, propor RECLAMAÇÃO TRABALHISTA (Art. 840, §1º CLT)...`,
+            espelho: [["VT Osasco + Art 840", 0.2], ["Qualificação Espólio", 0.2], ["Vínculo Art 3 CLT", 0.5]]
+        },
+        // --- ADICIONE OUTROS EXAMES AQUI ---
+        "RT": { nome: "MODELO: RECLAMAÇÃO", esqueleto: `AO JUÍZO DA...${SALTO}RECLAMANTE, ${QUALIF}, propor RT (Art. 840, §1º CLT)...` },
+        "RO": { nome: "MODELO: RECURSO ORDINÁRIO", esqueleto: `AO JUÍZO DA...${SALTO}RECORRENTE, interpor RECURSO ORDINÁRIO (Art. 895, I CLT)...` }
     };
 
     let idAtivo = null;
 
-    function carregarMenu() {
-        const menu = document.getElementById('lista-exames');
-        // Pega as chaves do BANCO_ESPELHOS ou do objeto estruturas para gerar botões
-        const exames = ["44", "41", "40", "37", "35"];
-        exames.forEach(ex => {
-            const b = document.createElement('button');
-            b.className = 'exame-btn';
-            b.id = "btn-" + ex;
-            b.innerText = `EXAME XXX${ex}`;
-            b.onclick = () => selecionarExame(ex);
-            menu.appendChild(b);
+    function init() {
+        const menuExames = document.getElementById('lista-exames');
+        const menuModelos = document.getElementById('lista-modelos');
+
+        Object.keys(BANCO_DADOS).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'exame-btn';
+            btn.innerText = BANCO_DADOS[key].nome || key;
+            btn.onclick = () => selecionar(key);
+            
+            if(["44", "41", "40", "37", "35"].includes(key)) {
+                menuExames.appendChild(btn);
+            } else {
+                menuModelos.appendChild(btn);
+            }
         });
     }
 
-    function selecionarExame(num) {
-        idAtivo = num;
+    function selecionar(key) {
+        idAtivo = key;
+        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('label-atual').innerText = `📍 SELECIONADO: ${BANCO_DADOS[key].nome}`;
         
-        // Estética dos botões
-        document.querySelectorAll('.exame-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('btn-' + num).classList.add('active');
-
-        // Atualiza Status e PDFs
-        document.getElementById('label-atual').innerText = `📍 EXAME XXX${num} SELECIONADO`;
-        document.getElementById('v-enu').src = `ro${num}.pdf`;
-        document.getElementById('v-gab').src = `ro${num}-gabarito.pdf`;
-        
-        // Carrega o espelho para o Modo Alvo
-        document.getElementById('injetar-espelho').innerHTML = BANCO_ESPELHOS[num] || "<p style='padding:20px'>Espelho desta peça em breve.</p>";
-        window.calcNota();
+        // Carrega Espelho se existir
+        const espelhoArea = document.getElementById('injetar-espelho');
+        espelhoArea.innerHTML = "";
+        if(BANCO_DADOS[key].espelho) {
+            BANCO_DADOS[key].espelho.forEach(item => {
+                espelhoArea.innerHTML += `
+                <div class="espelho-item">
+                    <input type="checkbox" value="${item[1]}" onchange="calcNota()">
+                    <div style="flex:1">${item[0]}</div>
+                    <div style="font-weight:bold; color:var(--red)">${item[1].toFixed(2)}</div>
+                </div>`;
+            });
+        } else {
+            espelhoArea.innerHTML = "<p style='padding:20px; font-size:0.8rem; color:#999'>Este modelo não possui checklist de correção.</p>";
+        }
+        calcNota();
     }
 
-    // FUNÇÃO PRINCIPAL: BEBER DO ARQUIVO ESTRUTURAS.JS
-    function injetarEstruturaOficial() {
-        if (!idAtivo) {
-            alert("⚠️ Selecione primeiro qual Exame você quer estudar na barra lateral!");
-            return;
-        }
-
-        // Verifica se a variável global 'estruturas' existe (vinda do estruturas.js)
-        if (typeof estruturas !== 'undefined') {
-            const conteudo = estruturas[idAtivo];
-            if (conteudo) {
-                if (confirm(`Deseja carregar a estrutura oficial do Exame ${idAtivo}? Isso apagará seu texto atual.`)) {
-                    document.getElementById('area-peca').value = conteudo;
-                    // Auto-scroll para o topo
-                    document.getElementById('area-peca').scrollTop = 0;
-                }
-            } else {
-                alert(`❌ Estrutura para o Exame ${idAtivo} não encontrada no arquivo estruturas.js`);
-            }
-        } else {
-            alert("❌ Erro: O arquivo 'estruturas.js' não foi detectado. Verifique se ele está na mesma pasta que este HTML.");
-        }
+    function injetarConteudo() {
+        if(!idAtivo) return alert("Selecione uma peça primeiro!");
+        document.getElementById('area-peca').value = BANCO_DADOS[idAtivo].esqueleto;
     }
 
     function toggleAlvo() {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        const painel = document.getElementById('container-alvo');
-        const pdfs = document.getElementById('pdfs');
-        if(painel.style.display === 'flex') {
-            painel.style.display = 'none';
-            pdfs.style.display = 'flex';
-        } else {
-            painel.style.display = 'flex';
-            pdfs.style.display = 'none';
-        }
+        const p = document.getElementById('container-alvo');
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    window.calcNota = function() {
-        const checkboxes = document.querySelectorAll('#injetar-espelho input[type="checkbox"]');
-        let nota = 0;
-        checkboxes.forEach(c => { if(c.checked) nota += parseFloat(c.value); });
-        document.getElementById('display-nota').innerText = nota.toFixed(2);
-    };
+    function calcNota() {
+        let n = 0;
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
+        document.getElementById('display-nota').innerText = n.toFixed(2);
+    }
 
-    window.onload = carregarMenu;
+    window.onload = init;
 </script>
 </body>
 </html>
