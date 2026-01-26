@@ -14,8 +14,7 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .nav-btns { display: flex; gap: 8px; }
-        .btn-header { color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
 
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
@@ -33,6 +32,7 @@
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
 
+        /* Botão Justiça - A Balança */
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
             width: 60px; height: 60px; background-color: var(--primary);
@@ -42,14 +42,16 @@
             z-index: 100; border: 2px solid var(--gold);
         }
 
+        /* Container do Espelho (Modo Alvo) */
         #container-alvo { 
             display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
             background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
-
-        /* Estilos do Espelho (Banco de Espelhos) */
+        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
+        
+        /* Classes injetadas do banco-espelhos.js */
         .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
-        .espelho-txt { flex: 1; line-height: 1.2; }
+        .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
         .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
         .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
 
@@ -60,14 +62,12 @@
 
 <header>
     <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
-    <div class="nav-btns">
-        <button class="btn-header" style="background: var(--red);" onclick="toggleAlvo()">🎯 MODO ALVO</button>
-    </div>
+    <button class="btn-alvo" onclick="toggleAlvo()">🎯 CORREÇÃO</button>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames Disponíveis</div>
+        <div class="section-label">Exames OAB</div>
         <div id="lista-exames"></div>
     </aside>
 
@@ -76,8 +76,8 @@
             <span id="label-atual">📍 SELECIONE O EXAME</span>
             <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Selecione um exame e use a balança para injetar as teses oficiais..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses Oficiais"><i class="fas fa-balance-scale"></i></div>
+        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
@@ -86,7 +86,7 @@
     </section>
 
     <section id="container-alvo">
-        <div style="padding:15px; background:var(--red); color:white; font-weight:bold; display:flex; justify-content:space-between;">
+        <div class="alvo-header">
             <span>CHECKLIST DE CORREÇÃO</span>
             <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
@@ -104,7 +104,10 @@
 
     window.onload = () => {
         const menuExames = document.getElementById('lista-exames');
-        Object.keys(BANCO_ESPELHOS).sort((a,b) => b-a).forEach(key => {
+        // Lista fixa de exames para carregar
+        const examesParaCarregar = ["44", "41", "40", "37", "35"]; 
+
+        examesParaCarregar.forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
             btn.innerText = `EXAME ${key}`;
@@ -121,44 +124,56 @@
         });
     };
 
-    // RECUPERANDO A LÓGICA ORIGINAL DO BOTÃO JUSTIÇA (BALANÇA)
+    // FUNÇÃO PARA RENDERIZAR O CHECKLIST NO MODO ALVO
+    window.renderEspelho = (key) => {
+        const area = document.getElementById('injetar-espelho');
+        const dados = BANCO_ESPELHOS[key];
+
+        if (dados) {
+            area.innerHTML = dados;
+            window.calcNota(); // Atualiza a nota se houver marcações prévias
+        } else {
+            // REGRA: Se não tiver dados no banco de espelhos
+            area.innerHTML = `
+                <div style="padding:40px; text-align:center; color:#999;">
+                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
+                </div>`;
+            document.getElementById('display-nota').innerText = "0.00";
+        }
+    };
+
+    // BOTÃO JUSTIÇA: REGRA DE SUBSTITUIÇÃO TOTAL (BEBE DO BANCO_ESPELHOS)
     window.injetarJustica = () => {
-        // 1. ANALISA: Existe exame selecionado?
         if(!idAtivo) return alert("Selecione um exame primeiro!");
         
-        // 2. FONTE: Bebe do HTML bruto do BANCO_ESPELHOS
-        const htmlBruto = BANCO_ESPELHOS[idAtivo];
+        const conteudoEspelho = BANCO_ESPELHOS[idAtivo];
+        if(!conteudoEspelho) return alert("Sem teses cadastradas para este exame!");
+
+        // Processamento para converter o HTML do Banco em Texto para o Textarea
+        const temp = document.createElement('div');
+        temp.innerHTML = conteudoEspelho;
         
-        // Criar parser temporário para extrair apenas o texto das teses
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlBruto;
-        
-        const header = tempDiv.querySelector('.nota-floating');
+        const header = temp.querySelector('.nota-floating');
         const titulo = header ? header.innerText : `EXAME ${idAtivo}`;
+        const itens = temp.querySelectorAll('.espelho-txt');
         
-        // Seleciona todos os textos dos itens do espelho
-        const itens = tempDiv.querySelectorAll('.espelho-txt');
-        let corpoPeca = `${titulo}\n${"=".repeat(30)}\n\n`;
+        let textoParaInjetar = `${titulo}\n${"=".repeat(30)}\n\n`;
         
         itens.forEach(item => {
-            // Adiciona cada tese com um marcador visual
-            corpoPeca += `[ ] ${item.innerText}\n\n`;
+            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
         });
 
-        // 3. REGRA: Substituição Total no editor
-        const area = document.getElementById('area-peca');
-        area.value = corpoPeca; // Apaga o anterior e injeta o novo
+        // REGRA: Substituição Total no editor
+        document.getElementById('area-peca').value = textoParaInjetar;
     };
 
-    window.renderEspelho = (key) => {
-        const container = document.getElementById('injetar-espelho');
-        container.innerHTML = BANCO_ESPELHOS[key] || "<p style='padding:20px'>Dados não encontrados.</p>";
-        window.calcNota();
-    };
-
+    // CÁLCULO DE NOTA GLOBAL
     window.calcNota = () => {
         let n = 0;
-        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
+            n += parseFloat(c.value);
+        });
         const total = n.toFixed(2);
         document.getElementById('display-nota').innerText = total;
         document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
