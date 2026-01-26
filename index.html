@@ -2,82 +2,54 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARYANNA MASTER PRO | 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf_viewer.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA JOAQUIM | ARYANNA 2026</title>
     <link rel="stylesheet" href="estilos.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
-    <div class="logo">ARYANNA MASTER 2026</div>
-    <div id="timer-display" style="color:var(--warning); font-family:'Courier Prime'; font-weight:bold;">05:00:00</div>
+    <div class="logo">🏆 ARYANNA MASTER</div>
+    <select id="exam-select">
+        <option value="44">Exame 44 - RO</option>
+        <option value="43">Exame 43 - RO</option>
+        <option value="42">Exame 42 - RO</option>
+        <option value="41">Exame 41 - RO</option>
+        <option value="40">Exame 40 - RO</option>
+        <option value="39">Exame 39 - RO</option>
+        <option value="38">Exame 38 - RO</option>
+        <option value="37">Exame 37 - RO</option>
+        <option value="36">Exame 36 - RO</option>
+        <option value="35">Exame 35 - RO</option>
+    </select>
+    <div class="timer" id="timer">05:00:00</div>
+    <button id="btn-salvar">💾 SALVAR</button>
+    <button id="btn-add-nc">⚖️ +POST-IT</button>
 </header>
 
-<div class="main-container">
-    <section class="editor-section">
-        <div class="toolbar">
-            <select id="exam-select" class="btn-symbol" style="width:auto; font-size:0.75rem; font-weight:bold;"></select>
-            <button class="btn-symbol" onclick="window.location.href='mentoria.html'">🏆</button>
-            <button class="btn-symbol" title="Questões" onclick="window.abrirModal('modal-respostas')">📚</button>
-            <button class="btn-symbol" title="Estruturas" onclick="window.toggleEstruturas()">⚖️</button>
-            <button class="btn-symbol" title="Não Confunda" onclick="window.abrirModal('modal-nc')">📌</button>
-            <button class="btn-symbol" title="Qual é a peça" onclick="window.abrirModal('modal-dicas')">💡</button>
-            <button class="btn-symbol" onclick="window.limparFolha()">🗑️</button>
-            <button class="btn-symbol" onclick="window.toggleDarkMode()">🌓</button>
-            <button class="btn-symbol" style="background:var(--success); color:white; margin-left:auto;" onclick="window.finalizarManual()">💾</button>
+<main class="split-view">
+    <section id="pdf-container">
+        <div class="pdf-controls">
+            <button id="prev-page">◀</button>
+            <span>Pág: <input type="number" id="page-num" value="1"> / <span id="page-count">0</span></span>
+            <button id="next-page">▶</button>
         </div>
-        
-        <div class="paper-wrapper">
-            <div class="paper-sheet">
-                <div class="line-nums" id="ln-main"></div>
-                <textarea id="texto-final" class="text-area" spellcheck="false" placeholder="Inicie sua peça..."></textarea>
-            </div>
-        </div>
+        <canvas id="pdf-canvas"></canvas>
     </section>
 
-    <section class="viewer-section" id="section-pdf">
-        <div class="tabs">
-            <button id="tab-prova" class="tab active" onclick="window.carregarPDF('prova')">PROVA</button>
-            <button id="tab-gabarito" class="tab" onclick="window.carregarPDF('gabarito')">GABARITO</button>
-            <button id="tab-vade" class="tab" onclick="window.carregarPDF('vade')">VADE</button>
-        </div>
-        <div id="pdf-viewport"></div>
+    <section id="section-folha">
+        <div id="container-postits"></div>
+        <textarea id="texto-final" placeholder="Inicie sua peça aqui..."></textarea>
     </section>
-</div>
-
-<button class="floating-toggle" onclick="window.toggleMobileView()">⇄</button>
-
-<div id="modal-respostas" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-respostas')">← VOLTAR</button><h3>QUESTÕES DISSERTATIVAS</h3></div>
-    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-res"></div><textarea id="res-editor" class="text-area"></textarea></div></div>
-</div>
-
-<div id="modal-dicas" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-dicas')">← VOLTAR</button><h3>QUAL É A PEÇA</h3></div>
-    <div class="modal-body"><div class="paper-sheet"><div class="line-nums" id="ln-dicas"></div><textarea id="dicas-editor" class="text-area"></textarea></div></div>
-</div>
-
-<div id="modal-nc" class="modal-full">
-    <div class="modal-header"><button class="btn-back" onclick="window.fecharModal('modal-nc')">← VOLTAR</button><h3>📌 POST-ITS SALVOS</h3></div>
-    <div class="modal-body">
-        <div id="form-nc" style="background:var(--paper); padding:15px; border-radius:10px; border:1px solid var(--border); margin-bottom:20px;">
-            <input type="text" id="nc-assunto" placeholder="Tese Principal" class="input-nc">
-            <div id="container-explicações">
-                <textarea class="input-nc explicação-item" placeholder="Diferença ou Dica..." style="height:60px;"></textarea>
-            </div>
-            <button class="btn-action" onclick="window.addExplicaçãoField()">+ Adicionar Linha</button>
-            <button onclick="window.saveNC()" style="width:100%; background:var(--danger); color:white; border:none; padding:12px; border-radius:5px; font-weight:bold; margin-top:15px; cursor:pointer;">SALVAR POST-IT</button>
-        </div>
-        <div id="lista-nc"></div>
-    </div>
-</div>
-
-<div id="menu-estruturas" style="display:none; position:absolute; top:100px; left:50px; z-index:9999; background:white; padding:10px; border:2px solid var(--gold); border-radius:8px;">
-    </div>
+</main>
 
 <script type="module" src="app-master.js"></script>
+
+<script>
+    // Configura o Worker do PDF.js (Obrigatório para o motor funcionar)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 </body>
 </html>
