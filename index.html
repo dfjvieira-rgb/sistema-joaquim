@@ -33,7 +33,6 @@
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
 
-        /* BOTÃO JUSTIÇA (BALANÇA) */
         .btn-justica-fab {
             position: absolute; bottom: 25px; right: 25px;
             width: 60px; height: 60px; background-color: var(--primary);
@@ -43,12 +42,16 @@
             z-index: 100; border: 2px solid var(--gold);
         }
 
-        .modal { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 450px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; border: 1px solid #ccc; }
-        
         #container-alvo { 
             display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
             background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
+
+        /* Estilos do Espelho (Banco de Espelhos) */
+        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
+        .espelho-txt { flex: 1; line-height: 1.2; }
+        .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
+        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
 
         @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
     </style>
@@ -58,24 +61,23 @@
 <header>
     <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
     <div class="nav-btns">
-        <button class="btn-header" style="background: var(--accent);" onclick="toggleModal('modal-pecas')"><i class="fas fa-file-contract"></i> PEÇAS</button>
-        <button class="btn-header" style="background: var(--red);" onclick="toggleAlvo()"><i class="fas fa-bullseye"></i> MODO ALVO</button>
+        <button class="btn-header" style="background: var(--red);" onclick="toggleAlvo()">🎯 MODO ALVO</button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames Oficiais OAB</div>
+        <div class="section-label">Exames Disponíveis</div>
         <div id="lista-exames"></div>
     </aside>
 
     <section class="work-section">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
-            <span id="label-atual">📍 SELECIONE UM EXAME</span>
+            <span id="label-atual">📍 SELECIONE O EXAME</span>
             <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarConteudo()" title="Injetar Esqueleto Oficial"><i class="fas fa-balance-scale"></i></div>
+        <textarea id="area-peca" placeholder="Selecione um exame e use a balança para injetar as teses oficiais..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses Oficiais"><i class="fas fa-balance-scale"></i></div>
     </section>
 
     <section class="pdf-section">
@@ -83,20 +85,12 @@
         <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
 
-    <div id="modal-pecas" class="modal">
-        <div style="padding:12px; background:var(--accent); color:white; font-weight:bold; display:flex; justify-content:space-between;">
-            <span>🧩 ESTRUTURAS TÉCNICAS</span>
-            <span onclick="toggleModal('modal-pecas')" style="cursor:pointer">×</span>
-        </div>
-        <div id="grid-pecas-js" style="padding:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
-    </div>
-
     <section id="container-alvo">
         <div style="padding:15px; background:var(--red); color:white; font-weight:bold; display:flex; justify-content:space-between;">
-            <span>CHECKLIST OFICIAL</span>
+            <span>CHECKLIST DE CORREÇÃO</span>
             <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
-        <div id="injetar-espelho" style="flex:1; padding:15px; overflow-y:auto;"></div>
+        <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
         <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
             <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
         </div>
@@ -104,16 +98,12 @@
 </main>
 
 <script type="module">
-    import { pecas } from './estruturas.js';
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
     let idAtivo = null;
 
     window.onload = () => {
         const menuExames = document.getElementById('lista-exames');
-        const gridPecas = document.getElementById('grid-pecas-js');
-
-        // Carrega exames do banco de espelhos
         Object.keys(BANCO_ESPELHOS).sort((a,b) => b-a).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
@@ -129,53 +119,49 @@
             };
             menuExames.appendChild(btn);
         });
-
-        // Botão PEÇAS (estruturas.js)
-        Object.keys(pecas).forEach(nome => {
-            const btn = document.createElement('button');
-            btn.style = "padding:10px; border:1px solid #ddd; border-radius:4px; cursor:pointer; font-size:0.7rem; font-weight:bold; background:white;";
-            btn.innerText = nome;
-            btn.onclick = () => {
-                document.getElementById('area-peca').value = pecas[nome];
-                toggleModal('modal-pecas');
-            };
-            gridPecas.appendChild(btn);
-        });
     };
 
-    // REGRA DO BOTÃO JUSTIÇA: SUBSTITUIÇÃO TOTAL DO CONTEÚDO
-    window.injetarConteudo = () => {
-        // 1. Analisa se existe exame selecionado
-        if(!idAtivo) return alert("Selecione um exame!");
+    // RECUPERANDO A LÓGICA ORIGINAL DO BOTÃO JUSTIÇA (BALANÇA)
+    window.injetarJustica = () => {
+        // 1. ANALISA: Existe exame selecionado?
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
         
-        // 2. Bebe os dados de BANCO_ESPELHOS[idAtivo].esqueleto
-        const esqueletoOficial = BANCO_ESPELHOS[idAtivo].esqueleto;
+        // 2. FONTE: Bebe do HTML bruto do BANCO_ESPELHOS
+        const htmlBruto = BANCO_ESPELHOS[idAtivo];
+        
+        // Criar parser temporário para extrair apenas o texto das teses
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlBruto;
+        
+        const header = tempDiv.querySelector('.nota-floating');
+        const titulo = header ? header.innerText : `EXAME ${idAtivo}`;
+        
+        // Seleciona todos os textos dos itens do espelho
+        const itens = tempDiv.querySelectorAll('.espelho-txt');
+        let corpoPeca = `${titulo}\n${"=".repeat(30)}\n\n`;
+        
+        itens.forEach(item => {
+            // Adiciona cada tese com um marcador visual
+            corpoPeca += `[ ] ${item.innerText}\n\n`;
+        });
 
-        if(esqueletoOficial) {
-            // 3. Substituição Total (.value = ...) e 4. Não-Acumulação
-            document.getElementById('area-peca').value = esqueletoOficial;
-        } else {
-            alert("Esqueleto não encontrado para este exame no banco de dados.");
-        }
+        // 3. REGRA: Substituição Total no editor
+        const area = document.getElementById('area-peca');
+        area.value = corpoPeca; // Apaga o anterior e injeta o novo
     };
 
     window.renderEspelho = (key) => {
-        const area = document.getElementById('injetar-espelho');
-        // Renderiza o HTML do espelho que está no seu banco-espelhos.js
-        area.innerHTML = BANCO_ESPELHOS[key].html || "<p>Checklist indisponível.</p>";
+        const container = document.getElementById('injetar-espelho');
+        container.innerHTML = BANCO_ESPELHOS[key] || "<p style='padding:20px'>Dados não encontrados.</p>";
         window.calcNota();
     };
 
     window.calcNota = () => {
         let n = 0;
         document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
-        document.getElementById('display-nota').innerText = n.toFixed(2);
-        document.getElementById('mini-nota').innerText = `NOTA: ${n.toFixed(2)}`;
-    };
-
-    window.toggleModal = (id) => {
-        const m = document.getElementById(id);
-        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+        const total = n.toFixed(2);
+        document.getElementById('display-nota').innerText = total;
+        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
     };
 
     window.toggleAlvo = () => {
