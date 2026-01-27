@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MULTI-PDF 2026</title>
+    <title>SISTEMA JOAQUIM - PEÇA MESTRA INTELIGENTE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -38,14 +38,18 @@
         .folha-fgv { background: white; width: 100%; min-height: 1400px; padding: 50px; box-shadow: 0 0 20px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; }
         .peca-editor { outline: none; font-size: 18px; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #1a1a1a; }
 
-        /* LADO DIREITO: ÁREA DE PDFS COM NAVEGAÇÃO INTERNA */
+        /* LADO DIREITO: ÁREA DE PDFS */
         .pdf-section { width: 45%; display: flex; flex-direction: column; background: #525659; }
         .pdf-tabs { background: #334155; display: flex; padding: 5px; gap: 5px; border-bottom: 1px solid var(--gold); }
         .tab-btn { flex: 1; padding: 8px; font-size: 0.7rem; font-weight: bold; border: none; background: #1e293b; color: #94a3b8; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
         .tab-btn.active { background: var(--gold); color: var(--primary); }
         .pdf-viewer { flex: 1; width: 100%; border: none; }
 
-        .gabarito-folha { margin-top: 60px; padding: 25px; background: #f0fff4; border-top: 3px double var(--fgv-green); font-family: 'Inter'; font-size: 0.9rem; }
+        /* ÁREA DE GABARITO NA FOLHA */
+        .gabarito-folha { margin-top: 60px; padding: 25px; border-radius: 8px; font-family: 'Inter'; font-size: 0.9rem; }
+        .gabarito-existente { background: #f0fff4; border: 2px solid var(--fgv-green); }
+        .gabarito-ausente { background: #fff5f5; border: 2px dashed var(--red); color: var(--red); text-align: center; }
+
         .modal-pecas { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 380px; background: white; z-index: 10001; padding: 25px; border-radius: 8px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
     </style>
 </head>
@@ -66,10 +70,9 @@
     <section class="folha-mestra-container">
         <div class="folha-fgv">
             <div id="editor-folha" class="peca-editor" contenteditable="true">Selecione um Exame para iniciar o treino...</div>
-            <div class="gabarito-folha" id="gabarito-alvo">
-                <h4 style="color:var(--fgv-green); margin-bottom:15px;"><i class="fas fa-check-double"></i> ESPELHO OFICIAL (E<span id="label-exame-folha">--</span>)</h4>
-                <div id="espelho-folha"></div>
-            </div>
+            
+            <div id="container-gabarito" class="gabarito-folha">
+                </div>
         </div>
     </section>
 
@@ -108,8 +111,7 @@
                 idAtivo = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                document.getElementById('label-exame-folha').innerText = i;
-                mudarPdf('prova'); // Ao clicar no exame, carrega a prova por padrão
+                mudarPdf('prova');
                 atualizarConteudo();
             };
             menu.appendChild(btn);
@@ -117,10 +119,8 @@
         popularEstruturas();
     };
 
-    // FUNÇÃO PARA ALTERNAR ENTRE OS ARQUIVOS PDF
     window.mudarPdf = (tipo) => {
-        if(!idAtivo) return alert("Selecione um Exame na lateral primeiro.");
-        
+        if(!idAtivo) return alert("Selecione um Exame primeiro.");
         const frame = document.getElementById('pdf-frame');
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(t => t.classList.remove('active'));
@@ -139,9 +139,26 @@
 
     window.atualizarConteudo = () => {
         const editor = document.getElementById('editor-folha');
-        const espelho = document.getElementById('espelho-folha');
+        const containerGabarito = document.getElementById('container-gabarito');
+        
+        // Atualiza Editor com a Peça Selecionada
         if(window.pecas[pecaNomeAtivo]) editor.innerText = window.pecas[pecaNomeAtivo];
-        if(idAtivo && window.BANCO_ESPELHOS[idAtivo]) espelho.innerHTML = window.BANCO_ESPELHOS[idAtivo];
+
+        // Lógica Inteligente do Gabarito na Folha
+        if(idAtivo && window.BANCO_ESPELHOS[idAtivo]) {
+            containerGabarito.className = "gabarito-folha gabarito-existente";
+            containerGabarito.innerHTML = `
+                <h4 style="color:var(--fgv-green); margin-bottom:10px;"><i class="fas fa-check-double"></i> ESPELHO OFICIAL (E${idAtivo})</h4>
+                <div>${window.BANCO_ESPELHOS[idAtivo]}</div>
+            `;
+        } else {
+            containerGabarito.className = "gabarito-folha gabarito-ausente";
+            containerGabarito.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i><br>
+                <strong>Gabarito oficial não disponível para o Exame ${idAtivo || '--'}.</strong><br>
+                Consulte o PDF de Gabarito à direita se disponível.
+            `;
+        }
     };
 
     window.popularEstruturas = () => {
@@ -165,7 +182,7 @@
     };
 
     window.injetarJustica = () => {
-        if(!idAtivo) return alert("Selecione um exame.");
+        if(!idAtivo || !window.BANCO_ESPELHOS[idAtivo]) return alert("Sem dados de tese para este exame.");
         const temp = document.createElement('div');
         temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
         let t = `\n\n--- TESES PARA PRÁTICA E${idAtivo} ---\n`;
@@ -174,7 +191,7 @@
     };
 
     window.scrollParaGabarito = () => {
-        document.getElementById('gabarito-alvo').scrollIntoView({behavior: 'smooth'});
+        document.getElementById('container-gabarito').scrollIntoView({behavior: 'smooth'});
     };
 </script>
 </body>
