@@ -3,185 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - ARYANNA MASTER 2026</title>
+    <title>SISTEMA JOAQUIM - MASTER V8 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --orange: #f39c12; --header-h: 60px; --gold: #fbbf24;
+            --red: #e74c3c; --orange: #f39c12; --green: #27ae60; 
+            --gold: #f1c40f; --header-h: 60px; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        header { background: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .nav-btns { display: flex; gap: 8px; }
+        .btn-header { color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; display: flex; align-items: center; gap: 5px; transition: 0.3s; text-decoration: none; }
+        .btn-header:hover { opacity: 0.8; transform: translateY(-1px); }
 
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
-        .exame-btn.active { background: var(--accent); color: white; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; text-align: left; }
+        .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
-        #area-peca { 
-            flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
-            font-size: 16px; line-height: 1.6; outline: none; 
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
-        }
+        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
 
-        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
+        .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100; border: 2px solid var(--accent); }
 
-        /* Botão Justiça - A Balança */
-        .btn-justica-fab {
-            position: absolute; bottom: 25px; right: 25px;
-            width: 60px; height: 60px; background-color: var(--primary);
-            color: white; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center;
-            font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 100; border: 2px solid var(--gold);
-        }
-
-        /* Container do Espelho (Modo Alvo) */
-        #container-alvo { 
-            display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
-            background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
-        }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
+        .modal { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 400px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; border: 1px solid #ccc; max-height: 80vh; overflow-y: auto; }
+        .modal-header { padding: 12px; color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Classes injetadas do banco-espelhos.js */
-        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
-        .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
-        .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
-        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
+        #painel-confunda { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: #fdfdfd; border-left: 4px solid var(--orange); z-index: 2000; flex-direction: column; }
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; flex: 1; border: none; background: white; }
 
-        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
+        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #painel-confunda { width: 100%; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
-    <button class="btn-alvo" onclick="toggleAlvo()">🎯 CORREÇÃO</button>
+    <div style="font-weight: bold;">SISTEMA <span style="color:var(--accent)">JOAQUIM</span></div>
+    <div class="nav-btns">
+        <button class="btn-header" style="background:var(--orange)" onclick="toggleElement('painel-confunda')"><i class="fas fa-lightbulb"></i> NÃO CONFUNDA</button>
+        <button class="btn-header" style="background:var(--accent)" onclick="toggleElement('modal-pecas')"><i class="fas fa-file-contract"></i> PEÇAS</button>
+        <button class="btn-header" style="background:var(--red)" onclick="abrirCorrecao()"><i class="fas fa-check-double"></i> CORREÇÃO</button>
+    </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div class="section-label">Exames OAB</div>
         <div id="lista-exames"></div>
     </aside>
 
     <section class="work-section">
-        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
-            <span id="label-atual">📍 SELECIONE O EXAME</span>
-            <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display:flex; justify-content:space-between;">
+            <span id="label-atual">📍 AGUARDANDO EXAME</span>
+            <span id="score-temp" style="color:var(--red); font-weight: 800;">NOTA: 0.00 / 5.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
+        <textarea id="area-peca" placeholder="Desenvolva sua tese..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarEsqueletoExame()"><i class="fas fa-balance-scale"></i></div>
     </section>
+
+    <aside id="painel-confunda">
+        <div class="modal-header" style="background:var(--orange)">💡 NÃO CONFUNDA <span onclick="toggleElement('painel-confunda')" style="cursor:pointer">×</span></div>
+        <div style="padding:15px; background: #fff5e6; border-bottom: 2px solid #ffd8a8;">
+            <input type="text" id="nc-titulo" placeholder="Título">
+            <input type="text" id="nc-tese" placeholder="Tese">
+            <input type="text" id="nc-expl" placeholder="Dica">
+            <button onclick="salvarTese()" style="width:100%; padding:10px; background:var(--green); color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer">SALVAR</button>
+        </div>
+        <div id="container-nc-lista" style="flex:1; overflow-y:auto; padding:10px;"></div>
+    </aside>
 
     <section class="pdf-section">
         <iframe id="v-enu" class="pdf-frame"></iframe>
         <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
-
-    <section id="container-alvo">
-        <div class="alvo-header">
-            <span>CHECKLIST DE CORREÇÃO</span>
-            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
-        </div>
-        <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
-        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
-            <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
-        </div>
-    </section>
 </main>
 
-<script type="module">
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+<div id="modal-correcao" class="modal">
+    <div class="modal-header" style="background:var(--red)">📋 ESPELHO DE PONTUAÇÃO <span onclick="toggleElement('modal-correcao')" style="cursor:pointer">×</span></div>
+    <div id="checklist-itens" style="padding:10px;"></div>
+    <div style="padding:15px; background:#f8f9fa; font-weight:bold; text-align:center; border-top:2px solid var(--red);">NOTA: <span id="nota-final">0.00</span> / 5.00</div>
+</div>
 
-    let idAtivo = null;
+<div id="modal-pecas" class="modal">
+    <div class="modal-header" style="background:var(--accent)">🧩 ESTRUTURAS <span onclick="toggleElement('modal-pecas')" style="cursor:pointer">×</span></div>
+    <div id="grid-pecas-js" style="padding:10px; display:grid; gap:5px;"></div>
+</div>
+
+<script type="module">
+    import { pecas } from './estruturas.js';
+    import { NaoConfunda } from './nao-confunda.js';
+
+    const BANCO_DADOS = {
+        "44": { esqueleto: "AO JUÍZO DA 150ª VARA DO TRABALHO DE MANAUS/AM\nProcesso nº: ...\n\nCONTESTAÇÃO...", itens: [{t:"Ender. Manaus", p:0.10}, {t:"Mérito Periculosidade", p:1.25}, {t:"Horas Extras", p:1.25}, {t:"Honorários", p:0.50}, {t:"Fechamento", p:1.90}] },
+        "41": { esqueleto: "AO JUÍZO DA 503ª VARA DO TRABALHO DO DF\n\nAGRAVO DE PETIÇÃO...", itens: [{t:"Tese Agravo", p:1.00}, {t:"Impenhorabilidade", p:4.00}] }
+    };
+
+    let exameAtivo = "44";
+    let notaAcumulada = 0;
 
     window.onload = () => {
-        const menuExames = document.getElementById('lista-exames');
-        // Lista fixa de exames para carregar
-        const examesParaCarregar = ["44", "41", "40", "37", "35"]; 
+        const menu = document.getElementById('lista-exames');
+        const gridPecas = document.getElementById('grid-pecas-js');
 
-        examesParaCarregar.forEach(key => {
+        for(let i=44; i>=35; i--) {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
-            btn.innerText = `EXAME ${key}`;
-            btn.onclick = () => {
-                idAtivo = key;
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('label-atual').innerText = `📍 EXAME ${key}`;
-                document.getElementById('v-enu').src = `ro${key}.pdf`;
-                document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
-                renderEspelho(key);
-            };
-            menuExames.appendChild(btn);
-        });
-    };
-
-    // FUNÇÃO PARA RENDERIZAR O CHECKLIST NO MODO ALVO
-    window.renderEspelho = (key) => {
-        const area = document.getElementById('injetar-espelho');
-        const dados = BANCO_ESPELHOS[key];
-
-        if (dados) {
-            area.innerHTML = dados;
-            window.calcNota(); // Atualiza a nota se houver marcações prévias
-        } else {
-            // REGRA: Se não tiver dados no banco de espelhos
-            area.innerHTML = `
-                <div style="padding:40px; text-align:center; color:#999;">
-                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
-                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
-                </div>`;
-            document.getElementById('display-nota').innerText = "0.00";
+            btn.innerText = `EXAME ${i}`;
+            btn.onclick = () => carregarExame(i.toString(), btn);
+            menu.appendChild(btn);
         }
+
+        Object.keys(pecas).forEach(nome => {
+            const btn = document.createElement('button');
+            btn.style = "padding:10px; text-align:left; border:1px solid #eee; cursor:pointer; font-size:0.8rem; font-weight:bold;";
+            btn.innerText = nome;
+            btn.onclick = () => { document.getElementById('area-peca').value = pecas[nome]; toggleElement('modal-pecas'); };
+            gridPecas.appendChild(btn);
+        });
+
+        carregarExame("44");
     };
 
-    // BOTÃO JUSTIÇA: REGRA DE SUBSTITUIÇÃO TOTAL (BEBE DO BANCO_ESPELHOS)
-    window.injetarJustica = () => {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        
-        const conteudoEspelho = BANCO_ESPELHOS[idAtivo];
-        if(!conteudoEspelho) return alert("Sem teses cadastradas para este exame!");
+    function carregarExame(ex, btn) {
+        exameAtivo = ex;
+        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        document.getElementById('label-atual').innerText = `📍 EXAME ${ex}`;
+        document.getElementById('v-enu').src = `ro${ex}.pdf`;
+        document.getElementById('v-gab').src = `ro${ex}-gabarito.pdf`;
+        NaoConfunda.renderizar(ex, 'container-nc-lista');
+        resetarNota();
+    }
 
-        // Processamento para converter o HTML do Banco em Texto para o Textarea
-        const temp = document.createElement('div');
-        temp.innerHTML = conteudoEspelho;
-        
-        const header = temp.querySelector('.nota-floating');
-        const titulo = header ? header.innerText : `EXAME ${idAtivo}`;
-        const itens = temp.querySelectorAll('.espelho-txt');
-        
-        let textoParaInjetar = `${titulo}\n${"=".repeat(30)}\n\n`;
-        
+    window.injetarEsqueletoExame = () => {
+        const esq = BANCO_DADOS[exameAtivo]?.esqueleto || `AO JUÍZO DA ... VARA DO TRABALHO DE ...\n\nPEÇA DO EXAME ${exameAtivo}`;
+        document.getElementById('area-peca').value = esq;
+    };
+
+    window.abrirCorrecao = () => {
+        const container = document.getElementById('checklist-itens');
+        container.innerHTML = "";
+        const itens = BANCO_DADOS[exameAtivo]?.itens || [{t: "Base Legal", p: 1.00}, {t: "Mérito Principal", p: 4.00}];
         itens.forEach(item => {
-            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
+            const div = document.createElement('div');
+            div.style = "display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee; font-size:0.8rem;";
+            div.innerHTML = `<input type="checkbox" onchange="calcularNota(this, ${item.p})"> <span>${item.t} (${item.p.toFixed(2)})</span>`;
+            container.appendChild(div);
         });
-
-        // REGRA: Substituição Total no editor
-        document.getElementById('area-peca').value = textoParaInjetar;
+        toggleElement('modal-correcao');
     };
 
-    // CÁLCULO DE NOTA GLOBAL
-    window.calcNota = () => {
-        let n = 0;
-        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
-            n += parseFloat(c.value);
-        });
-        const total = n.toFixed(2);
-        document.getElementById('display-nota').innerText = total;
-        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
+    window.calcularNota = (cb, pontos) => {
+        notaAcumulada += cb.checked ? pontos : -pontos;
+        const total = Math.max(0, Math.min(5, notaAcumulada)).toFixed(2);
+        document.getElementById('nota-final').innerText = total;
+        document.getElementById('score-temp').innerText = `NOTA: ${total} / 5.00`;
     };
 
-    window.toggleAlvo = () => {
-        const p = document.getElementById('container-alvo');
-        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    function resetarNota() {
+        notaAcumulada = 0;
+        document.getElementById('nota-final').innerText = "0.00";
+        document.getElementById('score-temp').innerText = "NOTA: 0.00 / 5.00";
+    }
+
+    window.toggleElement = (id) => {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block' || el.style.display === 'flex') ? 'none' : (id === 'painel-confunda' ? 'flex' : 'block');
+    };
+
+    window.salvarTese = () => {
+        const t = document.getElementById('nc-titulo').value;
+        const teses = [document.getElementById('nc-tese').value];
+        const expl = [document.getElementById('nc-expl').value];
+        NaoConfunda.salvar(exameAtivo, t, teses, expl);
     };
 </script>
 </body>
