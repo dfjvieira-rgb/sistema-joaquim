@@ -3,220 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MODO ALVO</title>
+    <title>SISTEMA JOAQUIM - ARYANNA MASTER 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* CSS PRESERVADO E ADAPTADO */
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --orange: #f39c12; --green: #27ae60; --yellow: #f1c40f; 
-            --red: #e74c3c; --header-h: 60px;
+            --red: #e74c3c; --orange: #f39c12; --header-h: 60px; --gold: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        #timer { font-family: monospace; font-size: 1.3rem; color: var(--yellow); }
-
-        .nav-group { display: flex; gap: 8px; }
-        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; animation: pulse 2s infinite; }
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
 
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
+        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
         .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
-        .exame-btn:hover { background: var(--accent); color: white; }
+        .exame-btn.active { background: var(--accent); color: white; }
 
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { 
-            flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
+            flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
-            resize: none;
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
 
-        /* NOVO: BOTÃO DA JUSTIÇA (FAB) */
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
+
+        /* Botão Justiça - A Balança */
         .btn-justica-fab {
-            position: absolute; bottom: 20px; right: 20px;
-            width: 56px; height: 56px; background-color: var(--primary);
+            position: absolute; bottom: 25px; right: 25px;
+            width: 60px; height: 60px; background-color: var(--primary);
             color: white; border-radius: 50%; display: flex;
             justify-content: center; align-items: center;
-            font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 100; border: 2px solid var(--accent);
+            font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 100; border: 2px solid var(--gold);
         }
 
-        /* MODAL DE ESTRUTURAS */
-        #modal-estruturas {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 85%; max-width: 350px;
-            background: white; border-radius: 8px; z-index: 3000;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); padding: 20px;
-        }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2500; }
-        
-        .item-estrutura { 
-            padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; 
-            font-size: 0.9rem; font-weight: bold; color: var(--primary);
-        }
-        .item-estrutura:hover { background: #f9f9f9; color: var(--accent); }
-
-        /* ÁREA DO CHECKLIST */
+        /* Container do Espelho (Modo Alvo) */
         #container-alvo { 
-            display: none; width: 400px; background: white; border-left: 2px solid #ccc; 
-            flex-direction: column; z-index: 2000;
+            display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px);
+            background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000;
         }
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        .alvo-scroll { flex: 1; padding: 15px; overflow-y: auto; }
         
-        .pdf-section { width: 30%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
-        .pdf-frame { width: 100%; height: 50%; border: none; background: white; }
+        /* Classes injetadas do banco-espelhos.js */
+        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
+        .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
+        .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
+        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
 
-        @media (max-width: 1024px) {
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar, .pdf-section, #container-alvo { width: 100%; }
-            #container-alvo { position: fixed; top: var(--header-h); left: 0; height: calc(100vh - var(--header-h)); }
-            .btn-justica-fab { bottom: 80px; } /* Ajuste para não sobrepor outros elementos mobile */
-        }
+        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div id="timer">05:00:00</div>
-    <div class="nav-group">
-        <button class="btn-alvo" onclick="toggleAlvo()">🎯 ALVO / CORREÇÃO</button>
-    </div>
+    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
+    <button class="btn-alvo" onclick="toggleAlvo()">🎯 CORREÇÃO</button>
 </header>
 
 <main>
     <aside class="sidebar">
+        <div class="section-label">Exames OAB</div>
         <div id="lista-exames"></div>
     </aside>
 
     <section class="work-section">
-        <div style="padding:10px; background:#f1f1f1; font-size:0.7rem; font-weight:bold" id="label-atual">📍 SELECIONE O EXAME</div>
-        <textarea id="area-peca" placeholder="Escreva sua peça..."></textarea>
-        
-        <div class="btn-justica-fab" onclick="abrirEstruturas()">
-            <i class="fas fa-balance-scale"></i>
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
+            <span id="label-atual">📍 SELECIONE O EXAME</span>
+            <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
         </div>
+        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
+    </section>
+
+    <section class="pdf-section">
+        <iframe id="v-enu" class="pdf-frame"></iframe>
+        <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
 
     <section id="container-alvo">
         <div class="alvo-header">
-            <span>CHECKLIST OFICIAL FGV</span>
-            <button onclick="toggleAlvo()" style="background:none; border:none; color:white; cursor:pointer">✖</button>
+            <span>CHECKLIST DE CORREÇÃO</span>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
-        <div class="alvo-scroll" id="injetar-espelho"></div>
-        <div class="resultado-nota">
-            <div style="font-size:0.7rem; color:#666">PONTUAÇÃO TOTAL</div>
-            <div id="display-nota" style="font-size:2.5rem; font-weight:bold; color:var(--red)">0.00</div>
+        <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
+        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
+            <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
         </div>
-    </section>
-
-    <section class="pdf-section" id="pdfs">
-        <iframe id="v-enu" class="pdf-frame"></iframe>
-        <iframe id="v-gab" class="pdf-frame"></iframe>
     </section>
 </main>
 
-<div class="overlay" id="overlay" onclick="fecharEstruturas()"></div>
-<div id="modal-estruturas">
-    <h3 style="margin-bottom:15px; color:var(--primary); border-bottom: 2px solid var(--accent)">Estruturas de Peças</h3>
-    <div id="lista-estruturas-corpo">
-        </div>
-    <button onclick="fecharEstruturas()" style="margin-top:15px; width:100%; padding:10px; background:var(--red); color:white; border:none; border-radius:4px; cursor:pointer">FECHAR</button>
-</div>
-
-<script src="estruturas.js"></script>
-
-<script>
-    // BANCO DE ESPELHOS PRESERVADO
-    const BANCO_ESPELHOS = {
-        "44": `<div class="nota-floating">ESPELHO OFICIAL - EXAME 44 (CONTESTAÇÃO)</div>...`, // (Mantido conforme original)
-        "41": `...`, // (Mantido conforme original)
-        "40": `...`, // (Mantido conforme original)
-        "37": `...`, // (Mantido conforme original)
-        "35": `...`  // (Mantido conforme original)
-    };
+<script type="module">
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
     let idAtivo = null;
 
-    // INICIALIZAÇÃO
-    function carregarMenu() {
-        const menu = document.getElementById('lista-exames');
-        Object.keys(BANCO_ESPELHOS).sort((a,b)=>b-a).forEach(ex => {
-            const b = document.createElement('button');
-            b.className = 'exame-btn';
-            b.innerText = `EXAME XXX${ex}`;
-            b.onclick = () => selecionarExame(ex);
-            menu.appendChild(b);
+    window.onload = () => {
+        const menuExames = document.getElementById('lista-exames');
+        // Lista fixa de exames para carregar
+        const examesParaCarregar = ["44", "41", "40", "37", "35"]; 
+
+        examesParaCarregar.forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'exame-btn';
+            btn.innerText = `EXAME ${key}`;
+            btn.onclick = () => {
+                idAtivo = key;
+                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('label-atual').innerText = `📍 EXAME ${key}`;
+                document.getElementById('v-enu').src = `ro${key}.pdf`;
+                document.getElementById('v-gab').src = `ro${key}-gabarito.pdf`;
+                renderEspelho(key);
+            };
+            menuExames.appendChild(btn);
         });
-    }
-
-    function selecionarExame(num) {
-        idAtivo = num;
-        document.getElementById('label-atual').innerText = `📍 EXAME XXX${num}`;
-        document.getElementById('v-enu').src = `ro${num}.pdf`;
-        document.getElementById('v-gab').src = `ro${num}-gabarito.pdf`;
-        document.getElementById('injetar-espelho').innerHTML = BANCO_ESPELHOS[num] || "Espelho não cadastrado.";
-        window.calcNota();
-    }
-
-    // LÓGICA DO BOTÃO DA JUSTIÇA
-    function abrirEstruturas() {
-        const modal = document.getElementById('modal-estruturas');
-        const overlay = document.getElementById('overlay');
-        const corpo = document.getElementById('lista-estruturas-corpo');
-        
-        corpo.innerHTML = ""; // Limpa antes de carregar
-
-        if (typeof estruturas !== 'undefined') {
-            estruturas.forEach(est => {
-                const div = document.createElement('div');
-                div.className = 'item-estrutura';
-                div.innerText = est.nome;
-                div.onclick = () => {
-                    document.getElementById('area-peca').value = est.esqueleto;
-                    fecharEstruturas();
-                };
-                corpo.appendChild(div);
-            });
-        } else {
-            corpo.innerHTML = "<p style='font-size:0.8rem; color:red;'>Arquivo 'estruturas.js' não carregado ou variável 'estruturas' não definida.</p>";
-        }
-
-        modal.style.display = 'block';
-        overlay.style.display = 'block';
-    }
-
-    function fecharEstruturas() {
-        document.getElementById('modal-estruturas').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-    }
-
-    function toggleAlvo() {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        const painel = document.getElementById('container-alvo');
-        const pdfs = document.getElementById('pdfs');
-        if(painel.style.display === 'flex') {
-            painel.style.display = 'none';
-            pdfs.style.display = 'flex';
-        } else {
-            painel.style.display = 'flex';
-            pdfs.style.display = 'none';
-        }
-    }
-
-    window.calcNota = function() {
-        const checkboxes = document.querySelectorAll('#injetar-espelho input[type="checkbox"]');
-        let nota = 0;
-        checkboxes.forEach(c => { if(c.checked) nota += parseFloat(c.value); });
-        document.getElementById('display-nota').innerText = nota.toFixed(2);
     };
 
-    window.onload = carregarMenu;
+    // FUNÇÃO PARA RENDERIZAR O CHECKLIST NO MODO ALVO
+    window.renderEspelho = (key) => {
+        const area = document.getElementById('injetar-espelho');
+        const dados = BANCO_ESPELHOS[key];
+
+        if (dados) {
+            area.innerHTML = dados;
+            window.calcNota(); // Atualiza a nota se houver marcações prévias
+        } else {
+            // REGRA: Se não tiver dados no banco de espelhos
+            area.innerHTML = `
+                <div style="padding:40px; text-align:center; color:#999;">
+                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
+                </div>`;
+            document.getElementById('display-nota').innerText = "0.00";
+        }
+    };
+
+    // BOTÃO JUSTIÇA: REGRA DE SUBSTITUIÇÃO TOTAL (BEBE DO BANCO_ESPELHOS)
+    window.injetarJustica = () => {
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        
+        const conteudoEspelho = BANCO_ESPELHOS[idAtivo];
+        if(!conteudoEspelho) return alert("Sem teses cadastradas para este exame!");
+
+        // Processamento para converter o HTML do Banco em Texto para o Textarea
+        const temp = document.createElement('div');
+        temp.innerHTML = conteudoEspelho;
+        
+        const header = temp.querySelector('.nota-floating');
+        const titulo = header ? header.innerText : `EXAME ${idAtivo}`;
+        const itens = temp.querySelectorAll('.espelho-txt');
+        
+        let textoParaInjetar = `${titulo}\n${"=".repeat(30)}\n\n`;
+        
+        itens.forEach(item => {
+            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
+        });
+
+        // REGRA: Substituição Total no editor
+        document.getElementById('area-peca').value = textoParaInjetar;
+    };
+
+    // CÁLCULO DE NOTA GLOBAL
+    window.calcNota = () => {
+        let n = 0;
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
+            n += parseFloat(c.value);
+        });
+        const total = n.toFixed(2);
+        document.getElementById('display-nota').innerText = total;
+        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
+    };
+
+    window.toggleAlvo = () => {
+        const p = document.getElementById('container-alvo');
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    };
 </script>
 </body>
 </html>
