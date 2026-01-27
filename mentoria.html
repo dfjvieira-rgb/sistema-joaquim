@@ -24,11 +24,13 @@
         .container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
         .panel { background: var(--card); border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         
-        /* ESTILO DOS CAMPOS F/F/P */
-        .mentoria-box { margin-bottom: 12px; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.02); border-left: 4px solid var(--primary); }
+        /* ESTILO DOS CAMPOS */
+        .mentoria-box { margin-bottom: 12px; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.02); border-left: 4px solid var(--primary); position: relative; }
         .mentoria-box.fato { border-left-color: #94a3b8; }
         .mentoria-box.fund { border-left-color: #3b82f6; }
         .mentoria-box.ped { border-left-color: #10b981; }
+        .mentoria-box.nc { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.03); }
+        .mentoria-box.do { border-left-color: var(--warning); background: rgba(251, 191, 36, 0.03); }
 
         label { font-size: 0.65rem; font-weight: 800; display: block; margin-bottom: 5px; text-transform: uppercase; opacity: 0.7; }
         input, textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
@@ -36,7 +38,9 @@
 
         .btn-save { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; margin-top: 10px; }
         .btn-blue { background: var(--primary); color: white; }
-        
+        .btn-add-nc { background: none; border: 1px dashed var(--danger); color: var(--danger); padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: 700; width: 100%; margin-bottom: 10px; transition: 0.3s; }
+        .btn-add-nc:hover { background: var(--danger); color: white; }
+
         /* FEED E CARDS */
         .feed { margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px; max-height: 500px; overflow-y: auto; }
         .item-card { position: relative; background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
@@ -53,64 +57,61 @@
 
 <header>
     <a href="index.html" class="btn-top"><i class="fas fa-arrow-left"></i> VOLTAR</a>
-    <h1>ARYANNA • DICIONÁRIO ESTRUTURADO</h1>
+    <h1>MENTORIA SINCRONIZADA | ARYANNA 2026</h1>
     <div style="font-size: 0.6rem; color: var(--success); font-weight: 800;">● SINCRONIA ATIVA</div>
 </header>
 
 <div class="container">
     <div class="panel">
-        <div style="margin-bottom:20px; font-weight:800; color:var(--primary);">
-            <i class="fas fa-gavel"></i> CADASTRO DE TESE
+        <div style="margin-bottom:20px; font-weight:800; color:var(--primary); text-transform:uppercase; font-size:0.8rem;">
+            <i class="fas fa-gavel"></i> Dicionário de Teses
         </div>
 
         <div class="field-group" style="margin-bottom:15px;">
             <label>Nome da Tese / Artigo</label>
-            <input type="text" id="tit-tese" placeholder="Ex: Adicional de Insalubridade">
+            <input type="text" id="tit-tese" placeholder="Ex: Equiparação Salarial">
         </div>
 
         <div class="mentoria-box fato">
-            <label>1. FATO (O que aconteceu?)</label>
-            <textarea id="tese-fato" placeholder="O reclamante trabalhava exposto a..."></textarea>
+            <label>1. FATO</label>
+            <textarea id="tese-fato" placeholder="O que aconteceu no caso concreto?"></textarea>
         </div>
 
         <div class="mentoria-box fund">
-            <label>2. FUNDAMENTO (Por que tem direito?)</label>
-            <textarea id="tese-fund" placeholder="Conforme Art. 192 da CLT..."></textarea>
+            <label>2. FUNDAMENTO</label>
+            <textarea id="tese-fund" placeholder="Qual o artigo ou súmula?"></textarea>
         </div>
 
         <div class="mentoria-box ped">
-            <label>3. PEDIDO (O que você quer?)</label>
-            <textarea id="tese-ped" placeholder="Requer a condenação ao pagamento de..."></textarea>
+            <label>3. PEDIDO</label>
+            <textarea id="tese-ped" placeholder="Qual a conclusão/pedido da tese?"></textarea>
         </div>
 
-        <button class="btn-save btn-blue" onclick="salvarTeseEstruturada()">Arquivar Tese Estruturada</button>
-        
+        <button class="btn-save btn-blue" onclick="salvarTeseEstruturada()">Arquivar Tese</button>
         <div class="feed" id="feed-teses"></div>
     </div>
 
     <div class="panel">
-        <div style="margin-bottom:20px; font-weight:800; color:var(--warning);">
-            <i class="fas fa-chess-knight"></i> RADAR DE ESTRATÉGIA
-        </div>
-        
-        <div class="field-group" style="margin-bottom:20px;">
-            <label>Assunto Principal</label>
-            <input type="text" id="assunto-input" placeholder="Ex: Execução">
+        <div style="margin-bottom:20px; font-weight:800; color:var(--warning); text-transform:uppercase; font-size:0.8rem;">
+            <i class="fas fa-chess-knight"></i> Radar de Estratégia
         </div>
 
-        <div id="wrapper-estrategico">
-            <div style="border: 1px dashed var(--border); padding:15px; border-radius:12px; margin-bottom:15px;">
-                <div class="mentoria-box" style="border-left-color: var(--danger);">
-                    <label>📌 NÃO CONFUNDA</label>
-                    <textarea class="nc-input"></textarea>
-                </div>
-                <div class="mentoria-box" style="border-left-color: var(--warning);">
-                    <label>💡 DICA DE OURO (Post-it)</label>
-                    <textarea class="do-input"></textarea>
-                </div>
+        <div class="mentoria-box do">
+            <label>💡 DICA DE OURO (Post-it)</label>
+            <textarea id="dica-ouro-input" placeholder="Dica rápida para palavras-chave ou pegadinhas..."></textarea>
+        </div>
+
+        <div id="wrapper-nc">
+            <div class="mentoria-box nc">
+                <label>📌 NÃO CONFUNDA</label>
+                <textarea class="nc-input-item" placeholder="Diferenciação jurídica específica..."></textarea>
             </div>
         </div>
-        <button class="btn-save" style="background:#1e293b; color:#fbbf24;" onclick="salvarEstrategia()">Sincronizar Radar</button>
+
+        <button class="btn-add-nc" onclick="addCampoNC()">+ ADICIONAR NÃO CONFUNDA</button>
+        
+        <button class="btn-save" style="background:#1e293b; color:#fbbf24;" onclick="salvarRadarEstrategico()">Sincronizar Radar</button>
+        
         <div class="feed" id="feed-estrategia"></div>
     </div>
 </div>
@@ -129,51 +130,69 @@
     const app = initializeApp(config); 
     const db = getDatabase(app);
 
+    // FUNÇÕES DA COLUNA 1 (TESES)
     window.salvarTeseEstruturada = () => {
         const tit = document.getElementById('tit-tese').value;
         const fato = document.getElementById('tese-fato').value;
         const fund = document.getElementById('tese-fund').value;
         const ped = document.getElementById('tese-ped').value;
 
-        if(!tit || !fato || !fund || !ped) return alert("Preencha todos os campos da tese (F/F/P)!");
+        if(!tit || !fato) return alert("Preencha ao menos o título e o fato!");
 
         push(ref(db, 'v10_teses_sincronizadas'), {
-            titulo: tit,
-            fato: fato,
-            fundamento: fund,
-            pedido: ped,
-            timestamp: serverTimestamp()
+            titulo: tit, fato: fato, fundamento: fund, pedido: ped, timestamp: serverTimestamp()
         });
-
-        // Limpar campos
         ['tit-tese', 'tese-fato', 'tese-fund', 'tese-ped'].forEach(id => document.getElementById(id).value = '');
-        alert("Tese estruturada com sucesso!");
     };
 
-    window.salvarEstrategia = () => {
-        const ass = document.getElementById('assunto-input').value;
-        const nc = document.querySelector('.nc-input').value;
-        const doOuro = document.querySelector('.do-input').value;
-        if(!ass) return alert("Defina o assunto!");
+    // FUNÇÕES DA COLUNA 2 (RADAR)
+    window.addCampoNC = () => {
+        const wrap = document.getElementById('wrapper-nc');
+        const div = document.createElement('div');
+        div.className = 'mentoria-box nc';
+        div.innerHTML = `
+            <button onclick="this.parentElement.remove()" style="position:absolute; top:5px; right:5px; border:none; background:none; color:var(--danger); cursor:pointer;"><i class="fas fa-times"></i></button>
+            <label>📌 NÃO CONFUNDA</label>
+            <textarea class="nc-input-item" placeholder="Diferença técnica..."></textarea>
+        `;
+        wrap.appendChild(div);
+    };
+
+    window.salvarRadarEstrategico = () => {
+        const dicaOuro = document.getElementById('dica-ouro-input').value;
+        const ncInputs = document.querySelectorAll('.nc-input-item');
         
-        push(ref(db, 'v10_conceitos_nao_confunda'), {
-            assunto: ass,
-            naoConfunda: nc,
-            dicasOuro: doOuro,
+        let ncs = [];
+        ncInputs.forEach(input => { if(input.value) ncs.push(input.value); });
+
+        if(!dicaOuro && ncs.length === 0) return alert("Preencha ao menos uma dica ou diferenciação!");
+
+        push(ref(db, 'v10_radar_estrategia'), {
+            dicaOuro: dicaOuro,
+            naoConfundaLista: ncs,
             postIt: true,
             timestamp: serverTimestamp()
         });
-        alert("Radar sincronizado!");
+
+        // Resetar campos
+        document.getElementById('dica-ouro-input').value = '';
+        document.getElementById('wrapper-nc').innerHTML = `
+            <div class="mentoria-box nc">
+                <label>📌 NÃO CONFUNDA</label>
+                <textarea class="nc-input-item" placeholder="Diferenciação jurídica específica..."></textarea>
+            </div>`;
+        alert("Estratégia salva!");
     };
 
     window.excluirItem = (node, id) => {
         if(confirm("Excluir permanentemente?")) remove(ref(db, `${node}/${id}`));
     };
 
+    // ESCUTA EM TEMPO REAL
     onValue(ref(db), (snap) => {
         const val = snap.val() || {};
         
-        // Render Teses Estruturadas
+        // Feed Teses
         const fTeses = document.getElementById('feed-teses');
         fTeses.innerHTML = "";
         const tObj = val.v10_teses_sincronizadas || {};
@@ -182,25 +201,25 @@
             fTeses.innerHTML += `
                 <div class="item-card" style="border-left: 5px solid var(--primary);">
                     <button class="btn-del" onclick="excluirItem('v10_teses_sincronizadas', '${id}')"><i class="fas fa-trash"></i></button>
-                    <strong style="color:var(--primary); font-size:0.9rem;">${item.titulo}</strong>
+                    <strong>${item.titulo}</strong>
                     <div class="card-secao"><small>FATO</small><p>${item.fato}</p></div>
-                    <div class="card-secao"><small>FUNDAMENTO</small><p>${item.fundamento}</p></div>
-                    <div class="card-secao"><small>PEDIDO</small><p>${item.pedido}</p></div>
+                    ${item.fundamento ? `<div class="card-secao"><small>FUNDAMENTO</small><p>${item.fundamento}</p></div>` : ''}
+                    ${item.pedido ? `<div class="card-secao"><small>PEDIDO</small><p>${item.pedido}</p></div>` : ''}
                 </div>`;
         });
 
-        // Render Estratégia
+        // Feed Radar
         const fEst = document.getElementById('feed-estrategia');
         fEst.innerHTML = "";
-        const eObj = val.v10_conceitos_nao_confunda || {};
+        const eObj = val.v10_radar_estrategia || {};
         Object.keys(eObj).reverse().forEach(id => {
             const item = eObj[id];
+            let ncsHtml = (item.naoConfundaLista || []).map(nc => `<p style="margin-bottom:8px;">❌ ${nc}</p>`).join('');
             fEst.innerHTML += `
                 <div class="item-card" style="border-left: 5px solid var(--warning);">
-                    <button class="btn-del" onclick="excluirItem('v10_conceitos_nao_confunda', '${id}')"><i class="fas fa-trash"></i></button>
-                    <small style="font-weight:900;">${item.assunto.toUpperCase()}</small>
-                    ${item.naoConfunda ? `<div class="card-secao" style="border-top:none;"><small style="color:var(--danger)">📌 NÃO CONFUNDA</small><p>${item.naoConfunda}</p></div>` : ''}
-                    ${item.dicasOuro ? `<div class="card-secao"><small style="color:var(--warning)">💡 DICA DE OURO</small><p>${item.dicasOuro}</p></div>` : ''}
+                    <button class="btn-del" onclick="excluirItem('v10_radar_estrategia', '${id}')"><i class="fas fa-trash"></i></button>
+                    ${item.dicaOuro ? `<div class="card-secao" style="border:none;"><small style="color:var(--warning)">💡 DICA DE OURO</small><p>${item.dicaOuro}</p></div>` : ''}
+                    ${ncsHtml ? `<div class="card-secao"><small style="color:var(--danger)">📌 NÃO CONFUNDA</small>${ncsHtml}</div>` : ''}
                 </div>`;
         });
     });
