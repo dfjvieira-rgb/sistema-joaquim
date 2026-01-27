@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MODO PROVA REAL</title>
+    <title>SISTEMA JOAQUIM - LADOS INVERTIDOS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -26,84 +26,69 @@
             background: var(--secondary); display: flex; align-items: center; gap: 6px;
         }
 
-        /* LAYOUT LADO A LADO */
-        main { display: flex; flex: 1; overflow: hidden; background: #eaeff2; position: relative; }
+        main { display: flex; flex: 1; overflow: hidden; background: #eaeff2; }
         
-        .sidebar { width: 160px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
+        .sidebar { width: 150px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
         .exame-btn { width: 100%; padding: 8px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
         .exame-btn.active { background: var(--accent); color: white; }
 
-        /* CONTAINER DO PDF */
-        .pdf-container { flex: 1; background: #525659; position: relative; display: flex; flex-direction: column; border-right: 2px solid var(--gold); }
-        
-        /* A FOLHA MESTRA EDITÁVEL AO LADO */
+        /* LADO ESQUERDO: FOLHA MESTRA EDITÁVEL */
         .folha-mestra-container { 
-            width: 45%; background: #dfe6e9; overflow-y: auto; display: none; /* Ativado via botão */
-            padding: 20px; transition: 0.3s;
+            flex: 1.2; background: #dfe6e9; overflow-y: auto; padding: 25px; border-right: 2px solid var(--gold);
         }
         .folha-fgv { 
             background: white; width: 100%; min-height: 1200px; padding: 50px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-family: 'Times New Roman', serif;
-            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif;
         }
-        .peca-editor { outline: none; font-size: 17px; line-height: 1.6; text-align: justify; white-space: pre-wrap; }
+        .peca-editor { outline: none; font-size: 17px; line-height: 1.6; text-align: justify; white-space: pre-wrap; color: #2d3436; }
 
-        /* MENTORIA E GABARITO (DENTRO DA FOLHA) */
-        .mentoria-folha { font-family: 'Inter'; background: var(--mentoria-bg); padding: 15px; margin-bottom: 25px; border-radius: 5px; font-size: 0.8rem; border-left: 4px solid var(--accent); }
+        /* LADO DIREITO: PDF DA PROVA */
+        .pdf-container { width: 40%; background: #525659; position: relative; display: flex; flex-direction: column; }
+        
+        .mentoria-folha { font-family: 'Inter'; background: var(--mentoria-bg); padding: 12px; margin-bottom: 20px; border-radius: 5px; font-size: 0.8rem; border-left: 4px solid var(--accent); }
         .gabarito-folha { margin-top: 50px; padding: 20px; background: #f0fff4; border-top: 2px dashed var(--fgv-green); font-family: 'Inter'; font-size: 0.85rem; }
 
-        /* EDITOR DE RASCUNHO (QUANDO A MESTRA ESTÁ FECHADA) */
-        .rascunho-area { flex: 1; background: white; display: block; }
-        #txt-rascunho { width: 100%; height: 100%; padding: 30px; border: none; outline: none; font-family: 'Courier New'; font-size: 16px; resize: none; }
-
-        .btn-mestra-active { background: var(--gold) !important; color: var(--primary) !important; }
-
-        /* MODAL ESTRUTURAS */
         .modal-pecas { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 350px; background: white; z-index: 10001; padding: 20px; border-radius: 8px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:white; font-weight:800; font-size:0.9rem;">SISTEMA <span style="color:var(--gold)">PEÇA MESTRA</span></div>
+    <div style="color:white; font-weight:800; font-size:0.9rem;">SISTEMA <span style="color:var(--gold)">MASTER</span></div>
     <div class="nav-btns">
         <button class="btn-header btn-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i> Justiça</button>
-        <button class="btn-header btn-mestra" id="btn-mestra-toggle" onclick="togglePeçaMestra()"><i class="fas fa-file-signature"></i> Peça Mestra</button>
         <button class="btn-header btn-estruturas" onclick="toggleModalPecas()"><i class="fas fa-layer-group"></i> Estruturas</button>
-        <button class="btn-header btn-alvo" onclick="validarEAbrirCorrecao()"><i class="fas fa-bullseye"></i> Modo Alvo</button>
+        <button class="btn-header btn-alvo" onclick="scrollParaGabarito()"><i class="fas fa-bullseye"></i> Gabarito</button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar" id="sidebar-exames"></aside>
     
-    <section class="pdf-container">
-        <iframe id="v-pdf" style="width:100%; height:100%; border:none;"></iframe>
-    </section>
-
-    <section class="rascunho-area" id="box-rascunho">
-        <textarea id="txt-rascunho" placeholder="Use para rascunho rápido ou anotações..."></textarea>
-    </section>
-
-    <section class="folha-mestra-container" id="box-mestra">
+    <section class="folha-mestra-container">
         <div class="folha-fgv">
             <div class="mentoria-folha">
-                <i class="fas fa-info-circle"></i> <strong>MODO PRÁTICA:</strong> PDF à esquerda, folha editável à direita. Use o conteúdo do enunciado para preencher os dados abaixo.
+                <i class="fas fa-edit"></i> <strong>FOLHA MESTRA:</strong> Digite aqui sua peça baseada no enunciado à direita.
             </div>
             
             <div id="editor-folha" class="peca-editor" contenteditable="true">
-                </div>
+                Selecione um Exame e uma Estrutura para começar...
+            </div>
 
-            <div class="gabarito-folha">
-                <h4 style="color:var(--fgv-green); margin-bottom:10px;">🔍 CONFERÊNCIA COM ESPELHO (E<span id="label-exame-folha">--</span>)</h4>
+            <div class="gabarito-folha" id="gabarito-alvo">
+                <h4 style="color:var(--fgv-green); margin-bottom:10px;">🔍 GABARITO (EXAME <span id="label-exame-folha">--</span>)</h4>
                 <div id="espelho-folha"></div>
             </div>
         </div>
     </section>
+
+    <section class="pdf-container">
+        <iframe id="v-pdf" style="width:100%; height:100%; border:none;"></iframe>
+    </section>
 </main>
 
 <div id="modal-pecas" class="modal-pecas">
-    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">ESTRUTURAS (18)</h3>
+    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">SELECIONAR ESTRUTURA</h3>
     <div id="grid-pecas-js"></div>
     <button onclick="toggleModalPecas()" style="width:100%; margin-top:10px; padding:10px; background:var(--red); color:white; border:none; border-radius:5px; cursor:pointer;">Fechar</button>
 </div>
@@ -129,31 +114,14 @@
                 btn.classList.add('active');
                 document.getElementById('v-pdf').src = `ro${i}.pdf#toolbar=0&navpanes=0&view=FitH`;
                 document.getElementById('label-exame-folha').innerText = i;
-                atualizarConteudoMestra();
+                atualizarConteudo();
             };
             menu.appendChild(btn);
         }
         popularEstruturas();
     };
 
-    window.togglePeçaMestra = () => {
-        const boxMestra = document.getElementById('box-mestra');
-        const boxRascunho = document.getElementById('box-rascunho');
-        const btn = document.getElementById('btn-mestra-toggle');
-
-        if (boxMestra.style.display === 'block') {
-            boxMestra.style.display = 'none';
-            boxRascunho.style.display = 'block';
-            btn.classList.remove('btn-mestra-active');
-        } else {
-            boxMestra.style.display = 'block';
-            boxRascunho.style.display = 'none';
-            btn.classList.add('btn-mestra-active');
-            atualizarConteudoMestra();
-        }
-    };
-
-    window.atualizarConteudoMestra = () => {
+    window.atualizarConteudo = () => {
         const editor = document.getElementById('editor-folha');
         const espelho = document.getElementById('espelho-folha');
         
@@ -173,7 +141,7 @@
             btn.innerText = nome.toUpperCase();
             btn.onclick = () => {
                 pecaNomeAtivo = nome;
-                atualizarConteudoMestra();
+                atualizarConteudo();
                 toggleModalPecas();
             };
             grid.appendChild(btn);
@@ -189,15 +157,13 @@
         if(!idAtivo) return alert("Selecione um exame.");
         const temp = document.createElement('div');
         temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
-        let t = `\n--- TESES E${idAtivo} ---\n`;
+        let t = `\n--- TESES PARA PRÁTICA ---\n`;
         temp.querySelectorAll('.espelho-txt').forEach(i => t += `[ ] ${i.innerText.trim()}\n`);
-        document.getElementById('txt-rascunho').value += t;
+        document.getElementById('editor-folha').innerText += t;
     };
 
-    window.validarEAbrirCorrecao = () => {
-        if(!idAtivo) return alert("Selecione um exame!");
-        if(document.getElementById('box-mestra').style.display !== 'block') togglePeçaMestra();
-        document.getElementById('espelho-folha').scrollIntoView({behavior: 'smooth'});
+    window.scrollParaGabarito = () => {
+        document.getElementById('gabarito-alvo').scrollIntoView({behavior: 'smooth'});
     };
 </script>
 </body>
