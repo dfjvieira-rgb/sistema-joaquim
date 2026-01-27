@@ -9,114 +9,86 @@
     <style>
         :root { 
             --bg: #f8fafc; --text: #334155; --card: #ffffff;
-            --primary: #3b82f6; --accent: #6366f1; --warning: #f59e0b;
+            --primary: #3b82f6; --warning: #fbbf24; --danger: #ef4444;
             --border: #e2e8f0; --success: #10b981;
         }
-        
         @media (prefers-color-scheme: dark) {
             :root { --bg: #0f172a; --text: #cbd5e1; --card: #1e293b; --border: #334155; }
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 15px; line-height: 1.5; }
-
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
         h1 { font-size: 1rem; font-weight: 700; color: var(--primary); }
-
         .btn-top { text-decoration: none; font-size: 0.75rem; font-weight: 600; color: var(--text); padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
-
         .container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
-
         .panel { background: var(--card); border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .panel-header h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .field-group { margin-bottom: 15px; }
-        label { font-size: 0.7rem; font-weight: 700; opacity: 0.8; display: block; margin-bottom: 6px; }
-
+        .mentoria-box { margin-bottom: 15px; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.02); }
+        label { font-size: 0.7rem; font-weight: 800; display: block; margin-bottom: 8px; text-transform: uppercase; }
         input, textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 0.9rem; }
         textarea { font-family: 'Courier Prime', monospace; min-height: 80px; resize: none; }
-
-        /* DINAMISMO DOS CONCEITOS */
-        .conceito-item { background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; border: 1px dashed var(--border); margin-bottom: 15px; position: relative; }
-        .btn-add-more { background: none; border: 2px solid var(--warning); color: var(--warning); padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 800; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .btn-add-more:hover { background: var(--warning); color: white; }
-
-        .btn-action { width: 100%; border: none; padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
-        .btn-tese { background: var(--primary); color: white; }
-        .btn-alerta { background: var(--warning); color: white; }
-
-        .feed { margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px; max-height: 400px; overflow-y: auto; }
-        .item-card { background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--primary); }
-        .item-card.orange { border-left-color: var(--warning); }
-        .item-card strong { display: block; font-size: 0.85rem; color: var(--primary); margin-bottom: 5px; }
-        .item-card.orange strong { color: var(--warning); }
-        .item-card p { font-size: 0.8rem; opacity: 0.9; white-space: pre-wrap; }
-
+        .conceito-wrapper { border: 1px dashed var(--border); padding: 15px; border-radius: 12px; margin-bottom: 20px; position: relative; }
+        .btn-add { background: none; border: 2px solid var(--primary); color: var(--primary); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 800; margin-bottom: 15px; }
+        .btn-save { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-sync { background: #1e293b; color: #fbbf24; border: 1px solid #fbbf24; margin-top: 10px; }
+        .feed { margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px; max-height: 500px; overflow-y: auto; }
+        .item-card { position: relative; background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--primary); }
+        .item-card.estrategico { border-left-color: var(--danger); }
+        .btn-del { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--danger); cursor: pointer; opacity: 0.4; }
+        .tag { font-size: 0.6rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 5px; display: inline-block; }
+        .tag-nc { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .tag-do { background: rgba(251, 191, 36, 0.1); color: var(--warning); }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="btn-top"><i class="fas fa-chevron-left"></i> Voltar</a>
-    <h1>ARYANNA • MENTORIA JURÍDICA</h1>
-    <div style="font-size: 0.6rem; color: var(--success); font-weight: 700;">● SINCRONIZADO</div>
+    <a href="index.html" class="btn-top"><i class="fas fa-arrow-left"></i> VOLTAR AO SISTEMA</a>
+    <h1>ARYANNA • MENTORIA ESTRATÉGICA</h1>
+    <div style="font-size: 0.6rem; color: var(--success); font-weight: 800;">● SINCRONIA ATIVA</div>
 </header>
 
 <div class="container">
     <div class="panel">
-        <div class="panel-header" style="color: var(--primary);">
-            <i class="fas fa-gavel"></i>
-            <h2>Dicionário de Teses</h2>
-        </div>
-        <div class="field-group">
+        <div class="panel-header" style="color: var(--primary);"><i class="fas fa-gavel"></i> Dicionário de Teses</div>
+        <div class="mentoria-box" style="border-left: 5px solid var(--primary);">
             <label>Título da Tese</label>
-            <input type="text" id="tit-tese" placeholder="Ex: Horas In Itinere">
+            <input type="text" id="tit-tese" placeholder="Ex: Adicional de Periculosidade">
+            <label style="margin-top:10px;">Conteúdo Técnico (F/F/P)</label>
+            <textarea id="cont-tese" placeholder="Redação para a peça..."></textarea>
         </div>
-        <div class="field-group">
-            <label>Redação Completa</label>
-            <textarea id="cont-tese" placeholder="Fato, Fundamento e Pedido..."></textarea>
-        </div>
-        <button class="btn-action btn-tese" onclick="salvarTese()">Salvar Tese no Dicionário</button>
-
+        <button class="btn-save btn-blue" onclick="salvarTese()">Arquivar Tese</button>
         <div class="feed" id="feed-teses"></div>
     </div>
 
     <div class="panel">
-        <div class="panel-header" style="color: var(--warning);">
-            <i class="fas fa-brain"></i>
-            <h2>Não Confunda</h2>
+        <div class="panel-header" style="color: var(--warning);"><i class="fas fa-chess-knight"></i> Radar de Estratégia</div>
+        <div class="mentoria-box" style="border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+            <label>Assunto / Exame Principal</label>
+            <input type="text" id="assunto-input" placeholder="Ex: Recursos Trabalhistas">
         </div>
-
-        <div class="field-group">
-            <label>Assunto Principal (Exame/Tema)</label>
-            <input type="text" id="assunto-input" placeholder="Ex: Recursos ou Execução">
-        </div>
-
-        <div id="wrapper-conceitos">
-            <div class="conceito-item">
-                <label>Conceito / Diferença</label>
-                <input type="text" class="tit-alerta" placeholder="Ex: Agravo de Instrumento vs Agravo Interno">
-                <label style="margin-top:10px;">Explicação</label>
-                <textarea class="cont-alerta" placeholder="Diferença técnica aqui..."></textarea>
+        <div id="wrapper-estrategico">
+            <div class="conceito-wrapper">
+                <div class="mentoria-box" style="border-left: 5px solid #ef4444;">
+                    <label>📌 NÃO CONFUNDA</label>
+                    <textarea class="nc-input" placeholder="Diferença jurídica..."></textarea>
+                </div>
+                <div class="mentoria-box" style="border-left: 5px solid #fbbf24;">
+                    <label>💡 DICAS DE OURO (Post-it Automático)</label>
+                    <textarea class="do-input" placeholder="Dica que aparecerá no simulado..."></textarea>
+                </div>
             </div>
         </div>
-
-        <button class="btn-add-more" onclick="addNovoCampoConceito()">
-            <i class="fas fa-plus"></i> ADICIONAR MAIS CONCEITOS NESTE ASSUNTO
-        </button>
-
-        <button class="btn-action btn-alerta" onclick="salvarMúltiplosAlertas()">Salvar Tudo no Radar ➔</button>
-
-        <div class="feed" id="feed-alertas"></div>
+        <button class="btn-add" onclick="addNovoBlocoEstrategico()">+ OUTRO PONTO</button>
+        <button class="btn-save btn-sync" onclick="salvarDicasEstrategicas()">Sincronizar Estratégia</button>
+        <div class="feed" id="feed-estrategia"></div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     
     const config = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
@@ -128,84 +100,64 @@
     const app = initializeApp(config); 
     const db = getDatabase(app);
 
-    // Função para adicionar mais campos de conceito na tela
-    window.addNovoCampoConceito = () => {
-        const wrapper = document.getElementById('wrapper-conceitos');
+    window.addNovoBlocoEstrategico = () => {
+        const wrap = document.getElementById('wrapper-estrategico');
         const div = document.createElement('div');
-        div.className = 'conceito-item';
-        div.innerHTML = `
-            <label>Conceito / Diferença</label>
-            <input type="text" class="tit-alerta" placeholder="Outro conceito...">
-            <label style="margin-top:10px;">Explicação</label>
-            <textarea class="cont-alerta" placeholder="Explicação técnica..."></textarea>
-            <button onclick="this.parentElement.remove()" style="position:absolute; top:10px; right:10px; border:none; background:none; color:red; cursor:pointer;"><i class="fas fa-times"></i></button>
-        `;
-        wrapper.appendChild(div);
+        div.className = 'conceito-wrapper';
+        div.innerHTML = `<button onclick="this.parentElement.remove()" style="position:absolute; top:5px; right:5px; border:none; background:none; color:red; cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div class="mentoria-box" style="border-left: 5px solid #ef4444;"><label>📌 NÃO CONFUNDA</label><textarea class="nc-input"></textarea></div>
+            <div class="mentoria-box" style="border-left: 5px solid #fbbf24;"><label>💡 DICAS DE OURO</label><textarea class="do-input"></textarea></div>`;
+        wrap.appendChild(div);
     };
 
-    // Salvar Tese
     window.salvarTese = () => {
         const t = document.getElementById('tit-tese').value;
         const c = document.getElementById('cont-tese').value;
-        if(!t || !c) return alert("Preencha a tese!");
-        push(ref(db, 'v10_teses_sincronizadas'), { titulo: t, conteudo: c, timestamp: serverTimestamp() });
-        document.getElementById('tit-tese').value = ''; document.getElementById('cont-tese').value = '';
-    };
-
-    // Salvar Múltiplos Alertas
-    window.salvarMúltiplosAlertas = () => {
-        const assunto = document.getElementById('assunto-input').value;
-        const titulos = document.querySelectorAll('.tit-alerta');
-        const conteudos = document.querySelectorAll('.cont-alerta');
-        
-        if(!assunto) return alert("Defina o Assunto Principal!");
-
-        let count = 0;
-        titulos.forEach((el, i) => {
-            const t = el.value;
-            const c = conteudos[i].value;
-            if(t && c) {
-                push(ref(db, 'v10_conceitos_nao_confunda'), { 
-                    assunto: assunto, titulo: t, conteudo: c, timestamp: serverTimestamp() 
-                });
-                count++;
-            }
-        });
-
-        if(count > 0) {
-            // Limpa os campos extras e deixa só um vazio
-            document.getElementById('wrapper-conceitos').innerHTML = `
-                <div class="conceito-item">
-                    <label>Conceito / Diferença</label>
-                    <input type="text" class="tit-alerta" placeholder="Ex: Agravo de Instrumento vs Agravo Interno">
-                    <label style="margin-top:10px;">Explicação</label>
-                    <textarea class="cont-alerta" placeholder="Diferença técnica aqui..."></textarea>
-                </div>`;
-            alert(`${count} conceito(s) salvo(s) em ${assunto}!`);
+        if(t && c) {
+            push(ref(db, 'v10_teses_sincronizadas'), { titulo: t, conteudo: c, timestamp: serverTimestamp() });
+            document.getElementById('tit-tese').value = ''; document.getElementById('cont-tese').value = '';
         }
     };
 
-    // Renderização em tempo real
+    window.salvarDicasEstrategicas = () => {
+        const ass = document.getElementById('assunto-input').value;
+        const ncs = document.querySelectorAll('.nc-input');
+        const dos = document.querySelectorAll('.do-input');
+        if(!ass) return alert("Defina o Assunto!");
+
+        ncs.forEach((el, i) => {
+            if(el.value || dos[i].value) {
+                push(ref(db, 'v10_conceitos_nao_confunda'), { 
+                    assunto: ass, 
+                    naoConfunda: el.value, 
+                    dicasOuro: dos[i].value,
+                    postIt: true, // Tag para o sistema principal identificar
+                    timestamp: serverTimestamp() 
+                });
+            }
+        });
+        alert("Estratégia e Post-its Sincronizados!");
+        location.reload();
+    };
+
+    window.excluirItem = (node, id) => {
+        if(confirm("Excluir permanentemente?")) remove(ref(db, `${node}/${id}`));
+    };
+
     onValue(ref(db), (snap) => {
         const val = snap.val() || {};
-        
         const fTeses = document.getElementById('feed-teses');
         fTeses.innerHTML = "";
         const tObj = val.v10_teses_sincronizadas || {};
         Object.keys(tObj).reverse().forEach(id => {
-            fTeses.innerHTML += `<div class="item-card"><strong>${tObj[id].titulo}</strong><p>${tObj[id].conteudo}</p></div>`;
+            fTeses.innerHTML += `<div class="item-card"><button class="btn-del" onclick="excluirItem('v10_teses_sincronizadas', '${id}')"><i class="fas fa-trash"></i></button><strong>${tObj[id].titulo}</strong><p>${tObj[id].conteudo}</p></div>`;
         });
 
-        const fAlertas = document.getElementById('feed-alertas');
-        fAlertas.innerHTML = "";
-        const aObj = val.v10_conceitos_nao_confunda || {};
-        Object.keys(aObj).reverse().forEach(id => {
-            fAlertas.innerHTML += `
-                <div class="item-card orange">
-                    <span style="font-size:0.6rem; font-weight:800; color:var(--warning)">${aObj[id].assunto.toUpperCase()}</span>
-                    <strong>${aObj[id].titulo}</strong>
-                    <p>${aObj[id].conteudo}</p>
-                </div>`;
+        const fEst = document.getElementById('feed-estrategia');
+        fEst.innerHTML = "";
+        const eObj = val.v10_conceitos_nao_confunda || {};
+        Object.keys(eObj).reverse().forEach(id => {
+            fEst.innerHTML += `<div class="item-card estrategico"><button class="btn-del" onclick="excluirItem('v10_conceitos_nao_confunda', '${id}')"><i class="fas fa-trash"></i></button><div style="font-size:0.6rem; font-weight:900; color:var(--primary); margin-bottom:5px;">ASSUNTO: ${eObj[id].assunto.toUpperCase()}</div>${eObj[id].naoConfunda ? `<span class="tag tag-nc">NÃO CONFUNDA</span><p>${eObj[id].naoConfunda}</p>` : ''}${eObj[id].dicasOuro ? `<span class="tag tag-do">POST-IT ATIVO</span><p>${eObj[id].dicasOuro}</p>` : ''}</div>`;
         });
     });
 </script>
