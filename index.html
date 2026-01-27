@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MASTER 2026</title>
+    <title>SISTEMA JOAQUIM - FOLHA FGV EDITÁVEL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -27,11 +27,9 @@
         }
         .btn-header:hover { background: #334155; }
         
-        /* IDENTIFICAÇÃO DOS BOTOES REESTABELECIDOS */
         .btn-justica { border: 1px solid var(--gold); color: var(--gold); }
-        .btn-mestra { border-left: 4px solid var(--gold); }
+        .btn-mestra { border-left: 4px solid var(--gold); background: #2d3e50; }
         .btn-estruturas { border-left: 4px solid var(--accent); }
-        .btn-alvo { background: var(--red); border: none; }
 
         main { display: flex; flex: 1; overflow: hidden; background: #eaeff2; }
         
@@ -40,44 +38,49 @@
         .exame-btn.active { background: var(--accent); color: white; }
 
         .work-area { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #ccc; position: relative; }
-        #area-peca { 
-            flex: 1; padding: 35px; border: none; font-family: 'Courier New', monospace; 
-            font-size: 17px; line-height: 1.6; outline: none; 
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
-        }
+        #area-peca { flex: 1; padding: 35px; border: none; font-family: 'Courier New', monospace; font-size: 17px; line-height: 1.6; outline: none; resize: none; }
 
-        .pdf-side { width: 45%; background: #525659; display: flex; flex-direction: column; }
+        .pdf-side { width: 45%; background: #525659; }
 
-        /* OVERLAYS */
+        /* OVERLAY DA FOLHA FGV */
         .modal-overlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(15, 23, 42, 0.9); z-index: 9999; overflow-y: auto; padding: 20px;
-            backdrop-filter: blur(4px);
-        }
-        .folha-resposta { 
-            background: white; max-width: 850px; margin: 40px auto; padding: 50px; 
-            border-radius: 4px; font-family: 'Times New Roman', serif; color: #2d3436;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;
+            background: rgba(15, 23, 42, 0.95); z-index: 9999; overflow-y: auto; padding: 20px;
         }
         
-        .area-mentoria { display: flex; gap: 15px; margin-bottom: 30px; font-family: 'Inter', sans-serif; }
-        .post-it { background: var(--postit); padding: 15px; flex: 1; border-radius: 2px; box-shadow: 3px 3px 10px rgba(0,0,0,0.1); font-size: 0.85em; border-left: 5px solid #f1c40f; transform: rotate(-0.5deg); }
-        .dica-mentoria { background: var(--mentoria-bg); padding: 15px; flex: 1; border-radius: 4px; font-size: 0.85em; border-left: 5px solid #03a9f4; }
+        /* A FOLHA DE RESPOSTA ESTILO FGV */
+        .folha-fgv { 
+            background: white; max-width: 850px; margin: 40px auto; padding: 60px; 
+            border-radius: 2px; font-family: 'Times New Roman', serif; color: #000;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8); position: relative;
+            min-height: 1200px;
+        }
         
-        .skeleton-viewer { background: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 8px; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.95rem; margin-top: 20px; }
-        .btn-fechar { position: absolute; top: -50px; right: 0; background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .area-mentoria { display: flex; gap: 15px; margin-bottom: 40px; font-family: 'Inter', sans-serif; cursor: default; }
+        .post-it { background: var(--postit); padding: 15px; flex: 1; border-radius: 2px; box-shadow: 3px 3px 10px rgba(0,0,0,0.1); font-size: 0.85em; border-left: 5px solid #f1c40f; }
+        
+        /* EDITOR DA PEÇA DENTRO DA FOLHA */
+        .peca-editor { 
+            outline: none; font-size: 18px; line-height: 1.8; text-align: justify;
+            min-height: 500px; border-bottom: 1px solid #eee; padding-bottom: 20px;
+        }
+
+        .gabarito-area { 
+            margin-top: 50px; padding: 20px; background: #f0fff4; border: 1px dashed var(--fgv-green);
+            font-family: 'Inter'; font-size: 0.9rem;
+        }
+
+        .btn-fechar { position: fixed; top: 20px; right: 20px; background: var(--red); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; z-index: 10000; }
+        .btn-save-folha { background: var(--fgv-green); color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:white; font-weight:800; display:flex; align-items:center; gap:10px;">
-        <i class="fas fa-balance-scale" style="color:var(--gold)"></i> JOAQUIM 2026
-    </div>
-
+    <div style="color:white; font-weight:800;">JOAQUIM <span style="color:var(--gold)">MASTER</span></div>
     <div class="nav-btns">
         <button class="btn-header btn-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i> JUSTIÇA</button>
-        <button class="btn-header btn-mestra" onclick="abrirMestra()"><i class="fas fa-crown"></i> PEÇA MESTRA</button>
+        <button class="btn-header btn-mestra" onclick="abrirMestra()"><i class="fas fa-file-signature"></i> PEÇA MESTRA (FOLHA FGV)</button>
         <button class="btn-header btn-estruturas" onclick="toggleModalPecas()"><i class="fas fa-layer-group"></i> ESTRUTURAS</button>
         <button class="btn-header btn-alvo" onclick="validarEAbrirCorrecao()"><i class="fas fa-bullseye"></i> MODO ALVO</button>
     </div>
@@ -86,7 +89,7 @@
 <main>
     <aside class="sidebar" id="sidebar-exames"></aside>
     <section class="work-area">
-        <textarea id="area-peca" placeholder="Inicie sua peça..."></textarea>
+        <textarea id="area-peca" placeholder="Rascunho rápido..."></textarea>
     </section>
     <section class="pdf-side">
         <iframe id="v-pdf" style="width:100%; height:100%; border:none;"></iframe>
@@ -94,16 +97,36 @@
 </main>
 
 <div id="modal-mestra" class="modal-overlay">
-    <div class="folha-resposta">
-        <button class="btn-fechar" onclick="fecharMestra()">FECHAR [X]</button>
-        <div id="mestra-dinamica"></div>
+    <button class="btn-fechar" onclick="fecharMestra()">SAIR DA FOLHA [X]</button>
+    
+    <div class="folha-fgv">
+        <div class="area-mentoria" contenteditable="false">
+            <div class="post-it" id="postit-dinamico">
+                <strong>📌 POST-IT DE CONFECCÃO:</strong><br>
+                Esta é a sua Folha de Resposta. Você pode editar o texto abaixo como se estivesse redigindo a peça oficial.
+            </div>
+            <div style="flex:1; background:var(--mentoria-bg); padding:15px; border-radius:4px; font-size:0.85em; border-left:5px solid #03a9f4;">
+                <strong>💡 REGRA DE OURO:</strong><br>
+                Mantenha os saltos de linha técnicos. Edite os dados entre colchetes [ ] com os nomes do exame.
+            </div>
+        </div>
+
+        <div id="editor-folha" class="peca-editor" contenteditable="true">
+            </div>
+
+        <div class="gabarito-area" contenteditable="false">
+            <h4 style="color:var(--fgv-green); margin-bottom:10px;"><i class="fas fa-check-circle"></i> CONFERÊNCIA COM O GABARITO:</h4>
+            <div id="espelho-mestra"></div>
+        </div>
+
+        <button class="btn-save-folha" onclick="salvarAlteracoesFolha()">💾 SALVAR EDIÇÃO NA PEÇA MESTRA</button>
     </div>
 </div>
 
 <div id="modal-pecas" class="modal-overlay">
-    <div class="folha-resposta" style="max-width: 500px;">
-        <button class="btn-fechar" onclick="toggleModalPecas()">FECHAR [X]</button>
-        <h3 style="margin-bottom:20px; border-bottom:2px solid var(--accent); font-family: 'Inter';">INTELIGÊNCIA DE ESTRUTURAS (18)</h3>
+    <div class="folha-fgv" style="max-width: 500px; min-height: auto;">
+        <button class="btn-header" style="background:var(--red); margin-bottom:20px;" onclick="toggleModalPecas()">FECHAR</button>
+        <h3 style="margin-bottom:20px; font-family: 'Inter';">ESCOLHER ESTRUTURA (18)</h3>
         <div id="grid-pecas-js"></div>
     </div>
 </div>
@@ -115,7 +138,7 @@
     window.pecas = pecas;
 
     let idAtivo = null;
-    let pecaSelecionadaNome = "Reclamação Trabalhista"; // Nome padrão inicial
+    let pecaAtualNome = "Reclamação Trabalhista";
 
     window.onload = () => {
         const menu = document.getElementById('sidebar-exames');
@@ -136,15 +159,14 @@
 
     window.popularMenuPecas = () => {
         const grid = document.getElementById('grid-pecas-js');
-        if(!window.pecas) return;
         Object.keys(window.pecas).forEach(nome => {
             const btn = document.createElement('button');
-            btn.style = "width:100%; padding:15px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; cursor:pointer; font-weight:bold; text-align:left; color:var(--primary); font-family:'Inter';";
-            btn.innerHTML = `<i class="fas fa-file-contract" style="color:var(--accent)"></i> ${nome.toUpperCase()}`;
+            btn.style = "width:100%; padding:15px; margin-bottom:8px; background:#f8fafc; border:1px solid #ddd; border-radius:6px; cursor:pointer; font-weight:bold; text-align:left;";
+            btn.innerHTML = `<i class="fas fa-file-alt"></i> ${nome.toUpperCase()}`;
             btn.onclick = () => {
-                pecaSelecionadaNome = nome; // Sincroniza com a Peça Mestra
-                document.getElementById('area-peca').value = window.pecas[nome];
+                pecaAtualNome = nome;
                 toggleModalPecas();
+                alert(`Estrutura "${nome}" carregada na Peça Mestra.`);
             };
             grid.appendChild(btn);
         });
@@ -153,28 +175,15 @@
     window.abrirMestra = () => {
         if(!idAtivo) return alert("Selecione um exame primeiro!");
         
-        const esqueletoTecnico = window.pecas[pecaSelecionadaNome] || "Estrutura não encontrada.";
-        const espelhoFgv = window.BANCO_ESPELHOS[idAtivo] || "Espelho não disponível.";
+        const editor = document.getElementById('editor-folha');
+        const espelho = document.getElementById('espelho-mestra');
+        const postit = document.getElementById('postit-dinamico');
 
-        const content = document.getElementById('mestra-dinamica');
-        content.innerHTML = `
-            <div class="area-mentoria">
-                <div class="post-it">
-                    <strong>📌 POST-IT: ${pecaSelecionadaNome.toUpperCase()}</strong><br>
-                    • Skeleton técnico das 18 estruturas injetado.<br>
-                    • Use este modelo para o Exame ${idAtivo}.
-                </div>
-                <div class="dica-mentoria">
-                    <strong>💡 MENTORIA JURÍDICA:</strong><br>
-                    Compare o esqueleto abaixo com o espelho da FGV no final da página.
-                </div>
-            </div>
-            <div style="font-weight:bold; color:var(--accent); margin-bottom:10px;">ESTRUTURA SELECIONADA: ${pecaSelecionadaNome}</div>
-            <div class="skeleton-viewer">${esqueletoTecnico}</div>
-            <hr style="margin:40px 0;">
-            <h3 style="color:var(--fgv-green); text-align:center;">GABARITO OFICIAL (EXAME ${idAtivo})</h3>
-            <div style="background:#f0fff4; padding:20px; border-radius:8px; margin-top:20px;">${espelhoFgv}</div>
-        `;
+        // Puxa a estrutura bruta do banco
+        editor.innerText = window.pecas[pecaAtualNome] || "Carregue uma estrutura...";
+        espelho.innerHTML = window.BANCO_ESPELHOS[idAtivo] || "Sem espelho disponível.";
+        postit.innerHTML = `<strong>📌 FOCO: ${pecaAtualNome.toUpperCase()}</strong><br>Exame Oficial ${idAtivo}. Edite os dados abaixo para praticar.`;
+
         document.getElementById('modal-mestra').style.display = 'block';
     };
 
@@ -183,6 +192,14 @@
         const m = document.getElementById('modal-pecas');
         m.style.display = (m.style.display === 'block') ? 'none' : 'block';
     };
+
+    window.salvarAlteracoesFolha = () => {
+        const conteudoEditado = document.getElementById('editor-folha').innerText;
+        // Aqui você pode salvar no localStorage para não perder a edição
+        localStorage.setItem(`Edicao_Mestra_${idAtivo}`, conteudoEditado);
+        alert("Alterações salvas com sucesso nesta sessão!");
+    };
+
     window.injetarJustica = () => {
         if(!idAtivo) return alert("Selecione um exame.");
         const temp = document.createElement('div');
@@ -191,6 +208,7 @@
         temp.querySelectorAll('.espelho-txt').forEach(i => t += `[ ] ${i.innerText.trim()}\n\n`);
         document.getElementById('area-peca').value += t;
     };
+
     window.validarEAbrirCorrecao = () => idAtivo ? abrirMestra() : alert("Selecione um exame!");
 </script>
 </body>
