@@ -3,81 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JOAQUIM MASTER - SYNC 2026</title>
+    <title>JOAQUIM MASTER - RECOVERY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --primary: #0f172a; --secondary: #1e293b; --accent: #3b82f6; 
-            --gold: #fbbf24; --red: #ef4444; --fgv-green: #27ae60;
-            --header-h: 60px;
-        }
+        :root { --primary: #0f172a; --gold: #fbbf24; --accent: #3b82f6; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; }
-        .status-badge { font-size: 0.65rem; color: #4ade80; border: 1px solid #4ade80; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
-
+        header { background: var(--primary); height: 60px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
         main { display: flex; flex: 1; overflow: hidden; background: #eaeff2; }
-        
-        /* SIDEBAR ADAPTATIVA */
-        .sidebar { width: 120px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 6px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
-        .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-        /* COLUNA DA ESQUERDA (FOLHA MESTRA) */
+        .sidebar { width: 120px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 6px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .exame-btn.active { background: var(--accent); color: white; }
         .folha-container { flex: 1.2; background: #dfe6e9; overflow-y: auto; padding: 15px; border-right: 2px solid var(--gold); }
-        .folha-fgv { background: white; width: 100%; min-height: 1200px; padding: 30px; box-shadow: 0 0 15px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; position: relative; }
-        .peca-editor { outline: none; font-size: 18px; line-height: 1.6; text-align: justify; white-space: pre-wrap; color: #1a1a1a; min-height: 600px; }
-
-        /* COLUNA DA DIREITA (PDF) */
+        .folha-fgv { background: white; width: 100%; min-height: 1000px; padding: 30px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .peca-editor { outline: none; font-size: 18px; line-height: 1.6; white-space: pre-wrap; min-height: 500px; }
         .pdf-section { width: 40%; display: flex; flex-direction: column; background: #525659; }
         .pdf-tabs { background: #1e293b; display: flex; padding: 5px; gap: 4px; }
-        .tab-btn { flex: 1; padding: 10px 5px; font-size: 0.6rem; font-weight: bold; border: none; background: #334155; color: white; cursor: pointer; border-radius: 3px; text-transform: uppercase; }
-        .tab-btn.active { background: var(--gold); color: var(--primary); }
-        .btn-full { background: var(--red) !important; }
-
-        /* GABARITO NA FOLHA */
-        .gab-box { margin-top: 40px; padding: 20px; border-radius: 6px; font-family: 'Inter'; font-size: 0.85rem; }
-        .gab-sim { background: #f0fff4; border: 2px solid var(--fgv-green); }
-        .gab-nao { background: #fff5f5; border: 2px dashed var(--red); color: var(--red); text-align: center; }
-
-        /* RESPONSIVIDADE TOTAL CELULAR */
-        @media (max-width: 768px) {
-            main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; height: 55px; display: flex; overflow-x: auto; border-right: none; border-bottom: 1px solid #ccc; padding: 5px; }
-            .exame-btn { min-width: 85px; margin-bottom: 0; margin-right: 5px; padding: 5px; font-size: 0.6rem; }
-            .folha-container { width: 100%; height: auto; min-height: 60vh; border-right: none; border-bottom: 3px solid var(--gold); }
-            .pdf-section { width: 100%; height: 80vh; }
-            .folha-fgv { padding: 20px; }
-        }
+        .tab-btn { flex: 1; padding: 10px 5px; font-size: 0.6rem; font-weight: bold; color: white; background: #334155; border: none; border-radius: 3px; cursor: pointer; }
+        .tab-btn.active { background: var(--gold); color: #000; }
+        @media (max-width: 768px) { main { flex-direction: column; overflow-y: auto; } .sidebar { width: 100%; height: 60px; display: flex; } .folha-container, .pdf-section { width: 100%; height: auto; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:white; font-weight:800; font-size: 0.8rem;">JOAQUIM <span style="color:var(--gold)">MASTER SYNC</span></div>
-    <div id="sync-status" class="status-badge"><i class="fas fa-wifi"></i> CONECTANDO...</div>
-    <button onclick="toggleModalPecas()" style="background:var(--accent); color:white; border:none; padding:6px 12px; border-radius:4px; font-size:0.7rem; font-weight:bold;">PEÇAS</button>
+    <div style="color:white; font-weight:bold;">JOAQUIM <span style="color:var(--gold)">MASTER</span></div>
+    <div id="sync-status" style="color:#4ade80; font-size:0.7rem;">SISTEMA ATIVO</div>
 </header>
 
 <main>
     <aside class="sidebar" id="sidebar-exames"></aside>
-    
     <section class="folha-container">
         <div class="folha-fgv">
-            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Carregando sua peça...</div>
-            <div id="container-gabarito" class="gab-box"></div>
+            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Selecione um exame...</div>
+            <div id="container-gabarito" style="margin-top:30px; padding:15px; border-top:2px solid #eee;"></div>
         </div>
     </section>
-
     <section class="pdf-section">
         <div class="pdf-tabs">
-            <button class="tab-btn active" id="btn-prova" onclick="mudarPdf('prova')">Enunciado</button>
-            <button class="tab-btn" id="btn-gab" onclick="mudarPdf('gab')">Gabarito</button>
-            <button class="tab-btn" id="btn-vade" onclick="mudarPdf('vade')">Vade</button>
-            <button class="tab-btn btn-full" onclick="abrirPdfExterno()" title="Abrir em Tela Cheia"><i class="fas fa-expand"></i></button>
+            <button class="tab-btn active" onclick="mudarPdf('prova')">PROVA</button>
+            <button class="tab-btn" onclick="mudarPdf('gab')">GABARITO</button>
+            <button class="tab-btn" onclick="window.open(document.getElementById('pdf-frame').src, '_blank')">FULL</button>
         </div>
-        <iframe id="pdf-frame" style="flex:1; width:100%; border:none;"></iframe>
+        <iframe id="pdf-frame" style="flex:1; border:none;"></iframe>
     </section>
 </main>
 
@@ -85,111 +53,81 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // --- COLOQUE SUAS CHAVES AQUI ---
+    // 1. VERIFIQUE SUAS CHAVES AQUI
     const firebaseConfig = {
-        apiKey: "COLE_AQUI",
-        authDomain: "COLE_AQUI",
-        databaseURL: "COLE_AQUI",
-        projectId: "COLE_AQUI",
-        storageBucket: "COLE_AQUI",
-        messagingSenderId: "COLE_AQUI",
-        appId: "COLE_AQUI"
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_PROJETO.firebaseapp.com",
+        databaseURL: "https://SEU_PROJETO.firebaseio.com",
+        projectId: "SEU_PROJETO",
+        storageBucket: "SEU_PROJETO.appspot.com",
+        messagingSenderId: "ID",
+        appId: "APP_ID"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    let db;
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getDatabase(app);
+    } catch (e) { console.error("Falha Firebase:", e); }
 
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
-    window.BANCO_ESPELHOS = BANCO_ESPELHOS;
-    window.pecas = pecas;
+    // 2. TENTATIVA DE CARREGAR ARQUIVOS EXTERNOS
+    let BANCO_ESPELHOS = {};
+    let pecas = {};
+    
+    try {
+        const modEspelhos = await import('./banco-espelhos.js');
+        BANCO_ESPELHOS = modEspelhos.BANCO_ESPELHOS;
+        const modPecas = await import('./estruturas.js');
+        pecas = modPecas.pecas;
+    } catch (e) { 
+        console.error("Erro nos arquivos JS:", e);
+        alert("Erro nos arquivos .js - Verifique se banco-espelhos.js e estruturas.js estão na pasta!");
+    }
 
     let idAtivo = "35";
-    let pecaNomeAtivo = "Reclamação Trabalhista";
-    let timerSave = null;
+    const editor = document.getElementById('editor-folha');
 
-    window.onload = () => {
-        const menu = document.getElementById('sidebar-exames');
-        for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('button');
-            btn.className = `exame-btn ${i == idAtivo ? 'active' : ''}`;
-            btn.innerText = `Exame ${i}`;
-            btn.onclick = () => {
-                idAtivo = i.toString();
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                carregarSync();
-                mudarPdf('prova');
-            };
-            menu.appendChild(btn);
-        }
-        carregarSync();
-        mudarPdf('prova');
-    };
+    // GERAR MENU
+    const menu = document.getElementById('sidebar-exames');
+    for (let i = 44; i >= 35; i--) {
+        const btn = document.createElement('button');
+        btn.className = 'exame-btn';
+        btn.innerText = `Exame ${i}`;
+        btn.onclick = () => {
+            idAtivo = i.toString();
+            document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            carregarSync();
+            mudarPdf('prova');
+        };
+        menu.appendChild(btn);
+    }
 
-    // SINCRONIZAÇÃO NUVEM
     window.autoSave = () => {
-        const status = document.getElementById('sync-status');
-        status.innerHTML = '<i class="fas fa-sync fa-spin"></i> SALVANDO...';
-        
-        clearTimeout(timerSave);
-        timerSave = setTimeout(() => {
-            const txt = document.getElementById('editor-folha').innerText;
-            set(ref(db, 'estudos_joaquim/' + idAtivo), {
-                conteudo: txt,
-                lastUpdate: new Date().toLocaleTimeString()
-            }).then(() => {
-                status.innerHTML = '<i class="fas fa-cloud"></i> SALVO NA RUA';
-            }).catch(() => {
-                status.innerHTML = '<i class="fas fa-times-circle" style="color:red"></i> ERRO DE SINAL';
-            });
-        }, 800);
+        if(!db) return;
+        set(ref(db, 'estudos/' + idAtivo), {
+            conteudo: editor.innerText,
+            data: new Date().getTime()
+        });
     };
 
     function carregarSync() {
-        const editor = document.getElementById('editor-folha');
-        onValue(ref(db, 'estudos_joaquim/' + idAtivo), (snap) => {
+        if(!db) return;
+        onValue(ref(db, 'estudos/' + idAtivo), (snap) => {
             const data = snap.val();
-            if (data && data.conteudo) {
-                // Só atualiza se o usuário não estiver digitando no momento
-                if (!document.activeElement.isSameNode(editor)) {
-                    editor.innerText = data.conteudo;
-                }
-            } else {
-                editor.innerText = window.pecas[pecaNomeAtivo] || "Inicie o treino...";
-            }
-            atualizarGabaritoUI();
+            editor.innerText = data ? data.conteudo : (pecas["Reclamação Trabalhista"] || "");
+            atualizarGabarito();
         }, { onlyOnce: true });
     }
 
-    // CONTROLE DE PDFS
     window.mudarPdf = (tipo) => {
         const f = document.getElementById('pdf-frame');
-        const urlMap = {
-            'prova': `ro${idAtivo}.pdf`,
-            'gab': `ro${idAtivo}-gabarito.pdf`,
-            'vade': `vade.pdf`
-        };
-        f.src = urlMap[tipo] + "#view=FitH";
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + tipo).classList.add('active');
+        f.src = tipo === 'prova' ? `ro${idAtivo}.pdf` : `ro${idAtivo}-gabarito.pdf`;
     };
 
-    window.abrirPdfExterno = () => {
-        const f = document.getElementById('pdf-frame');
-        if (f.src) window.open(f.src, '_blank');
-    };
-
-    function atualizarGabaritoUI() {
+    function atualizarGabarito() {
         const box = document.getElementById('container-gabarito');
-        const espelho = window.BANCO_ESPELHOS[idAtivo];
-        if(espelho) {
-            box.className = "gab-box gab-sim";
-            box.innerHTML = `<strong><i class="fas fa-check-double"></i> ESPELHO OFICIAL E${idAtivo}</strong><br><br>${espelho}`;
-        } else {
-            box.className = "gab-box gab-nao";
-            box.innerHTML = `<i class="fas fa-info-circle"></i> Gabarito oficial não cadastrado para o Exame ${idAtivo}.`;
-        }
+        box.innerHTML = BANCO_ESPELHOS[idAtivo] || "Gabarito não encontrado.";
     }
 </script>
 </body>
