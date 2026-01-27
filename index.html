@@ -3,164 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MASTER V10 2026</title>
+    <title>SISTEMA JOAQUIM - MASTER V8 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="banco-espelhos.js"></script>
+
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --red: #e74c3c; --orange: #f39c12; --green: #27ae60; --header-h: 60px; --gold: #fbbf24;
-            --mestra-bg: #6c5ce7;
+            --red: #e74c3c; --orange: #f39c12; --header-h: 60px; --gold: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .nav-btns { display: flex; gap: 10px; }
-        .btn-header { color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-        .btn-header:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         
-        .btn-qg { background-color: var(--orange); border-color: white; color: #000; }
-        .btn-mestra { background-color: var(--mestra-bg); border-color: #a29bfe; }
-        .btn-alvo { background-color: var(--red); }
+        /* O BOTÃO MESTRE NO CABEÇALHO */
+        .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
 
         main { display: flex; flex: 1; overflow: hidden; }
+        
+        /* BARRA LATERAL COM AUTOMAÇÃO 35-44 */
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
-        .exame-btn { width: 100%; padding: 12px; margin-bottom: 6px; background: white; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; transition: 0.2s; }
-        .exame-btn:hover { background: #f0f0f0; }
-        .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
+        .exame-btn.active { background: var(--accent); color: white; }
 
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
-        #area-peca { flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; font-size: 17px; line-height: 1.8; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.8em; resize: none; color: #2c3e50; }
+        #area-peca { flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
 
-        /* PAINEL QG MENTORIA (CARREGANDO EXTERNO) */
-        #painel-qg { display: none; position: fixed; right: 0; top: 60px; width: 550px; height: calc(100vh - 60px); background: #0f172a; z-index: 2000; flex-direction: column; box-shadow: -8px 0 30px rgba(0,0,0,0.4); border-left: 4px solid var(--gold); transition: 0.3s; }
-        .qg-header { padding: 12px 20px; background: #1e293b; color: var(--gold); font-weight: 800; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(251, 191, 36, 0.3); }
-        #iframe-mentoria { flex: 1; border: none; width: 100%; background: #0f172a; }
+        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
+        .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
 
-        .pdf-section { width: 38%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; border-left: 2px solid #333; }
-        .pdf-frame { width: 100%; flex: 1; border: none; background: white; border-radius: 4px; }
+        /* BOTÃO JUSTIÇA (BALANÇA) */
+        .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; border: 2px solid var(--gold); }
+
+        /* REGRA MESTRE: CONTAINER ALVO */
+        #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; }
+        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         
-        /* PEÇA MESTRA OVERLAY */
-        #pagina-mestra { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 9999; overflow-y: auto; padding: 40px; }
-        .mestra-content { max-width: 900px; margin: auto; background: white; padding: 60px; box-shadow: 0 0 50px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; border-radius: 4px; }
+        /* ESTILOS INJETADOS DO BANCO */
+        .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
+        .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
+        .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
+        .nota-floating { background: #1a252f; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
 
-        .btn-justica-fab { position: absolute; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.4); z-index: 100; border: 2px solid var(--gold); transition: 0.3s; }
-        .btn-justica-fab:hover { transform: scale(1.1) rotate(10deg); }
+        @media (max-width: 1024px) { .sidebar, .pdf-section { display: none; } #container-alvo { width: 100%; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <i class="fas fa-gavel" style="color: var(--gold);"></i>
-        <div style="font-weight: 800; letter-spacing: 1px;">SISTEMA <span style="color: var(--accent);">JOAQUIM</span> 2026</div>
-    </div>
-    <div class="nav-btns">
-        <button class="btn-header btn-qg" onclick="toggleMentoria()"><i class="fas fa-brain"></i> QG INTELIGÊNCIA</button>
-        <button class="btn-header btn-mestra" onclick="togglePaginaMestra(true)"><i class="fas fa-crown"></i> PEÇA MESTRA</button>
-        <button class="btn-header btn-alvo" onclick="alert('Iniciando Correção Técnica...')">🎯 MODO ALVO</button>
-    </div>
+    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
+    <button class="btn-alvo" onclick="toggleAlvo()">🎯 CORREÇÃO</button>
 </header>
 
 <main>
-    <aside class="sidebar" id="sidebar-exames">
-        </aside>
-
-    <section class="work-section">
-        <div style="padding:10px 15px; background:#f8f9fa; border-bottom:1px solid #ddd; font-size:0.75rem; font-weight:800; display:flex; justify-content:space-between; align-items:center;">
-            <span id="label-atual" style="color: var(--primary);">📍 SELECIONE UM EXAME PARA COMEÇAR</span>
-            <span id="score-temp" style="background: var(--red); color:white; padding: 4px 10px; border-radius: 20px;">NOTA: 0.00 / 5.00</span>
-        </div>
-        <textarea id="area-peca" placeholder="Desenvolva sua tese jurídica seguindo a estrutura técnica..."></textarea>
-        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Fundamentação Técnica"><i class="fas fa-balance-scale"></i></div>
-    </section>
-
-    <aside id="painel-qg">
-        <div class="qg-header">
-            <span><i class="fas fa-shield-halved"></i> QG DE MENTORIA & CLOUD</span>
-            <i class="fas fa-times" onclick="toggleMentoria()" style="cursor:pointer; font-size: 1.2rem;"></i>
-        </div>
-        <iframe id="iframe-mentoria" src="about:blank"></iframe>
+    <aside class="sidebar">
+        <div class="section-label">Exames OAB (35-44)</div>
+        <div id="lista-exames"></div>
     </aside>
 
+    <section class="work-section">
+        <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;">
+            <span id="label-atual">📍 SELECIONE O EXAME</span>
+            <span id="mini-nota" style="color: var(--red)">NOTA: 0.00</span>
+        </div>
+        <textarea id="area-peca" placeholder="Inicie sua redação jurídica aqui..."></textarea>
+        <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
+    </section>
+
     <section class="pdf-section">
-        <iframe id="v-enu" class="pdf-frame" title="Enunciado"></iframe>
-        <iframe id="v-gab" class="pdf-frame" title="Gabarito"></iframe>
+        <iframe id="v-enu" class="pdf-frame"></iframe>
+        <iframe id="v-gab" class="pdf-frame"></iframe>
+    </section>
+
+    <section id="container-alvo">
+        <div class="alvo-header">
+            <span>CHECKLIST DE CORREÇÃO</span>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
+        </div>
+        <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
+        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
+            <div id="display-nota" style="font-size:3rem; font-weight:bold; color:var(--red)">0.00</div>
+        </div>
     </section>
 </main>
 
-<div id="pagina-mestra">
-    <button onclick="togglePaginaMestra(false)" style="position:fixed; top:30px; right:50px; background:var(--red); color:white; padding:12px 25px; border:none; cursor:pointer; font-weight:900; border-radius:8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">FECHAR ✖</button>
-    <div class="mestra-content">
-        <h1 style="text-align:center; text-decoration:underline; color: var(--primary); margin-bottom: 40px;">PEÇA MESTRA: ESTRUTURA TÉCNICA OAB</h1>
-        <p><strong>AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</strong></p>
-        <br><br>
-        <p><strong>NOME DA PARTE</strong>, nacionalidade, estado civil, profissão, RG, CPF, CTPS, PIS, nome da mãe, endereço completo com CEP...</p>
-        <br>
-        <p style="text-align:center; font-size: 1.5rem; font-weight: 800; margin: 40px 0;">NOME DA PEÇA (ART. XXX DA CLT)</p>
-        <br>
-        <p>Em face de <strong>NOME DO RECLAMADO</strong>, qualificação conforme Art. 840 da CLT...</p>
-        <br>
-        <p><strong>I - DOS FATOS | II - DO DIREITO | III - DO PEDIDO</strong></p>
-    </div>
-</div>
-
 <script>
-    let exameAtivo = "44";
-    const iframeMentoria = document.getElementById('iframe-mentoria');
+    let idAtivo = null;
 
     window.onload = () => {
-        const sidebar = document.getElementById('sidebar-exames');
-        for(let i=44; i>=35; i--) {
+        const menuExames = document.getElementById('lista-exames');
+        
+        // AUTOMAÇÃO EXAMES 35 AO 44
+        for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
-            btn.innerHTML = `<i class="fas fa-file-signature" style="margin-right:8px; opacity:0.5;"></i> EXAME ${i}`;
-            btn.onclick = () => carregarExame(i.toString(), btn);
-            sidebar.appendChild(btn);
+            btn.innerText = `EXAME ${i}`;
+            btn.onclick = () => {
+                idAtivo = i.toString();
+                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                document.getElementById('label-atual').innerText = `📍 EXAME ${i}`;
+                document.getElementById('v-enu').src = `ro${i}.pdf`;
+                document.getElementById('v-gab').src = `ro${i}-gabarito.pdf`;
+                
+                renderEspelho(idAtivo);
+            };
+            menuExames.appendChild(btn);
         }
-        // Iniciar com o 44 selecionado
-        const primeiroBtn = sidebar.querySelector('.exame-btn');
-        if(primeiroBtn) carregarExame("44", primeiroBtn);
     };
 
-    function carregarExame(ex, btn) {
-        exameAtivo = ex;
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
+    // FUNÇÃO RENDERIZAR (EXATAMENTE COMO O SELADO)
+    function renderEspelho(key) {
+        const area = document.getElementById('injetar-espelho');
         
-        document.getElementById('label-atual').innerHTML = `📍 ESTUDANDO: <span style="color:var(--accent)">EXAME ${ex}</span>`;
-        document.getElementById('v-enu').src = `ro${ex}.pdf`;
-        document.getElementById('v-gab').src = `ro${ex}-gabarito.pdf`;
-    }
-
-    // Lógica do Painel QG
-    function toggleMentoria() {
-        const painel = document.getElementById('painel-qg');
-        if (painel.style.display === 'none' || painel.style.display === '') {
-            painel.style.display = 'flex';
-            // Só carrega o iframe quando abre, para poupar memória
-            if (iframeMentoria.src === "about:blank" || iframeMentoria.src === "") {
-                iframeMentoria.src = "mentoria.html";
-            }
+        // Proteção: Verifica se o banco existe e tem o dado
+        if (typeof BANCO_ESPELHOS !== 'undefined' && BANCO_ESPELHOS[key]) {
+            area.innerHTML = BANCO_ESPELHOS[key];
+            calcNota(); 
         } else {
-            painel.style.display = 'none';
+            area.innerHTML = `
+                <div style="padding:40px; text-align:center; color:#999;">
+                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
+                </div>`;
+            document.getElementById('display-nota').innerText = "0.00";
+            document.getElementById('mini-nota').innerText = "NOTA: 0.00";
         }
     }
 
-    function togglePaginaMestra(show) {
-        document.getElementById('pagina-mestra').style.display = show ? 'block' : 'none';
-    }
+    // BOTÃO JUSTIÇA (SUBSTITUIÇÃO TOTAL)
+    window.injetarJustica = () => {
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        if (typeof BANCO_ESPELHOS === 'undefined' || !BANCO_ESPELHOS[idAtivo]) {
+            return alert("Sem teses cadastradas para este exame!");
+        }
 
-    function injetarJustica() {
-        const area = document.getElementById('area-peca');
-        const teseExemplo = `\n\n[TESE TÉCNICA - EXAME ${exameAtivo}]\nI. FATO: ...\nII. FUNDAMENTO: ...\nIII. PEDIDO: Diante do exposto, requer a condenação ao pagamento de ...\n`;
-        area.value += teseExemplo;
-        area.focus();
-    }
+        const temp = document.createElement('div');
+        temp.innerHTML = BANCO_ESPELHOS[idAtivo];
+        const itens = temp.querySelectorAll('.espelho-txt');
+        
+        let textoParaInjetar = `ESTRUTURA DE TESES - EXAME ${idAtivo}\n${"=".repeat(30)}\n\n`;
+        itens.forEach(item => {
+            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
+        });
 
-    window.toggleElement = (id) => {
-        const el = document.getElementById(id);
-        el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'flex' : 'none';
+        document.getElementById('area-peca').value = textoParaInjetar;
+    };
+
+    // CÁLCULO DE NOTA GLOBAL (AMARRADO AOS CHECKBOXES DO BANCO)
+    window.calcNota = () => {
+        let n = 0;
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
+            n += parseFloat(c.value);
+        });
+        const total = n.toFixed(2);
+        document.getElementById('display-nota').innerText = total;
+        document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
+    };
+
+    // GATILHO DO BOTÃO CORREÇÃO
+    window.toggleAlvo = () => {
+        const p = document.getElementById('container-alvo');
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     };
 </script>
 </body>
