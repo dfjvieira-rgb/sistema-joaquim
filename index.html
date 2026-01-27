@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - LADOS INVERTIDOS SYNC</title>
+    <title>SISTEMA JOAQUIM - MASTER SYNC 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -29,46 +29,45 @@
 
         main { display: flex; flex: 1; overflow: hidden; background: #eaeff2; }
         
-        .sidebar { width: 150px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
-        .exame-btn { width: 100%; padding: 8px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
-        .exame-btn.active { background: var(--accent); color: white; }
+        .sidebar { width: 140px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
+        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .exame-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* LADO ESQUERDO: FOLHA MESTRA EDITÁVEL */
-        .folha-mestra-container { 
-            flex: 1.2; background: #dfe6e9; overflow-y: auto; padding: 25px; border-right: 2px solid var(--gold);
-        }
-        .folha-fgv { 
-            background: white; width: 100%; min-height: 1200px; padding: 50px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif;
-        }
-        .peca-editor { outline: none; font-size: 17px; line-height: 1.6; text-align: justify; white-space: pre-wrap; color: #2d3436; min-height: 600px; }
+        /* LADO ESQUERDO: FOLHA FGV */
+        .folha-mestra-container { flex: 1.2; background: #dfe6e9; overflow-y: auto; padding: 25px; border-right: 2px solid var(--gold); }
+        .folha-fgv { background: white; width: 100%; min-height: 1200px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; }
+        .peca-editor { outline: none; font-size: 18px; line-height: 1.6; text-align: justify; white-space: pre-wrap; color: #1a1a1a; min-height: 600px; }
 
-        /* LADO DIREITO: PDF DA PROVA */
-        .pdf-container { width: 40%; background: #525659; position: relative; display: flex; flex-direction: column; }
-        
+        /* LADO DIREITO: PDF E TABS */
+        .pdf-container { width: 45%; background: #525659; display: flex; flex-direction: column; }
+        .pdf-tabs { display: flex; background: #334155; padding: 5px; gap: 5px; border-bottom: 1px solid var(--gold); }
+        .tab-btn { flex: 1; padding: 10px; font-size: 0.65rem; font-weight: bold; border: none; background: #1e293b; color: white; cursor: pointer; border-radius: 4px; }
+        .tab-btn.active { background: var(--gold); color: var(--primary); }
+
         .mentoria-folha { font-family: 'Inter'; background: var(--mentoria-bg); padding: 12px; margin-bottom: 20px; border-radius: 5px; font-size: 0.8rem; border-left: 4px solid var(--accent); }
-        .gabarito-folha { margin-top: 50px; padding: 20px; background: #f0fff4; border-top: 2px dashed var(--fgv-green); font-family: 'Inter'; font-size: 0.85rem; }
+        .gabarito-folha { margin-top: 50px; padding: 25px; border-radius: 8px; font-family: 'Inter'; font-size: 0.9rem; }
+        .gabarito-existente { background: #f0fff4; border: 2px solid var(--fgv-green); }
+        .gabarito-ausente { background: #fff5f5; border: 2px dashed var(--red); color: var(--red); text-align: center; }
 
         .modal-pecas { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 350px; background: white; z-index: 10001; padding: 20px; border-radius: 8px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
         @media (max-width: 768px) {
             main { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; height: 60px; display: flex; overflow-x: auto; border-right: none; }
-            .exame-btn { min-width: 100px; margin-right: 5px; }
+            .sidebar { width: 100%; height: 60px; display: flex; overflow-x: auto; }
             .folha-mestra-container, .pdf-container { width: 100%; height: auto; flex: none; }
-            .pdf-container { height: 80vh; }
+            .pdf-container { height: 70vh; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:white; font-weight:800; font-size:0.9rem;">SISTEMA <span style="color:var(--gold)">JOAQUIM MASTER</span></div>
+    <div style="color:white; font-weight:800;">SISTEMA <span style="color:var(--gold)">MASTER</span></div>
     <div id="sync-status" class="status-sync"><i class="fas fa-check-circle"></i> CONECTADO</div>
     <div class="nav-btns">
         <button class="btn-header" onclick="injetarJustica()"><i class="fas fa-gavel"></i> Justiça</button>
         <button class="btn-header" onclick="toggleModalPecas()"><i class="fas fa-layer-group"></i> Estruturas</button>
-        <button class="btn-header" onclick="scrollParaGabarito()"><i class="fas fa-bullseye"></i> Alvo</button>
+        <button class="btn-header" style="background:var(--red); border:none;" onclick="scrollParaGabarito()"><i class="fas fa-bullseye"></i> Alvo</button>
     </div>
 </header>
 
@@ -78,29 +77,27 @@
     <section class="folha-mestra-container">
         <div class="folha-fgv">
             <div class="mentoria-folha">
-                <i class="fas fa-edit"></i> <strong>FOLHA MESTRA:</strong> Digite aqui ou selecione uma Estrutura.
+                <i class="fas fa-edit"></i> <strong>FOLHA MESTRA:</strong> Digite aqui ou use as Estruturas.
             </div>
-            
-            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">
-                Selecione um Exame e uma Estrutura para começar...
-            </div>
-
-            <div class="gabarito-folha" id="gabarito-alvo">
-                <h4 style="color:var(--fgv-green); margin-bottom:10px;">🔍 GABARITO (EXAME <span id="label-exame-folha">--</span>)</h4>
-                <div id="espelho-folha"></div>
-            </div>
+            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Selecione um Exame...</div>
+            <div id="gabarito-alvo" class="gabarito-folha"></div>
         </div>
     </section>
 
     <section class="pdf-container">
-        <iframe id="v-pdf" style="width:100%; height:100%; border:none;"></iframe>
+        <div class="pdf-tabs">
+            <button class="tab-btn active" id="btn-tab-prova" onclick="mudarPdf('prova')">📝 Prova</button>
+            <button class="tab-btn" id="btn-tab-gab" onclick="mudarPdf('gab')">⚖️ Gabarito PDF</button>
+            <button class="tab-btn" id="btn-tab-vade" onclick="mudarPdf('vade')">📚 Vade</button>
+        </div>
+        <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
     </section>
 </main>
 
 <div id="modal-pecas" class="modal-pecas">
-    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">PEÇA MESTRA (18)</h3>
-    <div id="grid-pecas-js"></div>
-    <button onclick="toggleModalPecas()" style="width:100%; margin-top:10px; padding:10px; background:var(--red); color:white; border:none; border-radius:5px; cursor:pointer;">Fechar</button>
+    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">ESTRUTURA MESTRA</h3>
+    <div id="grid-pecas-js" style="max-height: 400px; overflow-y: auto;"></div>
+    <button onclick="toggleModalPecas()" style="width:100%; margin-top:10px; padding:10px; background:var(--secondary); color:white; border:none; border-radius:5px;">Fechar</button>
 </div>
 
 <script type="module">
@@ -120,20 +117,20 @@
         const menu = document.getElementById('sidebar-exames');
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('button');
-            btn.className = 'exame-btn';
+            btn.className = `exame-btn ${i == 35 ? 'active' : ''}`;
             btn.innerText = `Exame ${i}`;
             btn.onclick = () => {
                 idAtivo = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                document.getElementById('v-pdf').src = `ro${i}.pdf#toolbar=0&navpanes=0&view=FitH`;
-                document.getElementById('label-exame-folha').innerText = i;
                 carregarDoFirebase();
+                mudarPdf('prova');
             };
             menu.appendChild(btn);
         }
         popularEstruturas();
         carregarDoFirebase();
+        mudarPdf('prova');
     };
 
     // --- SYNC FIREBASE ---
@@ -155,11 +152,27 @@
             if (data && data.conteudo) {
                 if (!document.activeElement.isSameNode(editor)) editor.innerText = data.conteudo;
             } else {
-                editor.innerText = "Escolha uma Estrutura ou digite...";
+                editor.innerText = "Inicie sua peça baseada no enunciado...";
             }
-            atualizarEspelhoUI();
+            atualizarGabaritoUI();
         }, { onlyOnce: true });
     }
+
+    // --- PDF CONTROLS ---
+    window.mudarPdf = (tipo) => {
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        const frame = document.getElementById('pdf-frame');
+        if(tipo === 'prova') { 
+            frame.src = `ro${idAtivo}.pdf#view=FitH`; 
+            document.getElementById('btn-tab-prova').classList.add('active');
+        } else if(tipo === 'gab') { 
+            frame.src = `ro${idAtivo}-gabarito.pdf#view=FitH`; 
+            document.getElementById('btn-tab-gab').classList.add('active');
+        } else if(tipo === 'vade') { 
+            frame.src = `vade.pdf#view=FitH`; 
+            document.getElementById('btn-tab-vade').classList.add('active');
+        }
+    };
 
     // --- PEÇA MESTRA ---
     window.popularEstruturas = () => {
@@ -167,7 +180,7 @@
         grid.innerHTML = "";
         Object.keys(window.pecas).forEach(nome => {
             const btn = document.createElement('button');
-            btn.style = "width:100%; padding:12px; margin-bottom:5px; background:#f8f9fa; border:1px solid #ddd; border-radius:4px; text-align:left; cursor:pointer; font-weight:bold;";
+            btn.style = "width:100%; padding:12px; margin-bottom:8px; background:#f1f5f9; border:1px solid #ddd; border-radius:6px; text-align:left; cursor:pointer; font-weight:bold;";
             btn.innerText = nome.toUpperCase();
             btn.onclick = () => {
                 editor.innerText = window.pecas[nome];
@@ -183,24 +196,40 @@
         m.style.display = (m.style.display === 'block') ? 'none' : 'block';
     };
 
-    // --- ALVO & JUSTIÇA ---
-    window.scrollParaGabarito = () => {
-        document.getElementById('gabarito-alvo').scrollIntoView({behavior: 'smooth'});
-    };
-
+    // --- JUSTIÇA & ALVO ---
     window.injetarJustica = () => {
-        if(!idAtivo || !window.BANCO_ESPELHOS[idAtivo]) return alert("Sem dados.");
+        const espelho = window.BANCO_ESPELHOS[idAtivo];
+        if(!espelho) return alert("Sem dados para o Exame " + idAtivo);
+        
         const temp = document.createElement('div');
-        temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
+        temp.innerHTML = espelho;
         let t = `\n\n--- TESES PRÁTICAS E${idAtivo} ---\n`;
-        temp.querySelectorAll('.espelho-txt').forEach(i => t += `[ ] ${i.innerText.trim()}\n`);
+        
+        const itens = temp.querySelectorAll('.espelho-txt');
+        if(itens.length > 0) {
+            itens.forEach(i => t += `[ ] ${i.innerText.trim()}\n`);
+        } else {
+            t += temp.innerText.replace(/\n\s*\n/g, '\n').split('\n').map(l => `[ ] ${l.trim()}`).join('\n');
+        }
+        
         editor.innerText += t;
         autoSave();
     };
 
-    function atualizarEspelhoUI() {
-        const espelho = document.getElementById('espelho-folha');
-        espelho.innerHTML = window.BANCO_ESPELHOS[idAtivo] || "Gabarito não disponível.";
+    window.scrollParaGabarito = () => {
+        document.getElementById('gabarito-alvo').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    function atualizarGabaritoUI() {
+        const container = document.getElementById('gabarito-alvo');
+        const espelho = window.BANCO_ESPELHOS[idAtivo];
+        if(espelho) {
+            container.className = "gabarito-folha gabarito-existente";
+            container.innerHTML = `<h4>🔍 GABARITO EXAME ${idAtivo}</h4><br>${espelho}`;
+        } else {
+            container.className = "gabarito-folha gabarito-ausente";
+            container.innerHTML = `Gabarito E${idAtivo} não encontrado no banco-espelhos.js`;
+        }
     }
 </script>
 </body>
