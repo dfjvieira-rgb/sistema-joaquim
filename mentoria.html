@@ -8,7 +8,7 @@
     <style>
         :root { 
             --primary: #3b82f6; --gold: #fbbf24; --bg: #0f172a; 
-            --card: #1e293b; --text: #f1f5f9; --success: #10b981; 
+            --card: #1e293b; --text: #f1f5f9; --success: #10b981; --warning: #f97316;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,28 +26,34 @@
 
         h1 { color: var(--gold); font-size: 1.2rem; text-transform: uppercase; font-weight: 800; }
 
-        /* Área de Post-its e Dicas */
+        /* Estilização dos Formulários */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+
         .form-flow { 
             background: linear-gradient(145deg, #1e293b, #111827);
-            border: 1px solid rgba(59, 130, 246, 0.4); padding: 25px; 
-            border-radius: 16px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(59, 130, 246, 0.4); padding: 20px; 
+            border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
+        .form-flow.conceito { border-color: rgba(249, 115, 22, 0.4); }
+
         label { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .form-flow.conceito label { color: var(--warning); }
 
         input, textarea { 
             width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; 
-            color: #fff; padding: 14px; border-radius: 10px; margin-bottom: 15px;
-            font-family: 'Inter'; font-size: 0.9rem;
+            color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 12px;
+            font-family: 'Inter'; font-size: 0.85rem;
         }
 
-        textarea { font-family: 'Courier Prime', monospace; min-height: 150px; }
+        textarea { font-family: 'Courier Prime', monospace; min-height: 100px; }
 
         .btn-save { 
-            width: 100%; background: var(--success); color: #064e3b; border: none; 
-            padding: 16px; border-radius: 10px; font-weight: 800; cursor: pointer; 
-            text-transform: uppercase; transition: 0.2s;
+            width: 100%; border: none; padding: 14px; border-radius: 10px; 
+            font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.2s;
         }
+        .btn-tese { background: var(--success); color: #064e3b; }
+        .btn-conceito { background: var(--warning); color: #431407; }
 
         /* Seções de Grade */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
@@ -55,21 +61,13 @@
         .section-card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .section-card h2 { color: #94a3b8; font-size: 0.8rem; margin-bottom: 15px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 10px; }
 
-        /* Estilo dos Itens do Museu */
-        .hist-item { 
-            background: rgba(15, 23, 42, 0.4); padding: 15px; border-radius: 12px; 
-            margin-bottom: 12px; border: 1px solid transparent; cursor: pointer; transition: 0.3s;
-        }
-        .hist-item:hover { border-color: var(--gold); background: rgba(15, 23, 42, 0.8); }
-
-        .nota-badge { background: var(--gold); color: #000; font-size: 0.7rem; font-weight: 900; padding: 4px 10px; border-radius: 50px; }
-
-        .preview-text { font-size: 0.8rem; color: #94a3b8; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* Tese Card */
+        /* Cards de Itens */
         .tese-card { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--primary); }
+        .tese-card.conceito { border-left-color: var(--warning); }
         .tese-card strong { color: var(--gold); font-size: 0.85rem; display: block; margin-bottom: 5px; }
         .tese-card p { font-size: 0.8rem; color: #cbd5e1; white-space: pre-wrap; }
+
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -79,27 +77,38 @@
     <div id="status-sync" style="font-size: 0.6rem; color: var(--success);">● SINCRONIZADO</div>
 </header>
 
-<div class="form-flow">
-    <label>Título da Tese / Post-it</label>
-    <input type="text" id="tit" placeholder="Ex: Adicional de Periculosidade - Art. 193 CLT">
-    <label>Conteúdo da Estratégia (Fato, Fundamento e Pedido)</label>
-    <textarea id="tese-content" placeholder="Escreva aqui a estrutura para salvar no seu arquivo de teses..."></textarea>
-    <button class="btn-save" onclick="salvarTese()">SALVAR NO MEU ARQUIVO ➔</button>
+<div class="form-grid">
+    <div class="form-flow">
+        <label>Título da Tese</label>
+        <input type="text" id="tit-tese" placeholder="Ex: Horas Extras - Art. 58 CLT">
+        <label>Conteúdo da Estratégia (Fato/Fund/Ped)</label>
+        <textarea id="cont-tese" placeholder="Estrutura jurídica da peça..."></textarea>
+        <button class="btn-save btn-tese" onclick="salvarItem('tese')">SALVAR TESE ➔</button>
+    </div>
+
+    <div class="form-flow conceito">
+        <label>Título do Conceito</label>
+        <input type="text" id="tit-conceito" placeholder="Ex: Diferença entre Reclamação e Recurso">
+        <label>Explicação (Não Confunda)</label>
+        <textarea id="cont-conceito" placeholder="Dica técnica para não confundir conceitos..."></textarea>
+        <button class="btn-save btn-conceito" onclick="salvarItem('conceito')">SALVAR CONCEITO ➔</button>
+    </div>
 </div>
 
 <div class="grid">
     <div class="section-card">
         <h2>📌 MEU ARQUIVO DE TESES</h2>
-        <div id="container-teses">
-            <p style="opacity:0.5; font-size:0.8rem;">Carregando teses...</p>
-        </div>
+        <div id="container-teses"></div>
+    </div>
+
+    <div class="section-card">
+        <h2>💡 NÃO CONFUNDA (CONCEITOS)</h2>
+        <div id="container-conceitos"></div>
     </div>
 
     <div class="section-card">
         <h2>📚 MEU MUSEU (HISTÓRICO)</h2>
-        <div id="mentoria-historico">
-            <p style="opacity:0.5; font-size:0.8rem;">Buscando treinos realizados...</p>
-        </div>
+        <div id="mentoria-historico"></div>
     </div>
 </div>
 
@@ -117,64 +126,47 @@
     const app = initializeApp(config); 
     const db = getDatabase(app);
 
-    // Salvar Tese/Post-it
-    window.salvarTese = () => {
-        const t = document.getElementById('tit').value;
-        const c = document.getElementById('tese-content').value;
+    window.salvarItem = (tipo) => {
+        const t = document.getElementById(tipo === 'tese' ? 'tit-tese' : 'tit-conceito').value;
+        const c = document.getElementById(tipo === 'tese' ? 'cont-tese' : 'cont-conceito').value;
+        const node = tipo === 'tese' ? 'v10_teses_sincronizadas' : 'v10_conceitos_nao_confunda';
+
         if(t && c) {
-            push(ref(db, 'v10_teses_sincronizadas'), { 
-                titulo: t, 
-                conteudo: c, 
-                timestamp: serverTimestamp() 
-            });
-            document.getElementById('tit').value = ''; 
-            document.getElementById('tese-content').value = '';
+            push(ref(db, node), { titulo: t, conteudo: c, timestamp: serverTimestamp() });
+            document.getElementById(tipo === 'tese' ? 'tit-tese' : 'tit-conceito').value = ''; 
+            document.getElementById(tipo === 'tese' ? 'cont-tese' : 'cont-conceito').value = '';
         } else {
             alert("Preencha título e conteúdo!");
         }
     };
 
-    // Renderizar Tudo em Tempo Real
     onValue(ref(db), (snap) => {
         const data = snap.val() || {};
         
-        // 1. Renderizar Teses Salvas
+        // Renderizar Teses
         const contTeses = document.getElementById('container-teses');
         contTeses.innerHTML = "";
         const teses = data.v10_teses_sincronizadas || {};
         Object.keys(teses).reverse().forEach(id => {
-            contTeses.innerHTML += `
-                <div class="tese-card">
-                    <strong>${teses[id].titulo}</strong>
-                    <p>${teses[id].conteudo}</p>
-                </div>`;
+            contTeses.innerHTML += `<div class="tese-card"><strong>${teses[id].titulo}</strong><p>${teses[id].conteudo}</p></div>`;
         });
 
-        // 2. Renderizar Museu (Treinos)
+        // Renderizar Conceitos
+        const contConc = document.getElementById('container-conceitos');
+        contConc.innerHTML = "";
+        const conceitos = data.v10_conceitos_nao_confunda || {};
+        Object.keys(conceitos).reverse().forEach(id => {
+            contConc.innerHTML += `<div class="tese-card conceito"><strong>${conceitos[id].titulo}</strong><p>${conceitos[id].conteudo}</p></div>`;
+        });
+
+        // Renderizar Museu (Treinos)
         const h = document.getElementById('mentoria-historico');
         const treinos = data.v3_treino || {};
-        const respostas = data.v3_respostas || {};
-        
         h.innerHTML = "";
-        const exames = Object.keys(treinos).sort().reverse();
-
-        if(exames.length === 0) h.innerHTML = "<p style='font-size:0.8rem; opacity:0.5;'>Nenhum treino salvo ainda.</p>";
-
-        exames.forEach(k => {
-            const nota = respostas[k]?.nota || "0.00";
-            const pecaResumo = treinos[k]?.texto || "Sem conteúdo...";
-            
-            h.innerHTML += `
-            <div class="hist-item">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="font-size:0.85rem; color:var(--gold)">${k.replace('exame_', 'EXAME ')}</strong>
-                    <span class="nota-badge">NOTA: ${nota}</span>
-                </div>
-                <div class="preview-text">${pecaResumo}</div>
-            </div>`;
+        Object.keys(treinos).sort().reverse().forEach(k => {
+            h.innerHTML += `<div style="padding:10px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:8px; font-size:0.75rem;"><strong>${k.replace('exame_', 'E')}</strong></div>`;
         });
     });
 </script>
-
 </body>
 </html>
