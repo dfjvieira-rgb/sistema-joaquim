@@ -6,8 +6,6 @@
     <title>SISTEMA JOAQUIM - MASTER V8 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script src="banco-espelhos.js"></script>
-
     <style>
         :root { 
             --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
@@ -33,11 +31,10 @@
 
         .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; border: 2px solid var(--gold); }
 
-        /* CONTAINER ALVO - BLINDADO */
         #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Estilos do Banco */
+        /* Classes do Banco */
         .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
         .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
         .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
@@ -76,7 +73,7 @@
     <section id="container-alvo">
         <div class="alvo-header">
             <span>CHECKLIST DE CORREÇÃO</span>
-            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer; font-size: 1.2rem;">✖</button>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
         <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
         <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
@@ -85,7 +82,12 @@
     </section>
 </main>
 
-<script>
+<script type="module">
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    
+    // Torna o banco global para as funções de clique
+    window.BANCO_ESPELHOS = BANCO_ESPELHOS;
+
     let idAtivo = null;
 
     window.onload = () => {
@@ -102,7 +104,6 @@
                 document.getElementById('v-enu').src = `ro${i}.pdf`;
                 document.getElementById('v-gab').src = `ro${i}-gabarito.pdf`;
                 
-                // Fecha o painel se mudar de exame (para forçar nova validação)
                 document.getElementById('container-alvo').style.display = 'none';
                 renderEspelho(idAtivo);
             };
@@ -112,42 +113,21 @@
 
     function renderEspelho(key) {
         const area = document.getElementById('injetar-espelho');
-        // Apenas alimenta o HTML interno se existir
-        if (typeof BANCO_ESPELHOS !== 'undefined' && BANCO_ESPELHOS[key]) {
-            area.innerHTML = BANCO_ESPELHOS[key];
-            calcNota(); 
+        if (window.BANCO_ESPELHOS[key]) {
+            area.innerHTML = window.BANCO_ESPELHOS[key];
         } else {
-            area.innerHTML = ""; // Limpa para evitar lixo visual
-            document.getElementById('display-nota').innerText = "0.00";
-            document.getElementById('mini-nota').innerText = "NOTA: 0.00";
+            area.innerHTML = ""; 
         }
+        window.calcNota();
     }
 
-    // NOVA FUNÇÃO DE VALIDAÇÃO MESTRE
     window.validarEAbrirCorrecao = () => {
         if(!idAtivo) return alert("Selecione um exame primeiro!");
-
-        // REGRA: Se não existir no banco, nem abre o painel.
-        if (typeof BANCO_ESPELHOS === 'undefined' || !BANCO_ESPELHOS[idAtivo]) {
-            alert(`Atenção: Os dados de correção para o Exame ${idAtivo} ainda não foram mapeados no sistema.`);
+        if (!window.BANCO_ESPELHOS[idAtivo]) {
+            alert(`O Exame ${idAtivo} não possui dados mapeados no banco.`);
             return;
         }
-
         toggleAlvo();
-    };
-
-    window.injetarJustica = () => {
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
-        if (typeof BANCO_ESPELHOS === 'undefined' || !BANCO_ESPELHOS[idAtivo]) {
-            return alert("Ação bloqueada: Este exame não possui teses cadastradas.");
-        }
-
-        const temp = document.createElement('div');
-        temp.innerHTML = BANCO_ESPELHOS[idAtivo];
-        const itens = temp.querySelectorAll('.espelho-txt');
-        let textoParaInjetar = `ESTRUTURA DE TESES - EXAME ${idAtivo}\n${"=".repeat(30)}\n\n`;
-        itens.forEach(item => { textoParaInjetar += `[ ] ${item.innerText}\n\n`; });
-        document.getElementById('area-peca').value = textoParaInjetar;
     };
 
     window.calcNota = () => {
@@ -163,6 +143,16 @@
     window.toggleAlvo = () => {
         const p = document.getElementById('container-alvo');
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    window.injetarJustica = () => {
+        if(!idAtivo || !window.BANCO_ESPELHOS[idAtivo]) return alert("Sem dados para este exame.");
+        const temp = document.createElement('div');
+        temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
+        const itens = temp.querySelectorAll('.espelho-txt');
+        let texto = `TESES - EXAME ${idAtivo}\n${"=".repeat(20)}\n\n`;
+        itens.forEach(i => texto += `[ ] ${i.innerText}\n\n`);
+        document.getElementById('area-peca').value = texto;
     };
 </script>
 </body>
