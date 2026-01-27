@@ -17,13 +17,9 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        
-        /* O BOTÃO MESTRE NO CABEÇALHO */
         .btn-alvo { background-color: var(--red); color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
 
         main { display: flex; flex: 1; overflow: hidden; }
-        
-        /* BARRA LATERAL COM AUTOMAÇÃO 35-44 */
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
         .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
         .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
@@ -35,14 +31,13 @@
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
 
-        /* BOTÃO JUSTIÇA (BALANÇA) */
         .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; border: 2px solid var(--gold); }
 
-        /* REGRA MESTRE: CONTAINER ALVO */
-        #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; }
-        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; }
+        /* CONTAINER ALVO - BLINDADO */
+        #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         
-        /* ESTILOS INJETADOS DO BANCO */
+        /* Estilos do Banco */
         .espelho-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.82rem; }
         .espelho-txt { flex: 1; line-height: 1.2; color: #333; }
         .espelho-pt { font-weight: bold; color: var(--red); min-width: 35px; text-align: right; }
@@ -55,7 +50,7 @@
 
 <header>
     <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
-    <button class="btn-alvo" onclick="toggleAlvo()">🎯 CORREÇÃO</button>
+    <button class="btn-alvo" onclick="validarEAbrirCorrecao()">🎯 CORREÇÃO</button>
 </header>
 
 <main>
@@ -81,7 +76,7 @@
     <section id="container-alvo">
         <div class="alvo-header">
             <span>CHECKLIST DE CORREÇÃO</span>
-            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
+            <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer; font-size: 1.2rem;">✖</button>
         </div>
         <div id="injetar-espelho" style="flex:1; overflow-y:auto;"></div>
         <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd;">
@@ -95,8 +90,6 @@
 
     window.onload = () => {
         const menuExames = document.getElementById('lista-exames');
-        
-        // AUTOMAÇÃO EXAMES 35 AO 44
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
@@ -105,56 +98,58 @@
                 idAtivo = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
                 document.getElementById('label-atual').innerText = `📍 EXAME ${i}`;
                 document.getElementById('v-enu').src = `ro${i}.pdf`;
                 document.getElementById('v-gab').src = `ro${i}-gabarito.pdf`;
                 
+                // Fecha o painel se mudar de exame (para forçar nova validação)
+                document.getElementById('container-alvo').style.display = 'none';
                 renderEspelho(idAtivo);
             };
             menuExames.appendChild(btn);
         }
     };
 
-    // FUNÇÃO RENDERIZAR (EXATAMENTE COMO O SELADO)
     function renderEspelho(key) {
         const area = document.getElementById('injetar-espelho');
-        
-        // Proteção: Verifica se o banco existe e tem o dado
+        // Apenas alimenta o HTML interno se existir
         if (typeof BANCO_ESPELHOS !== 'undefined' && BANCO_ESPELHOS[key]) {
             area.innerHTML = BANCO_ESPELHOS[key];
             calcNota(); 
         } else {
-            area.innerHTML = `
-                <div style="padding:40px; text-align:center; color:#999;">
-                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
-                    <p>Sem espelho cadastrado para o Exame ${key}.</p>
-                </div>`;
+            area.innerHTML = ""; // Limpa para evitar lixo visual
             document.getElementById('display-nota').innerText = "0.00";
             document.getElementById('mini-nota').innerText = "NOTA: 0.00";
         }
     }
 
-    // BOTÃO JUSTIÇA (SUBSTITUIÇÃO TOTAL)
+    // NOVA FUNÇÃO DE VALIDAÇÃO MESTRE
+    window.validarEAbrirCorrecao = () => {
+        if(!idAtivo) return alert("Selecione um exame primeiro!");
+
+        // REGRA: Se não existir no banco, nem abre o painel.
+        if (typeof BANCO_ESPELHOS === 'undefined' || !BANCO_ESPELHOS[idAtivo]) {
+            alert(`Atenção: Os dados de correção para o Exame ${idAtivo} ainda não foram mapeados no sistema.`);
+            return;
+        }
+
+        toggleAlvo();
+    };
+
     window.injetarJustica = () => {
         if(!idAtivo) return alert("Selecione um exame primeiro!");
         if (typeof BANCO_ESPELHOS === 'undefined' || !BANCO_ESPELHOS[idAtivo]) {
-            return alert("Sem teses cadastradas para este exame!");
+            return alert("Ação bloqueada: Este exame não possui teses cadastradas.");
         }
 
         const temp = document.createElement('div');
         temp.innerHTML = BANCO_ESPELHOS[idAtivo];
         const itens = temp.querySelectorAll('.espelho-txt');
-        
         let textoParaInjetar = `ESTRUTURA DE TESES - EXAME ${idAtivo}\n${"=".repeat(30)}\n\n`;
-        itens.forEach(item => {
-            textoParaInjetar += `[ ] ${item.innerText}\n\n`;
-        });
-
+        itens.forEach(item => { textoParaInjetar += `[ ] ${item.innerText}\n\n`; });
         document.getElementById('area-peca').value = textoParaInjetar;
     };
 
-    // CÁLCULO DE NOTA GLOBAL (AMARRADO AOS CHECKBOXES DO BANCO)
     window.calcNota = () => {
         let n = 0;
         document.querySelectorAll('#injetar-espelho input:checked').forEach(c => {
@@ -165,10 +160,8 @@
         document.getElementById('mini-nota').innerText = `NOTA: ${total}`;
     };
 
-    // GATILHO DO BOTÃO CORREÇÃO
     window.toggleAlvo = () => {
         const p = document.getElementById('container-alvo');
-        if(!idAtivo) return alert("Selecione um exame primeiro!");
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     };
 </script>
