@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - ARYANNA MASTER 2026</title>
+    <title>SISTEMA JOAQUIM - MASTER 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -14,121 +14,124 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         .nav-btns { display: flex; gap: 10px; }
         .btn-header { color: white; border: 2px solid white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .btn-alvo { background-color: var(--red); }
         .btn-pecas { background-color: var(--accent); }
         .btn-mestra { background-color: var(--mestra-bg); border-color: #a29bfe; }
-        .btn-pdf-toggle { background-color: #525659; }
 
-        main { display: flex; flex: 1; overflow: hidden; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        .sidebar { width: 200px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; transition: 0.3s; }
-        .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
-        .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; }
+        /* SIDEBAR FIXA */
+        .sidebar { width: 180px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; flex-shrink: 0; }
+        .section-label { font-size: 0.6rem; font-weight: bold; color: #1a252f; margin: 10px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; }
+        .exame-btn { width: 100%; padding: 8px; margin-bottom: 4px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
         .exame-btn.active { background: var(--accent); color: white; }
 
-        /* AREA DE ESCRITA */
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; border-right: 1px solid #ccc; transition: 0.3s; }
+        /* AREA DE ESCRITA (LADO ESQUERDO) */
+        .work-section { min-width: 200px; flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { 
-            flex: 1; padding: 25px; border: none; font-family: 'Courier New', monospace; 
+            flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none;
         }
 
-        /* AREA DE PDF OTIMIZADA */
-        .pdf-section { width: 40%; background: #333; display: flex; flex-direction: column; transition: 0.3s; border-left: 2px solid #000; }
-        .pdf-tabs { display: flex; background: #222; gap: 2px; padding: 5px 5px 0 5px; }
-        .pdf-tab { flex: 1; padding: 10px; border: none; background: #444; color: #bbb; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 5px 5px 0 0; }
+        /* BARRA DIVISORA (O SEGREDO DO AJUSTE) */
+        .resizer {
+            width: 10px; background: #cbd5e1; cursor: col-resize; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .resizer:hover { background: var(--accent); }
+        .resizer::after { content: "||"; color: white; font-weight: bold; font-size: 10px; }
+
+        /* AREA DE PDF (LADO DIREITO) */
+        .pdf-section { width: 45%; min-width: 100px; background: #333; display: flex; flex-direction: column; border-left: 1px solid #000; }
+        .pdf-tabs { display: flex; background: #222; padding: 5px 5px 0; gap: 2px; }
+        .pdf-tab { flex: 1; padding: 8px; border: none; background: #444; color: #bbb; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 4px 4px 0 0; }
         .pdf-tab.active { background: #fff; color: #000; }
-        .pdf-container { flex: 1; position: relative; background: #fff; }
+        .pdf-container { flex: 1; position: relative; background: #525659; }
         .pdf-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .pdf-frame.active { display: block; }
 
-        .vade-btn { display: block; background: var(--orange); color: white; padding: 6px; text-align: center; font-size: 0.65rem; font-weight: bold; text-decoration: none; }
-
         /* UTILITARIOS */
-        .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; border: 2px solid var(--gold); }
-        #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 400px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; }
-        #modal-pecas { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 350px; background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; border: 1px solid #ccc; }
+        .btn-justica-fab { position: absolute; bottom: 25px; right: 25px; width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--gold); z-index: 10; }
+        #modal-pecas { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); width: 350px; background: white; z-index: 3000; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .pecas-grid { display: grid; grid-template-columns: 1fr; max-height: 400px; overflow-y: auto; padding: 10px; }
-        .peca-item-btn { padding: 12px; border: none; background: #fff; text-align: left; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.8rem; font-weight: bold; }
+        .peca-item-btn { padding: 12px; border: none; background: #fff; text-align: left; cursor: pointer; border-bottom: 1px solid #eee; font-weight: bold; }
 
-        #pagina-mestra { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 9999; overflow-y: auto; padding: 20px; }
-        .mestra-content { max-width: 850px; margin: auto; background: white; padding: 40px; box-shadow: 0 0 40px rgba(0,0,0,0.2); font-family: 'Times New Roman', serif; }
+        #pagina-mestra { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 9999; overflow-y: auto; padding: 30px; }
+        .mestra-content { max-width: 800px; margin: auto; background: white; padding: 50px; font-family: 'Times New Roman', serif; }
 
-        /* RESPONSIVIDADE MOBILE */
-        @media (max-width: 768px) {
-            .pdf-section { width: 0; display: none; }
-            .pdf-section.mobile-visible { width: 100%; display: flex; position: absolute; right: 0; top: 60px; height: calc(100vh - 60px); z-index: 500; }
-        }
+        #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 350px; height: calc(100vh - 60px); background: white; z-index: 2000; border-left: 2px solid var(--red); flex-direction: column; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold;">ARYANNA MASTER 2026</div>
+    <div style="font-weight: bold; color: var(--gold);">ARYANNA MASTER 2026</div>
     <div class="nav-btns">
-        <button class="btn-header btn-pdf-toggle" onclick="togglePDFView()"><i class="fas fa-file-pdf"></i> VER PDF</button>
         <button class="btn-header btn-mestra" onclick="togglePaginaMestra(true)"><i class="fas fa-crown"></i> MESTRA</button>
         <button class="btn-header btn-pecas" onclick="toggleModalPecas()"><i class="fas fa-list"></i> PEÇAS</button>
         <button class="btn-header btn-alvo" onclick="validarEAbrirCorrecao()">🎯 ALVO</button>
     </div>
 </header>
 
-<div id="modal-pecas">
-    <div style="padding: 12px; background: var(--accent); color: white; font-weight: bold; font-size: 0.85rem; display: flex; justify-content: space-between;">
-        MODELOS ESTRUTURAIS <span onclick="toggleModalPecas()" style="cursor:pointer">✖</span>
-    </div>
-    <div class="pecas-grid" id="grid-pecas-js"></div>
-</div>
-
-<main>
-    <aside class="sidebar" id="sidebar">
-        <div class="section-label">Exames OAB</div>
+<main id="main-container">
+    <aside class="sidebar">
+        <div class="section-label">EXAMES OAB</div>
         <div id="lista-exames"></div>
     </aside>
 
-    <section class="work-section" id="work-section">
+    <section class="work-section" id="left-panel">
         <div style="padding:8px; background:#eee; font-size:0.7rem; font-weight:bold; display: flex; justify-content: space-between;" id="label-atual">
-            <span>📍 SELECIONE UM EXAME</span>
-            <span id="mini-nota" style="color: var(--red)">0.00</span>
+            <span>📍 SELECIONE O EXAME</span>
+            <span id="mini-nota" style="color:var(--red)">0.00</span>
         </div>
-        <textarea id="area-peca" placeholder="Comece a escrever sua peça..."></textarea>
+        <textarea id="area-peca" placeholder="Inicie sua fundamentação aqui..."></textarea>
         <div class="btn-justica-fab" onclick="injetarJustica()"><i class="fas fa-balance-scale"></i></div>
     </section>
 
-    <section class="pdf-section" id="pdf-section">
-        <a href="vade.pdf" target="_blank" class="vade-btn">VADE MECUM EXTERNO ↗</a>
+    <div class="resizer" id="dragMe"></div>
+
+    <section class="pdf-section" id="right-panel">
         <div class="pdf-tabs">
-            <button class="pdf-tab active" id="tab-enu" onclick="switchPDF('enu')">ENUNCIADO</button>
-            <button class="pdf-tab" id="tab-gab" onclick="switchPDF('gab')">GABARITO</button>
+            <button class="pdf-tab active" id="tab-enu" onclick="switchPDF('enu')">ENUNCIADO (PROBLEMA)</button>
+            <button class="pdf-tab" id="tab-gab" onclick="switchPDF('gab')">GABARITO (RESPOSTA)</button>
         </div>
         <div class="pdf-container">
             <iframe id="v-enu" class="pdf-frame active"></iframe>
             <iframe id="v-gab" class="pdf-frame"></iframe>
         </div>
-    </section>
-
-    <section id="container-alvo">
-        <div style="padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between;">
-            <span>CHECKLIST</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none;">✖</button>
-        </div>
-        <div class="alvo-scroll" id="injetar-espelho" style="flex:1; overflow-y:auto; padding:10px;"></div>
-        <div style="padding:15px; background:#f8f9fa; text-align:center; border-top:1px solid #ddd; font-size:2rem; font-weight:bold; color:var(--red)" id="display-nota">0.00</div>
+        <a href="vade.pdf" target="_blank" style="background:#000; color:#fff; text-align:center; padding:5px; font-size:0.6rem; text-decoration:none;">ABRIR VADE EM NOVA ABA ↗</a>
     </section>
 </main>
 
+<div id="modal-pecas">
+    <div style="padding:12px; background:var(--accent); color:white; font-weight:bold; display:flex; justify-content:space-between;">
+        MODELOS ESTRUTURAIS <span onclick="toggleModalPecas()" style="cursor:pointer">✖</span>
+    </div>
+    <div class="pecas-grid" id="grid-pecas-js"></div>
+</div>
+
 <div id="pagina-mestra">
-    <button style="background:var(--red); color:white; padding:10px; margin-bottom:10px; border:none; border-radius:5px;" onclick="togglePaginaMestra(false)">FECHAR ⬅</button>
+    <button style="background:var(--red); color:white; padding:10px; border:none; cursor:pointer;" onclick="togglePaginaMestra(false)">FECHAR ⬅</button>
     <div class="mestra-content">
-        <h2 style="text-align: center;">QUALIFICAÇÃO MESTRA</h2>
-        <p><strong>AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</strong></p>
+        <h2 style="text-align:center;">QUALIFICAÇÃO MESTRA COMPLETA</h2>
         <br>
-        <p><strong>NOME DA PARTE</strong>, nacionalidade..., estado civil..., profissão..., inscrito no CPF sob o nº..., RG nº..., CTPS nº..., PIS nº..., nome da mãe..., residente e domiciliado na Rua..., nº..., bairro..., cidade/UF, CEP..., por seu advogado infra-assinado...</p>
+        <p><strong>AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</strong></p>
+        <br><br>
+        <p><strong>NOME DA PARTE</strong>, nacionalidade, estado civil, profissão, RG n..., CPF n..., CTPS n..., PIS n..., nome da mãe..., residente e domiciliado na rua..., nº..., bairro..., cidade/UF, CEP..., vem, por seu advogado infra-assinado...</p>
     </div>
 </div>
+
+<section id="container-alvo">
+    <div style="padding:15px; background:var(--red); color:white; font-weight:bold; display:flex; justify-content:space-between;">
+        <span>CHECKLIST OFICIAL</span><button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
+    </div>
+    <div id="injetar-espelho" style="flex:1; overflow-y:auto; padding:10px;"></div>
+    <div style="padding:20px; text-align:center; font-size:3rem; font-weight:bold; color:var(--red); border-top:1px solid #ddd;" id="display-nota">0.00</div>
+</section>
 
 <script type="module">
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
@@ -139,42 +142,61 @@
     let idAtivo = null;
 
     window.onload = () => {
-        const menuExames = document.getElementById('lista-exames');
+        const menu = document.getElementById('lista-exames');
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('button');
             btn.className = 'exame-btn';
             btn.innerText = `EXAME ${i}`;
-            btn.onclick = () => carregarExame(i);
-            menuExames.appendChild(btn);
+            btn.onclick = () => {
+                idAtivo = i.toString();
+                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('v-enu').src = `ro${i}.pdf`;
+                document.getElementById('v-gab').src = `ro${i}-gabarito.pdf`;
+                document.getElementById('label-atual').innerHTML = `📍 EXAME ${i} <span id="mini-nota" style="color:var(--red)">0.00</span>`;
+                renderEspelho(idAtivo);
+            };
+            menu.appendChild(btn);
         }
         popularMenuPecas();
+        initResizable();
     };
 
-    function carregarExame(i) {
-        idAtivo = i.toString();
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('v-enu').src = `ro${i}.pdf`;
-        document.getElementById('v-gab').src = `ro${i}-gabarito.pdf`;
-        document.getElementById('label-atual').innerHTML = `📍 EXAME ${i} <span id="mini-nota" style="color:var(--red)">0.00</span>`;
-        renderEspelho(idAtivo);
+    // LÓGICA DE REDIMENSIONAMENTO (CLICAR E ARRASTAR)
+    function initResizable() {
+        const resizer = document.getElementById('dragMe');
+        const leftSide = document.getElementById('left-panel');
+        const rightSide = document.getElementById('right-panel');
+        let x = 0; let leftWidth = 0;
+
+        const mouseDownHandler = function(e) {
+            x = e.clientX;
+            leftWidth = leftSide.getBoundingClientRect().width;
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+            resizer.style.background = 'var(--accent)';
+        };
+
+        const mouseMoveHandler = function(e) {
+            const dx = e.clientX - x;
+            const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
+            leftSide.style.width = `${newLeftWidth}%`;
+            // O painel direito se ajusta automaticamente pelo flexbox
+        };
+
+        const mouseUpHandler = function() {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+            resizer.style.background = '#cbd5e1';
+        };
+
+        resizer.addEventListener('mousedown', mouseDownHandler);
     }
 
     window.switchPDF = (tipo) => {
         document.querySelectorAll('.pdf-tab, .pdf-frame').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-' + tipo).classList.add('active');
         document.getElementById('v-' + tipo).classList.add('active');
-    };
-
-    window.togglePDFView = () => {
-        const section = document.getElementById('pdf-section');
-        section.classList.toggle('mobile-visible');
-        // No Desktop ele expande/recolhe
-        if(section.style.width === '0px') {
-            section.style.width = '40%';
-            document.getElementById('work-section').style.flex = '1';
-        } else {
-            section.style.width = '0px';
-        }
     };
 
     function popularMenuPecas() {
@@ -194,7 +216,7 @@
 
     window.renderEspelho = (key) => {
         const area = document.getElementById('injetar-espelho');
-        area.innerHTML = window.BANCO_ESPELHOS[key] || "Dados não encontrados.";
+        area.innerHTML = window.BANCO_ESPELHOS[key] || "Selecione um exame.";
     };
 
     window.calcNota = () => {
@@ -215,7 +237,7 @@
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     };
     window.validarEAbrirCorrecao = () => idAtivo ? toggleAlvo() : alert("Selecione um exame.");
-    
+
     window.injetarJustica = () => {
         if(!idAtivo) return alert("Selecione um exame.");
         const temp = document.createElement('div');
