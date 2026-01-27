@@ -3,177 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA PEÇA MESTRA - CONTESTAÇÃO E44</title>
+    <title>HUB PROJETO PEÇA MESTRA - 2026</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #e67e22;
-            --fgv-green: #27ae60;
-            --mentoria-bg: #f8f9fa;
-            --postit-yellow: #fff176;
-            --text-color: #2d3436;
+            --bg: #f4f7f6;
+            --paper: #ffffff;
         }
-
-        body { font-family: 'Times New Roman', serif; background: #dfe6e9; margin: 0; padding: 10px; color: var(--text-color); }
-        .folha-resposta { background: white; max-width: 850px; margin: auto; padding: 40px; border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.15); border: 1px solid #b2bec3; position: relative; }
-
-        /* --- SKELETON TÉCNICO (REGRA: SEM SUPRESSÕES) --- */
-        .addressing { font-weight: bold; text-transform: uppercase; margin-bottom: 25px; line-height: 1.6; text-align: justify; }
-        .jumps { color: #bdc3c7; font-size: 0.8em; margin: 15px 0; text-align: center; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; padding: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
         
-        /* --- MENTORIA E POST-ITS (SISTEMA DE SALVAMENTO) --- */
-        .area-mentoria { display: flex; gap: 15px; margin-bottom: 30px; }
-        .post-it { 
-            background: var(--postit-yellow); 
-            padding: 15px; 
-            flex: 1; 
-            border-radius: 2px; 
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.1); 
-            font-size: 0.85em; 
-            border-left: 5px solid #f1c40f;
-            transform: rotate(-0.5deg);
-        }
-        .dica-mentoria { 
-            background: #e1f5fe; 
-            padding: 15px; 
-            flex: 1; 
-            border-radius: 4px; 
-            font-size: 0.85em; 
-            border-left: 5px solid #03a9f4;
-        }
-
-        /* --- INTEGRAÇÃO COM BANCO DE ESPELHOS --- */
-        .tese-espelho { 
-            margin: 15px 0; 
-            padding: 15px; 
-            border: 1px solid #eee; 
-            background: #fff; 
-            border-radius: 5px; 
-            position: relative; 
-            display: none; /* Revelado pelo botão correção */
-        }
-        .visible { display: block; animation: slideDown 0.4s ease-out; }
-        .score-tag { 
-            position: absolute; 
-            top: -12px; 
-            right: 15px; 
-            background: var(--fgv-green); 
-            color: white; 
-            padding: 3px 10px; 
-            border-radius: 15px; 
-            font-size: 0.75em; 
-            font-weight: bold; 
-        }
-
-        /* --- UI/UX MOBILE --- */
-        .btn-panel { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
-        .btn-action { 
-            padding: 18px; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            text-transform: uppercase; 
+        /* DASHBOARD LATERAL (Mobile Friendly) */
+        .sidebar { background: var(--primary); color: white; padding: 20px; width: 250px; height: 100vh; position: fixed; overflow-y: auto; }
+        .main-content { margin-left: 290px; padding: 20px; }
+        
+        .menu-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #34495e; 
             cursor: pointer; 
+            font-size: 0.9em; 
         }
-        .btn-corrigir { background: var(--fgv-green); color: white; }
-        .btn-salvar { background: var(--primary); color: white; }
+        .menu-item:hover { background: var(--accent); }
+        .active { background: var(--accent); font-weight: bold; }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 600px) { .area-mentoria { flex-direction: column; } .folha-resposta { padding: 20px; } }
+        /* SKELETON TÉCNICO DAS PEÇAS */
+        .folha-resposta { background: var(--paper); padding: 40px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 80vh; }
+        .addressing { font-weight: bold; text-transform: uppercase; margin-bottom: 25px; line-height: 1.6; }
+        .jumps { color: #bdc3c7; font-size: 0.8em; margin: 15px 0; text-align: center; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; padding: 5px; }
+
+        /* ÁREA DE POST-ITS E MENTORIA */
+        .area-inteligencia { display: flex; gap: 15px; margin-bottom: 25px; }
+        .post-it { background: #fff176; padding: 12px; border-left: 5px solid #f1c40f; font-size: 0.8em; flex: 1; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        
+        /* TESES DO ESPELHO */
+        .tese-espelho { margin: 15px 0; padding: 15px; border-left: 4px solid var(--accent); background: #f9f9f9; display: none; position: relative; }
+        .visible { display: block; animation: fadeIn 0.3s; }
+        .score-tag { position: absolute; top: -10px; right: 10px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
 
-<div class="folha-resposta">
-    <div class="area-mentoria">
-        <div class="post-it" id="postitE44">
-            <strong>📌 POST-IT: FOCO CONTESTAÇÃO E44</strong><br>
-            • Peça defensiva técnica.<br>
-            • Olho na inépcia por falta de causa de pedir.<br>
-            • O espelho exige base legal dupla (CLT + CPC).
-        </div>
-        <div class="dica-mentoria">
-            <strong>💡 MENTORIA - GATILHO DE PONTOS:</strong><br>
-            Na contestação, se houver qualquer dúvida sobre o fato, use o princípio da <u>impugnação específica</u> (Art. 341 CPC). Não deixe pedidos sem resposta.
-        </div>
-    </div>
+<div class="sidebar">
+    <h3>📂 PEÇAS SALVAS</h3>
+    <div class="menu-item" onclick="carregarPeca('dashboard')">🏠 Painel Geral</div>
+    <div class="menu-item" onclick="carregarPeca('peca1')">1. Reclamação Trabalhista</div>
+    <div class="menu-item active" onclick="carregarPeca('peca44')">44. Contestação (E44)</div>
+</div>
 
-    <div class="addressing">AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</div>
-    
-    <div class="jumps">[PULAR 5 A 10 LINHAS - RT ATÉ CUMPRIMENTO]</div>
-
-    <div class="corpo">
-        <strong>PROCESSO Nº: XXXXXXX-XX.XXXX.5.XX.XXXX</strong><br><br>
+<div class="main-content" id="render-area">
+    <div class="folha-resposta">
+        <div class="area-inteligencia">
+            <div class="post-it"><strong>📌 POST-IT: EXAME 44</strong><br>O sistema carregou a Contestação com base no espelho oficial.</div>
+        </div>
         
-        <strong>NOME DA RECLAMADA</strong>, nacionalidade..., estado civil..., profissão..., inscrito no CPF sob o nº..., RG nº..., residente e domiciliado na Rua..., nº..., bairro..., cidade/UF, CEP..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., nº..., onde recebe notificações e intimações, vem, perante Vossa Excelência, com fulcro no <strong>Artigo 847 da CLT</strong>, apresentar:
+        <div class="addressing">AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</div>
+        <div class="jumps">[ESQUELETO TÉCNICO CARREGADO - SEM SUPRESSÕES]</div>
         
-        <h2 style="text-align: center; margin: 30px 0; color: var(--primary);">CONTESTAÇÃO</h2>
-        
-        <p>à Reclamação Trabalhista movida por <strong>NOME DO RECLAMANTE</strong>, pelos fundamentos fáticos e jurídicos a seguir expostos:</p>
-
-        <div class="btn-panel">
-            <button class="btn-action btn-corrigir" onclick="beberDadosEspelho()">🔍 BEBER DADOS DA CORREÇÃO (E44)</button>
-        </div>
-
-        <div id="teses-container">
-            <div class="tese-espelho">
-                <span class="score-tag">[+0,50]</span>
-                <strong>I. PRELIMINAR DE INÉPCIA</strong><br>
-                O pedido de gratuidade de justiça não foi fundamentado, violando o Art. 790, §3º da CLT. Requer a extinção do pedido sem resolução do mérito (Art. 485, IV, CPC).
-            </div>
-
-            <div class="tese-espelho">
-                <span class="score-tag">[+0,40]</span>
-                <strong>II. PREJUDICIAL DE PRESCRIÇÃO</strong><br>
-                Requer a aplicação da prescrição quinquenal para atingir todas as parcelas anteriores a 5 anos da data do ajuizamento (Art. 7º, XXIX, CF/88 e Art. 11, CLT).
-            </div>
-
-            <div class="tese-espelho">
-                <span class="score-tag">[+0,60]</span>
-                <strong>III. MÉRITO - EQUIPARAÇÃO SALARIAL</strong><br>
-                Indevida a equiparação, pois o paradigma possui tempo de serviço na função superior a 2 anos em relação ao reclamante (Art. 461, §1º da CLT).
-            </div>
-
-            <div class="tese-espelho">
-                <span class="score-tag">[+0,50]</span>
-                <strong>IV. MÉRITO - MULTA DO ART. 477, §8º DA CLT</strong><br>
-                Indevida, pois as verbas rescisórias foram quitadas no prazo legal de 10 dias úteis, conforme comprovante de depósito anexo (Art. 477, §6º da CLT).
-            </div>
-        </div>
-
-        <div class="jumps">[PULAR 2 LINHAS - CONCLUSÃO E PROVAS]</div>
-
-        <div class="footer">
-            <strong>V. DOS PEDIDOS E REQUERIMENTOS</strong><br>
-            Diante do exposto, requer o acolhimento da preliminar e, no mérito, a total improcedência dos pedidos.<br>
-            Requer a condenação do reclamante ao pagamento de honorários de sucumbência (Art. 791-A da CLT).<br>
-            Protesta provar o alegado por todos os meios de prova admitidos em direito.<br><br>
+        <div class="corpo">
+            <p><strong>NOME DA RECLAMADA</strong>, já qualificada... vem apresentar <strong>CONTESTAÇÃO</strong>.</p>
+            <button onclick="beberDados()" style="padding: 10px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer;">🔍 BEBER DADOS DO ESPELHO 44</button>
             
-            Nestes Termos, Pede Deferimento.<br>
-            Local, Data.<br>
-            <strong>ADVOGADO - OAB/XX nº...</strong>
+            <div id="mirror-data">
+                <div class="tese-espelho">
+                    <span class="score-tag">[+0,50]</span>
+                    <strong>Preliminar: Inépcia da Inicial</strong><br>Pedido genérico de reflexos (Art. 840, §1º CLT).
+                </div>
+                </div>
         </div>
     </div>
-
-    <button class="btn-action btn-salvar" onclick="salvarEstudoPeça()">💾 SALVAR ESTUDO NA PEÇA MESTRA</button>
 </div>
 
 <script>
-    function beberDadosEspelho() {
-        const teses = document.querySelectorAll('.tese-espelho');
-        teses.forEach(t => t.classList.add('visible'));
-        console.log("Integração: Dados do Exame 44 injetados na estrutura fiel.");
+    // INTELIGÊNCIA DE NAVEGAÇÃO DO PROJETO
+    function carregarPeca(id) {
+        // Aqui o JS buscaria no seu banco de dados a estrutura salva
+        console.log("Navegando para: " + id);
+        if(id === 'peca44') {
+            // Recarrega a peça 44 sem apagar o sistema
+            location.reload(); 
+        }
     }
 
-    function salvarEstudoPeça() {
-        const log = {
-            peca_id: "E44_CONTESTACAO",
-            tipo: "Estrutura 18 Peças",
-            timestamp: new Date().toISOString(),
-            status: "Concluído"
-        };
-        localStorage.setItem("Log_Estudo_Mestre", JSON.stringify(log));
-        alert("Sucesso! Peça 44 salva com toda a mentoria e estrutura técnica.");
+    function beberDados() {
+        const teses = document.querySelectorAll('.tese-espelho');
+        teses.forEach(t => t.classList.add('visible'));
+    }
+
+    // SALVAMENTO PERSISTENTE
+    function salvarProgresso() {
+        const estado = document.getElementById('render-area').innerHTML;
+        localStorage.setItem('projeto_peca_mestra_full', estado);
+        alert("Projeto Salvo! Nada sumirá agora.");
     }
 </script>
 
