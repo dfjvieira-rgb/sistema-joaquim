@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM MASTER</title>
+    <title>SISTEMA JOAQUIM MASTER 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -73,7 +73,7 @@
     
     <section class="folha-mestra-container">
         <div class="folha-fgv">
-            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Selecione um Exame e clique em Estruturas...</div>
+            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Selecione um Exame e escolha uma Estrutura...</div>
             <div id="gabarito-alvo" class="gabarito-folha"></div>
         </div>
     </section>
@@ -89,7 +89,7 @@
 </main>
 
 <div id="modal-pecas" class="modal-pecas">
-    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">PEÇA MESTRA (18)</h3>
+    <h3 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">PEÇAS MESTRAS (FGV)</h3>
     <div id="grid-pecas-js" style="max-height: 400px; overflow-y: auto;"></div>
     <button onclick="toggleModalPecas()" style="width:100%; margin-top:10px; padding:10px; background:var(--secondary); color:white; border:none; border-radius:5px; cursor:pointer;">FECHAR</button>
 </div>
@@ -98,10 +98,17 @@
     import { db } from './firebase-config.js';
     import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
+    import { pecas as pecasExternas } from './estruturas.js';
+
+    // SISTEMA ANTIFALHA: Se o estruturas.js sumir, estas 3 principais salvam seu treino
+    const pecasLocais = {
+        "Reclamação Trabalhista": "AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nRECLAMANTE, nacionalidade, estado civil, profissão...",
+        "Contestação": "AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nProcesso nº: ___\nRECLAMADA, já qualificada nos autos...",
+        "Recurso Ordinário": "AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___\n\nProcesso nº: ___\nRECORRENTE, inconformado com a sentença..."
+    };
 
     window.BANCO_ESPELHOS = BANCO_ESPELHOS;
-    window.pecas = pecas;
+    window.pecas = (pecasExternas && Object.keys(pecasExternas).length > 0) ? pecasExternas : pecasLocais;
 
     let idAtivo = "35";
     let timerSave = null;
@@ -143,6 +150,8 @@
             const data = snap.val();
             if (data && data.conteudo) {
                 if (!document.activeElement.isSameNode(editor)) editor.innerText = data.conteudo;
+            } else {
+                editor.innerText = "Selecione uma Estrutura para começar...";
             }
             atualizarGabaritoUI();
         }, { onlyOnce: true });
@@ -150,15 +159,14 @@
 
     window.popularEstruturas = () => {
         const grid = document.getElementById('grid-pecas-js');
-        grid.innerHTML = ""; 
-        const fontePecas = window.pecas || {"Aviso": "Arquivo estruturas.js não carregado corretamente."};
+        grid.innerHTML = "";
         
-        Object.keys(fontePecas).forEach(nome => {
+        Object.keys(window.pecas).forEach(nome => {
             const btn = document.createElement('button');
             btn.style = "width:100%; padding:12px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; text-align:left; cursor:pointer; font-weight:bold; color:var(--primary);";
             btn.innerHTML = `<i class="fas fa-file-contract" style="color:var(--accent); margin-right:8px;"></i> ${nome.toUpperCase()}`;
             btn.onclick = () => {
-                editor.innerText = fontePecas[nome];
+                editor.innerText = window.pecas[nome];
                 autoSave();
                 toggleModalPecas();
             };
@@ -174,24 +182,21 @@
     window.mudarPdf = (tipo) => {
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         const frame = document.getElementById('pdf-frame');
-        if(tipo === 'prova') { 
-            frame.src = `ro${idAtivo}.pdf#view=FitH`; 
-            document.getElementById('btn-tab-prova').classList.add('active');
-        } else if(tipo === 'gab') { 
-            frame.src = `ro${idAtivo}-gabarito.pdf#view=FitH`; 
-            document.getElementById('btn-tab-gab').classList.add('active');
-        } else if(tipo === 'vade') { 
-            frame.src = `vade.pdf#view=FitH`; 
-            document.getElementById('btn-tab-vade').classList.add('active');
-        }
+        const urls = {
+            'prova': `ro${idAtivo}.pdf#view=FitH`,
+            'gab': `ro${idAtivo}-gabarito.pdf#view=FitH`,
+            'vade': `vade.pdf#view=FitH`
+        };
+        frame.src = urls[tipo];
+        document.getElementById(`btn-tab-${tipo}`).classList.add('active');
     };
 
     window.injetarJustica = () => {
         const espelho = window.BANCO_ESPELHOS[idAtivo];
-        if(!espelho) return alert("Sem dados no banco-espelhos para o Exame " + idAtivo);
+        if(!espelho) return alert("Sem dados para o Exame " + idAtivo);
         const temp = document.createElement('div');
         temp.innerHTML = espelho;
-        let t = `\n\n--- CHECKLIST DE JUSTIÇA E${idAtivo} ---\n`;
+        let t = `\n\n--- CHECKLIST DE TESES E${idAtivo} ---\n`;
         const itens = temp.querySelectorAll('.espelho-txt');
         if(itens.length > 0) {
             itens.forEach(i => t += `[ ] ${i.innerText.trim()}\n`);
