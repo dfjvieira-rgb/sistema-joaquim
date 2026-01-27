@@ -19,9 +19,9 @@
         .btn-header { color: white; border: 1.5px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.65rem; text-transform: uppercase; transition: 0.3s; }
         .btn-alvo { background-color: var(--red); }
         .btn-master { background-color: var(--gold); color: #000; border-color: #000; }
-        .btn-plus { background-color: #8e44ad; } /* Botão Adicional Peça Mestra */
 
         main { display: flex; flex: 1; overflow: hidden; }
+        
         .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
         .section-label { font-size: 0.65rem; font-weight: bold; color: #1a252f; margin: 15px 0 5px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
         .exame-btn { width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: left; font-weight: bold; display: flex; align-items: center; gap: 8px; }
@@ -30,21 +30,32 @@
         .work-section { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
         #area-peca { flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.6; outline: none; background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; resize: none; }
 
+        /* CAMADA DE MENTORIA - POST-ITS */
+        .mentoria-container { position: absolute; top: 20px; right: 25px; width: 200px; display: flex; flex-direction: column; gap: 15px; z-index: 10; pointer-events: none; }
+        .post-it { 
+            background: var(--postit-bg); padding: 15px; border-radius: 2px; 
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--gold); 
+            font-size: 0.75rem; color: #78350f; pointer-events: auto; position: relative;
+            transform: rotate(1deg); transition: 0.3s;
+        }
+        .post-it:hover { transform: rotate(0deg) scale(1.05); }
+        .post-it b { display: block; text-transform: uppercase; font-size: 0.65rem; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 2px; }
+        .post-it i { position: absolute; top: 5px; right: 8px; opacity: 0.3; }
+
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; }
         .pdf-frame { width: 100%; height: 48%; border: none; background: white; }
 
-        /* BOTÃO JUSTIÇA (CORREÇÃO) ORIGINAL */
         .btn-justica-fab { position: absolute; bottom: 30px; right: 30px; width: 65px; height: 65px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; border: 2px solid var(--gold); }
 
-        /* MODO ALVO ORIGINAL */
         #container-alvo { display: none; position: fixed; right: 0; top: 60px; width: 420px; height: calc(100vh - 60px); background: white; border-left: 2px solid #ccc; flex-direction: column; z-index: 2000; box-shadow: -10px 0 25px rgba(0,0,0,0.2); }
         .alvo-header { padding: 15px; background: var(--red); color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         .alvo-scroll { flex: 1; padding: 10px; overflow-y: auto; }
+        
+        .espelho-item { display: flex; gap: 10px; padding: 12px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.85rem; }
+        .espelho-txt { flex: 1; line-height: 1.3; }
+        .espelho-pt { font-weight: bold; color: var(--red); min-width: 40px; text-align: right; }
 
-        /* --- PLUS: CAMADA PEÇA MESTRA (OUTRA TELA) --- */
-        #camada-mestra { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 9999; overflow-y: auto; padding: 40px; }
-        .mestra-body { max-width: 850px; margin: auto; border: 1px solid #000; padding: 50px; font-family: 'Times New Roman', serif; position: relative; }
-        .mestra-btn-close { position: fixed; top: 20px; right: 20px; background: var(--red); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        @media (max-width: 1024px) { .sidebar, .pdf-section, .mentoria-container { display: none; } #container-alvo { width: 100%; } }
     </style>
 </head>
 <body>
@@ -52,7 +63,6 @@
 <header>
     <div style="font-weight: 900; letter-spacing: 1px; color: var(--gold);">ARYANNA MASTER 2026</div>
     <div class="nav-btns">
-        <button class="btn-header btn-plus" onclick="abrirMestra()"><i class="fas fa-file-alt"></i> PEÇA MESTRA</button>
         <button class="btn-header btn-master" onclick="gerarPecaInteligente()"><i class="fas fa-brain"></i> PEÇA INTELIGENTE</button>
         <button class="btn-header btn-alvo" onclick="validarEAbrirCorrecao()">🎯 MODO ALVO</button>
     </div>
@@ -69,7 +79,22 @@
             <span>📍 AGUARDANDO EXAME...</span>
             <span id="mini-nota" style="background: var(--red); color: white; padding: 2px 10px; border-radius: 12px;">0.00</span>
         </div>
-        <textarea id="area-peca" spellcheck="false" placeholder="Selecione um exame..."></textarea>
+
+        <div class="mentoria-container" id="mentoria-js">
+            <div class="post-it">
+                <i class="fas fa-lightbulb"></i>
+                <b>DICA DA MESTRA</b>
+                "Se o examinador pediu RO, lembre-se: peça de interposição para o Juiz da Vara e razões para o TRT!"
+            </div>
+            <div class="post-it" style="background: #d1fae5; border-left-color: #10b981; display: none;" id="postit-sucesso">
+                <i class="fas fa-check-circle"></i>
+                <b>SISTEMA</b>
+                Inteligência do espelho aplicada ao esqueleto da peça com sucesso!
+            </div>
+        </div>
+
+        <textarea id="area-peca" spellcheck="false" placeholder="Selecione um exame e use a 'Peça Inteligente' para começar..."></textarea>
+        
         <div class="btn-justica-fab" onclick="injetarJustica()" title="Injetar Teses do Espelho"><i class="fas fa-balance-scale"></i></div>
     </section>
 
@@ -84,33 +109,16 @@
             <button onclick="toggleAlvo()" style="color:white; background:none; border:none; cursor:pointer;">✖</button>
         </div>
         <div class="alvo-scroll" id="injetar-espelho"></div>
+        <div style="padding:20px; background:#f8f9fa; text-align:center; border-top:2px solid #ddd;">
+            <div id="display-nota" style="font-size:3.5rem; font-weight:900; color:var(--red)">0.00</div>
+        </div>
     </section>
 </main>
 
-<div id="camada-mestra">
-    <button class="mestra-btn-close" onclick="fecharMestra()">VOLTAR AO TREINO</button>
-    <div class="mestra-body">
-        <p><strong>AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</strong></p>
-        <p><br>[PULAR 5 LINHAS]<br></p>
-        <p><strong>PROCESSO Nº: XXXXXXX-XX.XXXX.5.XX.XXXX</strong></p>
-        <br>
-        <p><strong>NOME DA PARTE</strong>, nacionalidade..., estado civil..., profissão..., inscrito no CPF sob o nº..., RG nº..., residente e domiciliado na Rua..., nº..., bairro..., cidade/UF, CEP..., por seu advogado infra-assinado (procuração anexa), com endereço profissional na Rua..., nº..., onde recebe notificações e intimações, vem, perante Vossa Excelência, com fulcro no Artigo da CLT correspondente, apresentar a medida de:</p>
-        
-        <h1 style="text-align: center; margin: 40px 0; text-decoration: underline;">NOME DA PEÇA COMPLETA</h1>
-        
-        <p>Em face de <strong>NOME DO ADVERSÁRIO</strong>, já qualificado...</p>
-        <br>
-        <p><strong>I - PRELIMINARES</strong><br>(RT - RAZÕES TÉCNICAS)</p>
-        <br>
-        <p><strong>II - MÉRITO</strong><br>(CUMPRIMENTO DA ACTION)</p>
-        <br>
-        <p><strong>III - REQUERIMENTOS FINAIS</strong></p>
-        <br>
-        <p>Nestes Termos, Pede Deferimento. Local, Data. Advogado... OAB/XX nº...</p>
-    </div>
-</div>
+<script type="module">
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    window.BANCO_ESPELHOS = BANCO_ESPELHOS;
 
-<script>
     let idAtivo = null;
 
     window.onload = () => {
@@ -132,34 +140,92 @@
         }
     };
 
-    /* FUNCIONALIDADES ORIGINAIS RESTAURADAS */
-    function gerarPecaInteligente() {
-        if(!idAtivo) return alert("Selecione um exame!");
-        document.getElementById('area-peca').value = "AO JUÍZO DA...\n\nQUALIFICAÇÃO COMPLETA SEM SUPRESSÕES...\n\nMEDIDA CABÍVEL DO EXAME " + idAtivo;
-    }
+    // INTELIGÊNCIA DE GERAÇÃO BASEADA NO ESPELHO
+    window.gerarPecaInteligente = () => {
+        if(!idAtivo || !window.BANCO_ESPELHOS[idAtivo]) return alert("Selecione um exame primeiro!");
 
-    function injetarJustica() {
-        if(!idAtivo) return alert("Selecione um exame!");
-        document.getElementById('area-peca').value += "\n\n[INJEÇÃO DE TESES DO EXAME " + idAtivo + "]";
-    }
+        const temp = document.createElement('div');
+        temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
+        const itens = temp.querySelectorAll('.espelho-item');
+        
+        let endereçamento = "AO JUÍZO DA ... VARA DO TRABALHO DE ...";
+        let fundamentos = "Art. ... da CLT";
+        let tesesMapeadas = "";
 
-    function toggleAlvo() {
-        const p = document.getElementById('container-alvo');
-        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    }
+        itens.forEach(item => {
+            const texto = item.querySelector('.espelho-txt').innerText;
+            if(texto.toLowerCase().includes("endereçamento")) endereçamento = texto.toUpperCase();
+            if(texto.toLowerCase().includes("art.")) fundamentos = texto;
+            tesesMapeadas += `\n\n[ ] ${texto}`;
+        });
 
-    function validarEAbrirCorrecao() {
-        if(!idAtivo) return alert("Selecione o exame.");
-        toggleAlvo();
-    }
+        const esqueleto = `${endereçamento}
+
+(Pular 5 linhas)
+
+Processo nº: ...
+
+NOME DA PARTE, já qualificada nos autos, vem, por seu advogado, com fulcro no ${fundamentos}, apresentar a medida de:
+
+PEÇA PROFISSIONAL - EXAME ${idAtivo}
+
+I. PRELIMINARES / PREJUDICIAIS
+(Analise as teses abaixo e organize aqui)
+
+II. MÉRITO
+${tesesMapeadas}
+
+III. PEDIDOS E REQUERIMENTOS
+Diante do exposto, requer a total procedência, honorários de 15% e a justiça gratuita.
+
+Termos em que,
+Pede Deferimento.
+
+Local ..., Data ...
+
+Advogado ...
+OAB nº ...`;
+
+        document.getElementById('area-peca').value = esqueleto;
+        
+        // Ativa Post-it de Sucesso
+        const ps = document.getElementById('postit-sucesso');
+        ps.style.display = 'block';
+        setTimeout(() => ps.style.display = 'none', 4000);
+    };
 
     function renderEspelho(key) {
-        document.getElementById('injetar-espelho').innerHTML = `<div style="padding:10px">Dados de correção do Exame ${key} carregados.</div>`;
+        const area = document.getElementById('injetar-espelho');
+        area.innerHTML = window.BANCO_ESPELHOS[key] || "";
+        window.calcNota();
     }
 
-    /* FUNÇÕES DA PEÇA MESTRA (PLUS) */
-    function abrirMestra() { document.getElementById('camada-mestra').style.display = 'block'; }
-    function fecharMestra() { document.getElementById('camada-mestra').style.display = 'none'; }
+    window.validarEAbrirCorrecao = () => {
+        if(!idAtivo) return alert("Selecione o exame primeiro.");
+        toggleAlvo();
+    };
+
+    window.calcNota = () => {
+        let n = 0;
+        document.querySelectorAll('#injetar-espelho input:checked').forEach(c => n += parseFloat(c.value));
+        document.getElementById('display-nota').innerText = n.toFixed(2);
+        document.getElementById('mini-nota').innerText = n.toFixed(2);
+    };
+
+    window.toggleAlvo = () => {
+        const p = document.getElementById('container-alvo');
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    window.injetarJustica = () => {
+        if(!idAtivo || !window.BANCO_ESPELHOS[idAtivo]) return alert("Sem dados.");
+        const temp = document.createElement('div');
+        temp.innerHTML = window.BANCO_ESPELHOS[idAtivo];
+        const itens = temp.querySelectorAll('.espelho-txt');
+        let txt = `\n\n--- TESES DO EXAME ${idAtivo} ---\n`;
+        itens.forEach(i => txt += `[ ] ${i.innerText}\n`);
+        document.getElementById('area-peca').value += txt;
+    };
 </script>
 </body>
 </html>
