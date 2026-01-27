@@ -3,104 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUB PROJETO PEÇA MESTRA - 2026</title>
+    <title>SISTEMA DE TREINO - PROJETO 2026</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #e67e22;
-            --bg: #f4f7f6;
-            --paper: #ffffff;
+            --bg: #f1f2f6;
+            --treino: #ffffff;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        
-        /* DASHBOARD LATERAL (Mobile Friendly) */
-        .sidebar { background: var(--primary); color: white; padding: 20px; width: 250px; height: 100vh; position: fixed; overflow-y: auto; }
-        .main-content { margin-left: 290px; padding: 20px; }
-        
-        .menu-item { 
-            padding: 10px; 
-            border-bottom: 1px solid #34495e; 
-            cursor: pointer; 
-            font-size: 0.9em; 
+
+        body { font-family: 'Times New Roman', serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; }
+
+        /* HEADER DE COMANDO */
+        .toolbar { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn-mestre { background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        /* ÁREA DE TREINO (LIVRE PARA O ESTUDANTE) */
+        .area-treino { flex-grow: 1; display: flex; justify-content: center; padding: 20px; overflow-y: auto; }
+        .folha-em-branco { 
+            background: var(--treino); 
+            width: 100%; 
+            max-width: 800px; 
+            min-height: 1000px; 
+            padding: 50px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+            outline: none; 
+            border: 1px solid #ccc;
         }
-        .menu-item:hover { background: var(--accent); }
-        .active { background: var(--accent); font-weight: bold; }
 
-        /* SKELETON TÉCNICO DAS PEÇAS */
-        .folha-resposta { background: var(--paper); padding: 40px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 80vh; }
-        .addressing { font-weight: bold; text-transform: uppercase; margin-bottom: 25px; line-height: 1.6; }
-        .jumps { color: #bdc3c7; font-size: 0.8em; margin: 15px 0; text-align: center; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; padding: 5px; }
-
-        /* ÁREA DE POST-ITS E MENTORIA */
-        .area-inteligencia { display: flex; gap: 15px; margin-bottom: 25px; }
-        .post-it { background: #fff176; padding: 12px; border-left: 5px solid #f1c40f; font-size: 0.8em; flex: 1; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-        
-        /* TESES DO ESPELHO */
-        .tese-espelho { margin: 15px 0; padding: 15px; border-left: 4px solid var(--accent); background: #f9f9f9; display: none; position: relative; }
-        .visible { display: block; animation: fadeIn 0.3s; }
-        .score-tag { position: absolute; top: -10px; right: 10px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; }
+        /* JANELAS DE INTELIGÊNCIA (MODAIS QUE ABREM POR CIMA) */
+        .janela-mestra { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; height: 90%; background: white; z-index: 1000; 
+            display: none; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            flex-direction: column; transition: 0.3s;
         }
+        .janela-mestra.active { display: flex; transform: translate(-50%, -50%) scale(1); }
+        .janela-header { background: var(--primary); color: white; padding: 15px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; }
+        .janela-corpo { flex-grow: 1; padding: 25px; overflow-y: auto; }
+
+        /* COMPONENTES DE INTELIGÊNCIA DENTRO DA MESTRA */
+        .post-it { background: #fff176; padding: 15px; border-left: 5px solid #f1c40f; margin-bottom: 20px; box-shadow: 3px 3px 5px rgba(0,0,0,0.1); }
+        .skeleton-view { background: #f9f9f9; border: 1px dashed #999; padding: 20px; font-family: 'Courier New', Courier, monospace; }
+
+        @media (max-width: 600px) { .folha-em-branco { padding: 20px; } }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h3>📂 PEÇAS SALVAS</h3>
-    <div class="menu-item" onclick="carregarPeca('dashboard')">🏠 Painel Geral</div>
-    <div class="menu-item" onclick="carregarPeca('peca1')">1. Reclamação Trabalhista</div>
-    <div class="menu-item active" onclick="carregarPeca('peca44')">44. Contestação (E44)</div>
-</div>
-
-<div class="main-content" id="render-area">
-    <div class="folha-resposta">
-        <div class="area-inteligencia">
-            <div class="post-it"><strong>📌 POST-IT: EXAME 44</strong><br>O sistema carregou a Contestação com base no espelho oficial.</div>
-        </div>
-        
-        <div class="addressing">AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________</div>
-        <div class="jumps">[ESQUELETO TÉCNICO CARREGADO - SEM SUPRESSÕES]</div>
-        
-        <div class="corpo">
-            <p><strong>NOME DA RECLAMADA</strong>, já qualificada... vem apresentar <strong>CONTESTAÇÃO</strong>.</p>
-            <button onclick="beberDados()" style="padding: 10px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer;">🔍 BEBER DADOS DO ESPELHO 44</button>
-            
-            <div id="mirror-data">
-                <div class="tese-espelho">
-                    <span class="score-tag">[+0,50]</span>
-                    <strong>Preliminar: Inépcia da Inicial</strong><br>Pedido genérico de reflexos (Art. 840, §1º CLT).
-                </div>
-                </div>
+    <div class="toolbar">
+        <span>🏋️ ÁREA DE TREINO: CONTESTAÇÃO E44</span>
+        <div>
+            <button class="btn-mestre" onclick="abrirJanela('modalMestra')">📖 ABRIR PEÇA MESTRA</button>
+            <button class="btn-mestre" style="background:#27ae60;" onclick="salvarEstudo()">💾 SALVAR TREINO</button>
         </div>
     </div>
-</div>
 
-<script>
-    // INTELIGÊNCIA DE NAVEGAÇÃO DO PROJETO
-    function carregarPeca(id) {
-        // Aqui o JS buscaria no seu banco de dados a estrutura salva
-        console.log("Navegando para: " + id);
-        if(id === 'peca44') {
-            // Recarrega a peça 44 sem apagar o sistema
-            location.reload(); 
+    <div class="area-treino">
+        <div class="folha-em-branco" contenteditable="true" id="cadernoTreino">
+            [CLIQUE AQUI E COMECE A REDIGIR SEU TREINO DO ZERO...]
+        </div>
+    </div>
+
+    <div id="modalMestra" class="janela-mestra">
+        <div class="janela-header">
+            <strong>INTELIGÊNCIA: PEÇA MESTRA E ESPELHO E44</strong>
+            <button onclick="abrirJanela('modalMestra')" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5em;">✖</button>
+        </div>
+        <div class="janela-corpo">
+            
+            <div class="post-it">
+                <strong>💡 MENTORIA:</strong> Use esta janela apenas para consulta. O treino real está na página principal. Não esqueça do Art. 847 da CLT!
+            </div>
+
+            <div class="skeleton-view">
+                <h3>ESTRUTURA TÉCNICA (SKELETON)</h3>
+                AO DOUTO JUÍZO DA ___ VARA DO TRABALHO DE ___________<br><br>
+                PROCESSO Nº: XXXXXXX-XX.XXXX.5.XX.XXXX<br><br>
+                [QUALIFICAÇÃO COMPLETA CONFORME PROJETO - SEM SUPRESSÕES]<br><br>
+                <strong>CONTESTAÇÃO...</strong>
+            </div>
+
+            <div style="margin-top:25px; border-top: 2px solid #eee; padding-top:20px;">
+                <h3>🔍 ESPELHO DE CORREÇÃO (INJEÇÃO)</h3>
+                <div style="background:#e8f5e9; padding:10px; margin-bottom:10px; border-left:4px solid #27ae60;">
+                    <strong>PRELIMINAR:</strong> Inépcia do pedido de gratuidade (+0,50)
+                </div>
+                <div style="background:#e8f5e9; padding:10px; margin-bottom:10px; border-left:4px solid #27ae60;">
+                    <strong>MÉRITO:</strong> Horas Extras - Cargo de Confiança Art. 62, II CLT (+0,60)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirJanela(id) {
+            const win = document.getElementById(id);
+            if (win.style.display === "flex") {
+                win.classList.remove('active');
+                setTimeout(() => win.style.display = "none", 300);
+            } else {
+                win.style.display = "flex";
+                setTimeout(() => win.classList.add('active'), 10);
+            }
         }
-    }
 
-    function beberDados() {
-        const teses = document.querySelectorAll('.tese-espelho');
-        teses.forEach(t => t.classList.add('visible'));
-    }
-
-    // SALVAMENTO PERSISTENTE
-    function salvarProgresso() {
-        const estado = document.getElementById('render-area').innerHTML;
-        localStorage.setItem('projeto_peca_mestra_full', estado);
-        alert("Projeto Salvo! Nada sumirá agora.");
-    }
-</script>
-
+        function salvarEstudo() {
+            const treino = document.getElementById('cadernoTreino').innerText;
+            localStorage.setItem("Treino_E44_Data", treino);
+            alert("Seu treino foi salvo com sucesso! Você pode continuar de onde parou.");
+        }
+    </script>
 </body>
 </html>
