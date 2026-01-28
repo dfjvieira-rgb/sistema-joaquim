@@ -12,14 +12,14 @@
             --header-h: 65px;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
             font-family: 'Inter', sans-serif; background: var(--primary); 
             height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
         }
 
-        /* HEADER LIMPO - APENAS DOCS E MENTORIA */
+        /* HEADER */
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 15px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -31,51 +31,48 @@
         .btn-ref {
             height: 42px; width: 42px; border-radius: 8px; border: 2px solid var(--gold);
             background: var(--secondary); color: var(--gold); font-weight: 900;
-            cursor: pointer; transition: 0.2s; font-size: 1rem;
+            cursor: pointer; font-size: 1rem;
         }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
         .btn-tool { 
             height: 42px; min-width: 42px; border-radius: 8px; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1rem; cursor: pointer; transition: 0.2s;
-            background: var(--secondary);
+            color: white; font-size: 1rem; cursor: pointer; background: var(--secondary);
         }
 
-        /* PAINEL DE FERRAMENTAS DA FOLHA (VERTICAL) */
-        .paper-tools {
-            position: absolute; left: -55px; top: 20px;
-            display: flex; flex-direction: column; gap: 10px;
-            z-index: 500;
-        }
-
-        .btn-side {
-            width: 45px; height: 45px; border-radius: 10px; border: none;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.2rem; cursor: pointer; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;
-        }
-        .btn-side:active { transform: scale(0.9); }
-        .side-pecas { background: var(--secondary); border: 2px solid var(--accent); color: var(--accent); }
-        .side-justica { background: var(--accent); color: white; }
-        .side-clear { background: var(--red); color: white; }
-
-        main { display: flex; flex: 1; overflow: hidden; background: #cbd5e1; position: relative; }
-
+        /* SIDEBAR COM TOOLTIP (RAIO-X) */
         .sidebar { 
-            width: 60px; background: var(--secondary); display: flex; 
-            flex-direction: column; gap: 5px; padding: 10px 5px; overflow-y: auto;
+            width: 65px; background: var(--secondary); display: flex; 
+            flex-direction: column; gap: 8px; padding: 10px 5px; overflow-y: auto;
         }
+        
         .exame-btn {
-            width: 100%; height: 38px; background: #2d3748; border-radius: 6px;
+            width: 100%; height: 40px; background: #2d3748; border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.65rem; color: #cbd5e1; cursor: pointer;
+            font-weight: 800; font-size: 0.7rem; color: #cbd5e1; cursor: pointer;
+            position: relative; /* Necessário para o Tooltip */
         }
+        
+        /* TOOLTIP - O BALÃO QUE MOSTRA A PEÇA */
+        .exame-btn::after {
+            content: attr(data-peca);
+            position: absolute; left: 75px; top: 50%; transform: translateY(-50%);
+            background: var(--gold); color: var(--primary); padding: 6px 12px;
+            border-radius: 6px; font-size: 0.65rem; font-weight: 900;
+            white-space: nowrap; opacity: 0; visibility: hidden;
+            transition: 0.2s; z-index: 10000; box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            pointer-events: none; border: 1px solid white;
+        }
+        
+        .exame-btn:hover::after { opacity: 1; visibility: visible; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* EDITOR E FOLHA */
+        /* EDITOR AREA */
+        main { display: flex; flex: 1; overflow: hidden; background: #cbd5e1; position: relative; }
+
         .editor-container { 
-            flex: 1; overflow-y: auto; background: #f1f5f9; padding: 20px 20px 20px 70px; 
+            flex: 1; overflow-y: auto; background: #f1f5f9; padding: 20px 20px 20px 80px; 
             display: flex; justify-content: center; position: relative;
         }
         
@@ -83,6 +80,20 @@
             background: white; width: 100%; max-width: 850px; min-height: 100%; 
             padding: 50px 40px; box-shadow: 0 0 25px rgba(0,0,0,0.1); position: relative;
         }
+
+        .paper-tools {
+            position: absolute; left: -60px; top: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .btn-side {
+            width: 48px; height: 48px; border-radius: 12px; border: none;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .side-pecas { background: var(--secondary); border: 2px solid var(--accent); color: var(--accent); }
+        .side-justica { background: var(--accent); }
+        .side-clear { background: var(--red); }
 
         .editor-area { 
             outline: none; font-size: 19px; line-height: 31px; color: #1e293b; 
@@ -94,7 +105,7 @@
         /* PDF PANEL */
         .pdf-panel { 
             width: 0; background: #1e293b; display: flex; flex-direction: column; 
-            transition: width 0.3s ease-in-out; overflow: hidden;
+            transition: width 0.3s ease; overflow: hidden;
         }
         .pdf-panel.open { width: 45%; border-left: 3px solid var(--gold); }
 
@@ -106,14 +117,15 @@
 
         @media (max-width: 900px) {
             .pdf-panel.open { width: 100%; position: absolute; inset: 0; z-index: 2000; }
-            .sidebar { width: 100%; height: 50px; flex-direction: row; }
+            .sidebar { width: 100%; height: 55px; flex-direction: row; }
+            .exame-btn::after { display: none; } /* Desativa tooltip no mobile para não poluir */
             main { flex-direction: column; }
-            .editor-container { padding: 10px 10px 10px 65px; }
+            .editor-container { padding: 10px 10px 10px 70px; }
             .paper-tools { left: 10px; top: 10px; position: fixed; }
         }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 400px; border-radius: 12px; padding: 20px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 12px; padding: 20px; }
     </style>
 </head>
 <body>
@@ -127,7 +139,7 @@
     </div>
 
     <div class="nav-group">
-        <div id="sync-label" style="font-size: 0.6rem; font-weight: 800; color: var(--fgv-green); margin-right: 5px;">SINCRO OK</div>
+        <div id="sync-label" style="font-size: 0.6rem; font-weight: 800; color: var(--fgv-green); margin-right: 5px;">CONECTADO</div>
         <button class="btn-tool" style="background:var(--purple)" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
         <button class="btn-tool" style="background:var(--fgv-green)" onclick="salvarManual()"><i class="fas fa-save"></i></button>
     </div>
@@ -139,11 +151,10 @@
     <section class="editor-container">
         <div class="paper">
             <div class="paper-tools">
-                <button class="btn-side side-pecas" onclick="abrirPecas()" title="Carregar Peça"><i class="fas fa-scroll"></i></button>
-                <button class="btn-side side-justica" onclick="injetarJustica()" title="Martelo da Justiça"><i class="fas fa-gavel"></i></button>
-                <div style="height: 20px;"></div> <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar Peça"><i class="fas fa-eraser"></i></button>
+                <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+                <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
             </div>
-            
             <div id="main-editor" class="editor-area" contenteditable="true" oninput="autoSave()"></div>
         </div>
     </section>
@@ -151,17 +162,17 @@
     <section class="pdf-panel" id="pdf-panel">
         <div class="pdf-header">
             <span id="pdf-title">DOC</span>
-            <button class="btn-tool" style="height:28px; min-width:28px; background:var(--red);" onclick="closePdf()">X</button>
+            <button class="btn-tool" style="height:30px; min-width:30px; background:var(--red);" onclick="closePdf()">X</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
     </section>
 </main>
 
-<div class="modal" id="peca-modal">
-    <div class="modal-body">
-        <h3 style="margin-bottom:15px; text-align:center; font-size:1rem;">ESTRUTURAS MESTRAS</h3>
-        <div id="peca-list" style="display:grid; gap:8px; max-height:350px; overflow-y:auto;"></div>
-        <button onclick="fecharPecas()" style="width:100%; margin-top:15px; padding:12px; border:none; background:var(--primary); color:white; border-radius:8px; font-weight:bold;">VOLTAR</button>
+<div class="modal" id="pec-modal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:15px; text-align:center;">ESTRUTURAS</h3>
+        <div id="peca-grid" style="display:grid; gap:8px; max-height:300px; overflow-y:auto;"></div>
+        <button onclick="fecharPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px;">VOLTAR</button>
     </div>
 </div>
 
@@ -171,10 +182,17 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
+    // MAPEAMENTO DE PEÇAS PARA O RAIO-X (Tooltip)
+    const NOMES_PECAS = {
+        "44": "Contestação", "43": "Recurso Ordinário", "42": "Ação de Consignação",
+        "41": "Contestação", "40": "Recurso Ordinário", "39": "Petição Inicial",
+        "38": "Contestação", "37": "Recurso Ordinário", "36": "Ação de Indenização",
+        "35": "Contestação"
+    };
+
     let activeEx = "35";
     let currentMode = null;
     const editor = document.getElementById('main-editor');
-    const syncLabel = document.getElementById('sync-label');
 
     window.onload = () => {
         const nav = document.getElementById('exam-nav');
@@ -182,6 +200,9 @@
             const d = document.createElement('div');
             d.className = `exame-btn ${i==35?'active':''}`;
             d.innerText = `E${i}`;
+            // Injeta o nome da peça no atributo data-peca para o Raio-X
+            d.setAttribute('data-peca', NOMES_PECAS[i] || "Carregando...");
+            
             d.onclick = () => {
                 activeEx = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(el => el.classList.remove('active'));
@@ -197,11 +218,11 @@
 
     window.togglePdf = (mode) => {
         const panel = document.getElementById('pdf-panel');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
         if(currentMode === mode) { closePdf(); } 
         else {
             currentMode = mode;
             panel.classList.add('open');
+            document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
             document.getElementById(`ref-${mode}`).classList.add('active');
             updatePdfSrc();
         }
@@ -214,35 +235,30 @@
     };
 
     function updatePdfSrc() {
-        const frame = document.getElementById('pdf-frame');
-        const title = document.getElementById('pdf-title');
-        const docs = { 'p': [`ro${activeEx}.pdf`, 'PROVA'], 'g': [`ro${activeEx}-gabarito.pdf`, 'GABARITO'], 'v': [`vade.pdf`, 'VADE'] };
-        frame.src = docs[currentMode][0];
-        title.innerText = docs[currentMode][1] + ` EXAME ${activeEx}`;
+        const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+        document.getElementById('pdf-frame').src = docs[currentMode];
+        document.getElementById('pdf-title').innerText = currentMode.toUpperCase() + ` EXAME ${activeEx}`;
     }
 
     window.autoSave = () => {
-        syncLabel.innerText = "SALVANDO...";
-        syncLabel.style.color = "var(--gold)";
-        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
-        .then(() => { setTimeout(() => { syncLabel.innerText = "SINCRO OK"; syncLabel.style.color = "var(--fgv-green)"; }, 800); });
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
     };
 
     window.injetarJustica = () => {
         const esp = BANCO_ESPELHOS[activeEx];
         if(!esp) return;
-        editor.innerText += "\n\n--- ⚖️ CHECKLIST DE TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+        editor.innerText += "\n\n--- ⚖️ TESES DO EXAME ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
         window.autoSave();
     };
 
-    window.abrirPecas = () => document.getElementById('peca-modal').style.display = 'flex';
-    window.fecharPecas = () => document.getElementById('peca-modal').style.display = 'none';
+    window.abrirPecas = () => document.getElementById('pec-modal').style.display = 'flex';
+    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
 
     window.renderPecas = () => {
-        const container = document.getElementById('peca-list');
+        const container = document.getElementById('peca-grid');
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
-            b.style = "padding:12px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:6px; font-weight:bold; font-size:0.8rem;";
+            b.style = "padding:12px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:6px; font-weight:bold;";
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 editor.innerText += "\n\n" + pecas[k];
@@ -253,8 +269,8 @@
         });
     };
 
-    window.salvarManual = () => { window.autoSave(); alert("✅ Sincronizado!"); };
-    window.resetarFolha = () => { if(confirm("🚨 Limpar toda a peça?")) { editor.innerText = ""; window.autoSave(); } };
+    window.salvarManual = () => { window.autoSave(); alert("Sincronizado!"); };
+    window.resetarFolha = () => { if(confirm("Limpar peça?")) { editor.innerText = ""; window.autoSave(); } };
 
     function carregarFirebase() {
         onValue(ref(db, 'estudos/' + activeEx), (s) => {
