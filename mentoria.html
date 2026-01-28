@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | WORKSTATION LIMPA</title>
+    <title>ARYANNA 2026 | ESTRUTURA ORDENADA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -19,7 +19,7 @@
         label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; color: #475569; }
         input, textarea { width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 12px; font-size: 1rem; margin-bottom: 10px; font-family: inherit; }
         .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; text-transform: uppercase; }
-        .feed { margin-top: 15px; max-height: 500px; overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px; }
+        .feed { margin-top: 15px; max-height: 550px; overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px; }
         .card { background: #fff; padding: 15px; border-radius: 8px; border: 2px solid var(--border); margin-bottom: 10px; position: relative; }
         .card-pre { border-left: 8px solid var(--success); }
         .btn-edit-tool { position: absolute; top: 10px; right: 10px; display: flex; gap: 12px; }
@@ -33,17 +33,17 @@
 
 <header>
     <div class="btn-voltar" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> VOLTAR</div>
-    <div style="font-weight: 800; font-size: 0.9rem;">ARYANNA 2026 | WORKSTATION</div>
+    <div style="font-weight: 800; font-size: 0.9rem;">ARYANNA 2026 | ORDEM TÉCNICA</div>
 </header>
 
 <main class="dashboard">
     <section class="panel" style="border-top: 6px solid var(--success);">
-        <div class="panel-header">Preliminares Oficiais</div>
+        <div class="panel-header">Preliminares (Ordem Alfabética/Numérica)</div>
         <div class="panel-body">
             <input type="hidden" id="id-pre">
-            <label>Título</label><input type="text" id="pre-t">
+            <label>Título (ex: 01. Incompetência)</label><input type="text" id="pre-t">
             <label>Fundamentação</label><textarea id="pre-c"></textarea>
-            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar Preliminar</button>
+            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar/Atualizar</button>
             <div class="feed" id="feed-pre"></div>
         </div>
     </section>
@@ -54,7 +54,7 @@
             <input type="hidden" id="id-peca">
             <label>Enunciado</label><textarea id="peca-t"></textarea>
             <label>Gabarito</label><input type="text" id="peca-c">
-            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Peça</button>
+            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Desafio</button>
             <div class="feed" id="feed-peca"></div>
         </div>
     </section>
@@ -65,7 +65,7 @@
             <input type="hidden" id="id-nc">
             <label>Conceito</label><input type="text" id="nc-t">
             <label>Diferença</label><textarea id="nc-c"></textarea>
-            <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Diferença</button>
+            <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Radar</button>
             <div class="feed" id="feed-nc"></div>
         </div>
     </section>
@@ -90,18 +90,18 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    const paths = { pre: 'v12_pre', peca: 'v12_peca', nc: 'v12_nc', tese: 'v12_tese' };
+    const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese' };
 
     const DADOS_OFICIAIS = [
-        { t: "1. Incompetência da JT", c: "Art. 114 CF. Ex: Relação estatutária, acidente INSS puro." },
-        { t: "2. Ilegitimidade de Parte", c: "Art. 485, VI, CPC. Ex: Tomador não integra formação do vínculo." },
-        { t: "3. Inépcia da Inicial", c: "Art. 330, §1º, CPC. Ex: Pedido sem causa de pedir ou valor ilíquido." },
-        { t: "4. Prescrição", c: "Bienal (2 anos) e Quinquenal (5 anos) - Art. 7º, XXIX, CF." },
-        { t: "5. Litigância de Má-Fé", c: "Arts. 79-81 CPC e CLT. Pedidos falsos ou alteração da verdade." },
-        { t: "6. Julgamento Extra/Ultra Petita", c: "Art. 492 CPC. Juiz decide fora ou além do pedido." },
-        { t: "7. Preclusão", c: "Perda do direito de agir por decurso de prazo." },
-        { t: "8. Falta de Interesse de Agir", c: "Art. 485, VI, CPC. Ação desnecessária ou inútil." },
-        { t: "9. Impossibilidade Jurídica", c: "Argumento subsidiário (absorvida pelo mérito no CPC/15)." },
+        { t: "01. Incompetência da JT", c: "Art. 114 CF. Ex: Relação estatutária, acidente INSS puro." },
+        { t: "02. Ilegitimidade de Parte", c: "Art. 485, VI, CPC. Ex: Tomador não integra formação do vínculo." },
+        { t: "03. Inépcia da Inicial", c: "Art. 330, §1º, CPC. Ex: Pedido sem causa de pedir ou valor ilíquido." },
+        { t: "04. Prescrição", c: "Bienal (2 anos) e Quinquenal (5 anos) - Art. 7º, XXIX, CF." },
+        { t: "05. Litigância de Má-Fé", c: "Arts. 79-81 CPC e CLT. Pedidos falsos ou alteração da verdade." },
+        { t: "06. Julgamento Extra/Ultra Petita", c: "Art. 492 CPC. O juiz deve decidir nos limites do pedido." },
+        { t: "07. Preclusão", c: "Perda do direito de agir por decurso de prazo." },
+        { t: "08. Falta de Interesse de Agir", c: "Art. 485, VI, CPC. Ação desnecessária ou inútil." },
+        { t: "09. Impossibilidade Jurídica", c: "Argumento subsidiário (absorvida pelo mérito no CPC/15)." },
         { t: "10. Preliminar de Nulidade", c: "Art. 5º, LV CF / Art. 794 CLT. Cerceamento de defesa." },
         { t: "11. Impugnação ao Valor", c: "Art. 292 e 293 CPC. Valor incompatível com pedidos." },
         { t: "12. Preliminar de Representação", c: "Súmula 383 TST. Procuração ou mandato irregular." }
@@ -141,14 +141,16 @@
         const render = (type, target) => {
             const f = document.getElementById(target); f.innerHTML = "";
             const obj = v[paths[type]] || {};
-            Object.keys(obj).reverse().forEach(id => {
-                const item = obj[id];
-                if(item.t && item.c) { // SÓ RENDERIZA SE NÃO FOR UNDEFINED
-                    f.innerHTML += `<div class="card ${type==='pre'?'card-pre':''}">
-                        <div class="btn-edit-tool"><i class="fas fa-pen" onclick="editar('${type}','${id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\'")}')"></i><i class="fas fa-trash" onclick="excluir('${type}','${id}')"></i></div>
-                        ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
-                    </div>`;
-                }
+            
+            // TRANSFORMA OBJETO EM ARRAY E ORDENA PELO TÍTULO (01, 02...)
+            const itensOrdenados = Object.keys(obj).map(id => ({ id, ...obj[id] }))
+                                        .sort((a, b) => a.t.localeCompare(b.t));
+
+            itensOrdenados.forEach(item => {
+                f.innerHTML += `<div class="card ${type==='pre'?'card-pre':''}">
+                    <div class="btn-edit-tool"><i class="fas fa-pen" onclick="editar('${type}','${item.id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\'")}')"></i><i class="fas fa-trash" onclick="excluir('${type}','${item.id}')"></i></div>
+                    ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
+                </div>`;
             });
         };
         render('pre', 'feed-pre'); render('peca', 'feed-peca'); render('nc', 'feed-nc'); render('tese', 'feed-tese');
