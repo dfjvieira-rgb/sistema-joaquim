@@ -3,34 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 | PROVA COMPLETA</title>
+    <title>JOAQUIM ELITE 2026 | DINHEIRO NO BOLSO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* 1. DEFINIÇÃO DAS CORES - MATADOR DE AZUL */
         :root { 
             --primary: #1e293b; --gold: #fbbf24; 
-            --bg-page: #ffffff; /* MATADOR DE TELA AZUL: Fundo igual à folha */
+            --bg-page: #ffffff; /* Fundo absoluto branco */
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #e2e8f0;
             --header-h: 65px;
         }
 
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; 
-            --bg-page: #1e293b; 
+            --bg-page: #1e293b; /* Fundo absoluto dark */
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         
+        /* 2. RESET TOTAL - FORÇA BRUTA */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
         
-        /* TRAVA TOTAL ANTI-VAZAMENTO */
+        /* BLOQUEIO DA TELA AZUL NO PC E MOBILE */
         html, body { 
-            background: var(--bg-page) !important; 
-            height: 100%; width: 100%; 
-            overflow: hidden; 
+            background-color: var(--bg-page) !important; /* Aqui o dinheiro foi recuperado */
+            height: 100vh !important; 
+            width: 100vw !important; 
+            overflow: hidden !important; 
             overscroll-behavior: none !important;
         }
         
-        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; transition: background 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; }
 
+        /* 3. HEADER E TABS (ESTRUTURA FGV) */
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 10px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -64,7 +68,8 @@
             display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
         }
 
-        main { display: flex; flex: 1; overflow: hidden; flex-direction: column; background: var(--bg-page); }
+        /* 4. ÁREA DE TRABALHO - ONDE A MÁGICA ACONTECE */
+        main { display: flex; flex: 1; overflow: hidden; flex-direction: column; background: var(--bg-page) !important; }
         .content-wrapper { display: flex; flex: 1; overflow: hidden; }
 
         .sidebar { 
@@ -88,16 +93,19 @@
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
+        /* CONTAINER DA FOLHA - AQUI MORRE A TELA AZUL */
         .editor-container { 
-            flex: 1; overflow-y: auto; 
-            background: var(--bg-page); 
+            flex: 1; overflow-y: scroll; 
+            background: var(--bg-page) !important; 
             display: block; width: 100%;
             -webkit-overflow-scrolling: touch;
         }
         
         .paper { 
-            background: var(--paper-color); width: 100%; max-width: 850px; 
-            margin: 0 auto; min-height: 101%;
+            background: var(--paper-color); 
+            width: 100%; max-width: 850px; 
+            margin: 0 auto; 
+            min-height: 101vh; /* Força a folha a ser maior que a tela sempre */
             padding: 40px 30px 450px 30px; 
             position: relative;
             transition: background 0.2s ease;
@@ -107,9 +115,10 @@
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(transparent, transparent 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 85vh; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            min-height: 80vh; width: 100%; word-wrap: break-word; white-space: pre-wrap;
         }
 
+        /* FERRAMENTAS LATERAIS */
         .paper-tools {
             position: fixed; left: 85px; bottom: 30px;
             display: flex; flex-direction: column; gap: 12px; z-index: 1500;
@@ -137,8 +146,11 @@
             .paper { padding: 25px 20px 400px 20px; }
         }
 
+        /* PAINEL PDF */
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 2000; display: flex; flex-direction: column; overflow: hidden; }
         .pdf-panel.open { width: 100%; }
+        
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); color: var(--text-color); width: 90%; max-width: 400px; border-radius: 10px; padding: 20px; border: 1px solid var(--gold); }
     </style>
@@ -178,7 +190,7 @@
             <div id="exam-nav"></div>
         </aside>
 
-        <section class="editor-container">
+        <section class="editor-container" id="scroll-master">
             <div class="paper">
                 <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
             </div>
@@ -225,11 +237,9 @@
     const radar = document.getElementById('radar-peca');
 
     window.toggleTheme = () => {
-        const body = document.body;
-        const btn = document.getElementById('theme-toggle');
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        btn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('theme-toggle').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         localStorage.setItem('theme_elite', isDark ? 'dark' : 'light');
     };
 
@@ -245,6 +255,7 @@
         document.getElementById(`btn-${tab}`).classList.add('active');
         const local = localStorage.getItem(`draft_${activeEx}_${tab}`);
         editor.innerText = (local && local.trim() !== "") ? local : (tab === 'peca' ? "" : "A) \n\nB) ");
+        document.getElementById('scroll-master').scrollTop = 0;
         await carregarFirebase();
     };
 
