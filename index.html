@@ -1,225 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MASTER OAB | RESTAURAÇÃO V13</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { 
-            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
-            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px;
-        }
-        body.dark-mode {
-            --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
-            --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JOAQUIM ELITE 2026 | SPLIT VIEW</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
+            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
+            --header-h: 65px;
+        }
 
-        header { 
-            background: var(--primary); height: var(--header-h); padding: 0 15px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 1000;
-        }
+        body.dark-mode {
+            --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
+            --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; background: var(--primary); 
+            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
+        }
 
-        /* TABS FGV ESTILO OFICIAL */
-        .tabs-fgv { background: var(--primary); display: flex; justify-content: center; gap: 2px; padding: 5px 0; border-bottom: 1px solid #334155; }
-        .tab-btn { padding: 8px 18px; border: none; background: #334155; color: #94a3b8; font-weight: 800; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; }
-        .tab-btn.active { background: var(--gold); color: var(--primary); }
+        header { 
+            background: var(--primary); height: var(--header-h); padding: 0 15px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 2px solid var(--gold); z-index: 1000;
+        }
 
-        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
+        /* --- CONTAINER PRINCIPAL SPLIT --- */
+        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
 
-        /* SIDEBAR EXAMES */
-        .sidebar { width: 65px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; z-index: 10; border-right: 1px solid var(--gold); }
-        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: #cbd5e1; cursor: pointer; }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
+        /* Sidebar de Exames */
+        .sidebar { width: 65px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; z-index: 10; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: #cbd5e1; cursor: pointer; }
+        .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* PDF VIEWER (LADO ESQUERDO) */
-        .pdf-viewer { flex: 0; background: #475569; transition: flex 0.3s ease; position: relative; display: flex; flex-direction: column; border-right: 0px solid var(--gold); }
-        .pdf-viewer.open { flex: 1; border-right: 3px solid var(--gold); }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        /* ÁREA DO PDF (LADO ESQUERDO) */
+        .pdf-viewer { 
+            flex: 0; /* Começa fechado */
+            background: #475569; transition: flex 0.3s ease;
+            position: relative; border-right: 3px solid var(--gold);
+            display: flex; flex-direction: column;
+        }
+        .pdf-viewer.open { flex: 1; } /* Quando aberto, divide 50/50 */
 
-        /* EDITOR CONTAINER (LADO DIREITO) */
-        .editor-container { flex: 2; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; }
-        
-        /* VOLANTE P G V FLUTUANTE */
-        .pdf-controls { position: absolute; left: 10px; top: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
-        .btn-ref { height: 42px; width: 42px; border-radius: 8px; border: 2px solid var(--gold); background: var(--primary); color: var(--gold); font-weight: 900; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .btn-ref.active { background: var(--gold); color: var(--primary); }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* PAPEL DE PETIÇÃO */
-        .paper { background: var(--paper-color); width: 100%; max-width: 800px; min-height: 1200px; padding: 50px; box-shadow: 0 0 20px rgba(0,0,0,0.2); position: relative; }
-        .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1000px; white-space: pre-wrap; text-align: justify;
-        }
+        /* ÁREA DO EDITOR (LADO DIREITO) */
+        .editor-container { 
+            flex: 2; overflow-y: auto; display: flex; flex-direction: column; align-items: center; 
+            padding: 20px; position: relative;
+        }
+        
+        /* Botões de Controle do PDF flutuando no meio */
+        .pdf-controls {
+            position: absolute; left: 10px; top: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 20;
+        }
+        .btn-ref {
+            height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold);
+            background: var(--primary); color: var(--gold); font-weight: 900; cursor: pointer;
+        }
 
-        /* ESPELHO E NOTA */
-        #placar { position: sticky; top: 0; z-index: 50; background: var(--gold); padding: 10px; font-weight: 900; text-align: center; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .espelho-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 0.9rem; background: #f8fafc; color: #1e293b; margin-top: 5px; border-radius: 4px; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; min-height: 1200px; padding: 40px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
 
-        .fab-tools { position: fixed; right: 25px; bottom: 25px; display: flex; flex-direction: column; gap: 12px; z-index: 1000; }
-        .btn-fab { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+        .editor-area { 
+            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
+            font-family: 'Times New Roman', serif;
+            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
+            min-height: 1000px; white-space: pre-wrap;
+        }
 
-        @media (max-width: 768px) {
-            .pdf-viewer.open { flex: 10; position: absolute; inset: 0; z-index: 2000; }
-        }
-    </style>
+        /* --- ABAS FGV --- */
+        .tabs-fgv { background: var(--primary); display: flex; justify-content: center; gap: 2px; padding: 5px 0; }
+        .tab-btn { padding: 8px 15px; border: none; background: #334155; color: #94a3b8; font-weight: 800; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+        .tab-btn.active { background: var(--gold); color: var(--primary); }
+
+        /* Estilo Espelho */
+        .espelho-item { display: flex; align-items: center; gap: 8px; padding: 5px; border-bottom: 1px solid #ddd; font-size: 0.8rem; }
+        #placar { position: sticky; top: -20px; background: var(--gold); padding: 5px; font-weight: 900; text-align: center; margin-bottom: 10px; border-radius: 4px; }
+
+        .fab-tools { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .btn-fab { width: 50px; height: 50px; border-radius: 50%; border: none; color: white; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    </style>
 </head>
 <body class="dark-mode">
 
 <header>
-    <div class="nav-group"><button class="btn-ref" onclick="location.href='index.html'"><i class="fas fa-home"></i></button></div>
-    <div id="radar-peca" style="color:var(--gold); font-weight:900; font-size:0.85rem; font-family:monospace; letter-spacing:1px;">IDENTIFICANDO PEÇA...</div>
-    <div class="nav-group"><button class="btn-ref" style="background:#22c55e; color:white; border:none;" onclick="salvarManual()"><i class="fas fa-save"></i></button></div>
+    <div class="nav-group"><button class="btn-ref" onclick="window.location.reload()"><i class="fas fa-sync"></i></button></div>
+    <div id="radar-peca" style="color:var(--gold); font-weight:900; font-size:0.8rem;">AGRAVO DE PETIÇÃO</div>
+    <div class="nav-group"><button class="btn-ref" style="background:#22c55e; color:white;" onclick="salvarManual()"><i class="fas fa-save"></i></button></div>
 </header>
 
 <div class="tabs-fgv">
-    <button class="tab-btn active" data-tab="peca" onclick="switchTab('peca', this)">Peça</button>
-    <button class="tab-btn" data-tab="q1" onclick="switchTab('q1', this)">Q1</button>
-    <button class="tab-btn" data-tab="q2" onclick="switchTab('q2', this)">Q2</button>
-    <button class="tab-btn" data-tab="q3" onclick="switchTab('q3', this)">Q3</button>
-    <button class="tab-btn" data-tab="q4" onclick="switchTab('q4', this)">Q4</button>
+    <button class="tab-btn active" onclick="switchTab('peca')">Peça</button>
+    <button class="tab-btn" onclick="switchTab('q1')">Q1</button>
+    <button class="tab-btn" onclick="switchTab('q2')">Q2</button>
+    <button class="tab-btn" onclick="switchTab('q3')">Q3</button>
+    <button class="tab-btn" onclick="switchTab('q4')">Q4</button>
 </div>
 
 <main>
-    <aside class="sidebar" id="exam-nav"></aside>
+    <aside class="sidebar" id="exam-nav"></aside>
 
-    <section class="pdf-viewer" id="pdf-area">
-        <div style="background:var(--primary); padding:8px; display:flex; justify-content:space-between; align-items:center;">
-            <span id="pdf-title" style="color:white; font-size:0.7rem; font-weight:bold;">REFERÊNCIA OAB</span>
-            <button onclick="closePdf()" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">X FECHAR</button>
-        </div>
-        <iframe id="pdf-frame" src=""></iframe>
-    </section>
+    <section class="pdf-viewer" id="pdf-area">
+        <div style="background:var(--primary); padding:5px; display:flex; justify-content:space-between;">
+            <span style="color:white; font-size:0.7rem; font-weight:bold;">REFERÊNCIA OAB</span>
+            <button onclick="closePdf()" style="background:red; color:white; border:none; padding:2px 5px; font-size:0.6rem;">X</button>
+        </div>
+        <iframe id="pdf-frame" src=""></iframe>
+    </section>
 
-    <section class="editor-container">
-        <div class="pdf-controls">
-            <button class="btn-ref" id="btn-p" onclick="togglePdf('p')">P</button>
-            <button class="btn-ref" id="btn-g" onclick="togglePdf('g')">G</button>
-            <button class="btn-ref" id="btn-v" onclick="togglePdf('v')">V</button>
-        </div>
+    <section class="editor-container">
+        <div class="pdf-controls">
+            <button class="btn-ref" onclick="togglePdf('p')">P</button>
+            <button class="btn-ref" onclick="togglePdf('g')">G</button>
+            <button class="btn-ref" onclick="togglePdf('v')">V</button>
+        </div>
 
-        <div id="placar" style="display:none;">DESEMPENHO FGV: <span id="valor-nota">0.00</span> / 5.00</div>
+        <div class="paper">
+            <div id="placar" style="display:none;">NOTA: <span id="valor-nota">0.00</span></div>
+            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+        </div>
 
-        <div class="paper">
-            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
-        </div>
-
-        <div class="fab-tools">
-            <button class="btn-fab" style="background:#3b82f6" onclick="injetarJustica()" title="Injetar Espelho"><i class="fas fa-gavel"></i></button>
-            <button class="btn-fab" style="background:#ef4444" onclick="resetarFolha()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></button>
-        </div>
-    </section>
+        <div class="fab-tools">
+            <button class="btn-fab" style="background:#3b82f6" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <button class="btn-fab" style="background:#ef4444" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
+        </div>
+    </section>
 </main>
 
 <script type="module">
-    import { db } from './firebase-config.js';
-    import { ref, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    import { db } from './firebase-config.js';
+    import { ref, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    let activeEx = "41";
-    let activeTab = "peca";
-    let currentMode = null;
-    const editor = document.getElementById('main-editor');
-    const pdfArea = document.getElementById('pdf-area');
-    const radar = document.getElementById('radar-peca');
+    let activeEx = "41";
+    let activeTab = "peca";
+    const editor = document.getElementById('main-editor');
+    const pdfArea = document.getElementById('pdf-area');
 
-    // INTELIGÊNCIA RAIO-X
-    const scannerRaioX = () => {
-        const content = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        if (content.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
-        else if (content.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else if (content.includes("RECURSO ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else if (content.includes("RECLAMAÇÃO") || content.includes("RT")) radar.innerText = "RECLAMAÇÃO TRAB.";
-        else if (content.includes("CONSIGNAÇÃO")) radar.innerText = "AÇÃO CONSIGNAÇÃO";
-        else radar.innerText = "PEÇA IDENTIFICADA";
-    };
+    window.togglePdf = (mode) => {
+        const docs = { 'p': `exame${activeEx}p.pdf`, 'g': `exame${activeEx}g.pdf`, 'v': `vade.pdf` };
+        document.getElementById('pdf-frame').src = docs[mode];
+        pdfArea.classList.add('open');
+    };
 
-    window.togglePdf = (mode) => {
-        if (currentMode === mode && pdfArea.classList.contains('open')) { closePdf(); return; }
-        currentMode = mode;
-        const docs = { 'p': `exame${activeEx}p.pdf`, 'g': `exame${activeEx}g.pdf`, 'v': `vade.pdf` };
-        document.getElementById('pdf-frame').src = docs[mode];
-        document.getElementById('pdf-title').innerText = `EXAME ${activeEx} - ${mode.toUpperCase()}`;
-        pdfArea.classList.add('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${mode}`).classList.add('active');
-    };
+    window.closePdf = () => pdfArea.classList.remove('open');
 
-    window.closePdf = () => {
-        pdfArea.classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        currentMode = null;
-    };
+    window.switchTab = (tab) => {
+        activeTab = tab;
+        carregarFirebase();
+    };
 
-    window.switchTab = (tab, btn) => {
-        activeTab = tab;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        carregarFirebase();
-    };
+    window.injetarJustica = () => {
+        if(activeEx === "41") {
+            editor.innerHTML += `
+                <div class="nota-floating" contenteditable="false">--- ⚖️ ESPELHO OFICIAL ---</div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div>Endereçamento e Razões (0.20)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>Tese: IDPJ de ofício vedado (0.70)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div>Ilegitimidade: Sócio > 2 anos (0.80)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>Impenhorabilidade Aposentadoria (0.70)</div></div>
+            `;
+            document.getElementById('placar').style.display = 'block';
+        }
+    };
 
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            editor.innerHTML += `<div contenteditable="false" style="color:#3b82f6; border-top:3px double #3b82f6; margin-top:40px; padding-top:15px; font-weight:bold;">⚖️ RAIO-X DO GABARITO:</div>` + esp;
-            document.getElementById('placar').style.display = 'block';
-        }
-    };
+    window.calcNota = () => {
+        let total = 0;
+        document.querySelectorAll('.espelho-item input:checked').forEach(i => total += parseFloat(i.value));
+        document.getElementById('valor-nota').innerText = total.toFixed(2);
+    };
 
-    window.calcNota = () => {
-        let total = 0;
-        document.querySelectorAll('.espelho-item input:checked').forEach(i => total += parseFloat(i.value));
-        document.getElementById('valor-nota').innerText = total.toFixed(2);
-    };
+    window.salvarManual = () => {
+        set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() });
+    };
 
-    window.salvarManual = () => {
-        set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() });
-        const oldText = radar.innerText;
-        radar.innerText = "✅ SALVO COM SUCESSO!";
-        setTimeout(() => radar.innerText = oldText, 1500);
-    };
+    function carregarFirebase() {
+        onValue(ref(db, `estudos/${activeEx}/${activeTab}`), (s) => {
+            const d = s.val();
+            if(d) editor.innerHTML = d.html || "";
+        }, { onlyOnce: true });
+    }
 
-    function carregarFirebase() {
-        onValue(ref(db, `estudos/${activeEx}/${activeTab}`), (s) => {
-            const d = s.val();
-            editor.innerHTML = (d && d.html) ? d.html : "";
-        }, { onlyOnce: true });
-    }
+    const initNav = () => {
+        const nav = document.getElementById('exam-nav');
+        for (let i = 44; i >= 35; i--) {
+            const btn = document.createElement('div');
+            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
+            btn.innerText = `E${i}`;
+            btn.onclick = () => { activeEx = i.toString(); initNav(); carregarFirebase(); };
+            nav.appendChild(btn);
+        }
+    };
 
-    const initNav = () => {
-        const nav = document.getElementById('exam-nav');
-        nav.innerHTML = '';
-        for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('div');
-            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
-            btn.innerText = `E${i}`;
-            btn.onclick = () => { 
-                activeEx = i.toString(); 
-                initNav(); 
-                scannerRaioX(); 
-                carregarFirebase(); 
-                if(currentMode) togglePdf(currentMode); 
-            };
-            nav.appendChild(btn);
-        }
-    };
-
-    window.resetarFolha = () => { if(confirm("Deseja apagar esta aba?")) { editor.innerHTML = ""; salvarManual(); } };
-
-    // INICIALIZAÇÃO
-    initNav();
-    scannerRaioX();
-    carregarFirebase();
-    
-    // Auto-save ao digitar
-    editor.addEventListener('input', () => {
-        set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() });
-    });
+    initNav(); carregarFirebase();
+    editor.addEventListener('input', () => set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() }));
 </script>
 </body>
-</html>
+</html> quero esse codigo como base para recuperar a logica e o leyout
