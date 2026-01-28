@@ -3,177 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MENTORIA ELITE | DADOS RESTAURADOS</title>
+    <title>MENTORIA ELITE | BACKUP & CONSULTA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
-            --bg: #f1f5f9; --text: #000; --primary: #1d4ed8; --gold: #fbbf24; --border: #94a3b8; 
-            --paper: #ffffff;
+            --bg: #f1f5f9; --text: #000; --primary: #1d4ed8; --gold: #fbbf24; --border: #000; 
+            --paper: #ffffff; --purple: #5b21b6; --success: #065f46; --danger: #991b1b;
         }
         body.dark-mode {
-            --bg: #0f172a; --text: #f8fafc; --paper: #1e293b; --border: #334155;
+            --bg: #0f172a; --text: #f8fafc; --paper: #1e293b; --border: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* MATADOR DE TELA AZUL */
-        html, body { 
-            background: var(--bg) !important; 
-            height: 100%; width: 100%; 
-            overflow-x: hidden; overscroll-behavior: none;
-        }
-        
-        body { font-family: 'Inter', sans-serif; color: var(--text); }
+        /* BLOQUEIO TELA AZUL */
+        html, body { background: var(--bg) !important; min-height: 100%; width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; color: var(--text); padding-bottom: 50px; display: flex; flex-direction: column; }
         
         header { 
-            background: #000; color: #fff; padding: 15px 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000;
+            background: #000; padding: 15px; display: flex; justify-content: space-between; 
+            align-items: center; border-bottom: 4px solid var(--gold); position: sticky; top: 0; z-index: 1000;
         }
         
-        .btn-voltar { 
-            text-decoration: none; color: var(--gold); font-weight: 800; 
-            border: 2px solid var(--gold); padding: 8px 15px; border-radius: 8px; 
-            display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem;
-        }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-header { text-decoration: none; color: var(--gold); font-weight: 900; border: 2px solid var(--gold); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; background: transparent; display: flex; align-items: center; gap: 5px; }
+        .btn-backup { background: var(--success); color: white; border: none; }
 
-        .container { padding: 20px; max-width: 900px; margin: 0 auto; }
+        /* BUSCA */
+        .search-area { padding: 15px; background: var(--paper); border-bottom: 2px solid var(--border); }
+        #searchBar { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-weight: 700; font-family: inherit; }
 
-        /* PAINEL DE STATUS */
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-card { 
-            background: var(--paper); border: 2px solid var(--border); 
-            padding: 15px; border-radius: 12px; text-align: center; 
-        }
-        .stat-card span { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .stat-card b { font-size: 1.4rem; color: var(--primary); }
+        .container { padding: 10px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-        /* LISTA DE ENVIOS */
-        .snapshot-card { 
-            background: var(--paper); border: 2px solid var(--border); 
-            border-radius: 12px; padding: 20px; margin-bottom: 20px;
-            position: relative; animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card-header { 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 10px;
-        }
-        .tag-exame { background: #000; color: var(--gold); padding: 4px 8px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; }
+        /* PAINÉIS DE CONSULTA */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        .panel { background: var(--paper); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; height: 75vh; display: flex; flex-direction: column; }
+        .panel-header { padding: 12px; background: #000; color: var(--gold); font-weight: 800; text-align: center; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
         
-        .content-box { 
-            background: #f8fafc; border: 1px solid var(--border); padding: 15px; 
-            border-radius: 8px; font-family: 'Times New Roman', serif; 
-            white-space: pre-wrap; font-size: 1rem; color: #1e293b;
-            max-height: 300px; overflow-y: auto; line-height: 1.5;
+        .feed { flex: 1; overflow-y: auto; padding: 12px; background: var(--bg); }
+        
+        .card { 
+            background: var(--paper); border: 2px solid var(--border); border-radius: 8px; 
+            padding: 15px; margin-bottom: 12px; position: relative; animation: fadeIn 0.3s ease;
         }
-        body.dark-mode .content-box { background: #020617; color: #cbd5e1; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .tag { font-size: 0.6rem; font-weight: 900; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; display: inline-block; border: 1px solid rgba(0,0,0,0.1); }
+        .tag-snap { background: var(--gold); color: #000; }
+        .tag-pre { background: var(--success); color: #fff; }
+        .tag-peca { background: var(--purple); color: #fff; }
 
-        .btn-del { 
-            background: #fee2e2; color: #991b1b; border: none; padding: 8px 12px; 
-            border-radius: 6px; font-weight: 800; font-size: 0.7rem; cursor: pointer;
-            margin-top: 10px; float: right;
+        .title-key { font-size: 0.95rem; font-weight: 800; display: block; margin-bottom: 5px; color: var(--primary); }
+        body.dark-mode .title-key { color: var(--gold); }
+        
+        .content-body { font-size: 0.9rem; white-space: pre-wrap; font-family: 'Times New Roman', serif; line-height: 1.4; }
+        
+        .btn-reveal { background: #000; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 0.7rem; }
+        .hidden-ans { display: none; margin-top: 10px; padding: 12px; background: #dcfce7; border: 2px solid var(--success); border-radius: 6px; color: #000; font-size: 0.9rem; }
+
+        /* MOBILE ADJUSTS */
+        @media (max-width: 600px) {
+            .panel { height: 60vh; }
+            .header-actions span { display: none; } /* Esconde texto dos botões no mobile */
         }
-
-        .empty { text-align: center; padding: 50px; color: #94a3b8; font-weight: 700; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="btn-voltar" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> VOLTAR</div>
-    <div style="font-weight: 800;">MENTORIA ELITE 2026</div>
-    <div style="width: 80px;"></div>
+    <button class="btn-header" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> <span>VOLTAR</span></button>
+    <div style="color:#fff; font-weight: 900; font-size: 0.8rem;">SISTEMA DE CONSULTA V13</div>
+    <div class="header-actions">
+        <button class="btn-header btn-backup" onclick="baixarBackup()"><i class="fas fa-save"></i> <span>BACKUP</span></button>
+    </div>
 </header>
 
+<div class="search-area">
+    <input type="text" id="searchBar" placeholder="🔍 BUSCAR NO FIREBASE... (Ex: Inépcia, RT, 39, Justa Causa)" onkeyup="filtrar()">
+</div>
+
 <main class="container">
-    <div class="stats">
-        <div class="stat-card">
-            <span>Petições Enviadas</span>
-            <b id="count-pecas">0</b>
-        </div>
-        <div class="stat-card">
-            <span>Status</span>
-            <b style="color: #059669;">ATIVO</b>
-        </div>
-    </div>
+    <div class="dashboard">
+        <section class="panel">
+            <div class="panel-header"><i class="fas fa-history"></i> Meus Snapshots (Histórico)</div>
+            <div class="feed" id="feed-snaps"></div>
+        </section>
 
-    <h3 style="margin-bottom: 15px; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; color: #64748b;">
-        <i class="fas fa-history"></i> Histórico de Envios (Sincronizado)
-    </h3>
+        <section class="panel">
+            <div class="panel-header"><i class="fas fa-book"></i> Biblioteca Técnica (V13)</div>
+            <div class="feed" id="feed-v13"></div>
+        </section>
 
-    <div id="mentoria-feed">
-        <div class="empty">Buscando dados no Firebase...</div>
+        <section class="panel">
+            <div class="panel-header"><i class="fas fa-puzzle-piece"></i> Treino: Qual é a Peça?</div>
+            <div class="feed" id="feed-desafios"></div>
+        </section>
     </div>
 </main>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // O DINHEIRO RECUPERADO: Sua configuração oficial
-    const config = { 
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-        authDomain: "masteroab-db5e1.firebaseapp.com", 
-        projectId: "masteroab-db5e1", 
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-    };
-    
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // Caminho onde o "foguete" da folha de respostas salva
-    const mentoriaPath = 'estudos_finalizados'; 
-
-    const feed = document.getElementById('mentoria-feed');
-    const counter = document.getElementById('count-pecas');
-
-    // Sincronização em Tempo Real
-    onValue(ref(db, mentoriaPath), (snap) => {
-        const data = snap.val();
-        feed.innerHTML = '';
+    // --- SINCRONIZAÇÃO E CONSULTA ---
+    onValue(ref(db), (snap) => {
+        const data = snap.val() || {};
         
-        if (data) {
-            const list = Object.entries(data).reverse(); // Mais novos primeiro
-            counter.innerText = list.length;
-
-            list.forEach(([id, info]) => {
-                const card = document.createElement('div');
-                card.className = 'snapshot-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div>
-                            <span class="tag-exame">EXAME ${info.exame || '--'}</span>
-                            <div style="margin-top: 5px; font-weight: 800; font-size: 1rem;">${info.peca || 'Peça não identificada'}</div>
-                        </div>
-                        <small style="color: #64748b; font-weight: 700;">${info.data || ''}</small>
-                    </div>
-                    <div class="content-box">${info.conteudo}</div>
-                    <button class="btn-del" onclick="window.excluirSnap('${id}')">
-                        <i class="fas fa-trash"></i> EXCLUIR
-                    </button>
-                    <div style="clear:both"></div>
-                `;
-                feed.appendChild(card);
+        // 1. Renderizar Peças (Snapshots)
+        const fSnaps = document.getElementById('feed-snaps'); fSnaps.innerHTML = "";
+        if(data.estudos_finalizados) {
+            Object.entries(data.estudos_finalizados).reverse().forEach(([id, info]) => {
+                fSnaps.innerHTML += `
+                    <div class="card item-busca">
+                        <span class="tag tag-snap">SNAPSHOT</span>
+                        <strong class="title-key">EXAME ${info.exame}: ${info.peca}</strong>
+                        <div class="content-body">${info.conteudo}</div>
+                        <small style="color:gray; font-size:0.6rem">${info.data}</small>
+                    </div>`;
             });
-        } else {
-            counter.innerText = '0';
-            feed.innerHTML = '<div class="empty"><i class="fas fa-cloud-upload-alt" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>Nenhuma peça enviada. Use o botão de foguete na folha de respostas!</div>';
+        }
+
+        // 2. Renderizar Biblioteca (V13_PRE + V13_TESE)
+        const fV13 = document.getElementById('feed-v13'); fV13.innerHTML = "";
+        ['v13_pre', 'v13_tese'].forEach(path => {
+            if(data[path]) {
+                Object.values(data[path]).forEach(info => {
+                    fV13.innerHTML += `
+                        <div class="card item-busca">
+                            <span class="tag ${path==='v13_pre'?'tag-pre':'tag-snap'}">${path.replace('v13_','').toUpperCase()}</span>
+                            <strong class="title-key">${info.t}</strong>
+                            <div class="content-body">${info.c}</div>
+                        </div>`;
+                });
+            }
+        });
+
+        // 3. Renderizar Desafios (Qual é a Peça)
+        const fPecas = document.getElementById('feed-desafios'); fPecas.innerHTML = "";
+        if(data.v13_peca) {
+            Object.values(data.v13_peca).forEach(info => {
+                fPecas.innerHTML += `
+                    <div class="card item-busca">
+                        <span class="tag tag-peca">DESAFIO</span>
+                        <p class="title-key" style="font-size:0.85rem">${info.t}</p>
+                        <button class="btn-reveal" onclick="reveal(this)">Ver Gabarito</button>
+                        <div class="hidden-ans">${info.c}</div>
+                    </div>`;
+            });
         }
     });
 
-    // Função de Exclusão
-    window.excluirSnap = (id) => {
-        if(confirm("Deseja apagar este registro da mentoria?")) {
-            remove(ref(db, `${mentoriaPath}/${id}`));
+    // --- FUNÇÕES DE APOIO ---
+    window.reveal = (btn) => { btn.nextElementSibling.style.display = 'block'; btn.style.display = 'none'; };
+
+    window.filtrar = () => {
+        const query = document.getElementById('searchBar').value.toLowerCase();
+        const cards = document.getElementsByClassName('item-busca');
+        for(let card of cards) {
+            card.style.display = card.innerText.toLowerCase().includes(query) ? "block" : "none";
         }
     };
 
-    // Tema Dark se estiver ativo
-    if (localStorage.getItem('theme_elite') === 'dark') {
-        document.body.classList.add('dark-mode');
-    }
+    window.baixarBackup = () => {
+        onValue(ref(db), (snap) => {
+            const blob = new Blob([JSON.stringify(snap.val(), null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ELITE_DATA_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }, { onlyOnce: true });
+    };
+
+    if (localStorage.getItem('theme_elite') === 'dark') document.body.classList.add('dark-mode');
 </script>
 </body>
 </html>
