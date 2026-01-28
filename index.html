@@ -88,7 +88,6 @@
             user-select: text; -webkit-user-select: text;
         }
 
-        /* BARRA LATERAL DE FERRAMENTAS */
         .paper-tools {
             position: fixed; left: 80px; bottom: 30px;
             display: flex; flex-direction: column; gap: 12px; z-index: 1500;
@@ -98,11 +97,9 @@
             width: 50px; height: 50px; border-radius: 12px; border: none;
             display: flex; align-items: center; justify-content: center;
             color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: transform 0.1s;
         }
-        .btn-side:active { transform: scale(0.9); }
         
-        .side-save { background: #22c55e; border: 2px solid #ffffff; } /* VERDE SALVAR */
+        .side-save { background: #22c55e; border: 2px solid #ffffff; }
         .side-pecas { background: #1e293b; border: 1px solid var(--gold); color: var(--gold); }
         .side-justica { background: #3b82f6; }
         .side-clear { background: #ef4444; }
@@ -111,11 +108,10 @@
             .sidebar { width: 65px; }
             .paper-tools {
                 left: 0; bottom: 0; width: 100%; flex-direction: row;
-                background: var(--primary); padding: 15px 10px 35px 10px; border-top: 2px solid var(--gold);
+                background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold);
                 justify-content: space-around;
             }
             .paper { padding: 20px 15px 160px 15px; }
-            header { padding: 0 5px; }
         }
 
         .pdf-panel { 
@@ -145,6 +141,7 @@
 
     <div class="nav-group">
         <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
     </div>
 </header>
 
@@ -160,10 +157,10 @@
         </div>
         
         <div class="paper-tools">
-            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar Peça"><i class="fas fa-save"></i></button>
-            <button class="btn-side side-pecas" onclick="abrirPecas()" title="Estruturas"><i class="fas fa-scroll"></i></button>
-            <button class="btn-side side-justica" onclick="injetarJustica()" title="Teses"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></button>
+            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar"><i class="fas fa-save"></i></button>
+            <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+            <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
         </div>
     </section>
 
@@ -225,7 +222,6 @@
         activeEx = i.toString();
         carregarExames();
         carregarFirebase();
-        if(currentMode) updatePdfSrc();
     };
 
     const atualizarRadar = () => {
@@ -247,14 +243,10 @@
             panel.classList.add('open');
             document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
             document.getElementById(`ref-${mode}`).classList.add('active');
-            updatePdfSrc();
+            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+            document.getElementById('pdf-frame').src = docs[mode];
         }
     };
-
-    function updatePdfSrc() {
-        const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
-        document.getElementById('pdf-frame').src = docs[currentMode];
-    }
 
     window.closePdf = () => {
         document.getElementById('pdf-panel').classList.remove('open');
@@ -263,11 +255,16 @@
     };
 
     window.salvarManual = () => {
+        const btnHeader = document.getElementById('btn-sync');
+        const btnSide = document.querySelector('.side-save');
+        
         window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
         .then(() => {
-            const btn = document.querySelector('.side-save');
-            btn.style.background = "#fbbf24"; // Cor de ouro momentânea
-            setTimeout(() => btn.style.background = "#22c55e", 500);
+            // Feedback Visual Duplo
+            [btnHeader, btnSide].forEach(b => {
+                if(b) b.style.background = "#fbbf24";
+                setTimeout(() => { if(b) b.style.background = b === btnHeader ? "#22c55e" : "#22c55e"; }, 500);
+            });
         });
     };
 
@@ -293,7 +290,7 @@
     };
 
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Apagar tudo desta folha?")) { editor.innerText = ""; window.autoSave(); } };
+    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; window.autoSave(); } };
     
     window.injetarJustica = () => {
         const esp = window.BANCO_ESPELHOS[activeEx];
