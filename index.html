@@ -40,21 +40,22 @@
             color: white; font-size: 1rem; cursor: pointer; background: var(--secondary);
         }
 
-        /* SIDEBAR E RADAR REFORMADO */
+        /* SIDEBAR E RADAR ESTILIZADO */
         .sidebar { 
-            width: 95px; background: var(--secondary); display: flex; 
+            width: 100px; background: var(--secondary); display: flex; 
             flex-direction: column; gap: 8px; padding: 10px; overflow-y: auto;
             border-right: 1px solid rgba(255,255,255,0.1);
         }
         
         #radar-peca {
-            background: var(--gold); color: var(--primary);
-            padding: 8px 5px; border-radius: 6px; font-size: 0.58rem;
-            font-weight: 900; text-align: center; margin-bottom: 10px;
-            min-height: 55px; display: flex; align-items: center; justify-content: center;
-            text-transform: uppercase; border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            line-height: 1.2;
+            background: #000; color: var(--gold);
+            padding: 8px 5px; border-radius: 6px; font-size: 0.6rem;
+            font-weight: 900; text-align: center; margin-bottom: 12px;
+            min-height: 50px; display: flex; align-items: center; justify-content: center;
+            text-transform: uppercase; border: 1px solid var(--gold);
+            box-shadow: inset 0 0 10px rgba(251, 191, 36, 0.2);
+            line-height: 1.2; letter-spacing: 0.5px;
+            transition: 0.3s;
         }
 
         .exame-btn {
@@ -63,14 +64,14 @@
             font-weight: 800; font-size: 0.9rem; color: #cbd5e1; cursor: pointer;
             transition: 0.2s;
         }
-        .exame-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
+        .exame-btn:hover { background: var(--accent); color: white; }
         .exame-btn.active { background: var(--gold); color: var(--primary); border: 1px solid white; }
 
         /* EDITOR E FOLHA */
         main { display: flex; flex: 1; overflow: hidden; background: #cbd5e1; position: relative; }
 
         .editor-container { 
-            flex: 1; overflow-y: auto; background: #f1f5f9; padding: 20px 20px 20px 100px; 
+            flex: 1; overflow-y: auto; background: #f1f5f9; padding: 20px 20px 20px 105px; 
             display: flex; justify-content: center; position: relative;
         }
         
@@ -138,24 +139,24 @@
 
 <main>
     <aside class="sidebar">
-        <div id="radar-peca">ESCANEANDO...</div>
+        <div id="radar-peca">RADAR ELITE</div>
         <div id="exam-nav" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
             <div class="paper-tools">
-                <button class="btn-side side-pecas" onclick="abrirPecas()" title="Carregar Peça"><i class="fas fa-scroll"></i></button>
-                <button class="btn-side side-justica" onclick="injetarJustica()" title="Checklist de Teses"><i class="fas fa-gavel"></i></button>
-                <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar Folha"><i class="fas fa-eraser"></i></button>
+                <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+                <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
             </div>
-            <div id="main-editor" class="editor-area" contenteditable="true" oninput="autoSave()"></div>
+            <div id="main-editor" class="editor-area" contenteditable="true" oninput="autoSave()"></p></div>
         </div>
     </section>
 
     <section class="pdf-panel" id="pdf-panel">
         <div style="height:40px; background:var(--primary); display:flex; align-items:center; justify-content:space-between; padding:0 15px; border-bottom:1px solid var(--gold);">
-            <span style="color:white; font-size:0.75rem; font-weight:bold; letter-spacing:1px;">DOCUMENTO OFICIAL</span>
+            <span style="color:white; font-size:0.75rem; font-weight:bold;">SISTEMA DE APOIO</span>
             <button onclick="closePdf()" style="background:var(--red); border:none; color:white; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">X</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
@@ -164,9 +165,9 @@
 
 <div class="modal" id="pec-modal">
     <div class="modal-body">
-        <h3 style="margin-bottom:20px; text-align:center; border-bottom:2px solid var(--gold); padding-bottom:10px;">ESTRUTURAS MESTRAS</h3>
+        <h3 style="margin-bottom:20px; text-align:center; border-bottom:2px solid var(--gold); padding-bottom:10px;">ESTRUTURAS</h3>
         <div id="peca-grid" style="display:grid; gap:10px; max-height:380px; overflow-y:auto;"></div>
-        <button onclick="fecharPecas()" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">FECHAR</button>
+        <button onclick="fecharPecas()" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">FECHAR</button>
     </div>
 </div>
 
@@ -181,38 +182,44 @@
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
+    // FUNÇÃO DE ABREVIAÇÃO INTELIGENTE
+    function abreviarPeca(nome) {
+        const n = nome.toUpperCase();
+        if (n.includes("CONTESTAÇÃO")) return "CONTESTAÇÃO";
+        if (n.includes("ORDINÁRIO")) return "REC. ORDINÁRIO";
+        if (n.includes("INDENIZAÇÃO")) return "INDENIZATÓRIA";
+        if (n.includes("CONSIGNAÇÃO")) return "CONSIGNAÇÃO";
+        if (n.includes("INICIAL") || n.includes("RECLAMAÇÃO")) return "PET. INICIAL";
+        return n.substring(0, 15);
+    }
+
     window.onload = () => {
-        radar.innerText = "RADAR ELITE";
         const nav = document.getElementById('exam-nav');
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i==35?'active':''}`;
             btn.innerText = `E${i}`;
             
-            // LÓGICA DE PRECISÃO DO RADAR
             btn.onmouseenter = () => { 
                 const conteudo = BANCO_ESPELHOS[i.toString()];
                 if (!conteudo) {
-                    radar.innerText = "NÃO MAPEADO";
+                    radar.innerText = "SEM DADOS";
+                    radar.style.color = "var(--red)";
                 } else {
-                    // Limpa HTML e pega a primeira linha que não seja vazia
                     const linhas = conteudo.split('\n');
-                    let titulo = "";
+                    let tituloBruto = "";
                     for(let l of linhas) {
                         let limpa = l.replace(/<[^>]*>/g, '').trim();
-                        if(limpa.length > 3) {
-                            titulo = limpa;
-                            break;
-                        }
+                        if(limpa.length > 3) { tituloBruto = limpa; break; }
                     }
-                    radar.innerText = titulo.substring(0, 35);
+                    radar.innerText = abreviarPeca(tituloBruto);
+                    radar.style.color = "var(--gold)";
                 }
-                radar.style.background = "white"; 
             };
             
             btn.onmouseleave = () => { 
                 radar.innerText = "RADAR ELITE"; 
-                radar.style.background = "var(--gold)"; 
+                radar.style.color = "var(--gold)";
             };
             
             btn.onclick = () => {
@@ -257,8 +264,8 @@
 
     window.injetarJustica = () => {
         const esp = BANCO_ESPELHOS[activeEx];
-        if(!esp) { alert("Espelho não encontrado!"); return; }
-        editor.innerText += "\n\n--- ⚖️ CHECKLIST DE TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+        if(!esp) return;
+        editor.innerText += "\n\n--- ⚖️ TESES DO EXAME ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
         window.autoSave();
     };
 
@@ -269,9 +276,8 @@
         const container = document.getElementById('peca-grid');
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
-            b.style = "padding:14px; text-align:left; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:800; font-size:0.85rem; color:var(--primary); transition:0.2s;";
+            b.style = "padding:14px; text-align:left; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:800; font-size:0.85rem; color:var(--primary);";
             b.innerText = k.toUpperCase();
-            b.onmouseover = () => b.style.background = "#edf2f7";
             b.onclick = () => {
                 editor.innerText += "\n\n" + pecas[k];
                 window.autoSave();
@@ -281,8 +287,8 @@
         });
     };
 
-    window.salvarManual = () => { window.autoSave(); alert("✅ Sincronizado no Firebase!"); };
-    window.resetarFolha = () => { if(confirm("🚨 ATENÇÃO: Deseja apagar todo o conteúdo desta folha?")) { editor.innerText = ""; window.autoSave(); } };
+    window.salvarManual = () => { window.autoSave(); alert("✅ Sincronizado!"); };
+    window.resetarFolha = () => { if(confirm("🚨 Limpar peça?")) { editor.innerText = ""; window.autoSave(); } };
 
     function carregarFirebase() {
         onValue(ref(db, 'estudos/' + activeEx), (s) => {
