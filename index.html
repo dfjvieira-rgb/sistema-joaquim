@@ -19,7 +19,6 @@
             height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
         }
 
-        /* HEADER */
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 15px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -41,31 +40,40 @@
             color: white; font-size: 1rem; cursor: pointer; background: var(--secondary);
         }
 
-        /* SIDEBAR COM TOOLTIP (RAIO-X) */
+        /* SIDEBAR E TOOLTIP TURBINADO */
         .sidebar { 
-            width: 65px; background: var(--secondary); display: flex; 
-            flex-direction: column; gap: 8px; padding: 10px 5px; overflow-y: auto;
+            width: 70px; background: var(--secondary); display: flex; 
+            flex-direction: column; gap: 10px; padding: 15px 5px; overflow-y: auto;
+            z-index: 100;
         }
         
         .exame-btn {
-            width: 100%; height: 40px; background: #2d3748; border-radius: 6px;
+            width: 100%; height: 45px; background: #2d3748; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.7rem; color: #cbd5e1; cursor: pointer;
-            position: relative; /* Necessário para o Tooltip */
+            font-weight: 800; font-size: 0.75rem; color: #cbd5e1; cursor: pointer;
+            position: relative; transition: 0.3s;
         }
         
-        /* TOOLTIP - O BALÃO QUE MOSTRA A PEÇA */
-        .exame-btn::after {
-            content: attr(data-peca);
-            position: absolute; left: 75px; top: 50%; transform: translateY(-50%);
-            background: var(--gold); color: var(--primary); padding: 6px 12px;
-            border-radius: 6px; font-size: 0.65rem; font-weight: 900;
+        /* O BALÃO - RAIO-X REAL */
+        .exame-btn .tooltip-text {
+            position: absolute; left: 85px; top: 50%; transform: translateY(-50%) translateX(-10px);
+            background: var(--gold); color: var(--primary); 
+            padding: 8px 15px; border-radius: 6px; 
+            font-size: 0.8rem; font-weight: 900; text-transform: uppercase;
             white-space: nowrap; opacity: 0; visibility: hidden;
-            transition: 0.2s; z-index: 10000; box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-            pointer-events: none; border: 1px solid white;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 99999; box-shadow: 8px 0 20px rgba(0,0,0,0.5);
+            border: 2px solid white; pointer-events: none;
+        }
+
+        /* SETA DO BALÃO */
+        .exame-btn .tooltip-text::before {
+            content: ""; position: absolute; left: -10px; top: 50%; transform: translateY(-50%);
+            border-width: 5px; border-style: solid; border-color: transparent white transparent transparent;
         }
         
-        .exame-btn:hover::after { opacity: 1; visibility: visible; }
+        .exame-btn:hover { background: #4a5568; transform: scale(1.05); }
+        .exame-btn:hover .tooltip-text { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(0); }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
         /* EDITOR AREA */
@@ -118,7 +126,7 @@
         @media (max-width: 900px) {
             .pdf-panel.open { width: 100%; position: absolute; inset: 0; z-index: 2000; }
             .sidebar { width: 100%; height: 55px; flex-direction: row; }
-            .exame-btn::after { display: none; } /* Desativa tooltip no mobile para não poluir */
+            .exame-btn .tooltip-text { display: none; } 
             main { flex-direction: column; }
             .editor-container { padding: 10px 10px 10px 70px; }
             .paper-tools { left: 10px; top: 10px; position: fixed; }
@@ -139,7 +147,7 @@
     </div>
 
     <div class="nav-group">
-        <div id="sync-label" style="font-size: 0.6rem; font-weight: 800; color: var(--fgv-green); margin-right: 5px;">CONECTADO</div>
+        <div id="sync-label" style="font-size: 0.6rem; font-weight: 800; color: var(--fgv-green); margin-right: 5px;">SINCRO OK</div>
         <button class="btn-tool" style="background:var(--purple)" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
         <button class="btn-tool" style="background:var(--fgv-green)" onclick="salvarManual()"><i class="fas fa-save"></i></button>
     </div>
@@ -182,11 +190,10 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // MAPEAMENTO DE PEÇAS PARA O RAIO-X (Tooltip)
     const NOMES_PECAS = {
         "44": "Contestação", "43": "Recurso Ordinário", "42": "Ação de Consignação",
         "41": "Contestação", "40": "Recurso Ordinário", "39": "Petição Inicial",
-        "38": "Contestação", "37": "Recurso Ordinário", "36": "Ação de Indenização",
+        "38": "Contestação", "37": "Recurso Ordinário", "36": "Indenização",
         "35": "Contestação"
     };
 
@@ -197,20 +204,18 @@
     window.onload = () => {
         const nav = document.getElementById('exam-nav');
         for (let i = 44; i >= 35; i--) {
-            const d = document.createElement('div');
-            d.className = `exame-btn ${i==35?'active':''}`;
-            d.innerText = `E${i}`;
-            // Injeta o nome da peça no atributo data-peca para o Raio-X
-            d.setAttribute('data-peca', NOMES_PECAS[i] || "Carregando...");
+            const btn = document.createElement('div');
+            btn.className = `exame-btn ${i==35?'active':''}`;
+            btn.innerHTML = `E${i} <span class="tooltip-text">${NOMES_PECAS[i] || "Peça OAB"}</span>`;
             
-            d.onclick = () => {
+            btn.onclick = () => {
                 activeEx = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(el => el.classList.remove('active'));
-                d.classList.add('active');
+                btn.classList.add('active');
                 carregarFirebase();
                 if(currentMode) updatePdfSrc();
             };
-            nav.appendChild(d);
+            nav.appendChild(btn);
         }
         carregarFirebase();
         renderPecas();
