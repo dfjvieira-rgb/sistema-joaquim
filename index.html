@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 | LEFT-PDF VIEW</title>
+    <title>JOAQUIM ELITE 2026 | RESTAURAÇÃO TOTAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -11,129 +11,109 @@
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
             --header-h: 65px;
         }
-
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--primary); 
-            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; }
 
+        /* HEADER ORIGINAL */
         header { 
-            background: var(--primary); height: var(--header-h); padding: 0 15px; 
+            background: var(--primary); height: var(--header-h); padding: 0 10px; 
             display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 2px solid var(--gold); z-index: 1000;
         }
+        .nav-group { display: flex; gap: 5px; align-items: center; }
+        .btn-tool { height: 38px; width: 38px; border-radius: 6px; border: none; color: white; cursor: pointer; background: #334155; display: flex; align-items: center; justify-content: center; }
 
-        /* --- LAYOUT SPLIT (PDF SEMPRE À ESQUERDA) --- */
+        /* ABAS FGV */
+        .tabs-fgv { background: var(--primary); display: flex; justify-content: center; gap: 2px; padding: 5px 5px 0 5px; }
+        .tab-btn { padding: 8px 12px; border: none; background: #334155; color: #94a3b8; font-weight: 800; font-size: 0.7rem; cursor: pointer; border-radius: 6px 6px 0 0; text-transform: uppercase; }
+        .tab-btn.active { background: var(--bg-paper); color: var(--primary); border-top: 2px solid var(--gold); }
+
         main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
 
-        /* Sidebar de Exames (Extrema Esquerda) */
-        .sidebar { width: 60px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; z-index: 20; border-right: 1px solid var(--gold); }
-        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem; color: #cbd5e1; cursor: pointer; }
+        /* SIDEBAR EXAMES */
+        .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.1); }
+        #radar-peca { background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: 900; text-align: center; border: 1px solid var(--gold); margin-bottom: 5px; text-transform: uppercase; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* ÁREA DO PDF (LADO ESQUERDO) */
-        .pdf-viewer { 
-            flex: 0; width: 0;
-            background: #1e293b; transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        .pdf-viewer.open { flex: 1.2; border-right: 4px solid var(--gold); } 
+        /* PDF À ESQUERDA (CIRÚRGICO) */
+        .pdf-panel-left { width: 0; background: white; transition: 0.3s; position: relative; display: flex; flex-direction: column; border-right: 0 solid var(--gold); }
+        .pdf-panel-left.open { width: 50%; border-right: 3px solid var(--gold); }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        /* EDITOR À DIREITA */
+        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; padding: 30px; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .editor-area { outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif; text-align: justify; background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px); min-height: 1000px; width: 100%; white-space: pre-wrap; }
 
-        /* ÁREA DO EDITOR (LADO DIREITO) */
-        .editor-container { 
-            flex: 2; overflow-y: auto; display: flex; flex-direction: column; align-items: center; 
-            padding: 20px; position: relative; transition: flex 0.4s ease;
-        }
-        
-        /* Controles flutuantes no Editor */
-        .pdf-selectors {
-            position: sticky; top: 0; align-self: flex-start; display: flex; gap: 8px; margin-bottom: 15px; z-index: 30;
-        }
-        .btn-ref {
-            height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold);
-            background: var(--primary); color: var(--gold); font-weight: 900; cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-        .btn-ref.active { background: var(--gold); color: var(--primary); }
+        /* BOTOES P G V LADO DA FOLHA */
+        .pdf-side-nav { position: absolute; left: 10px; top: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
+        .btn-ref-side { height: 42px; width: 42px; border-radius: 8px; border: 2px solid var(--gold); background: var(--primary); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; min-height: 1500px; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.15); }
+        /* ESPELHO E NOTA */
+        .nota-floating { background: var(--primary); color: var(--gold); padding: 10px; font-weight: 900; border-radius: 4px; margin: 20px 0; border: 1px solid var(--gold); text-align: center; }
+        .espelho-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid var(--line-color); font-size: 0.85rem; }
+        #placar-nota { position: sticky; top: 0; background: var(--gold); color: var(--primary); padding: 10px; font-weight: 900; text-align: center; border-radius: 8px; margin-bottom: 10px; z-index: 600; }
 
-        .editor-area { 
-            outline: none; font-size: 19px; line-height: 30px; color: var(--text-color); 
-            font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1200px; white-space: pre-wrap;
-        }
-
-        /* --- ABAS FGV --- */
-        .tabs-fgv { background: var(--primary); display: flex; justify-content: center; gap: 4px; padding: 5px 0; border-bottom: 1px solid #334155; }
-        .tab-btn { padding: 10px 20px; border: none; background: #334155; color: #94a3b8; font-weight: 800; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
-        .tab-btn.active { background: var(--gold); color: var(--primary); transform: translateY(-2px); }
-
-        /* Espelho e Nota */
-        .espelho-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid var(--line-color); font-size: 0.85rem; background: rgba(251, 191, 36, 0.05); }
-        .nota-header { background: var(--primary); color: var(--gold); padding: 12px; font-weight: 900; text-align: center; border: 1px solid var(--gold); margin: 20px 0 5px 0; }
-        #placar-fixo { position: sticky; top: 50px; background: var(--gold); color: var(--primary); padding: 12px; font-weight: 900; text-align: center; border-radius: 8px; z-index: 40; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-
-        /* Ações Flutuantes */
-        .actions { position: fixed; right: 25px; bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
-        .btn-action { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .btn-action:active { transform: scale(0.9); }
+        /* BOTOES DE AÇÃO LADO DIREITO */
+        .paper-tools { position: fixed; right: 30px; bottom: 30px; display: flex; flex-direction: column; gap: 12px; z-index: 1500; }
+        .btn-side { width: 55px; height: 55px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
-    <div class="nav-group"><button class="btn-ref" onclick="location.reload()"><i class="fas fa-redo"></i></button></div>
-    <div id="radar-peca" style="color:var(--gold); font-weight:900; letter-spacing: 1px;">PEÇA PROCESSUAL</div>
-    <div class="nav-group"><button class="btn-ref" style="background:#22c55e; color:white; border:none;" onclick="salvarManual()"><i class="fas fa-save"></i></button></div>
+    <div class="nav-group">
+        <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
+        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    </div>
+    <div class="nav-group">
+        <div id="radar-peca">ESCANEANDO</div>
+    </div>
+    <div class="nav-group">
+        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-tool" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+    </div>
 </header>
 
 <div class="tabs-fgv">
-    <button class="tab-btn active" id="btn-peca" onclick="switchTab('peca')">PEÇA</button>
-    <button class="tab-btn" id="btn-q1" onclick="switchTab('q1')">Q1</button>
-    <button class="tab-btn" id="btn-q2" onclick="switchTab('q2')">Q2</button>
-    <button class="tab-btn" id="btn-q3" onclick="switchTab('q3')">Q3</button>
-    <button class="tab-btn" id="btn-q4" onclick="switchTab('q4')">Q4</button>
+    <button class="tab-btn active" id="tab-peca" onclick="switchTab('peca')">Peça</button>
+    <button class="tab-btn" id="tab-q1" onclick="switchTab('q1')">Q1</button>
+    <button class="tab-btn" id="tab-q2" onclick="switchTab('q2')">Q2</button>
+    <button class="tab-btn" id="tab-q3" onclick="switchTab('q3')">Q3</button>
+    <button class="tab-btn" id="tab-q4" onclick="switchTab('q4')">Q4</button>
 </div>
 
 <main>
     <aside class="sidebar" id="exam-nav"></aside>
 
-    <section class="pdf-viewer" id="pdf-area">
-        <div style="background:var(--primary); padding:8px 15px; display:flex; justify-content:space-between; align-items:center;">
-            <b style="color:var(--gold); font-size:0.75rem;">CADERNO DE PROVA</b>
-            <button onclick="closePdf()" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">X</button>
+    <section class="pdf-panel-left" id="pdf-area">
+        <div style="background:var(--primary); padding:5px; display:flex; justify-content:flex-end;">
+            <button onclick="closePdf()" style="background:red; color:white; border:none; padding:2px 8px; border-radius:4px; font-weight:bold;">X</button>
         </div>
         <iframe id="pdf-frame" src=""></iframe>
     </section>
 
     <section class="editor-container">
-        <div class="pdf-selectors">
-            <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
-            <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
-            <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
+        <div class="pdf-side-nav">
+            <button class="btn-ref-side" onclick="togglePdf('p')">P</button>
+            <button class="btn-ref-side" onclick="togglePdf('g')">G</button>
+            <button class="btn-ref-side" onclick="togglePdf('v')">V</button>
         </div>
-
-        <div id="placar-fixo" style="display:none;">NOTA FINAL: <span id="valor-nota">0.00</span></div>
 
         <div class="paper">
+            <div id="placar-nota" style="display:none;">NOTA TOTAL: <span id="valor-nota">0.00</span></div>
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
-
-        <div class="actions">
-            <button class="btn-action" style="background:#3b82f6" onclick="injetarJustica()" title="Injetar Espelho"><i class="fas fa-gavel"></i></button>
-            <button class="btn-action" style="background:#ef4444" onclick="resetarFolha()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></button>
+        
+        <div class="paper-tools">
+            <button class="btn-side" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+            <button class="btn-side" style="background:#3b82f6" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <button class="btn-side" style="background:#ef4444" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
         </div>
     </section>
 </main>
@@ -148,40 +128,24 @@
     const editor = document.getElementById('main-editor');
     const pdfArea = document.getElementById('pdf-area');
 
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        document.querySelector('#theme-toggle i').className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
     window.togglePdf = (mode) => {
         const docs = { 'p': `exame${activeEx}p.pdf`, 'g': `exame${activeEx}g.pdf`, 'v': `vade.pdf` };
         document.getElementById('pdf-frame').src = docs[mode];
         pdfArea.classList.add('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`ref-${mode}`).classList.add('active');
     };
 
-    window.closePdf = () => {
-        pdfArea.classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-    };
+    window.closePdf = () => pdfArea.classList.remove('open');
 
     window.switchTab = (tab) => {
         activeTab = tab;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${tab}`).classList.add('active');
+        document.getElementById(`tab-${tab}`).classList.add('active');
         carregarFirebase();
-    };
-
-    window.injetarJustica = () => {
-        if(activeEx === "41") {
-            editor.innerHTML += `
-                <div class="nota-header" contenteditable="false">--- ⚖️ ESPELHO OFICIAL EXAME 41 ---</div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div>Endereçamento/Razões: 503ª VT/DF e TRT (0.20)</div></div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div>Fundamento Art. 855-A, §1, II ou 897, a CLT (0.30)</div></div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>Tese: IDPJ de ofício vedado - Art. 133 CPC (0.70)</div></div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div>Sócio retirante > 2 anos - Art. 10-A CLT (0.80)</div></div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>Impenhorabilidade Aposentadoria - 833, IV CPC (0.70)</div></div>
-                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div>Pedidos de Provimento e Revogação (0.50)</div></div>
-            `;
-            document.getElementById('placar-fixo').style.display = 'block';
-            window.calcNota();
-        }
     };
 
     window.calcNota = () => {
@@ -190,19 +154,29 @@
         document.getElementById('valor-nota').innerText = total.toFixed(2);
     };
 
+    window.injetarJustica = () => {
+        if(activeEx === "41") {
+            editor.innerHTML += `
+                <div class="nota-floating" contenteditable="false">--- ⚖️ ESPELHO OFICIAL EXAME 41 ---</div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div>1. Endereçamento (503ª VT/DF) e Razões ao TRT (0.20)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div>2. Partes e Fundamento (Art. 855-A ou 897 CLT) (0.30)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>5. Tese: IDPJ de ofício vedado (Art. 133 CPC) (0.70)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div>8. Ilegitimidade: Sócio > 2 anos (Art. 10-A) (0.80)</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div>9. Impenhorabilidade aposentadoria (Art. 833 CPC) (0.70)</div></div>
+            `;
+            document.getElementById('placar-nota').style.display = 'block';
+        }
+    };
+
     window.salvarManual = () => {
         set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() });
-        alert("Sincronizado com a Nuvem!");
     };
 
     function carregarFirebase() {
         onValue(ref(db, `estudos/${activeEx}/${activeTab}`), (s) => {
             const d = s.val();
-            if(d) {
-                editor.innerHTML = d.html || "";
-                document.getElementById('placar-fixo').style.display = editor.innerHTML.includes('espelho-item') ? 'block' : 'none';
-                window.calcNota();
-            } else { editor.innerHTML = ""; document.getElementById('placar-fixo').style.display = 'none'; }
+            editor.innerHTML = d ? (d.html || d.text) : "";
+            document.getElementById('placar-nota').style.display = editor.innerHTML.includes('espelho-item') ? 'block' : 'none';
         }, { onlyOnce: true });
     }
 
@@ -220,7 +194,7 @@
 
     initNav(); carregarFirebase();
     editor.addEventListener('input', () => set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: serverTimestamp() }));
-    window.resetarFolha = () => { if(confirm("Deseja apagar sua folha?")) { editor.innerHTML = ""; document.getElementById('placar-fixo').style.display = 'none'; } };
+    window.resetarFolha = () => { if(confirm("Apagar?")) { editor.innerHTML = ""; document.getElementById('placar-nota').style.display = 'none'; salvarManual(); } };
 </script>
 </body>
 </html>
