@@ -5,148 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JOAQUIM MASTER ELITE 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #0f172a; --secondary: #1e293b; --accent: #3b82f6; 
             --gold: #fbbf24; --red: #ef4444; --fgv-green: #22c55e; --purple: #a855f7;
-            --header-h: 65px;
+            --header-h: 70px; --glass: rgba(15, 23, 42, 0.8);
         }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--primary); height: 100vh; display: flex; 
-            flex-direction: column; overflow: hidden;
+            font-family: 'Inter', sans-serif; background: var(--primary); 
+            height: 100vh; width: 100vw; display: flex; flex-direction: column; 
+            overflow: hidden; color: #f8fafc;
         }
-        
+
+        /* HEADER MASTER PROFISSIONAL */
         header { 
-            background: var(--primary); height: var(--header-h); padding: 0 15px; 
+            background: var(--primary); height: var(--header-h); padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 1000;
+            border-bottom: 3px solid var(--gold); z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
-        .nav-btns { display: flex; gap: 8px; align-items: center; }
-        
-        .btn-symbol { 
-            width: 44px; height: 44px; border-radius: 12px; border: none;
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand-logo { 
+            background: var(--gold); color: var(--primary); width: 35px; height: 35px; 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 8px; font-weight: 900; font-size: 1.2rem;
+        }
+
+        .nav-group { display: flex; gap: 10px; align-items: center; }
+
+        /* BOTÕES ERGONÔMICOS */
+        .btn-main { 
+            height: 48px; min-width: 48px; border-radius: 14px; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s;
-            background: var(--secondary);
+            color: white; font-size: 1.1rem; cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--secondary); position: relative;
         }
-        .btn-symbol:active { transform: scale(0.9); }
-        .btn-voltar { background: #334155 !important; }
-        .btn-mentoria { background: var(--purple) !important; }
+        .btn-main:active { transform: scale(0.85); }
+        .btn-main i { transition: 0.2s; }
+        .btn-main:hover i { transform: translateY(-2px); }
 
-        .status-pill {
-            background: rgba(34, 197, 94, 0.1); border: 1px solid var(--fgv-green);
-            padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; color: var(--fgv-green);
-            font-weight: bold; display: flex; align-items: center; gap: 6px;
+        .btn-back { background: #334155; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-save { background: var(--fgv-green); }
+        .btn-peca { background: var(--accent); }
+        .btn-mentoria { background: var(--purple); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+        .btn-delete { background: var(--red); }
+
+        /* STATUS DE CONEXÃO */
+        .sync-indicator {
+            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .dot { width: 8px; height: 8px; background: var(--fgv-green); border-radius: 50%; box-shadow: 0 0 10px var(--fgv-green); }
+
+        /* LAYOUT PRINCIPAL */
+        main { display: flex; flex: 1; overflow: hidden; background: #0f172a; position: relative; }
+
+        /* SIDEBAR DE EXAMES (SCROLL HORIZONTAL NO MOBILE) */
+        .sidebar { 
+            width: 90px; background: var(--secondary); border-right: 1px solid rgba(255,255,255,0.1); 
+            padding: 15px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
         }
 
-        main { display: flex; flex: 1; overflow: hidden; background: #f1f5f9; position: relative; }
-        
-        /* BOTÕES DE ROLAGEM */
-        .scroll-nav { position: absolute; right: 20px; bottom: 30px; display: flex; flex-direction: column; gap: 12px; z-index: 999; }
-        .btn-scroll {
-            width: 50px; height: 50px; border-radius: 15px; background: var(--primary); color: var(--gold);
-            border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        .exame-card {
+            width: 100%; aspect-ratio: 1/1; background: #2d3748; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.9rem; cursor: pointer; border: 2px solid transparent;
+            transition: 0.3s; color: #a0aec0;
+        }
+        .exame-card.active { border-color: var(--gold); color: var(--gold); background: rgba(251, 191, 36, 0.1); }
+
+        /* ÁREA DE TRABALHO (FOLHA FGV) */
+        .work-area { 
+            flex: 1.3; overflow-y: auto; padding: 25px; background: #e2e8f0; 
+            scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+        }
+        .paper-fgv { 
+            background: white; width: 100%; max-width: 850px; margin: 0 auto;
+            min-height: 1500px; padding: 50px; border-radius: 4px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;
         }
 
-        .sidebar { width: 80px; background: #e2e8f0; border-right: 1px solid #cbd5e1; padding: 10px 5px; overflow-y: auto; flex-shrink: 0; }
-        .exame-btn { 
-            width: 100%; padding: 15px 0; margin-bottom: 8px; background: white; 
-            border: 1px solid #cbd5e1; border-radius: 10px; cursor: pointer; 
-            font-size: 0.75rem; font-weight: 800;
-        }
-        .exame-btn.active { background: var(--accent); color: white; }
-
-        .folha-mestra-container { flex: 1.2; overflow-y: auto; padding: 20px; border-right: 2px solid #cbd5e1; }
-        .folha-fgv { background: white; width: 100%; min-height: 1600px; padding: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-
-        .post-it-area { 
+        .sticky-note { 
             background: #fef9c3; border-left: 6px solid var(--gold); padding: 15px; 
-            margin-bottom: 25px; font-family: 'Inter'; font-size: 0.9rem; border-radius: 8px;
+            margin-bottom: 30px; border-radius: 8px; color: #713f12; font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .peca-editor { 
-            outline: none; font-size: 19px; line-height: 32px; text-align: justify; 
-            white-space: pre-wrap; color: #1e293b; min-height: 1200px; font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(white, white 31px, #f1f5f9 31px, #f1f5f9 32px);
+        .editor { 
+            outline: none; font-size: 20px; line-height: 32px; color: #1e293b; 
+            font-family: 'Times New Roman', serif; text-align: justify;
+            background-image: repeating-linear-gradient(transparent, transparent 31px, #cbd5e1 31px, #cbd5e1 32px);
         }
 
-        .pdf-container { width: 45%; background: #1e293b; display: flex; flex-direction: column; }
-        .pdf-tabs { display: flex; background: var(--primary); padding: 6px; gap: 6px; }
-        .tab-btn { flex: 1; padding: 14px 5px; font-size: 0.7rem; font-weight: 700; border: none; background: #334155; color: white; border-radius: 8px; }
-        .tab-btn.active { background: var(--gold); color: var(--primary); }
+        /* PAINEL DE REFERÊNCIA (PDFs) */
+        .ref-panel { width: 45%; background: #1e293b; display: flex; flex-direction: column; border-left: 2px solid var(--gold); }
+        .tabs { display: flex; background: var(--primary); padding: 8px; gap: 8px; }
+        .tab { 
+            flex: 1; padding: 15px; border: none; border-radius: 10px; background: #334155; 
+            color: #94a3b8; font-weight: 700; font-size: 0.75rem; cursor: pointer;
+        }
+        .tab.active { background: var(--gold); color: var(--primary); }
 
-        .gabarito-folha { margin-top: 50px; padding: 25px; border-radius: 12px; background: #f0fdf4; border: 2px solid var(--fgv-green); margin-bottom: 200px; }
-
-        .modal-pecas { 
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 95%; max-width: 400px; background: white; z-index: 10001; padding: 25px; 
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); border: 2px solid var(--gold);
+        /* CONTROLES FLUTUANTES */
+        .floating-actions { position: absolute; right: 25px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        .btn-float {
+            width: 56px; height: 56px; border-radius: 18px; background: var(--primary); 
+            color: var(--gold); border: 2px solid var(--gold); display: flex; 
+            align-items: center; justify-content: center; font-size: 1.3rem; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        @media (max-width: 768px) {
+        /* MODAL MASTER */
+        .modal { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+            backdrop-filter: blur(5px); z-index: 10001; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content { 
+            background: white; width: 100%; max-width: 500px; border-radius: 24px; 
+            padding: 30px; color: var(--primary); max-height: 80vh; overflow-y: auto;
+        }
+
+        /* RESPONSIVIDADE EXTREMA */
+        @media (max-width: 900px) {
             main { flex-direction: column; }
-            .sidebar { width: 100%; height: 65px; display: flex; padding: 8px; }
-            .exame-btn { width: 60px; height: 100%; flex-shrink: 0; line-height: 30px; }
-            .folha-mestra-container { height: 60vh; }
-            .pdf-container { height: 40vh; width: 100%; }
-            .scroll-nav { bottom: 42vh; }
+            .sidebar { 
+                width: 100%; height: 75px; flex-direction: row; 
+                padding: 10px; order: 1; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .exame-card { width: 55px; aspect-ratio: 1/1; flex-shrink: 0; }
+            .work-area { height: 55vh; order: 2; padding: 15px; }
+            .ref-panel { width: 100%; height: 35vh; order: 3; border-left: none; border-top: 3px solid var(--gold); }
+            .paper-fgv { padding: 25px; }
+            .floating-actions { bottom: 38vh; right: 15px; }
+            .brand-logo { display: none; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="nav-btns">
-        <button class="btn-symbol btn-voltar" onclick="appVoltar()"><i class="fas fa-chevron-left"></i></button>
-        <div class="status-pill"><span id="sync-text">SINC. OK</span></div>
+    <div class="nav-group">
+        <button class="btn-main btn-back" onclick="handleBack()" title="Voltar/Sair">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="brand">
+            <div class="brand-logo">J</div>
+            <div class="sync-indicator">
+                <div class="dot"></div>
+                <span id="sync-label" style="font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;">SISTEMA ATIVO</span>
+            </div>
+        </div>
     </div>
-    
-    <div class="nav-btns">
-        <button class="btn-symbol" style="background:var(--fgv-green);" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-symbol" style="background:var(--accent);" onclick="toggleModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-symbol btn-mentoria" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-        <button class="btn-symbol" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-symbol" style="background:var(--red);" onclick="limparFolha()"><i class="fas fa-trash"></i></button>
+
+    <div class="nav-group">
+        <button class="btn-main btn-save" onclick="manualSave()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-main btn-peca" onclick="openPecas()"><i class="fas fa-layer-group"></i></button>
+        <button class="btn-main btn-mentoria" onclick="goMentoria()"><i class="fas fa-brain"></i></button>
+        <button class="btn-main" style="background:var(--secondary)" onclick="injectTeses()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-main btn-delete" onclick="resetEditor()"><i class="fas fa-eraser"></i></button>
     </div>
 </header>
 
 <main>
-    <div class="scroll-nav">
-        <button class="btn-scroll" onclick="subirTopo()"><i class="fas fa-arrow-up"></i></button>
-        <button class="btn-scroll" onclick="irAlvo()"><i class="fas fa-crosshairs"></i></button>
+    <div class="floating-actions">
+        <button class="btn-float" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+        <button class="btn-float" onclick="scrollToGab()"><i class="fas fa-bullseye"></i></button>
     </div>
 
-    <aside class="sidebar" id="sidebar-exames"></aside>
-    
-    <section class="folha-mestra-container" id="folha-scroll">
-        <div class="folha-fgv">
-            <div class="post-it-area">
-                <div id="post-it-content" contenteditable="true" oninput="autoSave()">Toque para notas de mentoria...</div>
+    <aside class="sidebar" id="exam-list"></aside>
+
+    <section class="work-area" id="main-scroll">
+        <div class="paper-fgv">
+            <div class="sticky-note">
+                <i class="fas fa-thumbtack"></i> &nbsp; 
+                <span id="note-editor" contenteditable="true" oninput="autoSave()">Anotações rápidas para o Exame <span id="cur-ex">35</span>...</span>
             </div>
-            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Selecione o Exame...</div>
-            <div id="gabarito-alvo" class="gabarito-folha"></div>
+            <div id="editor" class="editor" contenteditable="true" oninput="autoSave()">Selecione um exame ao lado para iniciar sua peça.</div>
+            <div id="gabarito-alvo" style="margin-top: 60px; padding: 25px; background: #f0fdf4; border-radius: 15px; border: 2px solid var(--fgv-green); color: #166534; display:none;"></div>
         </div>
     </section>
 
-    <section class="pdf-container">
-        <div class="pdf-tabs">
-            <button class="tab-btn active" id="btn-tab-prova" onclick="mudarPdf('prova')">PROVA</button>
-            <button class="tab-btn" id="btn-tab-gab" onclick="mudarPdf('gab')">GAB</button>
-            <button class="tab-btn" id="btn-tab-vade" onclick="mudarPdf('vade')">VADE</button>
+    <section class="ref-panel">
+        <div class="tabs">
+            <button class="tab active" id="tab-p" onclick="loadPdf('p')">ENUNCIADO</button>
+            <button class="tab" id="tab-g" onclick="loadPdf('g')">ESPELHO</button>
+            <button class="tab" id="tab-v" onclick="loadPdf('v')">VADE</button>
         </div>
-        <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background: #fff;"></iframe>
+        <iframe id="pdf-view" style="width:100%; flex:1; border:none; background:#fff;"></iframe>
     </section>
 </main>
 
-<div id="modal-pecas" class="modal-pecas">
-    <h3 style="margin-bottom:20px; text-align:center;">PEÇAS MESTRAS</h3>
-    <div id="grid-pecas-js" style="max-height: 400px; overflow-y: auto;"></div>
-    <button onclick="toggleModalPecas()" style="width:100%; margin-top:20px; padding:18px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight: bold;">FECHAR</button>
+<div class="modal" id="peca-modal">
+    <div class="modal-content">
+        <h2 style="margin-bottom:20px; text-align:center; font-weight:900;">ESTRUTURAS MESTRAS</h2>
+        <div id="peca-grid" style="display:grid; grid-template-columns: 1fr; gap:12px;"></div>
+        <button onclick="closePecas()" style="width:100%; margin-top:25px; padding:18px; border-radius:15px; background:var(--primary); color:white; border:none; font-weight:bold;">VOLTAR AO SIMULADO</button>
+    </div>
 </div>
 
 <script type="module">
@@ -157,109 +217,101 @@
 
     window.pecas = pecas;
     window.BANCO_ESPELHOS = BANCO_ESPELHOS;
-    let idAtivo = "35";
-    const editor = document.getElementById('editor-folha');
-    const postit = document.getElementById('post-it-content');
+    let activeId = "35";
+    const editor = document.getElementById('editor');
+    const note = document.getElementById('note-editor');
+    const syncLabel = document.getElementById('sync-label');
 
     window.onload = () => {
-        const menu = document.getElementById('sidebar-exames');
+        const list = document.getElementById('exam-list');
         for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('button');
-            btn.className = `exame-btn ${i == 35 ? 'active' : ''}`;
-            btn.innerText = `E${i}`;
-            btn.onclick = () => {
-                idAtivo = i.toString();
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                carregarDoFirebase();
-                mudarPdf('prova');
+            const card = document.createElement('div');
+            card.className = `exame-card ${i==35?'active':''}`;
+            card.innerText = `E${i}`;
+            card.onclick = () => {
+                activeId = i.toString();
+                document.querySelectorAll('.exame-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                document.getElementById('cur-ex').innerText = activeId;
+                loadFromFirebase();
+                loadPdf('p');
             };
-            menu.appendChild(btn);
+            list.appendChild(card);
         }
-        window.popularEstruturas();
-        carregarDoFirebase();
-    };
-
-    window.appVoltar = () => {
-        const modal = document.getElementById('modal-pecas');
-        if(modal.style.display === 'block') {
-            modal.style.display = 'none';
-        } else {
-            if(confirm("Deseja sair do simulado atual?")) location.reload();
-        }
+        buildPecaGrid();
+        loadFromFirebase();
     };
 
     window.autoSave = () => {
-        set(ref(db, 'estudos/' + idAtivo), { 
-            conteudo: editor.innerText, 
-            postit: postit.innerText, 
-            timestamp: new Date().getTime() 
-        });
+        syncLabel.innerText = "SALVANDO...";
+        set(ref(db, 'estudos/' + activeId), { 
+            text: editor.innerText, 
+            note: note.innerText, 
+            ts: Date.now() 
+        }).then(() => { setTimeout(() => syncLabel.innerText = "SISTEMA ATIVO", 800); });
     };
 
-    window.salvarManual = () => { window.autoSave(); alert("✅ Sincronizado!"); };
-    window.limparFolha = () => { if(confirm("Limpar rascunho?")) { editor.innerText = ""; window.autoSave(); } };
-    window.toggleModalPecas = () => {
-        const m = document.getElementById('modal-pecas');
-        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    window.handleBack = () => {
+        if(document.getElementById('peca-modal').style.display === 'flex') {
+            closePecas();
+        } else if(confirm("Deseja encerrar a sessão de estudo?")) {
+            location.href = 'index.html';
+        }
     };
 
-    window.popularEstruturas = () => {
-        const grid = document.getElementById('grid-pecas-js');
-        grid.innerHTML = "";
-        if(!window.pecas) return;
-        Object.keys(window.pecas).forEach(nome => {
-            const btn = document.createElement('button');
-            btn.className = "exame-btn";
-            btn.style.padding = "15px";
-            btn.innerText = nome.toUpperCase();
-            btn.onclick = () => { 
-                if(confirm("Injetar estrutura mestre?")) {
-                    editor.innerText = window.pecas[nome]; 
-                    window.autoSave(); 
-                    window.toggleModalPecas(); 
-                    subirTopo();
-                }
+    window.openPecas = () => document.getElementById('peca-modal').style.display = 'flex';
+    window.closePecas = () => document.getElementById('peca-modal').style.display = 'none';
+
+    window.buildPecaGrid = () => {
+        const grid = document.getElementById('peca-grid');
+        Object.keys(window.pecas).forEach(p => {
+            const b = document.createElement('button');
+            b.style = "padding:18px; border-radius:12px; border:1px solid #ddd; background:#f8fafc; text-align:left; font-weight:bold; cursor:pointer;";
+            b.innerHTML = `<i class="fas fa-file-contract" style="color:var(--accent)"></i> &nbsp; ${p.toUpperCase()}`;
+            b.onclick = () => {
+                editor.innerText += "\n\n" + window.pecas[p];
+                window.autoSave();
+                closePecas();
             };
-            grid.appendChild(btn);
+            grid.appendChild(b);
         });
     };
 
-    window.mudarPdf = (tipo) => {
-        const frame = document.getElementById('pdf-frame');
-        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-        if(tipo === 'prova') frame.src = `ro${idAtivo}.pdf`;
-        if(tipo === 'gab') frame.src = `ro${idAtivo}-gabarito.pdf`;
-        if(tipo === 'vade') frame.src = `vade.pdf`;
-        document.getElementById(`btn-tab-${tipo}`).classList.add('active');
+    window.loadPdf = (mode) => {
+        const frame = document.getElementById('pdf-view');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if(mode === 'p') { frame.src = `ro${activeId}.pdf`; document.getElementById('tab-p').classList.add('active'); }
+        if(mode === 'g') { frame.src = `ro${activeId}-gabarito.pdf`; document.getElementById('tab-g').classList.add('active'); }
+        if(mode === 'v') { frame.src = `vade.pdf`; document.getElementById('tab-v').classList.add('active'); }
     };
 
-    window.injetarJustica = () => {
-        const espelho = window.BANCO_ESPELHOS[idAtivo];
-        if(!espelho) return;
-        const checklist = espelho.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim() !== '').join('\n[ ] ');
-        editor.innerText += `\n\n--- CHECKLIST DE TESES ---\n[ ] ` + checklist;
+    window.injectTeses = () => {
+        const esp = window.BANCO_ESPELHOS[activeId];
+        if(!esp) return;
+        editor.innerText += "\n\n--- CHECKLIST DE TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
         window.autoSave();
     };
 
-    window.subirTopo = () => document.getElementById('folha-scroll').scrollTo(0,0);
-    window.irAlvo = () => document.getElementById('gabarito-alvo').scrollIntoView();
+    window.manualSave = () => { window.autoSave(); alert("✅ Sincronizado com Sucesso!"); };
+    window.resetEditor = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; window.autoSave(); } };
+    window.scrollToTop = () => document.getElementById('main-scroll').scrollTo(0,0);
+    window.scrollToGab = () => {
+        const g = document.getElementById('gabarito-alvo');
+        g.style.display = 'block';
+        g.scrollIntoView();
+    };
+    window.goMentoria = () => location.href = 'mentoria.html';
 
-    function carregarDoFirebase() {
-        onValue(ref(db, 'estudos/' + idAtivo), (snap) => {
-            const data = snap.val();
-            if (data) {
-                if (data.conteudo && !document.activeElement.isSameNode(editor)) editor.innerText = data.conteudo;
-                if (data.postit && !document.activeElement.isSameNode(postit)) postit.innerText = data.postit;
+    function loadFromFirebase() {
+        onValue(ref(db, 'estudos/' + activeId), (s) => {
+            const d = s.val();
+            if(d) {
+                if(d.text && document.activeElement !== editor) editor.innerText = d.text;
+                if(d.note && document.activeElement !== note) note.innerText = d.note;
             }
-            atualizarGabaritoUI();
+            const g = document.getElementById('gabarito-alvo');
+            g.innerHTML = window.BANCO_ESPELHOS[activeId] || "Gabarito indisponível.";
         }, { onlyOnce: true });
-    }
-
-    function atualizarGabaritoUI() {
-        const container = document.getElementById('gabarito-alvo');
-        const espelho = window.BANCO_ESPELHOS[idAtivo];
-        container.innerHTML = espelho ? `<h4>GABARITO E${idAtivo}</h4>${espelho}` : "Gabarito indisponível.";
     }
 </script>
 </body>
