@@ -1,240 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | ESTRATÉGIA AVANÇADA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Courier+Prime&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { 
-            --bg: #ffffff; --text: #000000; --subtext: #334155;
-            --primary: #1d4ed8; --border: #94a3b8;
-            --danger: #991b1b; --warning: #92400e; --purple: #5b21b6; --edit: #059669;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--text); line-height: 1.6; }
-
-        header { 
-            background: #ffffff; border-bottom: 2px solid var(--border);
-            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .btn-back { 
-            text-decoration: none; color: var(--text); font-size: 1rem; font-weight: 700;
-            display: flex; align-items: center; gap: 10px; border: 2px solid var(--text);
-            padding: 8px 16px; border-radius: 8px;
-        }
-
-        /* BUSCA RÁPIDA */
-        .search-bar { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; }
-
-        .dashboard { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;
-            padding: 20px; max-width: 1500px; margin: 0 auto;
-        }
-
-        .panel { 
-            background: #ffffff; border-radius: 12px; border: 2px solid var(--border);
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        .panel-header { padding: 15px; background: #f8fafc; border-bottom: 2px solid var(--border); font-size: 1rem; font-weight: 800; text-transform: uppercase; }
-
-        .panel-body { padding: 20px; }
-
-        .input-group { margin-bottom: 20px; }
-        label { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: var(--subtext); display: block; margin-bottom: 8px; }
+<section class="panel" id="panel-checklist" style="border-top: 6px solid var(--success);">
+    <div class="panel-header" style="color: var(--text);"><i class="fas fa-tasks"></i> Checklist: Preliminares OAB</div>
+    <div class="panel-body">
+        <input type="text" class="search-bar" placeholder="Ex: Inépcia, Prescrição..." onkeyup="filterCards('feed-checklist', this.value)">
         
-        input, textarea { 
-            width: 100%; border: 2px solid var(--border); border-radius: 8px;
-            padding: 14px; font-size: 1.1rem; color: var(--text); outline: none;
-            background: #ffffff; font-family: inherit; font-weight: 500;
-        }
-        textarea { font-family: 'Courier Prime', monospace; min-height: 100px; }
+        <div class="feed" id="feed-checklist" style="max-height: 600px;">
+            <div class="card" style="border-left: 5px solid var(--edit);">
+                <strong>1. Incompetência da Justiça do Trabalho</strong>
+                <p>• Art. 114 CF</p>
+                <p style="font-size: 0.9rem; color: var(--subtext);">Gatilho: Relação estatutária ou acidente INSS puro.</p>
+            </div>
 
-        .btn-save { width: 100%; padding: 18px; border-radius: 8px; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; }
-        .btn-cancel { background: #64748b; color: white; margin-top: 10px; display: none; }
+            <div class="card" style="border-left: 5px solid var(--danger);">
+                <strong>4. Prescrição (Prejudicial de Mérito)</strong>
+                <p>• Bienal (2 anos) e Quinquenal (5 anos) - Art. 7º, XXIX, CF</p>
+                <p style="font-size: 0.9rem; color: var(--subtext);">Uso: Muito frequente em Contestação e RO.</p>
+            </div>
 
-        /* CARDS E GABARITO OCULTO */
-        .feed { padding: 15px; background: #f8fafc; border-top: 2px solid var(--border); max-height: 500px; overflow-y: auto; }
-        .card { background: #ffffff; padding: 18px; border-radius: 10px; border: 2px solid var(--border); margin-bottom: 15px; position: relative; }
-        
-        .gabarito-btn { background: #e2e8f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
-        .gabarito-content { display: none; margin-top: 10px; padding: 10px; background: #f0fdf4; border-left: 4px solid var(--edit); font-weight: 700; }
+            <div class="card" style="border-left: 5px solid var(--primary);">
+                <strong>10. Preliminar de Nulidade Processual</strong>
+                <p>• Art. 5º, LV CF / Art. 794 CLT</p>
+                <p style="font-size: 0.9rem; color: var(--subtext);">Gatilho: Cerceamento de defesa ou ausência de intimação válida.</p>
+            </div>
 
-        .card-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; }
-        .btn-icon { font-size: 1.2rem; cursor: pointer; border: none; background: none; color: var(--border); }
-        .btn-trash:hover { color: var(--danger); }
-        .btn-edit:hover { color: var(--edit); }
-
-        @media (max-width: 1100px) { .dashboard { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-<header>
-    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> VOLTAR</a>
-    <h1 style="font-size: 1rem; font-weight: 800;">MENTORIA ARYANNA 2026</h1>
-</header>
-
-<main class="dashboard">
-
-    <section class="panel" id="panel-peca" style="border-top: 6px solid var(--purple);">
-        <div class="panel-header">Simulador: Qual a Peça?</div>
-        <div class="panel-body">
-            <input type="hidden" id="edit-id-peca">
-            <div class="input-group"><label>Caso Prático</label><textarea id="peca-hist" placeholder="Enunciado..."></textarea></div>
-            <div class="input-group"><label>Resposta Técnica</label><input type="text" id="peca-resp" placeholder="Gabarito..."></div>
-            <button class="btn-save" id="btn-save-peca" style="background: var(--purple); color: white;" onclick="salvar('peca')">Salvar Desafio</button>
-            <button class="btn-save btn-cancel" id="btn-cancel-peca" onclick="resetForm('peca')">Cancelar Edição</button>
+            <div style="background: #fff7ed; padding: 15px; border-radius: 8px; border: 1px solid var(--warning);">
+                <strong style="color: var(--warning); font-size: 0.9rem;">💡 DICAS DE USO EM PEÇA:</strong>
+                <ul style="font-size: 0.95rem; margin-top: 8px; list-style: none;">
+                    <li>✅ <strong>Contestação:</strong> Foque em Prescrição, Inépcia e Ilegitimidade.</li>
+                    <li>✅ <strong>Recurso Ordinário:</strong> Foque em Nulidade e Cerceamento (Súmula 297 TST).</li>
+                    <li>✅ <strong>Embargos:</strong> Vícios do Art. 1.022 CPC (Omissão, Contradição).</li>
+                </ul>
+            </div>
         </div>
-        <div class="feed">
-            <input type="text" class="search-bar" placeholder="Filtrar casos..." onkeyup="filterCards('feed-pecas', this.value)">
-            <div id="feed-pecas"></div>
-        </div>
-    </section>
-
-    <section class="panel" id="panel-radar" style="border-top: 6px solid var(--warning);">
-        <div class="panel-header">Radar e Post-its</div>
-        <div class="panel-body">
-            <input type="hidden" id="edit-id-radar">
-            <div class="input-group"><label>Dica / Lembrete</label><textarea id="dica-ouro"></textarea></div>
-            <div id="wrapper-nc"><div class="input-group"><label>Não Confunda</label><input type="text" class="nc-item"></div></div>
-            <button onclick="addNC()" style="border: 2px solid var(--border); width: 100%; padding: 12px; font-weight: 800; border-radius: 8px; cursor: pointer; margin-bottom: 15px; background: white;">+ ADICIONAR ITEM</button>
-            <button class="btn-save" id="btn-save-radar" style="background: #000000; color: white;" onclick="salvar('radar')">Sincronizar Radar</button>
-            <button class="btn-save btn-cancel" id="btn-cancel-radar" onclick="resetForm('radar')">Cancelar Edição</button>
-        </div>
-        <div class="feed">
-            <input type="text" class="search-bar" placeholder="Filtrar dicas..." onkeyup="filterCards('feed-radar', this.value)">
-            <div id="feed-radar"></div>
-        </div>
-    </section>
-
-    <section class="panel" id="panel-tese" style="border-top: 6px solid var(--primary);">
-        <div class="panel-header">Dicionário de Teses</div>
-        <div class="panel-body">
-            <input type="hidden" id="edit-id-tese">
-            <div class="input-group"><label>Título</label><input type="text" id="t-tit"></div>
-            <div class="input-group"><label>F/F/P</label><textarea id="t-fato" placeholder="Fato..."></textarea></div>
-            <button class="btn-save" id="btn-save-tese" style="background: var(--primary); color: white;" onclick="salvar('tese')">Salvar Tese</button>
-            <button class="btn-save btn-cancel" id="btn-cancel-tese" onclick="resetForm('tese')">Cancelar Edição</button>
-        </div>
-        <div class="feed">
-            <input type="text" class="search-bar" placeholder="Filtrar teses..." onkeyup="filterCards('feed-teses', this.value)">
-            <div id="feed-teses"></div>
-        </div>
-    </section>
-
-</main>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    // ... (Configuração Firebase igual ao anterior) ...
-    const config = { 
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-        authDomain: "masteroab-db5e1.firebaseapp.com", 
-        projectId: "masteroab-db5e1", 
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-    };
-    const app = initializeApp(config);
-    const db = getDatabase(app);
-    const paths = { peca: 'v10_qual_e_a_peca', radar: 'v10_radar_estrategia', tese: 'v10_teses_sincronizadas' };
-
-    // FILTRO DE BUSCA
-    window.filterCards = (containerId, query) => {
-        const cards = document.querySelectorAll(`#${containerId} .card`);
-        cards.forEach(card => {
-            const text = card.innerText.toLowerCase();
-            card.style.display = text.includes(query.toLowerCase()) ? 'block' : 'none';
-        });
-    };
-
-    // MOSTRAR GABARITO
-    window.toggleGabarito = (btn) => {
-        const content = btn.nextElementSibling;
-        const isHidden = content.style.display === "none" || content.style.display === "";
-        content.style.display = isHidden ? "block" : "none";
-        btn.innerText = isHidden ? "OCULTAR RESPOSTA" : "VER RESPOSTA TÉCNICA";
-    };
-
-    // ... (Mantendo funções Salvar, AddNC, ResetForm e Excluir do código anterior) ...
-    window.addNC = (val = '') => {
-        const wrap = document.getElementById('wrapper-nc');
-        const input = document.createElement('input');
-        input.className = 'nc-item'; input.value = val; input.style.marginTop = '10px';
-        wrap.appendChild(input);
-    };
-
-    window.resetForm = (type) => {
-        document.getElementById(`btn-save-${type}`).innerText = type === 'radar' ? "Sincronizar Radar" : "Salvar";
-        document.getElementById(`btn-cancel-${type}`).style.display = 'none';
-        document.getElementById(`edit-id-${type}`).value = '';
-        if(type === 'peca') { document.getElementById('peca-hist').value = ''; document.getElementById('peca-resp').value = ''; }
-        if(type === 'tese') { document.getElementById('t-tit').value = ''; document.getElementById('t-fato').value = ''; }
-        if(type === 'radar') { 
-            document.getElementById('dica-ouro').value = ''; 
-            document.getElementById('wrapper-nc').innerHTML = '<div class="input-group"><label>Não Confunda</label><input type="text" class="nc-item"></div>';
-        }
-    };
-
-    window.prepararEdicao = (type, id, data) => {
-        document.getElementById(`edit-id-${type}`).value = id;
-        document.getElementById(`btn-save-${type}`).innerText = "Atualizar Dados";
-        document.getElementById(`btn-cancel-${type}`).style.display = 'block';
-        if(type === 'peca') { document.getElementById('peca-hist').value = data.historia; document.getElementById('peca-resp').value = data.resposta; }
-        if(type === 'tese') { document.getElementById('t-tit').value = data.titulo; document.getElementById('t-fato').value = data.fato; }
-        if(type === 'radar') {
-            document.getElementById('dica-ouro').value = data.dicaOuro;
-            const wrap = document.getElementById('wrapper-nc'); wrap.innerHTML = '<label>Não Confunda</label>';
-            (data.naoConfunda || []).forEach(v => addNC(v));
-        }
-    };
-
-    window.salvar = (type) => {
-        const id = document.getElementById(`edit-id-${type}`).value;
-        let data = { timestamp: serverTimestamp() };
-        if(type === 'peca') data = { ...data, historia: document.getElementById('peca-hist').value, resposta: document.getElementById('peca-resp').value };
-        if(type === 'tese') data = { ...data, titulo: document.getElementById('t-tit').value, fato: document.getElementById('t-fato').value };
-        if(type === 'radar') data = { ...data, dicaOuro: document.getElementById('dica-ouro').value, naoConfunda: Array.from(document.querySelectorAll('.nc-item')).map(i => i.value).filter(v => v), postIt: true };
-        if(id) set(ref(db, `${paths[type]}/${id}`), data); else push(ref(db, paths[type]), data);
-        resetForm(type);
-    };
-
-    window.excluir = (p, id) => { if(confirm("Remover?")) remove(ref(db, `${paths[p]}/${id}`)); };
-
-    onValue(ref(db), (snap) => {
-        const val = snap.val() || {};
-        const render = (type, containerId, titleKey) => {
-            const container = document.getElementById(containerId); container.innerHTML = "";
-            const items = val[paths[type]] || {};
-            Object.keys(items).reverse().forEach(id => {
-                const item = items[id];
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-actions">
-                        <button class="btn-icon btn-edit"><i class="fas fa-pen"></i></button>
-                        <button class="btn-icon btn-trash" onclick="excluir('${type}','${id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                    ${type === 'peca' ? 
-                        `<p style="font-weight:600;">${item.historia}</p>
-                         <button class="gabarito-btn" onclick="toggleGabarito(this)">VER RESPOSTA TÉCNICA</button>
-                         <div class="gabarito-content">${item.resposta}</div>` : 
-                        `<strong>${item[titleKey] || ''}</strong><p>${item.fato || ''}</p>`}
-                    ${(item.naoConfunda || []).map(n => `<p style="color:var(--danger); font-size:0.9rem;">❌ ${n}</p>`).join('')}
-                `;
-                card.querySelector('.btn-edit').onclick = () => prepararEdicao(type, id, item);
-                container.appendChild(card);
-            });
-        };
-        render('peca', 'feed-pecas', 'resposta');
-        render('radar', 'feed-radar', 'dicaOuro');
-        render('tese', 'feed-teses', 'titulo');
-    });
-</script>
-</body>
-</html>
+    </div>
+</section>
