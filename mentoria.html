@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MENTORIA ELITE | BACKUP & CONSULTA</title>
+    <title>MENTORIA ELITE | PATRIMÔNIO V13</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,169 +16,191 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* BLOQUEIO TELA AZUL */
-        html, body { background: var(--bg) !important; min-height: 100%; width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
-        body { font-family: 'Inter', sans-serif; color: var(--text); padding-bottom: 50px; display: flex; flex-direction: column; }
+        html, body { background: var(--bg) !important; min-height: 100%; width: 100%; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; color: var(--text); padding-bottom: 50px; }
         
         header { 
             background: #000; padding: 15px; display: flex; justify-content: space-between; 
             align-items: center; border-bottom: 4px solid var(--gold); position: sticky; top: 0; z-index: 1000;
         }
         
-        .header-actions { display: flex; gap: 10px; }
-        .btn-header { text-decoration: none; color: var(--gold); font-weight: 900; border: 2px solid var(--gold); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; background: transparent; display: flex; align-items: center; gap: 5px; }
-        .btn-backup { background: var(--success); color: white; border: none; }
+        .btn-header { text-decoration: none; color: var(--gold); font-weight: 900; border: 2px solid var(--gold); padding: 8px 15px; border-radius: 8px; cursor: pointer; background: transparent; font-size: 0.8rem; }
 
-        /* BUSCA */
-        .search-area { padding: 15px; background: var(--paper); border-bottom: 2px solid var(--border); }
-        #searchBar { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-weight: 700; font-family: inherit; }
+        .container { padding: 15px; max-width: 1600px; margin: 0 auto; }
 
-        .container { padding: 10px; max-width: 1400px; margin: 0 auto; width: 100%; }
-
-        /* PAINÉIS DE CONSULTA */
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
-        .panel { background: var(--paper); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; height: 75vh; display: flex; flex-direction: column; }
-        .panel-header { padding: 12px; background: #000; color: var(--gold); font-weight: 800; text-align: center; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-        
-        .feed { flex: 1; overflow-y: auto; padding: 12px; background: var(--bg); }
-        
-        .card { 
-            background: var(--paper); border: 2px solid var(--border); border-radius: 8px; 
-            padding: 15px; margin-bottom: 12px; position: relative; animation: fadeIn 0.3s ease;
+        /* CARROSSEL DE SNAPSHOTS (HISTÓRICO ATIVO) */
+        .snap-container { margin-bottom: 30px; }
+        .snap-carousel { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .snap-card { 
+            min-width: 320px; background: var(--paper); border: 2px solid var(--gold); 
+            border-radius: 12px; padding: 15px; scroll-snap-align: start; position: relative;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .tag { font-size: 0.6rem; font-weight: 900; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; display: inline-block; border: 1px solid rgba(0,0,0,0.1); }
-        .tag-snap { background: var(--gold); color: #000; }
-        .tag-pre { background: var(--success); color: #fff; }
-        .tag-peca { background: var(--purple); color: #fff; }
 
-        .title-key { font-size: 0.95rem; font-weight: 800; display: block; margin-bottom: 5px; color: var(--primary); }
-        body.dark-mode .title-key { color: var(--gold); }
+        /* PAINÉIS DE ESTUDO (PRELIMINARES, PEÇA, RADAR, TESES) */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .panel { background: var(--paper); border: 2px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; height: fit-content; max-height: 800px; }
+        .panel-header { padding: 10px; background: #000; color: var(--gold); font-weight: 800; text-align: center; text-transform: uppercase; font-size: 0.7rem; }
         
-        .content-body { font-size: 0.9rem; white-space: pre-wrap; font-family: 'Times New Roman', serif; line-height: 1.4; }
-        
-        .btn-reveal { background: #000; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 0.7rem; }
-        .hidden-ans { display: none; margin-top: 10px; padding: 12px; background: #dcfce7; border: 2px solid var(--success); border-radius: 6px; color: #000; font-size: 0.9rem; }
+        .panel-form { padding: 10px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.02); }
+        input, textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 5px; font-family: inherit; font-size: 0.8rem; }
+        .btn-save { width: 100%; padding: 10px; border-radius: 6px; border: none; font-weight: 800; color: #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
 
-        /* MOBILE ADJUSTS */
-        @media (max-width: 600px) {
-            .panel { height: 60vh; }
-            .header-actions span { display: none; } /* Esconde texto dos botões no mobile */
-        }
+        .feed { flex: 1; overflow-y: auto; padding: 10px; }
+        .card { background: var(--paper); border: 2px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; position: relative; }
+        
+        .tools { position: absolute; top: 8px; right: 8px; display: flex; gap: 8px; }
+        .tools i { cursor: pointer; font-size: 0.8rem; opacity: 0.4; transition: 0.2s; }
+        .tools i:hover { opacity: 1; color: var(--primary); }
+        
+        .btn-reveal { background: #000; color: #fff; border: none; padding: 8px; border-radius: 4px; width: 100%; cursor: pointer; font-weight: 800; margin-top: 5px; font-size: 0.7rem; }
+        .hidden-content { display: none; margin-top: 8px; padding: 8px; background: #dcfce7; border: 1px solid var(--success); border-radius: 4px; color: #000; font-weight: 700; font-size: 0.85rem; }
+
+        ::-webkit-scrollbar { height: 8px; width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="btn-header" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> <span>VOLTAR</span></button>
-    <div style="color:#fff; font-weight: 900; font-size: 0.8rem;">SISTEMA DE CONSULTA V13</div>
-    <div class="header-actions">
-        <button class="btn-header btn-backup" onclick="baixarBackup()"><i class="fas fa-save"></i> <span>BACKUP</span></button>
-    </div>
+    <button class="btn-header" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> VOLTAR</button>
+    <div style="color:#fff; font-weight: 900; letter-spacing: 1px;">MENTORIA ELITE 2026</div>
+    <button class="btn-header" style="background:var(--success); color:white; border:none;" onclick="baixarBackup()"><i class="fas fa-save"></i> BACKUP</button>
 </header>
 
-<div class="search-area">
-    <input type="text" id="searchBar" placeholder="🔍 BUSCAR NO FIREBASE... (Ex: Inépcia, RT, 39, Justa Causa)" onkeyup="filtrar()">
-</div>
+<div class="container">
+    <section class="snap-container">
+        <h3 style="margin-bottom:10px; font-size:0.9rem;"><i class="fas fa-rocket"></i> ÚLTIMOS SNAPSHOTS</h3>
+        <div class="snap-carousel" id="feed-snaps"></div>
+    </section>
 
-<main class="container">
     <div class="dashboard">
-        <section class="panel">
-            <div class="panel-header"><i class="fas fa-history"></i> Meus Snapshots (Histórico)</div>
-            <div class="feed" id="feed-snaps"></div>
+        <section class="panel" style="border-top: 5px solid var(--success);">
+            <div class="panel-header">Preliminares (V13_PRE)</div>
+            <div class="panel-form">
+                <input type="hidden" id="id-pre">
+                <input type="text" id="pre-t" placeholder="Título">
+                <textarea id="pre-c" placeholder="Conteúdo"></textarea>
+                <button class="btn-save" style="background:var(--success)" onclick="salvar('pre')">Salvar</button>
+            </div>
+            <div class="feed" id="feed-pre"></div>
         </section>
 
-        <section class="panel">
-            <div class="panel-header"><i class="fas fa-book"></i> Biblioteca Técnica (V13)</div>
-            <div class="feed" id="feed-v13"></div>
+        <section class="panel" style="border-top: 5px solid var(--purple);">
+            <div class="panel-header">Qual é a Peça? (V13_PECA)</div>
+            <div class="panel-form">
+                <input type="hidden" id="id-peca">
+                <textarea id="peca-t" placeholder="Enunciado"></textarea>
+                <input type="text" id="peca-c" placeholder="Gabarito">
+                <button class="btn-save" style="background:var(--purple)" onclick="salvar('peca')">Lançar</button>
+            </div>
+            <div class="feed" id="feed-peca"></div>
         </section>
 
-        <section class="panel">
-            <div class="panel-header"><i class="fas fa-puzzle-piece"></i> Treino: Qual é a Peça?</div>
-            <div class="feed" id="feed-desafios"></div>
+        <section class="panel" style="border-top: 5px solid var(--danger);">
+            <div class="panel-header">Radar: Não Confunda (V13_NC)</div>
+            <div class="panel-form">
+                <input type="hidden" id="id-nc">
+                <input type="text" id="nc-t" placeholder="Comparação">
+                <textarea id="nc-c" placeholder="Diferença técnica"></textarea>
+                <button class="btn-save" style="background:var(--danger)" onclick="salvar('nc')">Fixar Radar</button>
+            </div>
+            <div class="feed" id="feed-nc"></div>
+        </section>
+
+        <section class="panel" style="border-top: 5px solid var(--primary);">
+            <div class="panel-header">Arquivo de Teses (V13_TESE)</div>
+            <div class="panel-form">
+                <input type="hidden" id="id-tese">
+                <input type="text" id="tese-t" placeholder="Título">
+                <textarea id="tese-c" placeholder="Tese / Súmula"></textarea>
+                <button class="btn-save" style="background:var(--primary)" onclick="salvar('tese')">Arquivar</button>
+            </div>
+            <div class="feed" id="feed-tese"></div>
         </section>
     </div>
-</main>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // --- SINCRONIZAÇÃO E CONSULTA ---
+    const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', snaps: 'estudos_finalizados' };
+
+    // FUNÇÕES DE GESTÃO
+    window.salvar = (type) => {
+        const id = document.getElementById(`id-${type}`).value;
+        const t = document.getElementById(`${type}-t`).value;
+        const c = document.getElementById(`${type}-c`).value;
+        if(!t || !c) return;
+        const data = { t, c, ts: serverTimestamp() };
+        if(id) set(ref(db, `${paths[type]}/${id}`), data);
+        else push(ref(db, paths[type]), data);
+        limpar(type);
+    };
+
+    window.limpar = (type) => {
+        document.getElementById(`id-${type}`).value = '';
+        document.getElementById(`${type}-t`).value = '';
+        document.getElementById(`${type}-c`).value = '';
+    };
+
+    window.editar = (type, id, t, c) => {
+        document.getElementById(`id-${type}`).value = id;
+        document.getElementById(`${type}-t`).value = t;
+        document.getElementById(`${type}-c`).value = c;
+    };
+
+    window.excluir = (p, id) => { if(confirm("Apagar do Firebase?")) remove(ref(db, `${paths[p]}/${id}`)); };
+    window.toggleR = (btn) => { const d = btn.nextElementSibling; d.style.display = d.style.display === "block" ? "none" : "block"; };
+
+    // RENDERIZAÇÃO EM TEMPO REAL
     onValue(ref(db), (snap) => {
         const data = snap.val() || {};
         
-        // 1. Renderizar Peças (Snapshots)
+        // Snapshots (Carrossel)
         const fSnaps = document.getElementById('feed-snaps'); fSnaps.innerHTML = "";
-        if(data.estudos_finalizados) {
-            Object.entries(data.estudos_finalizados).reverse().forEach(([id, info]) => {
-                fSnaps.innerHTML += `
-                    <div class="card item-busca">
-                        <span class="tag tag-snap">SNAPSHOT</span>
-                        <strong class="title-key">EXAME ${info.exame}: ${info.peca}</strong>
-                        <div class="content-body">${info.conteudo}</div>
-                        <small style="color:gray; font-size:0.6rem">${info.data}</small>
-                    </div>`;
+        if(data[paths.snaps]) {
+            Object.entries(data[paths.snaps]).reverse().forEach(([id, info]) => {
+                fSnaps.innerHTML += `<div class="snap-card">
+                    <div class="tools"><i class="fas fa-trash" onclick="excluir('snaps','${id}')"></i></div>
+                    <span style="font-size:0.6rem; font-weight:900; background:#000; color:#fbbf24; padding:2px 5px; border-radius:4px;">EXAME ${info.exame}</span>
+                    <strong style="display:block; margin:5px 0; font-size:0.85rem;">${info.peca}</strong>
+                    <div style="font-size:0.8rem; height:80px; overflow-y:auto; background:rgba(0,0,0,0.03); padding:5px; font-family:'Times New Roman'">${info.conteudo}</div>
+                </div>`;
             });
         }
 
-        // 2. Renderizar Biblioteca (V13_PRE + V13_TESE)
-        const fV13 = document.getElementById('feed-v13'); fV13.innerHTML = "";
-        ['v13_pre', 'v13_tese'].forEach(path => {
-            if(data[path]) {
-                Object.values(data[path]).forEach(info => {
-                    fV13.innerHTML += `
-                        <div class="card item-busca">
-                            <span class="tag ${path==='v13_pre'?'tag-pre':'tag-snap'}">${path.replace('v13_','').toUpperCase()}</span>
-                            <strong class="title-key">${info.t}</strong>
-                            <div class="content-body">${info.c}</div>
-                        </div>`;
-                });
-            }
-        });
-
-        // 3. Renderizar Desafios (Qual é a Peça)
-        const fPecas = document.getElementById('feed-desafios'); fPecas.innerHTML = "";
-        if(data.v13_peca) {
-            Object.values(data.v13_peca).forEach(info => {
-                fPecas.innerHTML += `
-                    <div class="card item-busca">
-                        <span class="tag tag-peca">DESAFIO</span>
-                        <p class="title-key" style="font-size:0.85rem">${info.t}</p>
-                        <button class="btn-reveal" onclick="reveal(this)">Ver Gabarito</button>
-                        <div class="hidden-ans">${info.c}</div>
-                    </div>`;
+        // Painéis (V13)
+        const renderPanel = (type, target) => {
+            const f = document.getElementById(target); f.innerHTML = "";
+            const obj = data[paths[type]] || {};
+            Object.entries(obj).sort((a,b) => a[1].t.localeCompare(b[1].t)).forEach(([id, item]) => {
+                f.innerHTML += `<div class="card">
+                    <div class="tools">
+                        <i class="fas fa-pen" onclick="editar('${type}','${id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\")}')"></i>
+                        <i class="fas fa-trash" onclick="excluir('${type}','${id}')"></i>
+                    </div>
+                    ${type==='peca' ? `<p style="font-size:0.8rem;">${item.t}</p><button class="btn-reveal" onclick="toggleR(this)">GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p style="font-size:0.75rem; margin-top:4px;">${item.c}</p>`}
+                </div>`;
             });
-        }
+        };
+        renderPanel('pre', 'feed-pre'); renderPanel('peca', 'feed-peca'); renderPanel('nc', 'feed-nc'); renderPanel('tese', 'feed-tese');
     });
 
-    // --- FUNÇÕES DE APOIO ---
-    window.reveal = (btn) => { btn.nextElementSibling.style.display = 'block'; btn.style.display = 'none'; };
-
-    window.filtrar = () => {
-        const query = document.getElementById('searchBar').value.toLowerCase();
-        const cards = document.getElementsByClassName('item-busca');
-        for(let card of cards) {
-            card.style.display = card.innerText.toLowerCase().includes(query) ? "block" : "none";
-        }
-    };
-
     window.baixarBackup = () => {
-        onValue(ref(db), (snap) => {
-            const blob = new Blob([JSON.stringify(snap.val(), null, 2)], {type: 'application/json'});
+        onValue(ref(db), (s) => {
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `ELITE_DATA_${new Date().toISOString().split('T')[0]}.json`;
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(s.val(),null,2)],{type:'application/json'}));
+            a.download = `BACKUP_V13_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
-        }, { onlyOnce: true });
+        }, {onlyOnce:true});
     };
 
-    if (localStorage.getItem('theme_elite') === 'dark') document.body.classList.add('dark-mode');
+    if(localStorage.getItem('theme_elite') === 'dark') document.body.classList.add('dark-mode');
 </script>
 </body>
 </html>
