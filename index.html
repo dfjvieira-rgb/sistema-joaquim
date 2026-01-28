@@ -41,8 +41,8 @@
         .folha-fgv { background: white; width: 100%; min-height: 1500px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; }
         
         .post-it-area { 
-            background: #fff9c4; border-left: 5px solid #fbc02d; padding: 10px; margin-bottom: 20px; 
-            font-family: 'Inter'; font-size: 0.8rem; color: #5d4037; border-radius: 4px;
+            background: #fff9c4; border-left: 5px solid #fbc02d; padding: 15px; margin-bottom: 20px; 
+            font-family: 'Inter'; font-size: 0.85rem; color: #5d4037; border-radius: 4px; line-height: 1.4;
         }
 
         .peca-editor { 
@@ -75,12 +75,12 @@
     <div style="color:white; font-weight:900; font-size: 1.1rem;">J<span style="color:var(--gold)">M</span></div>
     
     <div class="nav-btns">
-        <button class="btn-symbol" style="background:var(--fgv-green);" onclick="salvarManual()" title="Salvar"><i class="fas fa-save"></i></button>
-        <button class="btn-symbol" style="background:var(--accent);" onclick="toggleModalPecas()" title="Peça Mestra"><i class="fas fa-layer-group"></i></button>
-        <button class="btn-symbol btn-alvo" onclick="scrollParaGabarito()" title="Alvo"><i class="fas fa-crosshairs"></i></button>
-        <button class="btn-symbol" style="background:var(--purple);" onclick="abrirMentoria()" title="Mentoria"><i class="fas fa-graduation-cap"></i></button>
-        <button class="btn-symbol" onclick="injetarJustica()" title="Teses de Justiça"><i class="fas fa-gavel"></i></button>
-        <button class="btn-symbol" style="background:var(--red);" onclick="limparFolha()" title="Limpar"><i class="fas fa-trash-alt"></i></button>
+        <button class="btn-symbol" style="background:var(--fgv-green);" onclick="window.salvarManual()" title="Salvar"><i class="fas fa-save"></i></button>
+        <button class="btn-symbol" style="background:var(--accent);" onclick="window.toggleModalPecas()" title="Peça Mestra"><i class="fas fa-layer-group"></i></button>
+        <button class="btn-symbol btn-alvo" onclick="window.scrollParaGabarito()" title="Alvo"><i class="fas fa-crosshairs"></i></button>
+        <button class="btn-symbol" style="background:var(--purple);" onclick="window.abrirMentoria()" title="Mentoria"><i class="fas fa-graduation-cap"></i></button>
+        <button class="btn-symbol" onclick="window.injetarJustica()" title="Teses de Justiça"><i class="fas fa-gavel"></i></button>
+        <button class="btn-symbol" style="background:var(--red);" onclick="window.limparFolha()" title="Limpar"><i class="fas fa-trash-alt"></i></button>
     </div>
 
     <div id="sync-status" style="color:#4ade80; font-size:0.6rem; font-weight:bold;">OK</div>
@@ -92,19 +92,19 @@
     <section class="folha-mestra-container">
         <div class="folha-fgv">
             <div id="post-it-container" class="post-it-area">
-                <strong>📝 DICAS & POST-ITS:</strong><br>
-                <span id="post-it-content">Carregando notas...</span>
+                <strong>📝 ESTRUTURA DE PRELIMINARES (1-12):</strong><br>
+                <span id="post-it-content">1. Incompetência | 2. Ilegitimidade | 3. Inépcia | 4. Prescrição | 5. Má-fé | 6. Extra Petita | 7. Preclusão | 8. Falta de Interesse | 9. Imp. Jurídica | 10. Nulidade | 11. Valor Causa | 12. Representação</span>
             </div>
-            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="autoSave()">Toque para escrever...</div>
+            <div id="editor-folha" class="peca-editor" contenteditable="true" oninput="window.autoSave()">Toque para escrever...</div>
             <div id="gabarito-alvo" class="gabarito-folha"></div>
         </div>
     </section>
 
     <section class="pdf-container">
         <div class="pdf-tabs">
-            <button class="tab-btn active" id="btn-tab-prova" onclick="mudarPdf('prova')">PROVA</button>
-            <button class="tab-btn" id="btn-tab-gab" onclick="mudarPdf('gab')">GAB</button>
-            <button class="tab-btn" id="btn-tab-vade" onclick="mudarPdf('vade')">VADE</button>
+            <button class="tab-btn active" id="btn-tab-prova" onclick="window.mudarPdf('prova')">PROVA</button>
+            <button class="tab-btn" id="btn-tab-gab" onclick="window.mudarPdf('gab')">GAB</button>
+            <button class="tab-btn" id="btn-tab-vade" onclick="window.mudarPdf('vade')">VADE</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
     </section>
@@ -113,7 +113,7 @@
 <div id="modal-pecas" class="modal-pecas">
     <h3 style="margin-bottom:15px; text-align:center;">PEÇAS MESTRAS</h3>
     <div id="grid-pecas-js" style="max-height: 300px; overflow-y: auto;"></div>
-    <button onclick="toggleModalPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px;">FECHAR</button>
+    <button onclick="window.toggleModalPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; cursor:pointer;">FECHAR</button>
 </div>
 
 <script type="module">
@@ -121,7 +121,9 @@
     import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const pecasMestras = {
-        "RECLAMAÇÃO TRABALHISTA": `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\n(Pular 2 linhas)\nNOME DO RECLAMANTE, nacionalidade, estado civil, profissão, nome da mãe, CPF, RG, CTPS, PIS/NIT, endereço completo com CEP, por intermédio de seu advogado (procuração anexa), com endereço profissional em ..., vem, perante Vossa Excelência, com fulcro no Art. 840, § 1º, da CLT e Art. 319 do CPC, propor a presente\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de NOME DA RECLAMADA, pessoa jurídica de direito privado, CNPJ, endereço completo com CEP, pelas razões de fato e de direito a seguir expostas:\n\nI - PRELIMINARES E PREJUDICIAIS\n\nII - MÉRITO\n\nIII - DOS PEDIDOS E REQUERIMENTOS\n\ne) A condenação da Reclamada ao pagamento de honorários advocatícios sucumbenciais no importe de 15%, nos termos do Art. 791-A da CLT.\n\nProvas que pretende produzir.\nDá-se à causa o valor de R$ ...\n\nLocal e Data.\nAdvogado...\nOAB nº ...`
+        "RECLAMAÇÃO TRABALHISTA": `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\n(Pular 2 linhas)\nNOME DO RECLAMANTE, nacionalidade, estado civil, profissão, nome da mãe, CPF, RG, CTPS, PIS/NIT, endereço completo com CEP, por intermédio de seu advogado (procuração anexa), com endereço profissional em ..., vem, perante Vossa Excelência, com fulcro no Art. 840, § 1º, da CLT e Art. 319 do CPC, propor a presente\n\nRECLAMAÇÃO TRABALHISTA\n\nem face de NOME DA RECLAMADA, ..., pelos fatos e fundamentos a seguir:\n\nI - PRELIMINARES\nII - MÉRITO\nIII - PEDIDOS`,
+        "CONTESTAÇÃO": `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\nNOME DA RECLAMADA, já qualificada, vem apresentar\n\nCONTESTAÇÃO\n\nI - PRELIMINARES\nII - PREJUDICIAIS (Prescrição)\nIII - MÉRITO`,
+        "RECURSO ORDINÁRIO": `EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DA ... VARA DO TRABALHO DE ...\n\nProcesso nº ...\nRECORRENTE, qualificado, vem interpor RECURSO ORDINÁRIO para o Egrégio TRT...`
     };
 
     window.BANCO_ESPELHOS = {}; 
@@ -129,6 +131,7 @@
     const editor = document.getElementById('editor-folha');
     const postIt = document.getElementById('post-it-content');
 
+    // Inicialização
     window.onload = () => {
         const menu = document.getElementById('sidebar-exames');
         for (let i = 44; i >= 35; i--) {
@@ -139,19 +142,16 @@
                 idAtivo = i.toString();
                 document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                carregarDoFirebase();
-                mudarPdf('prova');
+                window.carregarDoFirebase();
+                window.mudarPdf('prova');
             };
             menu.appendChild(btn);
         }
-        popularEstruturas();
-        carregarDoFirebase();
+        window.popularEstruturas();
+        window.carregarDoFirebase();
     };
 
-    window.abrirMentoria = () => {
-        window.open('mentoria.html', '_blank');
-    };
-
+    // Funções Globais anexadas ao Window para funcionar com onclick HTML
     window.autoSave = () => {
         set(ref(db, 'estudos/' + idAtivo), { 
             conteudo: editor.innerText, 
@@ -162,9 +162,9 @@
         setTimeout(() => document.getElementById('sync-status').innerText = 'OK', 500);
     };
 
-    window.salvarManual = () => { window.autoSave(); alert("Salvo!"); };
+    window.salvarManual = () => { window.autoSave(); alert("Peça salva na nuvem!"); };
 
-    window.limparFolha = () => { if(confirm("Limpar?")) { editor.innerText = ""; window.autoSave(); } };
+    window.limparFolha = () => { if(confirm("Deseja limpar toda a folha de resposta?")) { editor.innerText = ""; window.autoSave(); } };
 
     window.toggleModalPecas = () => {
         const m = document.getElementById('modal-pecas');
@@ -176,9 +176,9 @@
         grid.innerHTML = "";
         Object.keys(pecasMestras).forEach(nome => {
             const btn = document.createElement('button');
-            btn.style = "width:100%; padding:12px; margin-bottom:5px; text-align:left; border-radius:6px; border:1px solid #ddd; font-weight:bold;";
+            btn.style = "width:100%; padding:12px; margin-bottom:5px; text-align:left; border-radius:6px; border:1px solid #ddd; font-weight:bold; cursor:pointer;";
             btn.innerText = nome;
-            btn.onclick = () => { editor.innerText = pecasMestras[nome]; window.autoSave(); toggleModalPecas(); };
+            btn.onclick = () => { editor.innerText = pecasMestras[nome]; window.autoSave(); window.toggleModalPecas(); };
             grid.appendChild(btn);
         });
     };
@@ -189,13 +189,12 @@
         if(tipo === 'prova') frame.src = `ro${idAtivo}.pdf`;
         if(tipo === 'gab') frame.src = `ro${idAtivo}-gabarito.pdf`;
         if(tipo === 'vade') frame.src = `vade.pdf`;
-        document.getElementById(`btn-tab-${tipo === 'prova' ? 'prova' : tipo === 'gab' ? 'gab' : 'vade'}`).classList.add('active');
+        document.getElementById(`btn-tab-${tipo}`).classList.add('active');
     };
 
     window.injetarJustica = () => {
         const espelho = window.BANCO_ESPELHOS[idAtivo];
-        if(!espelho) return;
-        editor.innerText += `\n\n[CHECKLIST E${idAtivo}]\n` + espelho.replace(/<[^>]*>/g, '');
+        editor.innerText += `\n\n[ESTRUTURA TÉCNICA]\nFATO: ...\nFUNDAMENTO: (Art. ...)\nPEDIDO: Diante do exposto, requer...`;
         window.autoSave();
     };
 
@@ -203,22 +202,24 @@
         document.getElementById('gabarito-alvo').scrollIntoView({ behavior: 'smooth' });
     };
 
-    function carregarDoFirebase() {
+    window.carregarDoFirebase = () => {
         onValue(ref(db, 'estudos/' + idAtivo), (snap) => {
             const data = snap.val();
             if (data) {
                 if (data.conteudo && !document.activeElement.isSameNode(editor)) editor.innerText = data.conteudo;
-                if (data.postit) postIt.innerText = data.postit;
+                // Não sobrescrevemos o postit para manter a estrutura 1-12 fixa
             }
-            atualizarGabaritoUI();
+            window.atualizarGabaritoUI();
         }, { onlyOnce: true });
-    }
+    };
 
-    function atualizarGabaritoUI() {
+    window.atualizarGabaritoUI = () => {
         const container = document.getElementById('gabarito-alvo');
         const espelho = window.BANCO_ESPELHOS[idAtivo];
-        container.innerHTML = espelho ? `<h4>GABARITO E${idAtivo}</h4>${espelho}` : "Sem gabarito disponível.";
-    }
+        container.innerHTML = espelho ? `<h4>GABARITO E${idAtivo}</h4>${espelho}` : "Gabarito oficial carregado abaixo do PDF.";
+    };
+
+    window.abrirMentoria = () => { window.open('mentoria.html', '_blank'); };
 </script>
 </body>
 </html>
