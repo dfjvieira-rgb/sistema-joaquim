@@ -58,7 +58,7 @@
             font-size: 0.55rem; font-weight: 900; text-align: center; 
             min-height: 45px; display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace;
-            line-height: 1.1;
+            line-height: 1.1; margin-bottom: 5px;
         }
 
         .exame-btn {
@@ -76,7 +76,7 @@
         
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
-            padding: 30px 20px 180px 20px; position: relative;
+            padding: 30px 20px 200px 20px; position: relative;
             cursor: text; transition: background 0.3s ease;
         }
 
@@ -88,16 +88,21 @@
             user-select: text; -webkit-user-select: text;
         }
 
+        /* BARRA LATERAL DE FERRAMENTAS */
         .paper-tools {
-            position: fixed; left: 70px; bottom: 20px;
-            display: flex; flex-direction: column; gap: 10px; z-index: 1500;
+            position: fixed; left: 80px; bottom: 30px;
+            display: flex; flex-direction: column; gap: 12px; z-index: 1500;
         }
 
         .btn-side {
-            width: 45px; height: 45px; border-radius: 10px; border: none;
+            width: 50px; height: 50px; border-radius: 12px; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.1s;
         }
+        .btn-side:active { transform: scale(0.9); }
+        
+        .side-save { background: #22c55e; border: 2px solid #ffffff; } /* VERDE SALVAR */
         .side-pecas { background: #1e293b; border: 1px solid var(--gold); color: var(--gold); }
         .side-justica { background: #3b82f6; }
         .side-clear { background: #ef4444; }
@@ -106,12 +111,11 @@
             .sidebar { width: 65px; }
             .paper-tools {
                 left: 0; bottom: 0; width: 100%; flex-direction: row;
-                background: var(--primary); padding: 15px 10px 30px 10px; border-top: 2px solid var(--gold);
+                background: var(--primary); padding: 15px 10px 35px 10px; border-top: 2px solid var(--gold);
                 justify-content: space-around;
             }
-            .paper { padding: 20px 15px 150px 15px; }
+            .paper { padding: 20px 15px 160px 15px; }
             header { padding: 0 5px; }
-            .nav-group { gap: 3px; }
         }
 
         .pdf-panel { 
@@ -130,7 +134,7 @@
 <header>
     <div class="nav-group">
         <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
-        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()" style="background: var(--gold); color: var(--primary);"><i class="fas fa-moon"></i></button>
+        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
     </div>
 
     <div class="nav-group">
@@ -141,7 +145,6 @@
 
     <div class="nav-group">
         <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-        <button class="btn-tool" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
     </div>
 </header>
 
@@ -155,10 +158,12 @@
         <div class="paper">
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
+        
         <div class="paper-tools">
-            <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
-            <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
+            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar Peça"><i class="fas fa-save"></i></button>
+            <button class="btn-side side-pecas" onclick="abrirPecas()" title="Estruturas"><i class="fas fa-scroll"></i></button>
+            <button class="btn-side side-justica" onclick="injetarJustica()" title="Teses"><i class="fas fa-gavel"></i></button>
+            <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></button>
         </div>
     </section>
 
@@ -249,7 +254,6 @@
     function updatePdfSrc() {
         const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
         document.getElementById('pdf-frame').src = docs[currentMode];
-        document.getElementById('pdf-title').innerText = currentMode === 'v' ? 'VADE MECUM' : 'DOC EXAME ' + activeEx;
     }
 
     window.closePdf = () => {
@@ -259,8 +263,12 @@
     };
 
     window.salvarManual = () => {
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("✅ SINCRONIZADO!");
+        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
+        .then(() => {
+            const btn = document.querySelector('.side-save');
+            btn.style.background = "#fbbf24"; // Cor de ouro momentânea
+            setTimeout(() => btn.style.background = "#22c55e", 500);
+        });
     };
 
     window.autoSave = () => {
