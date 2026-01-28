@@ -6,32 +6,30 @@
     <title>JOAQUIM ELITE 2026 | PROVA COMPLETA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* MODO CLARO (PADRÃO) */
         :root { 
-            --primary: #0f172a; --gold: #fbbf24; 
-            --bg-page: #ffffff; /* Fundo do HTML igual ao papel para matar a tela azul */
+            --primary: #1e293b; --gold: #fbbf24; 
+            --bg-page: #ffffff; /* MATADOR DE TELA AZUL: Fundo igual à folha */
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #e2e8f0;
             --header-h: 65px;
         }
 
-        /* MODO ESCURO */
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; 
-            --bg-page: #1e293b; /* Fundo do HTML igual ao papel escuro */
+            --bg-page: #1e293b; 
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
         
-        /* TRAVA ANTI-TELA-AZUL */
+        /* TRAVA TOTAL ANTI-VAZAMENTO */
         html, body { 
-            background: var(--bg-page); 
+            background: var(--bg-page) !important; 
             height: 100%; width: 100%; 
-            overflow: hidden; /* Impede a rolagem do corpo principal */
-            overscroll-behavior: none; /* Desativa o efeito de mola no mobile */
+            overflow: hidden; 
+            overscroll-behavior: none !important;
         }
         
-        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; transition: background 0.2s ease; }
 
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 10px; 
@@ -62,7 +60,7 @@
 
         .btn-tool { 
             height: 38px; width: 38px; border-radius: 6px; border: none;
-            color: white; cursor: pointer; background: #334155;
+            color: white; cursor: pointer; background: #475569;
             display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
         }
 
@@ -90,7 +88,6 @@
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* AREA DO EDITOR - REVESTIDA PARA NÃO MOSTRAR O FUNDO */
         .editor-container { 
             flex: 1; overflow-y: auto; 
             background: var(--bg-page); 
@@ -100,17 +97,17 @@
         
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 850px; 
-            margin: 0 auto; min-height: 100%;
-            padding: 40px 30px 300px 30px; 
+            margin: 0 auto; min-height: 101%;
+            padding: 40px 30px 450px 30px; 
             position: relative;
-            transition: background 0.3s ease;
+            transition: background 0.2s ease;
         }
 
         .editor-area { 
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(transparent, transparent 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 90vh; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            min-height: 85vh; width: 100%; word-wrap: break-word; white-space: pre-wrap;
         }
 
         .paper-tools {
@@ -137,7 +134,7 @@
                 background: var(--primary); padding: 10px 10px 35px 10px; border-top: 2px solid var(--gold);
                 justify-content: space-around;
             }
-            .paper { padding: 25px 20px 250px 20px; }
+            .paper { padding: 25px 20px 400px 20px; }
         }
 
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 2000; display: flex; flex-direction: column; overflow: hidden; }
@@ -234,14 +231,11 @@
         const isDark = body.classList.contains('dark-mode');
         btn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         localStorage.setItem('theme_elite', isDark ? 'dark' : 'light');
-        // Ajusta o fundo do HTML para não vazar tela azul no tema escuro
-        document.documentElement.style.background = isDark ? '#1e293b' : '#ffffff';
     };
 
     if (localStorage.getItem('theme_elite') === 'dark') {
         document.body.classList.add('dark-mode');
         document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
-        document.documentElement.style.background = '#1e293b';
     }
 
     window.switchTab = async (tab) => {
@@ -326,7 +320,6 @@
         panel.classList.add('open');
     };
     window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
-    
     window.abrirPecas = () => {
         const grid = document.getElementById('peca-grid'); grid.innerHTML = '';
         Object.keys(window.pecas_data).forEach(k => {
@@ -339,15 +332,13 @@
         document.getElementById('pec-modal').style.display = 'flex';
     };
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-
     window.injetarJustica = () => {
         const esp = window.BANCO_ESPELHOS[activeEx];
         if(esp) {
             const limpo = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            editor.innerText += "\n\n⚖️ CHECKLIST DE TESES:\n[ ] " + limpo;
+            editor.innerText += "\n\n⚖️ CHECKLIST:\n[ ] " + limpo;
         }
     };
-    
     window.resetarFolha = () => { if(confirm("Limpar aba?")) editor.innerText = activeTab === 'peca' ? "" : "A) \n\nB) "; };
 
     carregarExames();
