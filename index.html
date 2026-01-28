@@ -12,7 +12,6 @@
             --header-h: 60px;
         }
 
-        /* VARIAVEIS MODO ESCURO */
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
@@ -23,7 +22,6 @@
         body { 
             font-family: 'Inter', sans-serif; background: var(--primary); 
             height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
-            transition: background 0.3s ease;
         }
 
         header { 
@@ -56,9 +54,10 @@
         
         #radar-peca {
             background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px; 
-            font-size: 0.5rem; font-weight: 900; text-align: center; 
-            min-height: 40px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.55rem; font-weight: 900; text-align: center; 
+            min-height: 45px; display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace;
+            line-height: 1.1;
         }
 
         .exame-btn {
@@ -76,7 +75,6 @@
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
             padding: 30px 20px 150px 20px; position: relative;
-            transition: background 0.3s ease;
         }
 
         .editor-area { 
@@ -101,7 +99,7 @@
         .side-clear { background: #ef4444; }
 
         @media (max-width: 600px) {
-            .sidebar { width: 60px; }
+            .sidebar { width: 65px; }
             .paper-tools {
                 left: 0; bottom: 0; width: 100%; flex-direction: row;
                 background: var(--primary); padding: 10px; border-top: 2px solid var(--gold);
@@ -138,7 +136,7 @@
 
 <main>
     <aside class="sidebar" id="sidebar">
-        <div id="radar-peca">RAIO-X</div>
+        <div id="radar-peca">ESCANEANDO</div>
         <div id="exam-nav"></div>
     </aside>
 
@@ -155,7 +153,7 @@
 
     <div class="pdf-panel" id="pdf-panel">
         <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
-            <span id="pdf-title">SUPORTE</span>
+            <span id="pdf-title">SUPORTE ELITE</span>
             <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
@@ -176,28 +174,21 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // Globais para compatibilidade
     window.db = db; window.ref = ref; window.set = set; window.onValue = onValue;
     window.BANCO_ESPELHOS = BANCO_ESPELHOS; window.pecas_data = pecas;
 
-    let activeEx = "40";
+    let activeEx = "41";
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
-    // MODO ESCURO
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         const icon = document.querySelector('#theme-toggle i');
-        if(document.body.classList.contains('dark-mode')) {
-            icon.className = 'fas fa-sun';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            icon.className = 'fas fa-moon';
-            localStorage.setItem('theme', 'light');
-        }
+        const isDark = document.body.classList.contains('dark-mode');
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
     };
 
-    // RESTAURAR TEMA
     if(localStorage.getItem('theme') === 'dark') toggleTheme();
 
     const carregarExames = () => {
@@ -223,9 +214,13 @@
         const conteudo = window.BANCO_ESPELHOS[activeEx];
         if (!conteudo) { radar.innerText = "SEM DADOS"; return; }
         const txt = conteudo.toUpperCase();
-        if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT - RECLAMAÇÃO";
+        
+        // Lógica de Identificação Refinada
+        if (activeEx === "41" || txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
+        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT - RECLAMAÇÃO";
         else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
         else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
+        else if (txt.includes("REVISTA")) radar.innerText = "REC. REVISTA";
         else radar.innerText = "PEÇA OAB";
     };
 
