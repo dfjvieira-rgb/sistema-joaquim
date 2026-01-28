@@ -8,17 +8,17 @@
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; 
-            --bg-page: #f1f5f9; /* Blindagem clara */
+            --bg-page: #f1f5f9; 
             --card-bg: #ffffff; --text: #1e293b;
         }
 
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; 
-            --bg-page: #0f172a; /* Blindagem escura */
+            --bg-page: #0f172a; 
             --card-bg: #1e293b; --text: #f8fafc;
         }
 
-        /* TRAVA TOTAL ANTI-AZUL */
+        /* TRAVA TOTAL - SEM TELA AZUL */
         html, body { 
             background-color: var(--bg-page) !important; 
             height: 100%; width: 100%; 
@@ -27,7 +27,7 @@
             overscroll-behavior: none;
         }
 
-        body { font-family: 'Inter', sans-serif; color: var(--text); display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; color: var(--text); display: flex; flex-direction: column; transition: background 0.3s ease; }
 
         header { 
             background: var(--primary); padding: 15px; 
@@ -38,91 +38,92 @@
         .btn-back { 
             background: var(--gold); color: var(--primary); border: none; 
             padding: 10px 15px; border-radius: 8px; font-weight: 800; cursor: pointer; 
+            display: flex; align-items: center; gap: 8px;
         }
 
-        .container { padding: 20px; max-width: 900px; margin: 0 auto; width: 100%; }
+        .container { padding: 20px; max-width: 900px; margin: 0 auto; width: 100%; flex: 1; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 5px solid var(--gold); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .stat-card h3 { font-size: 0.7rem; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
-        .stat-card p { font-size: 1.2rem; font-weight: 800; }
+        .stat-card p { font-size: 1.2rem; font-weight: 800; margin: 0; }
 
         .snapshot-card { 
             background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px;
             border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            position: relative; overflow: hidden;
+            position: relative; animation: slideIn 0.3s ease-out;
         }
 
-        .snapshot-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .snapshot-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--line-color, #e2e8f0); padding-bottom: 10px; }
         .badge { background: var(--primary); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 900; }
         
         .content-preview { 
             background: #f8fafc; color: #334155; padding: 15px; border-radius: 8px; 
-            font-family: 'Times New Roman', serif; white-space: pre-wrap; font-size: 0.95rem;
-            max-height: 200px; overflow-y: auto; border: 1px inset #e2e8f0;
+            font-family: 'Times New Roman', serif; white-space: pre-wrap; font-size: 1rem;
+            max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; line-height: 1.5;
         }
         body.dark-mode .content-preview { background: #0f172a; color: #cbd5e1; border-color: #334155; }
 
-        .btn-delete { 
-            background: #ef4444; color: white; border: none; padding: 8px; 
-            border-radius: 6px; cursor: pointer; float: right; margin-top: 10px;
-        }
+        .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-action { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; font-size: 0.8rem; }
+        .btn-del { background: #ef4444; color: white; }
+        .btn-copy { background: #3b82f6; color: white; }
 
-        .empty-state { text-align: center; padding: 50px; color: #94a3b8; }
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: var(--gold); }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="btn-back" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> VOLTAR</button>
+    <button class="btn-back" onclick="location.href='index.html'"><i class="fas fa-chevron-left"></i> VOLTAR</button>
     <div style="color:white; font-weight: 900; letter-spacing: 1px;">MENTORIA ELITE</div>
-    <div style="width: 40px;"></div> </header>
+    <div style="width: 80px;"></div>
+</header>
 
 <div class="container">
     <div class="stats-grid">
         <div class="stat-card">
-            <h3>Total Peças</h3>
+            <h3>Petições Enviadas</h3>
             <p id="count-pecas">0</p>
         </div>
         <div class="stat-card">
-            <h3>Último Exame</h3>
-            <p id="last-exame">-</p>
+            <h3>Desempenho</h3>
+            <p id="last-exame">ATIVO</p>
         </div>
     </div>
 
-    <h2 style="margin-bottom: 20px;"><i class="fas fa-history"></i> Meus Snapshots</h2>
+    <h2 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-rocket" style="color: var(--gold);"></i> Histórico de Envio
+    </h2>
+
     <div id="snapshot-list">
-        <div class="empty-state">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p>Nenhum snapshot enviado ainda. Termine uma peça e clique no foguete!</p>
         </div>
-    </div>
 </div>
 
 <script type="module">
     import { db } from './firebase-config.js';
     import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const snapshotList = document.getElementById('snapshot-list');
-    const countPecas = document.getElementById('count-pecas');
-    const lastExame = document.getElementById('last-exame');
-
-    // MODO DARK CONSISTENTE
+    // Configuração de Tema
     if (localStorage.getItem('theme_elite') === 'dark') {
         document.body.classList.add('dark-mode');
     }
 
+    const snapshotList = document.getElementById('snapshot-list');
+    const countPecas = document.getElementById('count-pecas');
     const mentoriaRef = ref(db, 'estudos_finalizados/');
 
+    // Carregamento em Tempo Real
     onValue(mentoriaRef, (snapshot) => {
         const data = snapshot.val();
+        snapshotList.innerHTML = '';
+        
         if (data) {
-            snapshotList.innerHTML = '';
-            const items = Object.entries(data).reverse();
-            
+            const items = Object.entries(data).sort((a, b) => b[1].ts - a[1].ts);
             countPecas.innerText = items.length;
-            lastExame.innerText = items[0][1].exame;
 
             items.forEach(([id, info]) => {
                 const card = document.createElement('div');
@@ -130,35 +131,42 @@
                 card.innerHTML = `
                     <div class="snapshot-header">
                         <div>
-                            <span class="badge">EXAME ${info.exame}</span>
-                            <strong style="display:block; margin-top:5px;">${info.peca}</strong>
+                            <span class="badge">OAB EXAME ${info.exame}</span>
+                            <strong style="display:block; margin-top:8px; font-size: 1.1rem;">${info.peca}</strong>
                         </div>
-                        <small style="color:#64748b">${info.data}</small>
+                        <div style="text-align: right">
+                            <small style="color:#64748b; display:block;">${info.data}</small>
+                        </div>
                     </div>
                     <div class="content-preview">${info.conteudo}</div>
-                    <button class="btn-delete" onclick="window.deletarSnapshot('${id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="actions">
+                        <button class="btn-action btn-copy" onclick="copiarTexto(\`${id}\`)">COPIAR</button>
+                        <button class="btn-action btn-del" onclick="window.deletarSnapshot('${id}')">APAGAR</button>
+                    </div>
+                    <div id="raw-${id}" style="display:none;">${info.conteudo}</div>
                 `;
                 snapshotList.appendChild(card);
             });
         } else {
+            countPecas.innerText = '0';
             snapshotList.innerHTML = `
                 <div class="empty-state">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Nenhum snapshot encontrado.</p>
+                    <i class="fas fa-ghost"></i>
+                    <p>Nenhum registro encontrado.<br>Vá para a folha de respostas e use o foguete!</p>
                 </div>
             `;
-            countPecas.innerText = '0';
-            lastExame.innerText = '-';
         }
     });
 
     window.deletarSnapshot = (id) => {
-        if(confirm("Deseja apagar este registro da mentoria?")) {
-            const itemRef = ref(db, `estudos_finalizados/${id}`);
-            remove(itemRef);
+        if(confirm("Deseja remover este snapshot permanentemente?")) {
+            remove(ref(db, `estudos_finalizados/${id}`));
         }
+    };
+
+    window.copiarTexto = (id) => {
+        const txt = document.getElementById(`raw-${id}`).innerText;
+        navigator.clipboard.writeText(txt).then(() => alert("Texto copiado para a área de transferência!"));
     };
 </script>
 </body>
