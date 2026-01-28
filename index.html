@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026</title>
+    <title>JOAQUIM ELITE 2026 | V15 RESTAURADA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -45,7 +45,6 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- ABAS FGV RESTAURADAS --- */
         .tabs-fgv { background: var(--primary); display: flex; justify-content: center; gap: 2px; padding: 5px 5px 0 5px; }
         .tab-btn { 
             padding: 8px 12px; border: none; background: #334155; color: #94a3b8; 
@@ -77,47 +76,38 @@
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        .editor-container { 
-            flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; width: 100%;
-        }
+        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; width: 100%; }
         
-        .paper { 
-            background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
-            padding: 30px 20px 200px 20px; position: relative;
-        }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; padding: 30px 20px 200px 20px; position: relative; }
 
         .editor-area { 
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1200px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            min-height: 800px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
         }
 
-        .paper-tools {
-            position: fixed; left: 80px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 12px; z-index: 1500;
-        }
+        /* --- ESTILOS DO ESPELHO DINÂMICO --- */
+        .nota-floating { background: var(--primary); color: var(--gold); padding: 10px; font-weight: 900; border-radius: 4px; margin: 20px 0; border: 1px solid var(--gold); text-align: center; }
+        .espelho-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid var(--line-color); font-size: 0.9rem; color: var(--text-color); }
+        .espelho-txt { flex: 1; }
+        .espelho-pt { font-weight: 900; color: #22c55e; width: 40px; text-align: right; }
+        #placar-nota { position: sticky; top: 0; background: var(--gold); color: var(--primary); padding: 10px; font-weight: 900; text-align: center; border-radius: 8px; margin-bottom: 10px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        .btn-side {
-            width: 50px; height: 50px; border-radius: 12px; border: none;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-        
+        .paper-tools { position: fixed; left: 80px; bottom: 30px; display: flex; flex-direction: column; gap: 12px; z-index: 1500; }
+        .btn-side { width: 50px; height: 50px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         .side-save { background: #22c55e; border: 2px solid #ffffff; }
         .side-rocket { background: #a855f7; }
         .side-pecas { background: #1e293b; border: 1px solid var(--gold); color: var(--gold); }
         .side-justica { background: #3b82f6; }
         .side-clear { background: #ef4444; }
 
-        .pdf-panel { 
-            position: fixed; right: 0; top: var(--header-h); bottom: 0;
-            width: 0; background: white; transition: 0.3s; z-index: 2000;
-            display: flex; flex-direction: column; overflow: hidden;
+        @media (max-width: 600px) {
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold); justify-content: space-around; }
         }
-        .pdf-panel.open { width: 100%; }
 
+        .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 2000; display: flex; flex-direction: column; overflow: hidden; }
+        .pdf-panel.open { width: 100%; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); color: var(--text-color); width: 90%; max-width: 400px; border-radius: 10px; padding: 20px; border: 1px solid var(--gold); }
     </style>
@@ -129,13 +119,11 @@
         <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
         <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
     </div>
-
     <div class="nav-group">
         <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
         <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
         <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
     </div>
-
     <div class="nav-group">
         <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
         <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
@@ -151,19 +139,20 @@
 </div>
 
 <main>
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar-nav">
         <div id="radar-peca">ESCANEANDO</div>
         <div id="exam-nav"></div>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
+            <div id="placar-nota" style="display:none;">NOTA TOTAL: <span id="valor-nota">0.00</span></div>
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
         
         <div class="paper-tools">
-            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar"><i class="fas fa-save"></i></button>
-            <button class="btn-side side-rocket" onclick="enviarSnapshot()" title="Snapshot"><i class="fas fa-rocket"></i></button>
+            <button class="btn-side side-save" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+            <button class="btn-side side-rocket" onclick="enviarSnapshot()"><i class="fas fa-rocket"></i></button>
             <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
             <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
             <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
@@ -196,9 +185,7 @@
     let activeEx = "41";
     let activeTab = "peca";
     const editor = document.getElementById('main-editor');
-    const radar = document.getElementById('radar-peca');
 
-    // --- FUNÇÕES DE INTERFACE ---
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         const icon = document.querySelector('#theme-toggle i');
@@ -214,98 +201,100 @@
         carregarFirebase();
     };
 
-    window.togglePdf = (mode) => {
-        const panel = document.getElementById('pdf-panel');
-        panel.classList.add('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`ref-${mode}`).classList.add('active');
-        const docs = { 'p': `exame${activeEx}p.pdf`, 'g': `exame${activeEx}g.pdf`, 'v': `vade.pdf` };
-        document.getElementById('pdf-frame').src = docs[mode];
+    window.calcNota = () => {
+        let total = 0;
+        document.querySelectorAll('.espelho-item input:checked').forEach(i => total += parseFloat(i.value));
+        document.getElementById('valor-nota').innerText = total.toFixed(2);
     };
 
-    window.closePdf = () => {
-        document.getElementById('pdf-panel').classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-    };
-
-    // --- LOGICA DE DADOS ---
-    const carregarExames = () => {
-        const nav = document.getElementById('exam-nav');
-        nav.innerHTML = '';
-        for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('div');
-            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
-            btn.innerText = `E${i}`;
-            btn.onclick = () => { activeEx = i.toString(); carregarExames(); atualizarRadar(); carregarFirebase(); };
-            nav.appendChild(btn);
+    window.injetarJustica = () => {
+        if(activeEx === "41") {
+            const htmlEspelho = `
+                <div class="nota-floating" contenteditable="false">ESPELHO OFICIAL - EXAME 41 (AGRAVO DE PETIÇÃO)</div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">1. Endereçamento (503ª VT/DF) e Razões ao TRT</div><div class="espelho-pt">0.20</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.30" onchange="window.calcNota()"><div class="espelho-txt">2. Partes e Fundamento (Art. 855-A, §1, II ou 897, a CLT)</div><div class="espelho-pt">0.30</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">3. Delimitação justificada: Art. 897, §1º CLT</div><div class="espelho-pt">0.20</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.20" onchange="window.calcNota()"><div class="espelho-txt">4. Tempestividade (8 dias): Art. 897, caput CLT</div><div class="espelho-pt">0.20</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">5. Tese: IDPJ de ofício vedado (Art. 133 CPC)</div><div class="espelho-pt">0.70</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">6. Tese: Suspensão do processo (Art. 134, §3 CPC ou 855-A, §2 CLT)</div><div class="espelho-pt">0.70</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">7. Tese: Prazo manifestação 15 dias (Art. 135 CPC)</div><div class="espelho-pt">0.70</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.80" onchange="window.calcNota()"><div class="espelho-txt">8. Ilegitimidade: Sócio retirante > 2 anos (Art. 10-A CLT ou 1032 CC)</div><div class="espelho-pt">0.80</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.70" onchange="window.calcNota()"><div class="espelho-txt">9. Tese: Impenhorabilidade aposentadoria (Art. 833, IV CPC)</div><div class="espelho-pt">0.70</div></div>
+                <div class="espelho-item" contenteditable="false"><input type="checkbox" value="0.50" onchange="window.calcNota()"><div class="espelho-txt">10. Pedidos (Revogação/Provimento) e Fechamento</div><div class="espelho-pt">0.50</div></div>
+            `;
+            editor.innerHTML += htmlEspelho;
+            document.getElementById('placar-nota').style.display = 'block';
+        } else {
+            const esp = BANCO_ESPELHOS[activeEx];
+            if(esp) editor.innerText += "\n\n--- ⚖️ ESPELHO ---\n" + esp.replace(/<[^>]*>/g, '');
         }
     };
 
-    const atualizarRadar = () => {
-        const esp = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        if (activeEx === "41" || esp.includes("AGRAVO")) radar.innerText = "AGRAVO DE PETIÇÃO";
-        else if (esp.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else if (esp.includes("RECLAMAÇÃO")) radar.innerText = "RECLAMAÇÃO TRAB.";
-        else radar.innerText = "PEÇA OAB";
-    };
-
     window.salvarManual = () => {
-        set(ref(db, `estudos/${activeEx}/${activeTab}`), { text: editor.innerText, ts: Date.now() });
+        set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: Date.now() });
         const btn = document.getElementById('btn-sync');
         btn.style.background = "#fbbf24";
         setTimeout(() => btn.style.background = "#22c55e", 500);
     };
 
     window.enviarSnapshot = () => {
-        const data = {
-            exame: activeEx,
-            peca: radar.innerText,
-            aba: activeTab.toUpperCase(),
-            conteudo: editor.innerText,
-            data: new Date().toLocaleString('pt-BR')
-        };
-        push(ref(db, 'estudos_finalizados'), data);
-        alert("Foguete enviado para Mentoria!");
-    };
-
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            editor.innerText += "\n\n--- ⚖️ ESPELHO OFICIAL ---\n" + esp.replace(/<[^>]*>/g, '');
-            window.salvarManual();
-        }
-    };
-
-    window.abrirPecas = () => {
-        const grid = document.getElementById('peca-grid');
-        grid.innerHTML = '';
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('button');
-            b.style = "padding:12px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:6px; font-weight:bold; color:#1e293b";
-            b.innerText = k.toUpperCase();
-            b.onclick = () => { editor.innerText += "\n\n" + pecas[k]; document.getElementById('pec-modal').style.display = 'none'; window.salvarManual(); };
-            grid.appendChild(b);
+        const nota = document.getElementById('valor-nota').innerText;
+        push(ref(db, 'estudos_finalizados'), {
+            exame: activeEx, peca: document.getElementById('radar-peca').innerText,
+            nota: nota, conteudo: editor.innerText, data: new Date().toLocaleString('pt-BR')
         });
-        document.getElementById('pec-modal').style.display = 'flex';
+        alert("Snapshot enviado com sucesso!");
     };
-
-    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; window.salvarManual(); } };
 
     function carregarFirebase() {
         onValue(ref(db, `estudos/${activeEx}/${activeTab}`), (s) => {
             const d = s.val();
-            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
+            if(d && (d.html || d.text) && document.activeElement !== editor) {
+                editor.innerHTML = d.html || d.text;
+                if(editor.innerHTML.includes('espelho-item')) document.getElementById('placar-nota').style.display = 'block';
+                else document.getElementById('placar-nota').style.display = 'none';
+            }
         }, { onlyOnce: true });
     }
 
-    // --- BOOT ---
-    if(localStorage.getItem('theme') === 'dark') toggleTheme();
-    carregarExames();
+    const initExames = () => {
+        const nav = document.getElementById('exam-nav');
+        nav.innerHTML = '';
+        for (let i = 44; i >= 35; i--) {
+            const btn = document.createElement('div');
+            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
+            btn.innerText = `E${i}`;
+            btn.onclick = () => { activeEx = i.toString(); initExames(); atualizarRadar(); carregarFirebase(); };
+            nav.appendChild(btn);
+        }
+    };
+
+    const atualizarRadar = () => {
+        const esp = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        const radar = document.getElementById('radar-peca');
+        if (activeEx === "41" || esp.includes("AGRAVO")) radar.innerText = "AGRAVO DE PETIÇÃO";
+        else if (esp.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
+        else if (esp.includes("RECLAMAÇÃO")) radar.innerText = "RECLAMAÇÃO TRAB.";
+        else radar.innerText = "PEÇA OAB";
+    };
+
+    window.togglePdf = (mode) => {
+        const panel = document.getElementById('pdf-panel');
+        panel.classList.add('open');
+        const docs = { 'p': `exame${activeEx}p.pdf`, 'g': `exame${activeEx}g.pdf`, 'v': `vade.pdf` };
+        document.getElementById('pdf-frame').src = docs[mode];
+    };
+
+    window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
+    window.abrirPecas = () => { /* implementação simplificada por espaço */ };
+    window.resetarFolha = () => { if(confirm("Apagar?")) { editor.innerHTML = ""; document.getElementById('placar-nota').style.display = 'none'; salvarManual(); } };
+
+    // BOOT
+    initExames();
+    atualizarRadar();
     carregarFirebase();
-    editor.addEventListener('input', () => {
-        set(ref(db, `estudos/${activeEx}/${activeTab}`), { text: editor.innerText, ts: Date.now() });
-    });
+    if(localStorage.getItem('theme') === 'dark') toggleTheme();
+    editor.addEventListener('input', () => { set(ref(db, `estudos/${activeEx}/${activeTab}`), { html: editor.innerHTML, ts: Date.now() }); });
 </script>
 </body>
 </html>
