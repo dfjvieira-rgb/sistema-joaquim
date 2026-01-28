@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JOAQUIM ELITE 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,7 +17,7 @@
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
         
         body { 
             font-family: 'Inter', sans-serif; background: var(--primary); 
@@ -70,18 +70,22 @@
         .editor-container { 
             flex: 1; overflow-y: auto; background: var(--bg-paper);
             display: flex; justify-content: center; width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
         
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
-            padding: 30px 20px 150px 20px; position: relative;
+            padding: 30px 20px 180px 20px; position: relative;
+            cursor: text;
         }
 
         .editor-area { 
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1000px; width: 100%; word-wrap: break-word;
+            min-height: 1200px; width: 100%; word-wrap: break-word;
+            /* Habilita seleção fluida no mobile */
+            user-select: text; -webkit-user-select: text;
         }
 
         .paper-tools {
@@ -102,10 +106,10 @@
             .sidebar { width: 65px; }
             .paper-tools {
                 left: 0; bottom: 0; width: 100%; flex-direction: row;
-                background: var(--primary); padding: 10px; border-top: 2px solid var(--gold);
+                background: var(--primary); padding: 15px 10px 30px 10px; border-top: 2px solid var(--gold);
                 justify-content: space-around;
             }
-            .paper { padding: 20px 15px 120px 15px; }
+            .paper { padding: 20px 15px 150px 15px; }
         }
 
         .pdf-panel { 
@@ -145,9 +149,9 @@
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
         <div class="paper-tools">
-            <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
-            <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
+            <button class="btn-side side-pecas" title="Estruturas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+            <button class="btn-side side-justica" title="Teses" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <button class="btn-side side-clear" title="Limpar" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
         </div>
     </section>
 
@@ -214,13 +218,10 @@
         const conteudo = window.BANCO_ESPELHOS[activeEx];
         if (!conteudo) { radar.innerText = "SEM DADOS"; return; }
         const txt = conteudo.toUpperCase();
-        
-        // Lógica de Identificação Refinada
         if (activeEx === "41" || txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
         else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT - RECLAMAÇÃO";
         else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
         else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else if (txt.includes("REVISTA")) radar.innerText = "REC. REVISTA";
         else radar.innerText = "PEÇA OAB";
     };
 
@@ -259,7 +260,7 @@
     };
 
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Limpar?")) editor.innerText = ""; };
+    window.resetarFolha = () => { if(confirm("Apagar tudo desta folha?")) { editor.innerText = ""; window.autoSave(); } };
     window.injetarJustica = () => {
         const esp = window.BANCO_ESPELHOS[activeEx];
         if(esp) editor.innerText += "\n\n--- ⚖️ TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
