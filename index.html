@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JOAQUIM ELITE 2026 | FULL FIX</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --bg-main: #0f172a;
@@ -23,12 +23,10 @@
 
         main { display: flex; flex: 1; overflow: hidden; width: 100vw; }
 
-        /* SIDEBAR EXAMES */
         .sidebar { width: 65px; background: #020617; display: flex; flex-direction: column; gap: 5px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
         .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 6px; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* SPLIT VIEW */
         .pdf-section { flex: 1; background: #334155; display: flex; flex-direction: column; border-right: 3px solid var(--gold); }
         .editor-section { flex: 1.2; overflow-y: auto; background: var(--bg-main); padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
@@ -41,11 +39,9 @@
        
         .editor-area { outline: none; font-size: 18px; line-height: 30px; color: #000; font-family: 'Times New Roman', serif; background-image: repeating-linear-gradient(var(--paper), var(--paper) 29px, #d1d5db 29px, #d1d5db 30px); min-height: 100px; width: 100%; word-wrap: break-word; }
 
-        /* FLOATING ACTIONS */
         .paper-tools { position: fixed; right: 25px; bottom: 25px; display: flex; flex-direction: column; gap: 12px; z-index: 1100; }
         .btn-fab { width: 55px; height: 55px; border-radius: 50%; border: 2px solid white; color: white; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
 
-        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 20px; border: 3px solid var(--gold); }
 
@@ -128,7 +124,7 @@
 
 <script type="module">
     import { db } from './firebase-config.js';
-    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, set, onValue, push } from "https://www.gstatic.com";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
@@ -138,11 +134,13 @@
     window.loadPdf = (mode) => {
         const frame = document.getElementById('pdf-frame');
         const label = document.getElementById('pdf-label');
-        const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+        // AJUSTE: Garantindo caminho relativo correto para o vade.pdf
+        const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `./vade.pdf` };
         frame.src = docs[mode];
         label.innerText = mode === 'v' ? "VADE MECUM" : (mode === 'g' ? "GABARITO" : "ENUNCIADO");
         document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${mode}`).classList.add('active');
+        const btn = document.getElementById(`btn-${mode}`);
+        if(btn) btn.classList.add('active');
     };
 
     window.salvarManual = () => {
@@ -196,8 +194,20 @@
             btn.onclick = () => { activeEx = i.toString(); carregarInterface(); carregarFirebase(); loadPdf('p'); };
             nav.appendChild(btn);
         }
+        
+        // AJUSTE: Melhoria na detecção da peça usando o Banco de Espelhos
         const esp = BANCO_ESPELHOS[activeEx] || "";
-        document.getElementById('nome-da-peca').innerText = esp.toUpperCase().includes("AGRAVO") ? "AGRAVO DE PETIÇÃO" : "RECLAMAÇÃO TRABALHISTA";
+        const labelPeca = document.getElementById('nome-da-peca');
+        if(esp.toUpperCase().includes("AGRAVO")) {
+            labelPeca.innerText = "AGRAVO DE PETIÇÃO";
+        } else if(esp.toUpperCase().includes("CONTESTAÇÃO")) {
+            labelPeca.innerText = "CONTESTAÇÃO";
+        } else if(esp.toUpperCase().includes("RECURSO ORDINÁRIO")) {
+            labelPeca.innerText = "RECURSO ORDINÁRIO";
+        } else {
+            labelPeca.innerText = "RECLAMAÇÃO TRABALHISTA";
+        }
+        
         document.getElementById('exame-label-topo').innerText = "E" + activeEx;
     };
 
@@ -212,8 +222,13 @@
     }
 
     ids.forEach(id => document.getElementById('editor-' + id).addEventListener('input', window.salvarManual));
-    carregarInterface(); carregarFirebase(); loadPdf('p');
+    
+    // Garantindo que a interface carregue tudo na ordem correta
+    window.addEventListener('load', () => {
+        carregarInterface(); 
+        carregarFirebase(); 
+        loadPdf('p');
+    });
 </script>
 </body>
 </html>
- 
