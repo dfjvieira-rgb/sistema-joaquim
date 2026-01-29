@@ -18,7 +18,7 @@
         main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
         .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.1); }
         #radar-peca { background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: 900; text-align: center; min-height: 45px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace; line-height: 1.1; margin-bottom: 5px; }
-        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; margin-bottom: 5px; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; width: 100%; -webkit-overflow-scrolling: touch; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; padding: 30px 20px 200px 20px; position: relative; }
@@ -33,132 +33,149 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 2000; display: flex; flex-direction: column; overflow: hidden; }
         .pdf-panel.open { width: 100%; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-body { background: var(--paper-color); color: var(--text-color); width: 90%; max-width: 400px; border-radius: 10px; padding: 20px; border: 1px solid var(--gold); }
         @media (max-width: 600px) { .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold); justify-content: space-around; } .paper { padding: 20px 15px 160px 15px; } }
     </style>
 </head>
 <body>
-    <header>
-        <div class="nav-group">
-            <button class="btn-tool" onclick="location.reload()"><i class="fas fa-home"></i></button>
-            <button class="btn-tool" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+<header>
+    <div class="nav-group">
+        <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
+        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    </div>
+    <div class="nav-group">
+        <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
+        <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
+        <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
+    </div>
+    <div class="nav-group">
+        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+    </div>
+</header>
+<main>
+    <aside class="sidebar" id="sidebar">
+        <div id="radar-peca">ESCANEANDO</div>
+        <div id="exam-nav"></div>
+    </aside>
+    <section class="editor-container">
+        <div class="paper">
+            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
-        <div class="nav-group">
-            <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
-            <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
-            <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
+        <div class="paper-tools">
+            <button class="btn-side side-rocket" onclick="gerarSnapshot()" title="Enviar Snapshot"><i class="fas fa-rocket"></i></button>
+            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar Rascunho"><i class="fas fa-save"></i></button>
+            <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+            <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
         </div>
-        <div class="nav-group">
-            <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-            <button class="btn-tool" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+    </section>
+
+    <div class="pdf-panel" id="pdf-panel">
+        <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
+            <span id="pdf-title">SUPORTE ELITE</span>
+            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
         </div>
-    </header>
-    <main>
-        <aside class="sidebar">
-            <div id="radar-peca">ESCANEANDO...</div>
-            <div id="exam-nav"></div>
-        </aside>
-        <section class="editor-container">
-            <div class="paper">
-                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
-            </div>
-            <div class="paper-tools">
-                <button class="btn-side side-rocket" onclick="gerarSnapshot()"><i class="fas fa-rocket"></i></button>
-                <button class="btn-side side-save" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-                <button class="btn-side side-pecas" onclick="alert('Funcionalidade em manutenção')"><i class="fas fa-scroll"></i></button>
-                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </section>
-        <div class="pdf-panel" id="pdf-panel">
-            <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
-                <span id="pdf-title">SUPORTE ELITE</span>
-                <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
-            </div>
-            <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
-        </div>
-    </main>
+        <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
+    </div>
+</main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com";
-        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com";
+<div class="modal" id="pec-modal">
+    <div class="modal-body">
+        <h3 style="margin-bottom:15px; text-align:center;">ESTRUTURAS</h3>
+        <div id="peca-grid" style="display:grid; gap:8px; max-height:300px; overflow-y:auto;"></div>
+        <button onclick="fecharPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:6px;">FECHAR</button>
+    </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
-            authDomain: "masteroab-db5e1.firebaseapp.com",
-            projectId: "masteroab-db5e1",
-            databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const editor = document.getElementById('main-editor');
-        const radar = document.getElementById('radar-peca');
-        let activeEx = "41";
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        projectId: "masteroab-db5e1",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
+    };
 
-        // GLOBALIZAÇÃO PARA OS BOTÕES HTML
-        window.gerarSnapshot = () => {
-            const texto = editor.innerText;
-            if(texto.length < 5) return alert("Editor vazio!");
-            push(ref(db, 'historico_envios/' + activeEx), {
-                peca_nome: radar.innerText,
-                conteudo: texto,
-                data: new Date().toLocaleString('pt-BR'),
-                timestamp: Date.now()
-            }).then(() => alert("🚀 SNAPSHOT ENVIADO!")).catch(e => alert("Erro: " + e));
-        };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-        window.salvarManual = () => {
-            set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
-            .then(() => alert("✅ Rascunho Salvo!"));
-        };
+    // Variáveis de Controle
+    let activeEx = "41";
+    let currentMode = null;
+    const editor = document.getElementById('main-editor');
+    const radar = document.getElementById('radar-peca');
 
-        window.toggleTheme = () => document.body.classList.toggle('dark-mode');
-        window.resetarFolha = () => { if(confirm("Apagar tudo?")) editor.innerText = ""; };
-        
-        window.togglePdf = (mode) => {
-            const panel = document.getElementById('pdf-panel');
+    // Funções Globais anexadas ao window
+    window.gerarSnapshot = () => {
+        const nomePeça = radar.innerText;
+        const historicoRef = ref(db, 'historico_envios/' + activeEx);
+        push(historicoRef, {
+            peca_nome: nomePeça,
+            conteudo: editor.innerText,
+            data: new Date().toLocaleString('pt-BR'),
+            timestamp: Date.now()
+        }).then(() => alert("🚀 PEÇA ENVIADA AO HISTÓRICO!")).catch(err => alert("Erro: " + err));
+    };
+
+    window.salvarManual = () => {
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
+        .then(() => alert("✅ Rascunho salvo!"));
+    };
+
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('#theme-toggle i');
+        icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    window.togglePdf = (mode) => {
+        const panel = document.getElementById('pdf-panel');
+        if(currentMode === mode) { window.closePdf(); }
+        else {
+            currentMode = mode;
             panel.classList.add('open');
-            document.getElementById('pdf-frame').src = mode === 'v' ? 'vade.pdf' : `ro${activeEx}${mode==='g'?'-gabarito':''}.pdf`;
-        };
-        window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
+            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+            document.getElementById('pdf-frame').src = docs[mode];
+        }
+    };
 
-        // LÓGICA DE EXAMES E RADAR
+    window.closePdf = () => { document.getElementById('pdf-panel').classList.remove('open'); currentMode = null; };
+
+    window.resetarFolha = () => { if(confirm("Apagar tudo?")) editor.innerText = ""; };
+
+    const carregarExames = () => {
         const nav = document.getElementById('exam-nav');
+        nav.innerHTML = '';
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             btn.innerText = `E${i}`;
-            btn.onclick = () => {
-                activeEx = i.toString();
-                document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                carregarFirebase();
-                atualizarRadar();
-            };
+            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
             nav.appendChild(btn);
         }
+    };
 
-        function atualizarRadar() {
-            const txt = editor.innerText.toUpperCase();
-            if (txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
-            else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-            else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-            else radar.innerText = "PEÇA OAB";
-        }
+    function carregarFirebase() {
+        onValue(ref(db, 'estudos/' + activeEx), (s) => {
+            const d = s.val();
+            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
+        }, { onlyOnce: true });
+    }
 
-        function carregarFirebase() {
-            onValue(ref(db, 'estudos/' + activeEx), (s) => {
-                const d = s.val();
-                if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
-            }, { onlyOnce: true });
-        }
+    // Handlers vazios para evitar erros nos botões que chamam arquivos externos removidos
+    window.abrirPecas = () => alert("Módulo de Estruturas não carregado.");
+    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
+    window.injetarJustica = () => alert("Módulo de Teses não carregado.");
 
-        editor.addEventListener('input', () => {
-            atualizarRadar();
-            set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        });
-
-        carregarFirebase();
-        atualizarRadar();
-    </script>
+    carregarExames();
+    carregarFirebase();
+    editor.addEventListener('input', () => {
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    });
+</script>
 </body>
 </html>
