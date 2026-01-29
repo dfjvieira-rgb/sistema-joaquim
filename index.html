@@ -3,177 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - ORDEM NO COCKPIT</title>
+    <title>SISTEMA ELITE 2026 - PROTOCOLO DE FORÇA BRUTA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
             --header-h: 70px; --mentoria: #a855f7;
-            --glow: 0 0 15px rgba(251, 191, 36, 0.8);
         }
-
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--primary); 
-            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 15px; 
             display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 3px solid var(--gold); z-index: 2000;
         }
-
         .nav-group { display: flex; gap: 10px; align-items: center; }
 
-        /* BOTÕES DE COMANDO DIRETO */
-        .btn-main { 
+        /* BOTÕES DA TRIPULAÇÃO */
+        .btn-c { 
             height: 48px; width: 48px; border-radius: 12px; border: none;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.1s; color: white;
+            cursor: pointer; color: white; font-size: 1.2rem; text-decoration: none;
         }
-        .btn-main:active { transform: scale(0.9); filter: brightness(1.2); }
-
         .btn-home { background: #334155; }
         
-        /* LINK DIRETO PARA MENTORIA (SEM SCRIPT QUE TRAVA) */
-        .link-mentoria {
-            background: var(--mentoria); height: 48px; width: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; text-decoration: none; border: 2px solid #fff;
-            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4);
+        /* COMISSÁRIA (LINK PURO SEM SCRIPT) */
+        .btn-mentoria { 
+            background: var(--mentoria) !important; 
+            border: 2px solid white !important; 
+            box-shadow: 0 0 12px rgba(168,85,247,0.6); 
         }
 
-        .btn-ref {
-            height: 48px; width: 48px; border-radius: 12px; border: 2px solid var(--gold);
-            background: #1e293b; color: var(--gold); font-weight: 900; font-size: 1.1rem;
-            cursor: pointer;
-        }
-        .btn-ref.active { background: var(--gold); color: var(--primary); box-shadow: var(--glow); }
+        .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
+        .btn-ref.active { background: var(--gold); color: var(--primary); }
 
-        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
+        main { display: flex; flex: 1; overflow: hidden; }
 
-        /* RADAR LATERAL */
-        .sidebar { 
-            width: 75px; background: #1e293b; display: flex; 
-            flex-direction: column; gap: 8px; padding: 10px 5px; overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        #radar-peca {
-            background: #000; color: var(--gold); padding: 8px 2px; border-radius: 4px; 
-            font-size: 0.6rem; font-weight: 900; text-align: center; 
-            min-height: 50px; border: 1px solid var(--gold); text-transform: uppercase;
-        }
+        /* RADAR LESTE */
+        .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
+        .exame-btn { width: 100%; height: 40px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+        .exame-btn.active { background: var(--gold); color: black; }
 
-        .exame-btn {
-            width: 100%; height: 40px; background: #334155; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; color: #cbd5e1; cursor: pointer;
-        }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
-
-        /* DIVISÃO DE TELA */
-        #viewport-master {
-            flex: 1; display: grid; grid-template-columns: 1fr 0fr; 
-            transition: grid-template-columns 0.4s ease; overflow: hidden;
-        }
+        /* COCKPIT DO EDITOR */
+        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
         #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
-
         .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; position: relative; }
-        
-        .paper { 
-            background: var(--paper-color); width: 100%; max-width: 800px; min-height: 100%; 
-            padding: 40px 25px 300px 25px; box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 40px 20px 350px 20px; min-height: 100%; }
         .editor-area { 
-            outline: none; font-size: 19px; line-height: 32px; color: var(--text-color); 
-            font-family: 'Times New Roman', serif; text-align: justify;
+            outline: none; font-size: 19px; line-height: 32px; color: var(--text-color); font-family: 'Times New Roman', serif;
+            min-height: 1200px; white-space: pre-wrap;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 31px, var(--line-color) 31px, var(--line-color) 32px);
-            min-height: 1500px; width: 100%; white-space: pre-wrap;
         }
 
-        #pdf-viewer { background: #333; display: none; flex-direction: column; border-left: 3px solid var(--gold); }
+        /* INSTRUMENTOS DE AÇÃO (FORÇA BRUTA) */
+        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
+        .btn-float { 
+            width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; 
+            color: white; font-size: 1.6rem; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); 
+            transition: 0.1s;
+        }
+        .btn-float:active { transform: scale(0.85); filter: brightness(1.3); }
+        
+        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
+        .bg-pecas { background: #1e293b; color: var(--gold); border-color: var(--gold); }
+        .bg-justica { background: #3b82f6; }
+        .bg-clear { background: #ef4444; }
+
+        #pdf-viewer { background: #333; display: none; flex-direction: column; border-left: 4px solid var(--gold); }
         #viewport-master.split-view #pdf-viewer { display: flex; }
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
-        .pdf-header { background: var(--primary); color: var(--gold); padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* INSTRUMENTOS DE AÇÃO - SEMPRE PRONTOS */
-        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-
-        .btn-side {
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid #fff;
-            color: white; font-size: 1.6rem; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        
-        .side-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
-        .side-pecas { background: #1e293b; color: var(--gold); border-color: var(--gold); }
-        .side-justica { background: #3b82f6; }
-        .side-clear { background: #ef4444; }
-
         @media (max-width: 900px) {
             #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
-            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px 10px 40px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 20px 20px 0 0; }
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 3px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
         }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 95%; max-width: 450px; border-radius: 12px; padding: 25px; border: 2px solid var(--gold); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 95%; max-width: 450px; padding: 25px; border-radius: 20px; border: 4px solid var(--gold); }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
     <div class="nav-group">
-        <button class="btn-main btn-home" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
-        <a href="mentoria.html" target="_blank" class="link-mentoria"><i class="fas fa-brain"></i></a>
+        <a href="index.html" class="btn-c btn-home"><i class="fas fa-home"></i></a>
+        <a href="mentoria.html" target="_blank" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
     </div>
-
     <div class="nav-group">
-        <button class="btn-ref" id="ref-p" onclick="abrirDoc('p')">P</button>
-        <button class="btn-ref" id="ref-g" onclick="abrirDoc('g')">G</button>
-        <button class="btn-ref" id="ref-v" onclick="abrirDoc('v')">V</button>
+        <button class="btn-c btn-ref" id="ref-p" onclick="abrirDoc('p')">P</button>
+        <button class="btn-c btn-ref" id="ref-g" onclick="abrirDoc('g')">G</button>
+        <button class="btn-c btn-ref" id="ref-v" onclick="abrirDoc('v')">V</button>
     </div>
-
     <div class="nav-group">
-        <button class="btn-main" style="background:#475569" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
-        <button class="btn-main" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-c" style="background:#475569" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-adjust"></i></button>
+        <button class="btn-c" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
     </div>
 </header>
 
 <main>
-    <aside class="sidebar">
-        <div id="radar-peca">READY</div>
-        <div id="exam-nav"></div>
-    </aside>
-
+    <aside class="sidebar" id="exam-nav"></aside>
     <div id="viewport-master">
         <section class="editor-container">
             <div class="paper">
                 <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
             </div>
-            
             <div class="paper-tools">
-                <button class="btn-side side-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
-                <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-cog fa-spin"></i></button>
-                <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+                <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
+                <div class="btn-float bg-pecas" onclick="abrirPecas()"><i class="fas fa-cog fa-spin"></i></div>
+                <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
+                <div class="btn-float bg-clear" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
             </div>
         </section>
-
         <section id="pdf-viewer">
-            <div class="pdf-header">
+            <div style="background:var(--primary); color:var(--gold); padding:12px; display:flex; justify-content:space-between; font-weight:bold; border-bottom:2px solid var(--gold);">
                 <span id="pdf-label">SISTEMA</span>
-                <button onclick="fecharDoc()" style="background:#ef4444; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer;">X</button>
+                <button onclick="fecharDoc()" style="color:white; background:#ef4444; border:none; padding:5px 15px; border-radius:8px; cursor:pointer;">FECHAR X</button>
             </div>
             <iframe id="pdf-frame"></iframe>
         </section>
@@ -183,8 +134,8 @@
 <div class="modal" id="pec-modal">
     <div class="modal-body">
         <h3 style="margin-bottom:20px; text-align:center;">TURBINAS (ESTRUTURAS)</h3>
-        <div id="peca-grid" style="display:grid; gap:10px; max-height:400px; overflow-y:auto;"></div>
-        <button onclick="fecharPecas()" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">VOLTAR</button>
+        <div id="peca-grid" style="display:grid; gap:12px; max-height:400px; overflow-y:auto;"></div>
+        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:12px; font-weight:bold;">VOLTAR</button>
     </div>
 </div>
 
@@ -194,112 +145,85 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // ENERGIZANDO SISTEMAS IMEDIATAMENTE
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push;
-    window.pecas_data = pecas;
-    window.BANCO_ESPELHOS = BANCO_ESPELHOS;
-
-    let activeEx = "41";
-    let currentDoc = null;
+    // ASSEGURA QUE AS FUNÇÕES ESTÃO NO WINDOW ANTES DE QUALQUER COISA
+    window.activeEx = "41";
     const editor = document.getElementById('main-editor');
-    const master = document.getElementById('viewport-master');
 
-    // BOTÃO JUSTIÇA (TREM DE POUSO) - OPERAÇÃO IMEDIATA
-    window.injetarJustica = () => {
-        const esp = window.BANCO_ESPELHOS[activeEx];
-        if(esp) {
+    window.injetarJustica = function() {
+        const conteudo = BANCO_ESPELHOS[window.activeEx];
+        if(conteudo) {
             editor.focus();
-            const txt = "\n\n--- ⚖️ TREM DE POUSO (JUSTIÇA) ---\n" + esp.replace(/<[^>]*>/g, '');
-            document.execCommand('insertText', false, txt);
-        }
+            const formatado = "\n\n--- ⚖️ TREM DE POUSO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
+            document.execCommand('insertText', false, formatado);
+        } else { alert("Gabarito ainda não carregado para este exame."); }
     };
 
-    // BOTÃO ESTRUTURAS (TURBINAS) - OPERAÇÃO IMEDIATA
-    window.abrirPecas = () => {
+    window.abrirPecas = function() {
         const grid = document.getElementById('peca-grid');
         grid.innerHTML = '';
-        Object.keys(window.pecas_data).forEach(k => {
+        Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
             b.style = "padding:15px; text-align:left; border:1px solid #ddd; border-radius:10px; font-weight:bold; cursor:pointer; background:#f8fafc;";
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 editor.focus();
-                document.execCommand('insertText', false, "\n\n" + window.pecas_data[k]);
-                fecharPecas();
+                document.execCommand('insertText', false, "\n\n" + pecas[k]);
+                document.getElementById('pec-modal').style.display='none';
             };
             grid.appendChild(b);
         });
         document.getElementById('pec-modal').style.display = 'flex';
     };
 
-    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-
-    // CARTAS NÁUTICAS
-    window.abrirDoc = (tipo) => {
+    window.abrirDoc = function(tipo) {
         const frame = document.getElementById('pdf-frame');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        if (currentDoc === tipo) { fecharDoc(); } else {
-            currentDoc = tipo;
-            master.classList.add('split-view');
-            document.getElementById(`ref-${tipo}`).classList.add('active');
-            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
-            frame.src = docs[tipo];
-            document.getElementById('pdf-label').innerText = tipo === 'v' ? 'VADE MECUM' : 'SUPORTE E' + activeEx;
-        }
+        const docs = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+        frame.src = docs[tipo];
+        document.getElementById('viewport-master').classList.add('split-view');
+        document.getElementById('pdf-label').innerText = "CARTAS NÁUTICAS: " + tipo.toUpperCase();
     };
 
-    window.fecharDoc = () => {
-        master.classList.remove('split-view');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        currentDoc = null;
-    };
+    window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
 
-    // SINCRONIZAÇÃO
     window.salvarManual = () => {
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        const btn = document.getElementById('btn-sync');
-        btn.style.filter = "brightness(2)";
-        setTimeout(() => btn.style.filter = "none", 300);
+        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
+        const btn = document.querySelector('.fa-save').parentElement;
+        btn.style.background = "white"; setTimeout(() => btn.style.background = "#22c55e", 200);
     };
 
     window.lancarPeca = () => {
-        const txt = editor.innerText.trim();
-        if(!txt) return;
-        window.push(window.ref(window.db, `historico_pecas/${activeEx}`), {
-            peca: document.getElementById('radar-peca').innerText,
-            data: new Date().toLocaleString('pt-BR'),
-            conteudo: txt
-        }).then(() => alert("🚀 LANÇAMENTO REALIZADO!"));
+        if(!editor.innerText.trim()) return;
+        push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
+        alert("🚀 LANÇAMENTO CONFIRMADO NO HISTÓRICO!");
     };
 
-    window.resetarFolha = () => { if(confirm("APAGAR TUDO?")) editor.innerText = ""; };
-    window.toggleTheme = () => document.body.classList.toggle('dark-mode');
+    window.limparTudo = () => { if(confirm("EJEÇÃO DE EMERGÊNCIA: APAGAR TUDO?")) editor.innerText = ""; };
 
-    const carregarExames = () => {
-        const nav = document.getElementById('exam-nav');
-        nav.innerHTML = '';
-        for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('div');
-            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
-            btn.innerText = `E${i}`;
-            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); if(currentDoc) abrirDoc(currentDoc); };
-            nav.appendChild(btn);
-        }
-        document.getElementById('radar-peca').innerText = activeEx === "41" ? "AGRAVO DE PETIÇÃO" : "PEÇA OAB " + activeEx;
-    };
+    // CARREGAMENTO DOS EXAMES (PAINEL LESTE)
+    const nav = document.getElementById('exam-nav');
+    for(let i=44; i>=35; i--) {
+        const b = document.createElement('div');
+        b.className = `exame-btn ${i==41?'active':''}`;
+        b.innerText = 'E'+i;
+        b.onclick = () => { 
+            window.activeEx = i.toString(); 
+            document.querySelectorAll('.exame-btn').forEach(x=>x.classList.remove('active')); 
+            b.classList.add('active'); 
+            carregarDados(); 
+        };
+        nav.appendChild(b);
+    }
 
-    function carregarFirebase() {
-        window.onValue(window.ref(window.db, 'estudos/' + activeEx), (s) => {
+    function carregarDados() {
+        onValue(ref(db, 'estudos/' + window.activeEx), (s) => {
             const d = s.val();
             if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
         }, { onlyOnce: true });
     }
 
-    // IGNITAR SISTEMAS
-    carregarExames(); carregarFirebase();
-    editor.addEventListener('input', () => {
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-    });
+    // IGNITAR MOTORES
+    carregarDados();
+    editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
 </body>
 </html>
