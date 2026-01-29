@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026</title>
+    <title>JOAQUIM ELITE 2026 - COCKPIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
             --header-h: 65px;
+            --glow: 0 0 15px rgba(251, 191, 36, 0.6);
         }
 
         body.dark-mode {
@@ -17,7 +18,7 @@
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.2s ease; }
         
         body { 
             font-family: 'Inter', sans-serif; background: var(--primary); 
@@ -32,22 +33,42 @@
 
         .nav-group { display: flex; gap: 8px; align-items: center; }
 
+        /* BOTÕES DO PAINEL COM FEEDBACK DE CLIQUE */
+        .btn-ref, .btn-tool, .btn-side, .exame-btn {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Efeito de "Afundar" ao clicar */
+        .btn-ref:active, .btn-tool:active, .btn-side:active, .exame-btn:active {
+            transform: scale(0.92);
+            filter: brightness(1.2);
+        }
+
         .btn-ref {
             height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold);
-            background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer;
+            background: #1e293b; color: var(--gold); font-weight: 900;
             display: flex; align-items: center; justify-content: center;
         }
-        .btn-ref.active { background: var(--gold); color: var(--primary); }
+
+        /* Luz indicadora de sistema ligado */
+        .btn-ref.active { 
+            background: var(--gold); 
+            color: var(--primary); 
+            box-shadow: var(--glow);
+            border-color: white;
+        }
 
         .btn-tool { 
             height: 40px; width: 40px; border-radius: 8px; border: none;
-            color: white; cursor: pointer; background: #334155;
+            color: white; background: #334155;
             display: flex; align-items: center; justify-content: center;
         }
 
         main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
 
-        /* BARRA LATERAL */
         .sidebar { 
             width: 75px; background: #1e293b; display: flex; 
             flex-direction: column; gap: 8px; padding: 10px 5px; overflow-y: auto;
@@ -58,33 +79,25 @@
             background: #000; color: var(--gold); padding: 8px 2px; border-radius: 4px; 
             font-size: 0.6rem; font-weight: 900; text-align: center; 
             min-height: 50px; border: 1px solid var(--gold); text-transform: uppercase;
+            box-shadow: inset 0 0 10px rgba(251, 191, 36, 0.2);
         }
 
         .exame-btn {
             width: 100%; height: 40px; background: #334155; border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; color: #cbd5e1; cursor: pointer;
+            font-weight: 800; color: #cbd5e1;
         }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
+        .exame-btn.active { background: var(--gold); color: var(--primary); box-shadow: 0 0 10px var(--gold); }
 
-        /* SISTEMA DE DIVISÃO DE TELA */
         #viewport-master {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 0fr; /* Inicialmente o PDF tem largura 0 */
+            flex: 1; display: grid; grid-template-columns: 1fr 0fr; 
             transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
 
-        #viewport-master.split-view {
-            grid-template-columns: 1fr 1fr; /* Divide 50/50 */
-        }
+        #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
 
-        /* CONTAINER DO EDITOR */
-        .editor-container { 
-            overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; position: relative;
-        }
+        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; position: relative; }
         
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 800px; min-height: 100%; 
@@ -98,23 +111,10 @@
             min-height: 1200px; width: 100%;
         }
 
-        /* CONTAINER DO PDF */
-        #pdf-viewer {
-            background: #525659;
-            display: flex;
-            flex-direction: column;
-            border-left: 3px solid var(--gold);
-            overflow: hidden;
-        }
+        #pdf-viewer { background: #525659; display: flex; flex-direction: column; border-left: 3px solid var(--gold); overflow: hidden; }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        .pdf-header { background: var(--primary); color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); }
 
-        .pdf-header {
-            background: var(--primary); color: white; padding: 8px 15px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        /* BOTÕES FLUTUANTES */
         .paper-tools {
             position: fixed; left: 85px; bottom: 30px;
             display: flex; flex-direction: column; gap: 15px; z-index: 1500;
@@ -123,7 +123,7 @@
         .btn-side {
             width: 55px; height: 55px; border-radius: 50%; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.4rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            color: white; font-size: 1.4rem; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
         
         .side-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); border: 2px solid #fff; }
@@ -132,13 +132,16 @@
         .side-clear { background: #ef4444; }
 
         @media (max-width: 900px) {
-            #viewport-master.split-view { grid-template-columns: 0fr 1fr; } /* No mobile o PDF ganha foco total */
-            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px; border-top: 2px solid var(--gold); border-radius: 0; border-radius: 15px 15px 0 0; }
+            #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold); border-radius: 15px 15px 0 0; justify-content: space-around; }
             .sidebar { width: 65px; }
         }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 25px; border: 2px solid var(--gold); }
+        /* MODAL */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-body { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 25px; border: 2px solid var(--gold); animation: slideUp 0.3s ease; }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -146,7 +149,7 @@
 <header>
     <div class="nav-group">
         <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
-        <button class="btn-tool" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
+        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
     </div>
 
     <div class="nav-group">
@@ -156,13 +159,14 @@
     </div>
 
     <div class="nav-group">
-        <button class="btn-tool" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-tool" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
+        <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div id="radar-peca">LOCALIZANDO...</div>
+        <div id="radar-peca">ESCANEANDO...</div>
         <div id="exam-nav"></div>
     </aside>
 
@@ -176,23 +180,23 @@
                 <button class="btn-side side-rocket" id="rocket-btn" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
                 <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
                 <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
+                <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
             </div>
         </section>
 
         <section id="pdf-viewer">
             <div class="pdf-header">
-                <span id="pdf-label" style="font-weight: bold; color: var(--gold);">DOCUMENTO ATIVO</span>
-                <button onclick="fecharDoc()" style="background:red; color:white; border:none; border-radius:4px; padding:2px 10px; cursor:pointer;">FECHAR X</button>
+                <span id="pdf-label" style="font-weight: bold; color: var(--gold); text-shadow: 0 0 5px rgba(251,191,36,0.3);">DOCUMENTO</span>
+                <button onclick="fecharDoc()" style="background:#ef4444; color:white; border:none; border-radius:4px; padding:5px 12px; font-weight:bold;">FECHAR X</button>
             </div>
-            <iframe id="pdf-frame" src="about:blank"></iframe>
+            <iframe id="pdf-frame"></iframe>
         </section>
     </div>
 </main>
 
 <div class="modal" id="pec-modal">
     <div class="modal-body">
-        <h3 style="margin-bottom:20px; text-align:center;">ESTRUTURAS DE PEÇA</h3>
+        <h3 style="margin-bottom:20px; text-align:center; color:#1e293b">ESTRUTURAS</h3>
         <div id="peca-grid" style="display:grid; gap:10px; max-height:400px; overflow-y:auto;"></div>
         <button onclick="fecharPecas()" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">VOLTAR AO COCKPIT</button>
     </div>
@@ -212,13 +216,12 @@
     const editor = document.getElementById('main-editor');
     const master = document.getElementById('viewport-master');
 
-    // --- LÓGICA DE DIVISÃO DE TELA ---
+    // --- LÓGICA DE CLIQUE COM FEEDBACK ---
     window.abrirDoc = (tipo) => {
         const frame = document.getElementById('pdf-frame');
-        const label = document.getElementById('pdf-label');
-        
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        
+        const btns = document.querySelectorAll('.btn-ref');
+        btns.forEach(b => b.classList.remove('active'));
+
         if (currentDoc === tipo) {
             fecharDoc();
         } else {
@@ -227,13 +230,12 @@
             document.getElementById(`ref-${tipo}`).classList.add('active');
             
             const docs = { 
-                'p': { nome: `ro${activeEx}.pdf`, titulo: `EXAME ${activeEx} - ENUNCIADO` }, 
-                'g': { nome: `ro${activeEx}-gabarito.pdf`, titulo: `EXAME ${activeEx} - GABARITO` }, 
-                'v': { nome: `vade.pdf`, titulo: `VADE MECUM ELITE` } 
+                'p': `ro${activeEx}.pdf`, 
+                'g': `ro${activeEx}-gabarito.pdf`, 
+                'v': `vade.pdf` 
             };
-            
-            frame.src = docs[tipo].nome;
-            label.innerText = docs[tipo].titulo;
+            frame.src = docs[tipo];
+            document.getElementById('pdf-label').innerText = tipo === 'v' ? 'VADE MECUM' : 'SUPORTE EXAME ' + activeEx;
         }
     };
 
@@ -241,22 +243,28 @@
         master.classList.remove('split-view');
         document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
         currentDoc = null;
-        setTimeout(() => { document.getElementById('pdf-frame').src = "about:blank"; }, 400);
     };
 
-    // --- PERSISTÊNCIA E RADAR ---
     window.lancarPeca = () => {
         const txt = editor.innerText.trim();
-        if(!txt) return alert("Folha vazia!");
+        if(!txt) return alert("Folha vazia, Comandante!");
+        
         const rkt = document.getElementById('rocket-btn');
+        rkt.style.background = "white"; // Brilho de ignição
+        
         window.push(window.ref(window.db, `historico_pecas/${activeEx}`), {
             peca: document.getElementById('radar-peca').innerText,
             data: new Date().toLocaleString('pt-BR'),
             conteudo: txt
         }).then(() => {
-            rkt.style.transform = "translateY(-150px) rotate(-45deg)";
+            rkt.style.transform = "translateY(-150px) scale(0.5)";
             rkt.style.opacity = "0";
-            setTimeout(() => { rkt.style.transform = "none"; rkt.style.opacity = "1"; alert("🚀 LANÇAMENTO CONCLUÍDO!"); }, 1000);
+            setTimeout(() => {
+                rkt.style.transform = "none";
+                rkt.style.opacity = "1";
+                rkt.style.background = "linear-gradient(45deg, #f59e0b, #ef4444)";
+                alert("🚀 LANÇAMENTO CONFIRMADO!");
+            }, 800);
         });
     };
 
@@ -267,16 +275,23 @@
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             btn.innerText = `E${i}`;
-            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); if(currentDoc) abrirDoc(currentDoc); };
+            btn.onclick = () => {
+                activeEx = i.toString();
+                carregarExames();
+                carregarFirebase();
+                if(currentDoc) abrirDoc(currentDoc);
+            };
             nav.appendChild(btn);
         }
         const esp = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        document.getElementById('radar-peca').innerText = (activeEx === "41" || esp.includes("AGRAVO")) ? "AGRAVO DE PETIÇÃO" : "PEÇA OAB " + activeEx;
+        document.getElementById('radar-peca').innerText = (activeEx === "41" || esp.includes("AGRAVO")) ? "AGRAVO DE PETIÇÃO" : "RT - RECLAMAÇÃO";
     };
 
     window.salvarManual = () => {
         window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("Sincronizado com a Nuvem!");
+        const btn = document.getElementById('btn-sync');
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>', 1000);
     };
 
     window.abrirPecas = () => {
@@ -284,20 +299,24 @@
         grid.innerHTML = '';
         Object.keys(window.pecas_data).forEach(k => {
             const b = document.createElement('button');
-            b.style = "padding:15px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:8px; font-weight:bold;";
+            b.style = "padding:15px; text-align:left; border:1px solid #ddd; border-radius:8px; font-weight:bold; background:#f1f5f9; cursor:pointer;";
             b.innerText = k.toUpperCase();
-            b.onclick = () => { editor.innerText += "\n\n" + window.pecas_data[k]; fecharPecas(); };
+            b.onclick = () => {
+                editor.innerText += "\n\n" + window.pecas_data[k];
+                fecharPecas();
+            };
             grid.appendChild(b);
         });
         document.getElementById('pec-modal').style.display = 'flex';
     };
 
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Deseja apagar o rascunho?")) editor.innerText = ""; };
-    
+    window.resetarFolha = () => { if(confirm("Apagar rascunho?")) editor.innerText = ""; };
+    window.toggleTheme = () => document.body.classList.toggle('dark-mode');
+
     window.injetarJustica = () => {
         const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) editor.innerText += "\n\n--- ⚖️ TESES DE DEFESA ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+        if(esp) editor.innerText += "\n\n--- ⚖️ TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
     };
 
     function carregarFirebase() {
