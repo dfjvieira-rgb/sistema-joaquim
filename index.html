@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - RECALIBRAGEM TOTAL</title>
+    <title>SISTEMA ELITE 2026 - FINAL STABILIZATION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -32,21 +32,18 @@
         }
         .btn-home { background: #334155; }
         
-        /* COMISSÁRIA: Agora com o site externo correto e sem interferência de script */
+        /* COMISSÁRIA: ALERTA DE ROTA - AJUSTE O LINK ABAIXO */
         .btn-mentoria { 
             background: var(--mentoria) !important; 
             border: 2px solid white !important; 
             box-shadow: 0 0 15px rgba(168,85,247,0.7);
-            animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
         .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
         main { display: flex; flex: 1; overflow: hidden; }
 
-        /* RADAR LATERAL */
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
         .exame-btn { width: 100%; height: 40px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
@@ -61,7 +58,6 @@
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 31px, var(--line-color) 31px, var(--line-color) 32px);
         }
 
-        /* PAINEL DE INSTRUMENTOS ATIVO */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
         .btn-float { 
             width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; 
@@ -91,7 +87,7 @@
 <header>
     <div class="nav-group">
         <a href="index.html" class="btn-c btn-home"><i class="fas fa-home"></i></a>
-        <a href="https://mentoria.joaquimelite.com.br" target="_blank" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
+        <a href="https://www.google.com" target="_blank" class="btn-c btn-mentoria" id="link-mentoria"><i class="fas fa-brain"></i></a>
     </div>
     <div class="nav-group">
         <button class="btn-c btn-ref" id="ref-p" onclick="abrirDoc('p')">P</button>
@@ -142,7 +138,7 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // IGNIÇÃO IMEDIATA: AS FUNÇÕES NÃO ESPERAM MAIS POR CLIQUES ANTERIORES
+    // SISTEMA ENERGIZADO DE IMEDIATO - SEM DEPENDÊNCIAS
     window.activeEx = "41";
     const editor = document.getElementById('main-editor');
 
@@ -152,7 +148,7 @@
             editor.focus();
             const formatado = "\n\n--- ⚖️ TREM DE POUSO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
             document.execCommand('insertText', false, formatado);
-        }
+        } else { alert("Aguardando carregamento do banco..."); }
     };
 
     window.abrirPecas = function() {
@@ -172,10 +168,9 @@
         document.getElementById('pec-modal').style.display = 'flex';
     };
 
-    window.abrirDoc = function(tipo) {
+    window.abrirDoc = (tipo) => {
         const frame = document.getElementById('pdf-frame');
-        const docs = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
-        frame.src = docs[tipo];
+        frame.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
         document.getElementById('viewport-master').classList.add('split-view');
     };
 
@@ -183,18 +178,18 @@
 
     window.salvarManual = () => {
         set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("LOGS SINCRONIZADOS!");
+        alert("COCKPIT SINCRONIZADO!");
     };
 
     window.lancarPeca = () => {
         if(!editor.innerText.trim()) return;
         push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
-        alert("🚀 PEÇA LANÇADA NO HISTÓRICO!");
+        alert("🚀 LANÇADO!");
     };
 
-    window.limparTudo = () => { if(confirm("CONFIRMAR EJEÇÃO TOTAL DO RASCUNHO?")) editor.innerText = ""; };
+    window.limparTudo = () => { if(confirm("LIMPAR TUDO?")) editor.innerText = ""; };
 
-    // CARREGAMENTO DOS EXAMES
+    // CARREGAMENTO DO RADAR
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
