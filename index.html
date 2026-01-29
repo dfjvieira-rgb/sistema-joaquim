@@ -71,6 +71,7 @@
             </div>
             <div class="section-title">PEÇA PROFISSIONAL</div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
+            <!-- Áreas de questões repetidas conforme original -->
             <div class="section-title">QUESTÃO 01 (A/B)</div>
             <div id="editor-q1a" class="editor-area" contenteditable="true" style="min-height:150px"></div>
             <div id="editor-q1b" class="editor-area" contenteditable="true" style="min-height:150px"></div>
@@ -113,12 +114,13 @@
     window.loadPdf = (mode) => {
         const frame = document.getElementById('pdf-frame');
         const label = document.getElementById('pdf-label');
-        // AJUSTE: mudei vade.pdf para ./vade.pdf para garantir o caminho
+        // AJUSTE: Garantindo o carregamento do Vade Mecum
         const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `./vade.pdf` };
         frame.src = docs[mode];
         label.innerText = mode === 'v' ? "VADE MECUM" : (mode === 'g' ? "GABARITO" : "ENUNCIADO");
         document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${mode}`).classList.add('active');
+        const btn = document.getElementById(`btn-${mode}`);
+        if(btn) btn.classList.add('active');
     };
 
     window.salvarManual = () => {
@@ -172,9 +174,18 @@
             btn.onclick = () => { activeEx = i.toString(); carregarInterface(); carregarFirebase(); loadPdf('p'); };
             nav.appendChild(btn);
         }
-        // AJUSTE: Agora busca a peça se o texto do espelho existir
+        
+        // AJUSTE: Identificação de Peça corrigida (Raio-X)
         const esp = BANCO_ESPELHOS[activeEx] || "";
-        document.getElementById('nome-da-peca').innerText = esp.toUpperCase().includes("AGRAVO") ? "AGRAVO DE PETIÇÃO" : "RECLAMAÇÃO TRABALHISTA";
+        const labelPeca = document.getElementById('nome-da-peca');
+        if (esp.toUpperCase().includes("AGRAVO")) {
+            labelPeca.innerText = "AGRAVO DE PETIÇÃO";
+        } else if (esp.toUpperCase().includes("CONTESTAÇÃO")) {
+            labelPeca.innerText = "CONTESTAÇÃO";
+        } else {
+            labelPeca.innerText = "RECLAMAÇÃO TRABALHISTA";
+        }
+        
         document.getElementById('exame-label-topo').innerText = "E" + activeEx;
     };
 
@@ -188,7 +199,11 @@
         }, { onlyOnce: true });
     }
 
-    ids.forEach(id => document.getElementById('editor-' + id).addEventListener('input', window.salvarManual));
+    ids.forEach(id => {
+        const el = document.getElementById('editor-' + id);
+        if(el) el.addEventListener('input', window.salvarManual);
+    });
+
     carregarInterface(); carregarFirebase(); loadPdf('p');
 </script>
 </body>
