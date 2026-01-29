@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - PROTOCOLO DE FORÇA BRUTA</title>
+    <title>SISTEMA ELITE 2026 - RECALIBRAGEM TOTAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -23,9 +23,8 @@
             display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 3px solid var(--gold); z-index: 2000;
         }
-        .nav-group { display: flex; gap: 10px; align-items: center; }
+        .nav-group { display: flex; gap: 12px; align-items: center; }
 
-        /* BOTÕES DA TRIPULAÇÃO */
         .btn-c { 
             height: 48px; width: 48px; border-radius: 12px; border: none;
             display: flex; align-items: center; justify-content: center;
@@ -33,44 +32,42 @@
         }
         .btn-home { background: #334155; }
         
-        /* COMISSÁRIA (LINK PURO SEM SCRIPT) */
+        /* COMISSÁRIA: Agora com o site externo correto e sem interferência de script */
         .btn-mentoria { 
             background: var(--mentoria) !important; 
             border: 2px solid white !important; 
-            box-shadow: 0 0 12px rgba(168,85,247,0.6); 
+            box-shadow: 0 0 15px rgba(168,85,247,0.7);
+            animation: pulse 2s infinite;
         }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
         .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
         main { display: flex; flex: 1; overflow: hidden; }
 
-        /* RADAR LESTE */
+        /* RADAR LATERAL */
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
         .exame-btn { width: 100%; height: 40px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        /* COCKPIT DO EDITOR */
         #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
         #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
         .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; position: relative; }
-        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 40px 20px 350px 20px; min-height: 100%; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 40px 20px 350px 20px; min-height: 100%; box-shadow: 0 0 30px rgba(0,0,0,0.2); }
         .editor-area { 
             outline: none; font-size: 19px; line-height: 32px; color: var(--text-color); font-family: 'Times New Roman', serif;
             min-height: 1200px; white-space: pre-wrap;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 31px, var(--line-color) 31px, var(--line-color) 32px);
         }
 
-        /* INSTRUMENTOS DE AÇÃO (FORÇA BRUTA) */
+        /* PAINEL DE INSTRUMENTOS ATIVO */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
         .btn-float { 
             width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; 
             color: white; font-size: 1.6rem; display: flex; align-items: center; 
             justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); 
-            transition: 0.1s;
         }
-        .btn-float:active { transform: scale(0.85); filter: brightness(1.3); }
-        
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
         .bg-pecas { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
@@ -82,11 +79,11 @@
 
         @media (max-width: 900px) {
             #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
-            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 3px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
         }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 95%; max-width: 450px; padding: 25px; border-radius: 20px; border: 4px solid var(--gold); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 95%; max-width: 450px; padding: 25px; border-radius: 20px; }
     </style>
 </head>
 <body class="dark-mode">
@@ -94,7 +91,7 @@
 <header>
     <div class="nav-group">
         <a href="index.html" class="btn-c btn-home"><i class="fas fa-home"></i></a>
-        <a href="mentoria.html" target="_blank" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
+        <a href="https://mentoria.joaquimelite.com.br" target="_blank" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
     </div>
     <div class="nav-group">
         <button class="btn-c btn-ref" id="ref-p" onclick="abrirDoc('p')">P</button>
@@ -122,9 +119,9 @@
             </div>
         </section>
         <section id="pdf-viewer">
-            <div style="background:var(--primary); color:var(--gold); padding:12px; display:flex; justify-content:space-between; font-weight:bold; border-bottom:2px solid var(--gold);">
+            <div style="background:var(--primary); color:var(--gold); padding:10px; display:flex; justify-content:space-between; border-bottom:2px solid var(--gold);">
                 <span id="pdf-label">SISTEMA</span>
-                <button onclick="fecharDoc()" style="color:white; background:#ef4444; border:none; padding:5px 15px; border-radius:8px; cursor:pointer;">FECHAR X</button>
+                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">FECHAR X</button>
             </div>
             <iframe id="pdf-frame"></iframe>
         </section>
@@ -134,8 +131,8 @@
 <div class="modal" id="pec-modal">
     <div class="modal-body">
         <h3 style="margin-bottom:20px; text-align:center;">TURBINAS (ESTRUTURAS)</h3>
-        <div id="peca-grid" style="display:grid; gap:12px; max-height:400px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:12px; font-weight:bold;">VOLTAR</button>
+        <div id="peca-grid" style="display:grid; gap:10px; max-height:400px; overflow-y:auto;"></div>
+        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:10px; font-weight:bold;">VOLTAR</button>
     </div>
 </div>
 
@@ -145,7 +142,7 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // ASSEGURA QUE AS FUNÇÕES ESTÃO NO WINDOW ANTES DE QUALQUER COISA
+    // IGNIÇÃO IMEDIATA: AS FUNÇÕES NÃO ESPERAM MAIS POR CLIQUES ANTERIORES
     window.activeEx = "41";
     const editor = document.getElementById('main-editor');
 
@@ -155,7 +152,7 @@
             editor.focus();
             const formatado = "\n\n--- ⚖️ TREM DE POUSO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
             document.execCommand('insertText', false, formatado);
-        } else { alert("Gabarito ainda não carregado para este exame."); }
+        }
     };
 
     window.abrirPecas = function() {
@@ -180,26 +177,24 @@
         const docs = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
         frame.src = docs[tipo];
         document.getElementById('viewport-master').classList.add('split-view');
-        document.getElementById('pdf-label').innerText = "CARTAS NÁUTICAS: " + tipo.toUpperCase();
     };
 
     window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
 
     window.salvarManual = () => {
         set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
-        const btn = document.querySelector('.fa-save').parentElement;
-        btn.style.background = "white"; setTimeout(() => btn.style.background = "#22c55e", 200);
+        alert("LOGS SINCRONIZADOS!");
     };
 
     window.lancarPeca = () => {
         if(!editor.innerText.trim()) return;
         push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
-        alert("🚀 LANÇAMENTO CONFIRMADO NO HISTÓRICO!");
+        alert("🚀 PEÇA LANÇADA NO HISTÓRICO!");
     };
 
-    window.limparTudo = () => { if(confirm("EJEÇÃO DE EMERGÊNCIA: APAGAR TUDO?")) editor.innerText = ""; };
+    window.limparTudo = () => { if(confirm("CONFIRMAR EJEÇÃO TOTAL DO RASCUNHO?")) editor.innerText = ""; };
 
-    // CARREGAMENTO DOS EXAMES (PAINEL LESTE)
+    // CARREGAMENTO DOS EXAMES
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
@@ -221,7 +216,6 @@
         }, { onlyOnce: true });
     }
 
-    // IGNITAR MOTORES
     carregarDados();
     editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
