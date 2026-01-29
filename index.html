@@ -33,7 +33,7 @@
 
         .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.1); }
         #radar-peca { background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: 900; text-align: center; min-height: 45px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace; line-height: 1.1; margin-bottom: 5px; }
-        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; margin-bottom: 5px; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; width: 100%; -webkit-overflow-scrolling: touch; }
@@ -82,7 +82,7 @@
 </header>
 
 <main>
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div id="radar-peca">ESCANEANDO</div>
         <div id="exam-nav"></div>
     </aside>
@@ -93,7 +93,7 @@
         </div>
         
         <div class="paper-tools">
-            <button class="btn-side side-rocket" onclick="gerarSnapshot()" title="Enviar Snapshot"><i class="fas fa-rocket"></i></button>
+            <button class="btn-side side-rocket" onclick="gerarSnapshot()" title="Enviar Snapshot (Histórico)"><i class="fas fa-rocket"></i></button>
             <button class="btn-side side-save" onclick="salvarManual()" title="Salvar Rascunho"><i class="fas fa-save"></i></button>
             <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
             <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
@@ -124,7 +124,6 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // Atribuição global segura
     window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push;
     window.BANCO_ESPELHOS = BANCO_ESPELHOS; window.pecas_data = pecas;
 
@@ -133,29 +132,34 @@
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
-    // BOTÃO FOGUETE ATIVADO
+    // BOTÃO FOGUETE: SALVAMENTO EXCLUSIVO NO HISTÓRICO
     window.gerarSnapshot = () => {
-        const txt = editor.innerText.trim();
-        if(!txt) { alert("Escreva algo antes de enviar!"); return; }
-        
+        const conteudo = editor.innerText.trim();
+        if(!conteudo) { alert("⚠️ Digite algo antes de enviar!"); return; }
+
         const historicoRef = window.ref(window.db, 'historico_envios/' + activeEx);
         window.push(historicoRef, {
             peca_nome: radar.innerText,
-            conteudo: txt,
+            conteudo: conteudo,
             data: new Date().toLocaleString('pt-BR'),
             timestamp: Date.now()
-        }).then(() => alert("🚀 PEÇA ENVIADA AO HISTÓRICO!"))
-          .catch(err => alert("Erro: " + err));
+        }).then(() => alert("🚀 PEÇA ENVIADA COM SUCESSO!"))
+          .catch(err => alert("Erro ao salvar histórico: " + err));
     };
 
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('#theme-toggle i');
         const isDark = document.body.classList.contains('dark-mode');
+        if(icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     };
 
+    if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
     const carregarExames = () => {
         const nav = document.getElementById('exam-nav');
+        if(!nav) return;
         nav.innerHTML = '';
         for (let i = 44; i >= 35; i--) {
             const btn = document.createElement('div');
@@ -191,7 +195,8 @@
             currentMode = mode;
             panel.classList.add('open');
             document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-            document.getElementById(`ref-${mode}`).classList.add('active');
+            const targetBtn = document.getElementById(`ref-${mode}`);
+            if(targetBtn) targetBtn.classList.add('active');
             const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
             document.getElementById('pdf-frame').src = docs[mode];
         }
@@ -205,7 +210,13 @@
 
     window.salvarManual = () => {
         window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
-        .then(() => alert("✅ Rascunho salvo!"));
+        .then(() => {
+            const btn = document.querySelector('.side-save');
+            if(btn) {
+                btn.style.background = "#fbbf24";
+                setTimeout(() => { btn.style.background = "#22c55e"; }, 500);
+            }
+        });
     };
 
     window.abrirPecas = () => {
@@ -217,7 +228,7 @@
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 editor.innerText += "\n\n" + window.pecas_data[k];
-                fecharPecas();
+                window.fecharPecas();
             };
             grid.appendChild(b);
         });
@@ -239,8 +250,6 @@
         }, { onlyOnce: true });
     }
 
-    // Inicialização
-    if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     carregarExames();
     carregarFirebase();
     editor.addEventListener('input', () => {
