@@ -12,27 +12,43 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
         header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); z-index: 1000; }
         .nav-group { display: flex; gap: 8px; align-items: center; }
+
         .btn-tool { height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
         .btn-tool.active { background: var(--gold); color: var(--primary); }
         .btn-mentoria { background: #a855f7 !important; border: none !important; color: white !important; }
         .btn-save { background: #22c55e !important; color: white !important; border: none !important; width: auto !important; padding: 0 15px !important; font-weight: 900; }
+
         main { display: flex; flex: 1; overflow: hidden; width: 100vw; }
+
+        /* SIDEBAR EXAMES */
         .sidebar { width: 65px; background: #020617; display: flex; flex-direction: column; gap: 5px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
         .exame-btn { width: 100%; height: 35px; background: #334155; border-radius: 6px; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
+
+        /* SPLIT VIEW */
         .pdf-section { flex: 1; background: #334155; display: flex; flex-direction: column; border-right: 3px solid var(--gold); }
         .editor-section { flex: 1.2; overflow-y: auto; background: var(--bg-main); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+
         .paper { background: var(--paper); width: 100%; max-width: 850px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-height: 2000px; color: var(--text-dark); position: relative; }
+       
         .oab-header { border: 2px solid #000; padding: 10px; margin-bottom: 20px; text-align: center; }
         .peca-nome { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; color: #b91c1c; }
+
         .section-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin-top: 30px; font-size: 0.9rem; display: flex; justify-content: space-between; }
+       
         .editor-area { outline: none; font-size: 18px; line-height: 30px; color: #000; font-family: 'Times New Roman', serif; background-image: repeating-linear-gradient(var(--paper), var(--paper) 29px, #d1d5db 29px, #d1d5db 30px); min-height: 100px; width: 100%; word-wrap: break-word; }
+
+        /* FLOATING ACTIONS */
         .paper-tools { position: fixed; right: 25px; bottom: 25px; display: flex; flex-direction: column; gap: 12px; z-index: 1100; }
         .btn-fab { width: 55px; height: 55px; border-radius: 50%; border: 2px solid white; color: white; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 20px; border: 3px solid var(--gold); }
+
         @media (max-width: 900px) { main { flex-direction: column; } .pdf-section { height: 40vh; flex: none; } }
     </style>
 </head>
@@ -43,11 +59,13 @@
         <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
         <button class="btn-tool btn-mentoria" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
     </div>
+   
     <div class="nav-group">
         <button class="btn-tool" id="btn-p" onclick="loadPdf('p')">P</button>
         <button class="btn-tool" id="btn-g" onclick="loadPdf('g')">G</button>
         <button class="btn-tool" id="btn-v" onclick="loadPdf('v')">V</button>
     </div>
+
     <div class="nav-group">
         <button class="btn-tool btn-save" id="status-save" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i> SALVAR</button>
     </div>
@@ -55,6 +73,7 @@
 
 <main>
     <aside class="sidebar" id="exam-nav"></aside>
+
     <section class="pdf-section">
         <div style="height:35px; background:#1e293b; color:var(--gold); display:flex; align-items:center; padding:0 10px; font-size:0.8rem; font-weight:bold; justify-content:space-between;">
             <span id="pdf-label">ENUNCIADO</span>
@@ -69,21 +88,27 @@
                 <div class="peca-nome" id="nome-da-peca">IDENTIFICANDO PEÇA...</div>
                 <p style="font-size:0.7rem; font-weight:bold;">FOLHA DE RESPOSTAS PROFISSIONAL</p>
             </div>
+
             <div class="section-title">PEÇA PROFISSIONAL</div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
+
             <div class="section-title">QUESTÃO 01 (A/B)</div>
             <div id="editor-q1a" class="editor-area" contenteditable="true" style="min-height:150px"></div>
             <div id="editor-q1b" class="editor-area" contenteditable="true" style="min-height:150px"></div>
+
             <div class="section-title">QUESTÃO 02 (A/B)</div>
             <div id="editor-q2a" class="editor-area" contenteditable="true" style="min-height:150px"></div>
             <div id="editor-q2b" class="editor-area" contenteditable="true" style="min-height:150px"></div>
+
             <div class="section-title">QUESTÃO 03 (A/B)</div>
             <div id="editor-q3a" class="editor-area" contenteditable="true" style="min-height:150px"></div>
             <div id="editor-q3b" class="editor-area" contenteditable="true" style="min-height:150px"></div>
+
             <div class="section-title">QUESTÃO 04 (A/B)</div>
             <div id="editor-q4a" class="editor-area" contenteditable="true" style="min-height:150px"></div>
             <div id="editor-q4b" class="editor-area" contenteditable="true" style="min-height:150px"></div>
         </div>
+
         <div class="paper-tools">
             <button class="btn-fab" style="background:#a855f7" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></button>
             <button class="btn-fab" style="background:linear-gradient(45deg, #f59e0b, #ef4444)" onclick="gerarSnapshot()"><i class="fas fa-rocket"></i></button>
@@ -102,74 +127,64 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com";
-    // Módulos Externos (Necessário que existam na sua hospedagem)
-    import { BANCO_ESPELHOS } from './banco-espelhos.js'; 
+    import { db } from './firebase-config.js';
+    import { ref, set, onValue, push } from "https://www.gstatic.com";
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
-        authDomain: "masteroab-db5e1.firebaseapp.com",
-        projectId: "masteroab-db5e1",
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
     let activeEx = "41";
     const ids = ['peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // --- RAIO-X (ALIMENTADO PELO BANCO DE ESPELHOS) ---
-    const identificarPecaPeloBanco = () => {
-        const visor = document.getElementById('nome-da-peca');
-        // Puxa a informação do arquivo externo importado
-        const espelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        
-        if (espelho.includes("AGRAVO DE INSTRUMENTO")) visor.innerText = "AGRAVO DE INSTRUMENTO";
-        else if (espelho.includes("AGRAVO DE PETIÇÃO")) visor.innerText = "AGRAVO DE PETIÇÃO";
-        else if (espelho.includes("CONTESTAÇÃO")) visor.innerText = "CONTESTAÇÃO";
-        else if (espelho.includes("RECURSO ORDINÁRIO")) visor.innerText = "RECURSO ORDINÁRIO";
-        else if (espelho.includes("RECLAMAÇÃO TRABALHISTA")) visor.innerText = "RECLAMAÇÃO TRABALHISTA";
-        // Fallback caso não encontre uma das peças principais
-        else visor.innerText = espelho ? espelho.substring(0, 30) : "PEÇA OAB";
-    };
-
     window.loadPdf = (mode) => {
         const frame = document.getElementById('pdf-frame');
+        const label = document.getElementById('pdf-label');
         const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
         frame.src = docs[mode];
+        label.innerText = mode === 'v' ? "VADE MECUM" : (mode === 'g' ? "GABARITO" : "ENUNCIADO");
         document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active'));
-        if(document.getElementById(`btn-${mode}`)) document.getElementById(`btn-${mode}`).classList.add('active');
+        document.getElementById(`btn-${mode}`).classList.add('active');
     };
 
     window.salvarManual = () => {
         const dados = {};
         ids.forEach(id => { dados[id] = document.getElementById('editor-' + id).innerText; });
         set(ref(db, `estudos_completos/${activeEx}`), { ...dados, ts: Date.now() }).then(() => {
-            // Feedback visual no botão
             const btn = document.getElementById('status-save');
             btn.innerHTML = "SALVO!";
             setTimeout(() => { btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> SALVAR'; }, 1000);
         });
     };
 
+    window.abrirEstruturas = () => {
+        const grid = document.getElementById('grid-estruturas');
+        grid.innerHTML = '';
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('button');
+            b.style = "padding:12px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:6px; font-weight:bold;";
+            b.innerText = k.toUpperCase();
+            b.onclick = () => {
+                document.getElementById('editor-peca').innerText += "\n\n" + pecas[k];
+                document.getElementById('modal-pecas').style.display = 'none';
+                window.salvarManual();
+            };
+            grid.appendChild(b);
+        });
+        document.getElementById('modal-pecas').style.display = 'flex';
+    };
+
+    window.injetarJustica = () => {
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ TESES ---\n" + esp.replace(/<[^>]*>/g, '');
+    };
+
     window.gerarSnapshot = () => {
         const dados = {};
         ids.forEach(id => dados[id] = document.getElementById('editor-' + id).innerText);
-        push(ref(db, 'historico_envios/'), { 
-            ...dados, 
-            exame: activeEx, 
-            peca_oficial: document.getElementById('nome-da-peca').innerText,
-            timestamp: Date.now() 
-        }).then(() => alert("🚀 SNAPSHOT ENVIADO!"));
+        push(ref(db, 'historico_envios/'), { ...dados, exame: activeEx, timestamp: Date.now() });
+        alert("🚀 SNAPSHOT ENVIADO!");
     };
 
     window.resetarTudo = () => { if(confirm("Apagar tudo?")) ids.forEach(id => document.getElementById('editor-' + id).innerText = ""); };
-
-    window.abrirEstruturas = () => { alert("Funcionalidade depende do arquivo estruturas.js"); };
-    window.injetarJustica = () => { alert("Funcionalidade depende do arquivo banco-espelhos.js"); };
-
 
     const carregarInterface = () => {
         const nav = document.getElementById('exam-nav');
@@ -178,16 +193,12 @@
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             btn.innerText = `E${i}`;
-            btn.onclick = () => { 
-                activeEx = i.toString(); 
-                carregarInterface(); 
-                carregarFirebase(); 
-                window.loadPdf('p'); 
-            };
+            btn.onclick = () => { activeEx = i.toString(); carregarInterface(); carregarFirebase(); loadPdf('p'); };
             nav.appendChild(btn);
         }
+        const esp = BANCO_ESPELHOS[activeEx] || "";
+        document.getElementById('nome-da-peca').innerText = esp.toUpperCase().includes("AGRAVO") ? "AGRAVO DE PETIÇÃO" : "RECLAMAÇÃO TRABALHISTA";
         document.getElementById('exame-label-topo').innerText = "E" + activeEx;
-        identificarPecaPeloBanco(); // Aciona o Raio-X ao carregar/trocar
     };
 
     function carregarFirebase() {
@@ -200,8 +211,8 @@
         }, { onlyOnce: true });
     }
 
-    ids.forEach(id => document.getElementById(id).addEventListener('input', window.salvarManual));
-    carregarInterface(); carregarFirebase(); window.loadPdf('p');
+    ids.forEach(id => document.getElementById('editor-' + id).addEventListener('input', window.salvarManual));
+    carregarInterface(); carregarFirebase(); loadPdf('p');
 </script>
 </body>
 </html>
