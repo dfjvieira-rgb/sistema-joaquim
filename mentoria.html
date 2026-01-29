@@ -3,172 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026</title>
+    <title>SISTEMA ELITE 2026 - ROTA LOCAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px;
+            --header-h: 70px; --mentoria: #a855f7;
         }
-
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
-        
-        body { 
-            font-family: 'Inter', sans-serif; background: var(--primary); 
-            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
+        /* HEADER BLINDADO - IMPEDE SOBREPOSIÇÃO NO CORREDOR */
         header { 
-            background: var(--primary); height: var(--header-h); padding: 0 10px; 
+            background: var(--primary); height: var(--header-h); padding: 0 15px; 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 1000;
+            border-bottom: 3px solid var(--gold); z-index: 2000;
+        }
+        .nav-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+        .btn-c { 
+            height: 46px; width: 46px; border-radius: 12px; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: white; font-size: 1.1rem; text-decoration: none;
+            transition: transform 0.1s;
+        }
+        .btn-c:active { transform: scale(0.9); }
+        .btn-home { background: #334155; }
+        
+        /* COMISSÁRIA NO LUGAR CERTO: mentoria.html */
+        .btn-mentoria { 
+            background: var(--mentoria) !important; 
+            border: 2px solid white !important; 
+            box-shadow: 0 0 10px rgba(168,85,247,0.5);
         }
 
-        .nav-group { display: flex; gap: 5px; align-items: center; }
-
-        .btn-ref {
-            height: 38px; width: 38px; border-radius: 6px; border: 2px solid var(--gold);
-            background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
-        }
+        .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
-        .btn-tool { 
-            height: 38px; width: 38px; border-radius: 6px; border: none;
-            color: white; cursor: pointer; background: #334155;
-            display: flex; align-items: center; justify-content: center;
-        }
+        main { display: flex; flex: 1; overflow: hidden; }
 
-        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
+        /* RADAR LATERAL */
+        .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
+        .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .exame-btn.active { background: var(--gold); color: black; }
 
-        .sidebar { 
-            width: 70px; background: #1e293b; display: flex; 
-            flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        #radar-peca {
-            background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px; 
-            font-size: 0.55rem; font-weight: 900; text-align: center; 
-            min-height: 45px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace;
-            line-height: 1.1; margin-bottom: 5px;
-        }
-
-        .exame-btn {
-            width: 100%; height: 35px; background: #334155; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;
-        }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
-
-        .editor-container { 
-            flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; width: 100%;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .paper { 
-            background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
-            padding: 30px 20px 200px 20px; position: relative;
-            cursor: text; transition: background 0.3s ease;
-        }
-
+        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
+        #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
+        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; justify-content: center; position: relative; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 300px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); 
-            font-family: 'Times New Roman', serif; text-align: justify;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1200px; width: 100%; word-wrap: break-word;
-            user-select: text; -webkit-user-select: text;
+            outline: none; font-size: 18px; line-height: 31px; color: var(--text-color); font-family: 'Times New Roman', serif;
+            min-height: 1200px; white-space: pre-wrap;
+            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 30px, var(--line-color) 30px, var(--line-color) 31px);
         }
 
-        .paper-tools {
-            position: fixed; left: 80px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 12px; z-index: 1500;
+        /* PAINEL DE INSTRUMENTOS (FLUTUANTE) */
+        .paper-tools { position: fixed; left: 80px; bottom: 30px; display: flex; flex-direction: column; gap: 12px; z-index: 1500; }
+        .btn-float { 
+            width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; 
+            color: white; font-size: 1.4rem; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+        }
+        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
+        .bg-pecas { background: #1e293b; color: var(--gold); border-color: var(--gold); }
+        .bg-justica { background: #3b82f6; }
+        .bg-clear { background: #ef4444; }
+
+        #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 3px solid var(--gold); }
+        #viewport-master.split-view #pdf-viewer { display: flex; }
+        iframe { width: 100%; height: 100%; border: none; background: #fff; }
+
+        @media (max-width: 900px) {
+            #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 10px 10px 40px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 20px 20px 0 0; }
+            header { padding: 0 8px; }
+            .nav-group { gap: 5px; }
         }
 
-        .btn-side {
-            width: 50px; height: 50px; border-radius: 12px; border: none;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-        
-        .side-rocket { background: linear-gradient(135deg, #f59e0b, #ef4444); border: 2px solid #fff; } /* FOGUETE */
-        .side-pecas { background: #1e293b; border: 1px solid var(--gold); color: var(--gold); }
-        .side-justica { background: #3b82f6; }
-        .side-clear { background: #ef4444; }
-
-        @media (max-width: 600px) {
-            .sidebar { width: 65px; }
-            .paper-tools {
-                left: 0; bottom: 0; width: 100%; flex-direction: row;
-                background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold);
-                justify-content: space-around;
-            }
-            .paper { padding: 20px 15px 160px 15px; }
-        }
-
-        .pdf-panel { 
-            position: fixed; right: 0; top: var(--header-h); bottom: 0;
-            width: 0; background: white; transition: 0.3s; z-index: 2000;
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-        .pdf-panel.open { width: 100%; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; border: 3px solid var(--gold); }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
     <div class="nav-group">
-        <button class="btn-tool" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
-        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <a href="index.html" class="btn-c btn-home"><i class="fas fa-home"></i></a>
+        <a href="mentoria.html" target="_blank" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
     </div>
-
     <div class="nav-group">
-        <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
-        <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
-        <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
+        <button class="btn-c btn-ref" id="ref-p" onclick="abrirDoc('p')">P</button>
+        <button class="btn-c btn-ref" id="ref-g" onclick="abrirDoc('g')">G</button>
+        <button class="btn-c btn-ref" id="ref-v" onclick="abrirDoc('v')">V</button>
     </div>
-
     <div class="nav-group">
-        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-        <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-c" style="background:#475569" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-adjust"></i></button>
+        <button class="btn-c" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
     </div>
 </header>
 
 <main>
-    <aside class="sidebar" id="sidebar">
-        <div id="radar-peca">ESCANEANDO</div>
-        <div id="exam-nav"></div>
-    </aside>
-
-    <section class="editor-container">
-        <div class="paper">
-            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
-        </div>
-        
-        <div class="paper-tools">
-            <button class="btn-side side-rocket" onclick="lancarPeca()" title="Lançar para Histórico"><i class="fas fa-rocket"></i></button>
-            <button class="btn-side side-pecas" onclick="abrirPecas()" title="Estruturas"><i class="fas fa-scroll"></i></button>
-            <button class="btn-side side-justica" onclick="injetarJustica()" title="Teses"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar"><i class="fas fa-trash-alt"></i></button>
-        </div>
-    </section>
-
-    <div class="pdf-panel" id="pdf-panel">
-        <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
-            <span id="pdf-title">SUPORTE ELITE</span>
-            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
-        </div>
-        <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
+    <aside class="sidebar" id="exam-nav"></aside>
+    <div id="viewport-master">
+        <section class="editor-container">
+            <div class="paper">
+                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            </div>
+            <div class="paper-tools">
+                <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
+                <div class="btn-float bg-pecas" onclick="abrirPecas()"><i class="fas fa-cog fa-spin"></i></div>
+                <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
+                <div class="btn-float bg-clear" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
+            </div>
+        </section>
+        <section id="pdf-viewer">
+            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between; font-weight:bold;">
+                <span id="pdf-label">DOCUMENTAÇÃO</span>
+                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">X</button>
+            </div>
+            <iframe id="pdf-frame"></iframe>
+        </section>
     </div>
 </main>
+
+<div class="modal" id="pec-modal">
+    <div class="modal-body">
+        <h3 style="margin-bottom:15px; text-align:center;">ESTRUTURAS (PEÇAS)</h3>
+        <div id="peca-grid" style="display:grid; gap:10px; max-height:350px; overflow-y:auto;"></div>
+        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border-radius:8px; font-weight:bold;">VOLTAR</button>
+    </div>
+</div>
 
 <script type="module">
     import { db } from './firebase-config.js';
@@ -176,98 +145,81 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push;
-    window.BANCO_ESPELHOS = BANCO_ESPELHOS; window.pecas_data = pecas;
-
-    let activeEx = "41";
-    let currentMode = null;
+    // SISTEMA IMUNIZADO - FUNÇÕES GLOBAIS IMEDIATAS
+    window.activeEx = "41";
     const editor = document.getElementById('main-editor');
-    const radar = document.getElementById('radar-peca');
 
-    // Lógica do Foguete (Histórico)
-    window.lancarPeca = () => {
-        if (!editor.innerText.trim()) return alert("Folha vazia!");
-        
-        const dataHora = new Date().toLocaleString('pt-BR');
-        const pecaRef = window.ref(window.db, `historico_pecas/${activeEx}`);
-        const novaPeca = window.push(pecaRef);
-        
-        window.set(novaPeca, {
-            titulo: radar.innerText,
-            exame: activeEx,
-            data: dataHora,
-            conteudo: editor.innerText
-        }).then(() => {
-            alert("🚀 PEÇA LANÇADA AO HISTÓRICO!");
-            // Efeito visual de decolagem
-            document.querySelector('.side-rocket').style.transform = "translateY(-100px)";
-            document.querySelector('.side-rocket').style.opacity = "0";
-            setTimeout(() => {
-                document.querySelector('.side-rocket').style.transform = "translateY(0)";
-                document.querySelector('.side-rocket').style.opacity = "1";
-            }, 1000);
+    window.injetarJustica = function() {
+        const conteudo = BANCO_ESPELHOS[window.activeEx];
+        if(conteudo) {
+            editor.focus();
+            const formatado = "\n\n--- ⚖️ TREM DE POUSO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
+            document.execCommand('insertText', false, formatado);
+        } else { alert("Aguardando Banco de Dados..."); }
+    };
+
+    window.abrirPecas = function() {
+        const grid = document.getElementById('peca-grid');
+        grid.innerHTML = '';
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('button');
+            b.style = "padding:12px; text-align:left; border:1px solid #ddd; border-radius:8px; font-weight:bold; cursor:pointer; background:#f8fafc;";
+            b.innerText = k.toUpperCase();
+            b.onclick = () => {
+                editor.focus();
+                document.execCommand('insertText', false, "\n\n" + pecas[k]);
+                document.getElementById('pec-modal').style.display='none';
+            };
+            grid.appendChild(b);
         });
+        document.getElementById('pec-modal').style.display = 'flex';
     };
 
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    window.abrirDoc = (tipo) => {
+        const frame = document.getElementById('pdf-frame');
+        frame.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
+        document.getElementById('viewport-master').classList.add('split-view');
+        document.getElementById('pdf-label').innerText = "VISUALIZANDO: " + tipo.toUpperCase();
     };
 
-    const carregarExames = () => {
-        const nav = document.getElementById('exam-nav');
-        nav.innerHTML = '';
-        for (let i = 44; i >= 35; i--) {
-            const btn = document.createElement('div');
-            btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
-            btn.innerText = `E${i}`;
-            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
-            nav.appendChild(btn);
-        }
-        atualizarRadar();
-    };
-
-    const atualizarRadar = () => {
-        const txt = (window.BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        if (activeEx === "41" || txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
-        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT - RECLAMAÇÃO";
-        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else radar.innerText = "PEÇA OAB " + activeEx;
-    };
+    window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
 
     window.salvarManual = () => {
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        const btn = document.getElementById('btn-sync');
-        btn.style.background = "#fbbf24";
-        setTimeout(() => btn.style.background = "#22c55e", 500);
+        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
+        alert("SINCRONIA COMPLETA!");
     };
 
-    window.autoSave = () => {
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    window.lancarPeca = () => {
+        if(!editor.innerText.trim()) return;
+        push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
+        alert("🚀 LANÇADO NO HISTÓRICO!");
     };
 
-    function carregarFirebase() {
-        window.onValue(window.ref(window.db, 'estudos/' + activeEx), (s) => {
+    window.limparTudo = () => { if(confirm("DESEJA LIMPAR O RASCUNHO?")) editor.innerText = ""; };
+
+    const nav = document.getElementById('exam-nav');
+    for(let i=44; i>=35; i--) {
+        const b = document.createElement('div');
+        b.className = `exame-btn ${i==41?'active':''}`;
+        b.innerText = 'E'+i;
+        b.onclick = () => { 
+            window.activeEx = i.toString(); 
+            document.querySelectorAll('.exame-btn').forEach(x=>x.classList.remove('active')); 
+            b.classList.add('active'); 
+            carregarDados(); 
+        };
+        nav.appendChild(b);
+    }
+
+    function carregarDados() {
+        onValue(ref(db, 'estudos/' + window.activeEx), (s) => {
             const d = s.val();
             if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
         }, { onlyOnce: true });
     }
 
-    window.togglePdf = (mode) => {
-        const panel = document.getElementById('pdf-panel');
-        if(currentMode === mode) { panel.classList.remove('open'); currentMode = null; } 
-        else {
-            currentMode = mode; panel.classList.add('open');
-            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
-            document.getElementById('pdf-frame').src = docs[mode];
-        }
-    };
-
-    window.closePdf = () => { document.getElementById('pdf-panel').classList.remove('open'); currentMode = null; };
-    window.resetarFolha = () => { if(confirm("Limpar rascunho?")) editor.innerText = ""; };
-
-    carregarExames(); carregarFirebase();
-    editor.addEventListener('input', window.autoSave);
+    carregarDados();
+    editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
 </body>
 </html>
