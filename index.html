@@ -76,8 +76,7 @@
         
         .paper { 
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%; 
-            padding: 30px 20px 200px 20px; position: relative;
-            cursor: text; transition: background 0.3s ease;
+            padding: 30px 20px 220px 20px; position: relative;
         }
 
         .editor-area { 
@@ -85,7 +84,6 @@
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
             min-height: 1200px; width: 100%; word-wrap: break-word;
-            user-select: text; -webkit-user-select: text;
         }
 
         .paper-tools {
@@ -97,9 +95,10 @@
             width: 50px; height: 50px; border-radius: 12px; border: none;
             display: flex; align-items: center; justify-content: center;
             color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        .side-save { background: #22c55e; border: 2px solid #ffffff; }
+        .side-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); border: 2px solid white; }
         .side-pecas { background: #1e293b; border: 1px solid var(--gold); color: var(--gold); }
         .side-justica { background: #3b82f6; }
         .side-clear { background: #ef4444; }
@@ -111,7 +110,6 @@
                 background: var(--primary); padding: 10px 10px 30px 10px; border-top: 2px solid var(--gold);
                 justify-content: space-around;
             }
-            .paper { padding: 20px 15px 160px 15px; }
         }
 
         .pdf-panel { 
@@ -157,16 +155,16 @@
         </div>
         
         <div class="paper-tools">
-            <button class="btn-side side-save" onclick="salvarManual()" title="Salvar"><i class="fas fa-save"></i></button>
+            <button class="btn-side side-rocket" id="rocket-btn" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
             <button class="btn-side side-pecas" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
             <button class="btn-side side-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+            <button class="btn-side side-clear" onclick="resetarFolha()"><i class="fas fa-eraser"></i></button>
         </div>
     </section>
 
     <div class="pdf-panel" id="pdf-panel">
         <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
-            <span id="pdf-title">SUPORTE ELITE</span>
+            <span id="pdf-title">VADE MECUM ELITE</span>
             <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
@@ -183,27 +181,45 @@
 
 <script type="module">
     import { db } from './firebase-config.js';
-    import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue;
-    window.BANCO_ESPELHOS = BANCO_ESPELHOS; window.pecas_data = pecas;
+    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue; window.push = push;
+    window.pecas_data = pecas;
 
     let activeEx = "41";
     let currentMode = null;
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-        const icon = document.querySelector('#theme-toggle i');
-        const isDark = document.body.classList.contains('dark-mode');
-        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    window.lancarPeca = () => {
+        const txt = editor.innerText.trim();
+        if (!txt) return alert("Comandante, a folha está vazia!");
+        
+        const historicoRef = window.ref(window.db, `historico_pecas/${activeEx}`);
+        const novoLancamento = window.push(historicoRef);
+        
+        window.set(novoLancamento, {
+            peca: radar.innerText,
+            data: new Date().toLocaleString('pt-BR'),
+            conteudo: txt
+        }).then(() => {
+            const rkt = document.getElementById('rocket-btn');
+            rkt.style.transform = "translateY(-100px) scale(0)";
+            rkt.style.opacity = "0";
+            setTimeout(() => {
+                rkt.style.transform = "translateY(0) scale(1)";
+                rkt.style.opacity = "1";
+                alert("🚀 LANÇAMENTO REALIZADO COM SUCESSO!");
+            }, 800);
+        });
     };
 
-    if(localStorage.getItem('theme') === 'dark') toggleTheme();
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    };
 
     const carregarExames = () => {
         const nav = document.getElementById('exam-nav');
@@ -212,64 +228,18 @@
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             btn.innerText = `E${i}`;
-            btn.onclick = () => mudarExame(i);
+            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
             nav.appendChild(btn);
         }
-        atualizarRadar();
-    };
-
-    const mudarExame = (i) => {
-        activeEx = i.toString();
-        carregarExames();
-        carregarFirebase();
-    };
-
-    const atualizarRadar = () => {
-        const conteudo = window.BANCO_ESPELHOS[activeEx];
-        if (!conteudo) { radar.innerText = "SEM DADOS"; return; }
-        const txt = conteudo.toUpperCase();
-        if (activeEx === "41" || txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO DE PETIÇÃO";
-        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT - RECLAMAÇÃO";
-        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else radar.innerText = "PEÇA OAB";
-    };
-
-    window.togglePdf = (mode) => {
-        const panel = document.getElementById('pdf-panel');
-        if(currentMode === mode) { closePdf(); } 
-        else {
-            currentMode = mode;
-            panel.classList.add('open');
-            document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-            document.getElementById(`ref-${mode}`).classList.add('active');
-            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
-            document.getElementById('pdf-frame').src = docs[mode];
-        }
-    };
-
-    window.closePdf = () => {
-        document.getElementById('pdf-panel').classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        currentMode = null;
+        const esp = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        radar.innerText = (activeEx === "41" || esp.includes("AGRAVO")) ? "AGRAVO DE PETIÇÃO" : "PEÇA OAB " + activeEx;
     };
 
     window.salvarManual = () => {
-        const btnHeader = document.getElementById('btn-sync');
-        const btnSide = document.querySelector('.side-save');
-        
-        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() })
-        .then(() => {
-            // Feedback Visual Duplo
-            [btnHeader, btnSide].forEach(b => {
-                if(b) b.style.background = "#fbbf24";
-                setTimeout(() => { if(b) b.style.background = b === btnHeader ? "#22c55e" : "#22c55e"; }, 500);
-            });
-        });
-    };
-
-    window.autoSave = () => {
         window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+        const btn = document.getElementById('btn-sync');
+        btn.style.background = "#fbbf24";
+        setTimeout(() => btn.style.background = "#22c55e", 500);
     };
 
     window.abrirPecas = () => {
@@ -279,23 +249,26 @@
             const b = document.createElement('button');
             b.style = "padding:12px; text-align:left; border:1px solid #ddd; background:#f8fafc; border-radius:6px; font-weight:bold; color:#1e293b";
             b.innerText = k.toUpperCase();
-            b.onclick = () => {
-                editor.innerText += "\n\n" + window.pecas_data[k];
-                document.getElementById('pec-modal').style.display = 'none';
-                window.autoSave();
-            };
+            b.onclick = () => { editor.innerText += "\n\n" + window.pecas_data[k]; fecharPecas(); };
             grid.appendChild(b);
         });
         document.getElementById('pec-modal').style.display = 'flex';
     };
 
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; window.autoSave(); } };
-    
-    window.injetarJustica = () => {
-        const esp = window.BANCO_ESPELHOS[activeEx];
-        if(esp) editor.innerText += "\n\n--- ⚖️ TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+    window.togglePdf = (mode) => {
+        const panel = document.getElementById('pdf-panel');
+        if(currentMode === mode) { panel.classList.remove('open'); currentMode = null; } 
+        else {
+            currentMode = mode; panel.classList.add('open');
+            const docs = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` };
+            document.getElementById('pdf-frame').src = docs[mode];
+            document.getElementById('pdf-title').innerText = mode === 'v' ? 'VADE MECUM' : 'DOCUMENTO';
+        }
     };
+
+    window.closePdf = () => { document.getElementById('pdf-panel').classList.remove('open'); currentMode = null; };
+    window.resetarFolha = () => { if(confirm("Apagar rascunho?")) editor.innerText = ""; };
 
     function carregarFirebase() {
         window.onValue(window.ref(window.db, 'estudos/' + activeEx), (s) => {
@@ -304,9 +277,10 @@
         }, { onlyOnce: true });
     }
 
-    carregarExames();
-    carregarFirebase();
-    editor.addEventListener('input', window.autoSave);
+    carregarExames(); carregarFirebase();
+    editor.addEventListener('input', () => {
+        window.set(window.ref(window.db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    });
 </script>
 </body>
 </html>
