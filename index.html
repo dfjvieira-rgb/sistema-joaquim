@@ -3,248 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - FLIGHT PLAN BLINDADO</title>
+    <title>JOAQUIM ELITE - FLIGHT PLAN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
-            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px;
-        }
-        body.dark-mode {
-            --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
-            --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
-        }
+        :root { --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1; --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7; --header-h: 65px; }
+        body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
         header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 10000; }
         .nav-group { display: flex; gap: 8px; align-items: center; }
-        
         .btn-ref { height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; }
-        #radar-peca { 
-            background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold); 
-            font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        #radar-peca.detectado { background: #16a34a; color: white; border-color: white; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5); }
-        .radar-blink { font-size: 0.45rem; opacity: 0.7; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.2; } }
-
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; margin-bottom: 5px; font-size: 0.8rem; }
         .exame-btn.active { background: var(--gold); color: black; border: 2px solid white; }
-
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; }
-        
         .fgv-title { background: #000; color: #fff; padding: 8px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.85rem; border-left: 5px solid var(--gold); }
-        .q-label { font-weight: bold; color: var(--text-color); margin-top: 15px; display: block; padding-left: 10px; font-size: 0.75rem; }
-
-        .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            white-space: pre-wrap; min-height: 100px; margin-bottom: 15px; text-align: justify;
-        }
-        #editor-peca { min-height: 800px; }
-
+        .editor-area { outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif; background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px); white-space: pre-wrap; min-height: 100px; margin-bottom: 15px; text-align: justify; }
         .paper-tools { position: fixed; right: 25px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
-        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-float:active { transform: scale(0.9); }
-        
-        .bg-save { background: #22c55e; } 
-        .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
-        .bg-justica { background: #3b82f6; }
-        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
-        .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .bg-save { background: #22c55e; } .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
     </style>
 </head>
 <body class="dark-mode">
-
 <header>
     <div class="nav-group">
         <button class="btn-ref" onclick="location.reload()"><i class="fas fa-sync"></i></button>
         <button class="btn-ref" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-adjust"></i></button>
     </div>
     <div class="nav-group">
-        <a href="mentoria.html" class="btn-ref" style="background:#a855f7; border:none; color:white;"><i class="fas fa-trophy"></i></a>
+        <button onclick="window.open('mentoria.html', '_blank')" class="btn-ref" style="background:#a855f7; border:none; color:white;" title="Abrir Mentoria"><i class="fas fa-trophy"></i></button>
         <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="window.limparTudo()"><i class="fas fa-trash-alt"></i></button>
     </div>
 </header>
-
 <main>
     <aside class="sidebar" id="exam-nav"></aside>
-
     <section class="editor-container">
         <div class="paper" id="printable-paper">
-            <div id="radar-peca">
-                <span>SCANNER</span>
-                <span class="radar-blink">VARRENDO...</span>
-            </div>
-            
             <div class="fgv-title">Peça Profissional | EXAME <span id="ex-display">41</span></div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 1</div>
-            <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q1b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 2</div>
-            <span class="q-label">ITEM A)</span><div id="q2a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q2b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 3</div>
-            <span class="q-label">ITEM A)</span><div id="q3a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q3b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 4</div>
-            <span class="q-label">ITEM A)</span><div id="q4a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q4b" class="editor-area" contenteditable="true"></div>
         </div>
-
         <div class="paper-tools">
-            <div class="btn-float bg-save" id="btn-save" title="Salvar Rascunho/Histórico"><i class="fas fa-save"></i></div>
-            <div class="btn-float bg-scroll" id="btn-stru" title="Estruturas"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" id="btn-gavel" title="Injetar Espelho"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-save" id="btn-save" title="Salvar e Enviar para Mentoria"><i class="fas fa-save"></i></div>
             <div class="btn-float bg-rocket" id="btn-fly" title="Simulado Completo"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 </main>
-
-<div class="modal" id="pec-modal">
-    <div class="modal-body">
-        <h3 style="margin-bottom:15px; color: #000;">ESTRUTURAS</h3>
-        <div id="peca-grid" style="max-height:300px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:10px; padding:10px; background:#ef4444; color:white; border:none; border-radius:6px; font-weight:bold;">FECHAR</button>
-    </div>
-</div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
-
     const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
-
     let activeEx = "41";
-    const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // 1. SALVAMENTO AUTOMÁTICO (RASCUNHO)
-    window.salvarRascunho = () => {
-        const data = {};
-        ids.forEach(id => { if(document.getElementById(id)) data[id] = document.getElementById(id).innerText; });
-        set(ref(db, `estudos/${activeEx}`), data);
-    };
-
-    // 2. SALVAMENTO MESTRE (DISQUETE / FOGUETE)
     window.executarSalvamentoMestre = () => {
-        window.salvarRascunho();
         const snapshot = {
             exame: activeEx,
             data: new Date().toLocaleDateString('pt-BR'),
-            hora: new Date().toLocaleTimeString('pt-BR'),
-            preview: document.getElementById('editor-peca').innerText.substring(0, 100) + "...",
-            conteudoFull: document.getElementById('printable-paper').innerHTML 
+            conteudoFull: document.getElementById('printable-paper').innerHTML,
+            qualPeca: "", teses: "", dicasNC: ""
         };
-        push(ref(db, `mentoria/historico`), snapshot)
-            .then(() => alert("🏆 COMANDANTE, PEÇA ARQUIVADA COM SUCESSO!"))
-            .catch(() => alert("Erro na comunicação com o banco."));
+        push(ref(db, `mentoria/historico`), snapshot).then(() => alert("🏆 ARQUIVADO NA MENTORIA!"));
     };
 
-    // CONEXÃO DOS BOTÕES FLUTUANTES
     document.getElementById('btn-save').onclick = window.executarSalvamentoMestre;
-    document.getElementById('btn-fly').onclick = () => { if(confirm("Lançar Simulado Completo no Histórico?")) window.executarSalvamentoMestre(); };
-    
-    document.getElementById('btn-stru').onclick = () => {
-        const grid = document.getElementById('peca-grid'); grid.innerHTML = '';
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('button');
-            b.style = "width:100%; padding:12px; margin-bottom:8px; font-weight:bold; cursor:pointer; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px;";
-            b.innerText = k.toUpperCase();
-            b.onclick = () => {
-                const ed = document.getElementById('editor-peca'); ed.focus();
-                document.execCommand('insertText', false, pecas[k]);
-                document.getElementById('pec-modal').style.display = 'none';
-                window.salvarRascunho();
-            };
-            grid.appendChild(b);
-        });
-        document.getElementById('pec-modal').style.display = 'flex';
-    };
+    document.getElementById('btn-fly').onclick = () => { if(confirm("Lançar Simulado?")) window.executarSalvamentoMestre(); };
 
-    document.getElementById('btn-gavel').onclick = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            const limpo = esp.replace(/<[^>]*>/g, '');
-            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ GABARITO INJETADO ---\n" + limpo;
-            window.salvarRascunho();
-            alert("Espelho injetado na peça!");
-        } else { alert("Espelho não encontrado para este exame."); }
-    };
-
-    // 3. SCANNER DE PEÇA (RADAR)
-    const scanRadar = (ex) => {
-        const txt = (BANCO_ESPELHOS[ex] || "").toUpperCase();
-        const radar = document.getElementById('radar-peca');
-        const alvos = [
-            { id: "AGRAVO DE PETIÇÃO", n: "AGRAVO PETIÇÃO" },
-            { id: "RECURSO ORDINÁRIO", n: "REC. ORDINÁRIO" },
-            { id: "CONTESTAÇÃO", n: "CONTESTAÇÃO" },
-            { id: "RECLAMAÇÃO TRABALHISTA", n: "RECLAMAÇÃO" },
-            { id: "AÇÃO DE CONSIGNAÇÃO", n: "CONSIGNAÇÃO" },
-            { id: "EMBARGOS DE DECLARAÇÃO", n: "EMBARGOS" }
-        ];
-        let det = alvos.find(a => txt.includes(a.id));
-        if(det) {
-            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.5rem; color:white;">${det.n}</span>`;
-            radar.classList.add('detectado');
-        } else {
-            radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
-            radar.classList.remove('detectado');
-        }
-    };
-
-    // 4. NAVEGAÇÃO E CARREGAMENTO
     window.carregarDados = (ex) => {
-        activeEx = ex;
-        document.getElementById('ex-display').innerText = ex;
-        scanRadar(ex);
+        activeEx = ex; document.getElementById('ex-display').innerText = ex;
         onValue(ref(db, `estudos/${ex}`), (s) => {
             const d = s.val();
-            ids.forEach(id => { 
-                document.getElementById(id).innerText = (d && d[id]) ? d[id] : ""; 
-            });
+            document.getElementById('editor-peca').innerText = (d && d['editor-peca']) ? d['editor-peca'] : "";
         }, { onlyOnce: true });
     };
 
     const initNav = () => {
         const nav = document.getElementById('exam-nav');
         for(let i=44; i>=35; i--){
-            let b = document.createElement('div');
-            b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
-            b.innerText = 'E'+i;
-            b.onclick = () => {
-                document.querySelectorAll('.exame-btn').forEach(x => x.classList.remove('active'));
-                b.classList.add('active');
-                window.carregarDados(i.toString());
-            };
+            let b = document.createElement('div'); b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
+            b.innerText = 'E'+i; b.onclick = () => { window.carregarDados(i.toString()); };
             nav.appendChild(b);
         }
     };
-
-    window.limparTudo = () => { if(confirm("Deseja apagar o rascunho atual?")) { ids.forEach(id => document.getElementById(id).innerText = ""); window.salvarRascunho(); } };
-
-    // START
-    initNav();
-    window.carregarDados("41");
-    ids.forEach(id => document.getElementById(id).addEventListener('input', window.salvarRascunho));
+    initNav(); window.carregarDados("41");
 </script>
 </body>
 </html>
