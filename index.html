@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - COCKPIT SCANNER</title>
+    <title>SISTEMA ELITE 2026 - COCKPIT RESTAURADO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 75px; --mentoria: #a855f7; --scanner: #22c55e;
+            --header-h: 75px; --mentoria: #a855f7;
         }
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
@@ -24,63 +24,69 @@
             border-bottom: 2px solid var(--gold); z-index: 2000;
         }
 
-        /* BARRA RADAR AUTOMÁTICO */
+        /* RADAR AUTOMÁTICO */
         #radar-auto {
             background: #000; color: var(--gold); height: 35px;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.75rem; font-weight: 800; border-bottom: 2px solid var(--gold);
-            text-transform: uppercase; letter-spacing: 1px;
+            text-transform: uppercase; z-index: 1900;
         }
 
-        .nav-group { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        .nav-group { display: flex; gap: 10px; align-items: center; }
         .btn-c { 
-            height: 50px; width: 50px; border-radius: 12px; border: none;
+            height: 45px; width: 45px; border-radius: 10px; border: none;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: white; font-size: 1.2rem; text-decoration: none;
+            cursor: pointer; color: white; font-size: 1.1rem; text-decoration: none;
         }
         .btn-mentoria { background: var(--mentoria) !important; border: 2px solid white !important; }
         .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
-        main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 10px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
-        .exame-btn { width: 100%; height: 40px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+        .sidebar { width: 65px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
+        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; height: 100%; }
         #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
         
-        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; position: relative; }
+        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
         
-        /* ALERTA DE SUGESTÃO IMEDIATA */
+        /* ALERTA DE SUGESTÃO */
         #sugestao-alerta {
-            width: 100%; max-width: 800px; background: var(--gold); color: #000;
-            padding: 12px; font-weight: 800; text-align: center; border-radius: 0 0 15px 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 15px; cursor: pointer;
-            display: none; animation: slideDown 0.4s ease;
+            width: 90%; max-width: 700px; background: var(--gold); color: #000;
+            padding: 10px; font-weight: 800; text-align: center; border-radius: 10px;
+            margin-bottom: 10px; cursor: pointer; display: none; z-index: 100;
         }
 
-        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-
-        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 300px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 300px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .editor-area { 
-            outline: none; font-size: 19px; line-height: 32px; color: var(--text-color); font-family: 'Times New Roman', serif;
-            min-height: 1200px; white-space: pre-wrap;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 31px, var(--line-color) 31px, var(--line-color) 32px);
+            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
+            min-height: 1000px; white-space: pre-wrap;
+            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
         }
 
-        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .btn-float { width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; color: white; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+        /* AS TURBINAS (BOTOES FLUTUANTES) */
+        .paper-tools { 
+            position: fixed; right: 25px; bottom: 30px; 
+            display: flex; flex-direction: column; gap: 15px; z-index: 2500; 
+        }
+        .btn-float { 
+            width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; 
+            color: white; font-size: 1.4rem; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
         .bg-justica { background: #3b82f6; }
+        .bg-save { background: #22c55e; }
 
-        #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 4px solid var(--gold); }
+        #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 3px solid var(--gold); }
         #viewport-master.split-view #pdf-viewer { display: flex; }
-        iframe { width: 100%; height: 100%; border: none; background: #fff; }
+        iframe { width: 100%; height: 100%; border: none; }
 
         @media (max-width: 900px) {
+            .paper-tools { right: 15px; bottom: 20px; }
             #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
-            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
         }
     </style>
 </head>
@@ -96,13 +102,11 @@
         <button class="btn-c btn-ref" onclick="abrirDoc('g')">G</button>
         <button class="btn-c btn-ref" onclick="abrirDoc('v')">V</button>
     </div>
-    <div class="nav-group">
-        <button class="btn-c" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-    </div>
+    <div class="btn-c" style="background:#ef4444" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
 </header>
 
 <div id="radar-auto">
-    <i class="fas fa-satellite-dish" style="margin-right:8px;"></i> Radar Elite: Escaneando Horizonte...
+    <i class="fas fa-satellite-dish"></i> RADAR: AGUARDANDO COMANDO...
 </div>
 
 <main>
@@ -110,24 +114,25 @@
     <div id="viewport-master">
         <section class="editor-container">
             <div id="sugestao-alerta" onclick="injetarSugestao()">
-                🚨 PEÇA IDENTIFICADA: <span id="txt-sugestao">---</span> (CLIQUE PARA INJETAR)
+                🚀 PEÇA: <span id="txt-sugestao">---</span> | INJETAR ESTRUTURA
             </div>
             <div class="paper">
                 <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
             </div>
-            <div class="paper-tools">
-                <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
-                <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
-                <div class="btn-float" style="background:#ef4444" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
-            </div>
         </section>
         <section id="pdf-viewer">
-            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between;">
-                <span>MÓDULO DE REFERÊNCIA</span>
-                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:5px 12px; border-radius:8px;">X</button>
+            <div style="background:#000; color:var(--gold); padding:8px; display:flex; justify-content:space-between; font-size: 0.8rem;">
+                <span>VISTA TÉCNICA</span>
+                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:2px 8px; border-radius:4px;">FECHAR</button>
             </div>
             <iframe id="pdf-frame"></iframe>
         </section>
+    </div>
+
+    <div class="paper-tools">
+        <div class="btn-float bg-save" onclick="salvarManual()" title="Sincronizar Banco"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="btn-float bg-justica" onclick="injetarJustica()" title="Injetar Fundamentação"><i class="fas fa-gavel"></i></div>
+        <div class="btn-float bg-rocket" onclick="lancarPeca()" title="Lançar Peça Finalizada"><i class="fas fa-paper-plane"></i></div>
     </div>
 </main>
 
@@ -138,43 +143,38 @@
     import { pecas } from './estruturas.js';
 
     window.activeEx = "41";
-    let pecaAtualDetectada = "";
+    let pecaChave = "";
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-auto');
     const alerta = document.getElementById('sugestao-alerta');
-    const txtSugestao = document.getElementById('txt-sugestao');
 
-    // --- LÓGICA DE RADAR AUTOMÁTICO (IDENTIFICAÇÃO POR ESPELHO) ---
-    function radarInteligente() {
-        const conteudo = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
+    // RADAR DE IDENTIFICAÇÃO AUTOMÁTICA
+    function rodarRadar() {
+        const espelho = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
         alerta.style.display = "none";
-        radar.innerHTML = `<i class="fas fa-satellite-dish"></i> RADAR ELITE: EXAME ${window.activeEx} EM ANÁLISE...`;
+        radar.innerHTML = `<i class="fas fa-satellite-dish"></i> SCANNER ATIVO: EXAME ${window.activeEx}`;
 
-        if(conteudo) {
-            let sugestao = "";
-            let chave = "";
+        const rotas = [
+            { n: 'RECURSO ORDINÁRIO', c: 'ro' },
+            { n: 'CONTESTAÇÃO', c: 'contestacao' },
+            { n: 'RECLAMAÇÃO TRABALHISTA', c: 'rt' },
+            { n: 'MANDADO DE SEGURANÇA', c: 'ms' },
+            { n: 'AGRAVO DE PETIÇÃO', c: 'ap' }
+        ];
 
-            if(conteudo.includes("recurso ordinário")) { sugestao = "RECURSO ORDINÁRIO"; chave = "ro"; }
-            else if(conteudo.includes("contestação")) { sugestao = "CONTESTAÇÃO"; chave = "contestacao"; }
-            else if(conteudo.includes("reclamação trabalhista")) { sugestao = "RECLAMAÇÃO TRABALHISTA"; chave = "rt"; }
-            else if(conteudo.includes("mandado de segurança")) { sugestao = "MANDADO DE SEGURANÇA"; chave = "ms"; }
-            else if(conteudo.includes("agravo de petição")) { sugestao = "AGRAVO DE PETIÇÃO"; chave = "ap"; }
-
-            if(sugestao) {
-                pecaAtualDetectada = chave;
-                txtSugestao.innerText = sugestao;
-                alerta.style.display = "block";
-                radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> ALVO LOCALIZADO: ${sugestao}`;
-            } else {
-                radar.innerHTML = `<i class="fas fa-search"></i> PADRÃO NÃO IDENTIFICADO NO EXAME ${window.activeEx}`;
-            }
+        const match = rotas.find(r => espelho.includes(r.n.toLowerCase()));
+        if(match) {
+            pecaChave = match.c;
+            document.getElementById('txt-sugestao').innerText = match.n;
+            alerta.style.display = "block";
+            radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> ALVO: ${match.n}`;
         }
     }
 
     window.injetarSugestao = () => {
-        if(pecaAtualDetectada && pecas[pecaAtualDetectada]) {
+        if(pecaChave && pecas[pecaChave]) {
             editor.focus();
-            document.execCommand('insertText', false, pecas[pecaAtualDetectada]);
+            document.execCommand('insertText', false, pecas[pecaChave]);
             alerta.style.display = "none";
         }
     };
@@ -183,44 +183,33 @@
         const conteudo = BANCO_ESPELHOS[window.activeEx];
         if(conteudo) {
             editor.focus();
-            const formatado = "\n\n--- FUNDAMENTAÇÃO DO ESPELHO ---\n" + conteudo.replace(/<[^>]*>/g, '');
-            document.execCommand('insertText', false, formatado);
+            document.execCommand('insertText', false, "\n\n--- FUNDAMENTAÇÃO OFICIAL ---\n" + conteudo.replace(/<[^>]*>/g, ''));
         }
     };
 
     window.abrirDoc = (tipo) => {
-        const frame = document.getElementById('pdf-frame');
-        frame.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
+        const f = document.getElementById('pdf-frame');
+        f.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
         document.getElementById('viewport-master').classList.add('split-view');
     };
 
     window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
-    
-    window.salvarManual = () => {
-        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("SINCRONIZADO!");
-    };
+    window.salvarManual = () => { set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() }); alert("SINCRONIZADO!"); };
+    window.lancarPeca = () => { push(ref(db, 'historico/' + window.activeEx), { text: editor.innerText, ts: Date.now() }); alert("LANÇADO!"); };
+    window.limparTudo = () => { if(confirm("LIMPAR?")) editor.innerText = ""; };
 
-    window.lancarPeca = () => {
-        if(!editor.innerText.trim()) return;
-        push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
-        alert("🚀 LANÇADO!");
-    };
-
-    window.limparTudo = () => { if(confirm("APAGAR TUDO?")) editor.innerText = ""; };
-
-    // Sidebar e Navegação
+    // SIDEBAR
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
         b.className = `exame-btn ${i==41?'active':''}`;
         b.innerText = 'E'+i;
-        b.onclick = () => { 
-            window.activeEx = i.toString(); 
-            document.querySelectorAll('.exame-btn').forEach(x=>x.classList.remove('active')); 
-            b.classList.add('active'); 
-            radarInteligente();
-            carregarDados(); 
+        b.onclick = () => {
+            window.activeEx = i.toString();
+            document.querySelectorAll('.exame-btn').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            rodarRadar();
+            carregarDados();
         };
         nav.appendChild(b);
     }
@@ -233,7 +222,7 @@
     }
 
     carregarDados();
-    radarInteligente();
+    rodarRadar();
     editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
 </body>
