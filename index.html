@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | BLACK BOX REVISADA</title>
+    <title>ARYANNA 2026 | ESTRUTURA ORDENADA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -54,12 +54,12 @@
     </section>
 
     <section class="panel" style="border-top: 6px solid var(--success);">
-        <div class="panel-header">Preliminares</div>
+        <div class="panel-header">Preliminares (Ordem Alfabética/Numérica)</div>
         <div class="panel-body">
             <input type="hidden" id="id-pre">
-            <label>Título</label><input type="text" id="pre-t">
+            <label>Título (ex: 01. Incompetência)</label><input type="text" id="pre-t">
             <label>Fundamentação</label><textarea id="pre-c"></textarea>
-            <button class="btn-save" style="background: var(--success);" onclick="window.salvar('pre')">Salvar</button>
+            <button class="btn-save" style="background: var(--success);" onclick="window.salvar('pre')">Salvar/Atualizar</button>
             <div class="feed" id="feed-pre"></div>
         </div>
     </section>
@@ -70,8 +70,30 @@
             <input type="hidden" id="id-peca">
             <label>Enunciado</label><textarea id="peca-t"></textarea>
             <label>Gabarito</label><input type="text" id="peca-c">
-            <button class="btn-save" style="background: var(--purple);" onclick="window.salvar('peca')">Salvar</button>
+            <button class="btn-save" style="background: var(--purple);" onclick="window.salvar('peca')">Salvar Desafio</button>
             <div class="feed" id="feed-peca"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 6px solid var(--danger);">
+        <div class="panel-header">Radar: Não Confunda</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-nc">
+            <label>Conceito</label><input type="text" id="nc-t">
+            <label>Diferença</label><textarea id="nc-c"></textarea>
+            <button class="btn-save" style="background: var(--danger);" onclick="window.salvar('nc')">Salvar Radar</button>
+            <div class="feed" id="feed-nc"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 6px solid var(--primary);">
+        <div class="panel-header">Arquivo de Teses</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-tese">
+            <label>Título</label><input type="text" id="tese-t">
+            <label>Conteúdo</label><textarea id="tese-c"></textarea>
+            <button class="btn-save" style="background: var(--primary);" onclick="window.salvar('tese')">Arquivar Tese</button>
+            <div class="feed" id="feed-tese"></div>
         </div>
     </section>
 </main>
@@ -91,11 +113,8 @@
     const db = getDatabase(app);
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese' };
 
-    // --- FUNÇÕES GLOBAIS (Expostas para o HTML) ---
-    window.toggleR = (btn) => {
-        const div = btn.nextElementSibling;
-        div.style.display = (div.style.display === "block" ? "none" : "block");
-    };
+    // FUNÇÕES GLOBAIS
+    window.toggleR = (btn) => { const div = btn.nextElementSibling; div.style.display = (div.style.display === "block" ? "none" : "block"); };
 
     window.salvar = (type) => {
         const id = document.getElementById(`id-${type}`).value;
@@ -105,32 +124,32 @@
         const data = { t, c, ts: serverTimestamp() };
         if(id) set(ref(db, `${paths[type]}/${id}`), data);
         else push(ref(db, paths[type]), data);
+       
         document.getElementById(`id-${type}`).value = '';
         document.getElementById(`${type}-t`).value = '';
         document.getElementById(`${type}-c`).value = '';
     };
 
-    // --- ESCUTA BLACK BOX (ESTUDOS) - PROTEÇÃO CONTRA TELA BRANCA ---
+    window.editar = (type, id, t, c) => {
+        document.getElementById(`id-${type}`).value = id;
+        document.getElementById(`${type}-t`).value = t;
+        document.getElementById(`${type}-c`).value = c;
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    window.excluir = (p, id) => { if(confirm("Apagar registro?")) remove(ref(db, `${paths[p]}/${id}`)); };
+
+    // ESCUTA BLACK BOX (ESTUDOS)
     onValue(ref(db, 'estudos'), (snap) => {
         const feedBB = document.getElementById('black-box-feed');
         const voos = snap.val();
-        if(!voos) { feedBB.innerHTML = "Radar limpo."; return; }
+        if(!voos) { feedBB.innerHTML = "<p style='font-size:0.7rem; opacity:0.5;'>Nenhum dado no radar.</p>"; return; }
        
         feedBB.innerHTML = "";
         Object.keys(voos).sort((a,b) => b-a).forEach(exId => {
             const voo = voos[exId];
-           
-            // 🛡️ Validação da Data
-            let dataFmt = "--/--/--";
-            if (voo.ts) {
-                const d = new Date(voo.ts);
-                dataFmt = isNaN(d.getTime()) ? "Data Inválida" : d.toLocaleDateString('pt-BR');
-            }
-
-            // 🛡️ Validação do Texto (Cockpit usa 'editor-peca')
-            const textoPreview = voo['editor-peca']
-                ? voo['editor-peca'].substring(0, 60).replace(/<[^>]*>?/gm, '') + "..."
-                : "Sem texto detectado";
+            const dataFmt = voo.ts ? new Date(voo.ts).toLocaleDateString('pt-BR') : "--/--/--";
+            const textoPreview = voo['editor-peca'] ? voo['editor-peca'].substring(0, 60) + "..." : "Sem conteúdo...";
            
             const div = document.createElement('div');
             div.className = 'black-box-item';
@@ -143,19 +162,26 @@
         });
     });
 
-    // --- ESCUTA DADOS TÉCNICOS ---
+    // ESCUTA DADOS TÉCNICOS
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
-        ['pre', 'peca'].forEach(type => {
-            const f = document.getElementById(`feed-${type}`);
-            if(!f) return;
-            f.innerHTML = "";
+        const render = (type, target) => {
+            const f = document.getElementById(target); f.innerHTML = "";
             const obj = v[paths[type]] || {};
-            Object.keys(obj).forEach(id => {
-                const item = obj[id];
-                f.innerHTML += `<div class="card"><strong>${item.t}</strong><p>${item.c}</p></div>`;
+            const itensOrdenados = Object.keys(obj).map(id => ({ id, ...obj[id] }))
+                                         .sort((a, b) => a.t.localeCompare(b.t, undefined, {numeric: true}));
+
+            itensOrdenados.forEach(item => {
+                f.innerHTML += `<div class="card ${type==='pre'?'card-pre':''}">
+                    <div class="btn-edit-tool">
+                        <i class="fas fa-pen" onclick="window.editar('${type}','${item.id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\")}')"></i>
+                        <i class="fas fa-trash" onclick="window.excluir('${type}','${item.id}')"></i>
+                    </div>
+                    ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="window.toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
+                </div>`;
             });
-        });
+        };
+        ['pre', 'peca', 'nc', 'tese'].forEach(p => render(p, `feed-${p}`));
     });
 </script>
 </body>
