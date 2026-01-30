@@ -86,7 +86,7 @@
             min-height: 1200px; width: 100%; word-wrap: break-word;
         }
 
-        /* PAINEL DE BOTÕES DE ELITE */
+        /* PAINEL DE BOTÕES LATERAIS */
         .paper-tools {
             position: fixed; left: 85px; bottom: 30px;
             display: flex; flex-direction: column; gap: 12px; z-index: 1500;
@@ -161,7 +161,7 @@
         <div class="paper-tools">
             <button class="btn-side side-pecas" onclick="abrirPecas()" title="Estruturas"><i class="fas fa-scroll"></i></button>
             <button class="btn-side side-justica" onclick="injetarJustica()" title="Injetar Teses"><i class="fas fa-gavel"></i></button>
-            <button class="btn-side side-print" onclick="window.print()" title="Imprimir/PDF"><i class="fas fa-print"></i></button>
+            <button class="btn-side side-print" onclick="window.print()" title="Imprimir PDF"><i class="fas fa-print"></i></button>
             <button class="btn-side side-clear" onclick="resetarFolha()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></button>
         </div>
     </section>
@@ -234,7 +234,7 @@
         else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RT / INICIAL";
         else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
         else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else radar.innerText = "BUSCANDO...";
+        else radar.innerText = "PEÇA OAB";
     };
 
     window.togglePdf = (mode) => {
@@ -257,16 +257,21 @@
     };
 
     window.salvarManual = () => {
-        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: serverTimestamp() });
-        push(ref(db, 'mentoria/historico'), {
+        // Envia o conteúdo formatado (o PDF Visual) para o histórico da Mentoria
+        const snap = {
             exame: activeEx,
             data: new Date().toLocaleString('pt-BR'),
-            conteudo: editor.innerText
-        });
+            conteudo: editor.innerHTML, // HTML para manter formatação no histórico
+            textoBruto: editor.innerText
+        };
+        
+        push(ref(db, 'mentoria/historico'), snap);
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: serverTimestamp() });
+
         const btn = document.getElementById('btn-sync');
         btn.style.background = "#fbbf24";
         setTimeout(() => { btn.style.background = "#22c55e"; }, 500);
-        alert("Sincronizado com o QG Mentoria!");
+        alert("PEÇA SALVA NO HISTÓRICO DA MENTORIA!");
     };
 
     window.abrirPecas = () => {
@@ -289,7 +294,7 @@
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
     
     window.resetarFolha = () => { 
-        if(confirm("COMANDANTE: Deseja ejetar todo o conteúdo da folha?")) {
+        if(confirm("Deseja APAGAR todo o conteúdo desta folha?")) {
             editor.innerText = "";
             window.autoSave();
         }
