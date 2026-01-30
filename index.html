@@ -71,7 +71,7 @@
         <button class="btn-ref" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-adjust"></i></button>
     </div>
     <div class="nav-group">
-        <a href="mentoria.html" class="btn-ref" style="background:#a855f7; border:none; color:white;"><i class="fas fa-trophy"></i></a>
+        <button onclick="window.open('mentoria.html', '_blank')" class="btn-ref" style="background:#a855f7; border:none; color:white; cursor:pointer;"><i class="fas fa-trophy"></i></button>
         <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="window.limparTudo()"><i class="fas fa-trash-alt"></i></button>
     </div>
 </header>
@@ -136,14 +136,14 @@
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // 1. SALVAMENTO AUTOMÁTICO (RASCUNHO)
+    // 1. SALVAMENTO AUTOMÁTICO (RASCUNHO PARA CONTINUAR DEPOIS)
     window.salvarRascunho = () => {
         const data = {};
         ids.forEach(id => { if(document.getElementById(id)) data[id] = document.getElementById(id).innerText; });
         set(ref(db, `estudos/${activeEx}`), data);
     };
 
-    // 2. SALVAMENTO MESTRE (DISQUETE / FOGUETE)
+    // 2. SALVAMENTO MESTRE (ENVIAR PARA A MENTORIA)
     window.executarSalvamentoMestre = () => {
         window.salvarRascunho();
         const snapshot = {
@@ -151,26 +151,33 @@
             data: new Date().toLocaleDateString('pt-BR'),
             hora: new Date().toLocaleTimeString('pt-BR'),
             preview: document.getElementById('editor-peca').innerText.substring(0, 100) + "...",
-            conteudoFull: document.getElementById('printable-paper').innerHTML 
+            conteudoFull: document.getElementById('printable-paper').innerHTML,
+            qualPeca: "", // Será preenchido na Mentoria
+            teses: "",    // Será preenchido na Mentoria
+            dicasNC: ""   // Será preenchido na Mentoria
         };
         push(ref(db, `mentoria/historico`), snapshot)
-            .then(() => alert("🏆 COMANDANTE, PEÇA ARQUIVADA COM SUCESSO!"))
+            .then(() => alert("🏆 COMANDANTE, PEÇA ARQUIVADA NA MENTORIA!"))
             .catch(() => alert("Erro na comunicação com o banco."));
     };
 
     // CONEXÃO DOS BOTÕES FLUTUANTES
     document.getElementById('btn-save').onclick = window.executarSalvamentoMestre;
-    document.getElementById('btn-fly').onclick = () => { if(confirm("Lançar Simulado Completo no Histórico?")) window.executarSalvamentoMestre(); };
+    document.getElementById('btn-fly').onclick = () => { if(confirm("Lançar Simulado Completo no Histórico da Mentoria?")) window.executarSalvamentoMestre(); };
     
     document.getElementById('btn-stru').onclick = () => {
         const grid = document.getElementById('peca-grid'); grid.innerHTML = '';
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
-            b.style = "width:100%; padding:12px; margin-bottom:8px; font-weight:bold; cursor:pointer; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px;";
+            b.style = "width:100%; padding:12px; margin-bottom:8px; font-weight:bold; cursor:pointer; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; color:#000;";
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 const ed = document.getElementById('editor-peca'); ed.focus();
-                document.execCommand('insertText', false, pecas[k]);
+                const textNode = document.createTextNode(pecas[k]);
+                const sel = window.getSelection();
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(textNode);
                 document.getElementById('pec-modal').style.display = 'none';
                 window.salvarRascunho();
             };
@@ -219,13 +226,15 @@
         onValue(ref(db, `estudos/${ex}`), (s) => {
             const d = s.val();
             ids.forEach(id => { 
-                document.getElementById(id).innerText = (d && d[id]) ? d[id] : ""; 
+                const el = document.getElementById(id);
+                if (el) el.innerText = (d && d[id]) ? d[id] : ""; 
             });
         }, { onlyOnce: true });
     };
 
     const initNav = () => {
         const nav = document.getElementById('exam-nav');
+        nav.innerHTML = "";
         for(let i=44; i>=35; i--){
             let b = document.createElement('div');
             b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
@@ -244,7 +253,10 @@
     // START
     initNav();
     window.carregarDados("41");
-    ids.forEach(id => document.getElementById(id).addEventListener('input', window.salvarRascunho));
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('input', window.salvarRascunho);
+    });
 </script>
 </body>
 </html>
