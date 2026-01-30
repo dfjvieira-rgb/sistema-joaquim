@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - BASE BLINDADA FINAL</title>
+    <title>JOAQUIM ELITE - LOGIC SCANNER V5</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
@@ -33,38 +34,24 @@
         }
         #radar-peca.detectado { background: #16a34a; color: white; border-color: white; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5); }
 
-        .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
-        .exame-btn.active { background: var(--gold); color: black; }
-
-        /* EDITOR FGV */
-        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; scroll-behavior: smooth; }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        /* EDITOR E FOLHA FGV */
+        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; }
+        .paper { background: #fff !important; width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; color: #000 !important; }
         
         .fgv-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-left: 5px solid var(--gold); }
-        .q-label { font-weight: bold; color: var(--text-color); margin-top: 15px; display: block; padding-left: 10px; font-size: 0.85rem; }
+        .q-label { font-weight: bold; color: #000; margin-top: 15px; display: block; padding-left: 10px; font-size: 0.85rem; }
 
         .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
+            outline: none; font-size: 18px; line-height: 30px; color: #000; font-family: 'Times New Roman', serif;
+            background-image: repeating-linear-gradient(#fff, #fff 29px, #eef2f7 29px, #eef2f7 30px);
             white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify;
         }
-        #editor-peca { min-height: 800px; }
-
-        /* HANGAR DE HISTÓRICO */
-        .hangar-container { background: var(--paper-color); width: 100%; max-width: 850px; margin: 30px auto; padding: 25px; border-radius: 12px; border: 2px solid var(--gold); }
-        .hangar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--line-color); padding-bottom: 15px; margin-bottom: 20px; }
-        .missao-card { background: #f8fafc; border: 1px solid var(--line-color); border-radius: 8px; padding: 15px; margin-bottom: 12px; transition: 0.2s; color: #1e293b; }
-        .missao-card:hover { border-color: var(--gold); transform: translateX(5px); }
-        .missao-meta { font-size: 0.65rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
-        .missao-title { font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin: 5px 0; }
-        .missao-preview { font-family: 'Times New Roman', serif; font-size: 0.85rem; color: #475569; max-height: 50px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        #editor-peca { min-height: 1200px; }
 
         /* TURBINAS */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
         .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         .bg-save { background: #22c55e; }
-        .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
-        .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
@@ -85,51 +72,28 @@
         <button class="btn-ref" onclick="togglePdf('g')">G</button>
         <button class="btn-ref" onclick="togglePdf('v')">V</button>
     </div>
-    <div class="nav-group">
-        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-    </div>
 </header>
 
 <main>
     <aside class="sidebar" id="exam-nav"></aside>
 
     <section class="editor-container">
-        <div class="paper">
-            <div id="radar-peca"><span>SCANNER</span><span style="font-size:0.4rem">VARRENDO...</span></div>
+        <div class="paper" id="export-area">
+            <div id="radar-peca"><span>SCANNER</span><span class="radar-blink">VARRENDO...</span></div>
             
-            <div class="fgv-title">Peça Profissional</div>
+            <div class="fgv-title">Peça Profissional - Exame <span id="ex-num">41</span></div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
 
-            <div class="fgv-title">Questão 1</div>
-            <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q1b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 2</div>
-            <span class="q-label">ITEM A)</span><div id="q2a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q2b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 3</div>
-            <span class="q-label">ITEM A)</span><div id="q3a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q3b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 4</div>
-            <span class="q-label">ITEM A)</span><div id="q4a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">ITEM B)</span><div id="q4b" class="editor-area" contenteditable="true"></div>
-        </div>
-
-        <div class="hangar-container">
-            <div class="hangar-header">
-                <h2 style="color: var(--primary); font-size: 1.1rem;"><i class="fas fa-history"></i> HANGAR DE MISSÕES</h2>
-                <button onclick="carregarHangar()" class="btn-ref" style="width:auto; padding:0 10px; font-size:0.7rem;">ATUALIZAR</button>
-            </div>
-            <div id="lista-historico"></div>
+            <div class="fgv-title">Questões Discursivas</div>
+            <span class="q-label">Q1)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">Q2)</span><div id="q2a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">Q3)</span><div id="q3a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">Q4)</span><div id="q4a" class="editor-area" contenteditable="true"></div>
         </div>
 
         <div class="paper-tools">
             <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
-            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" onclick="alert('MISSÃO LANÇADA!')"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-rocket" onclick="finalizarEMitir()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 
@@ -142,90 +106,64 @@
     import { db } from './firebase-config.js';
     import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
 
     let activeEx = "41";
-    const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
+    const ids = ['editor-peca', 'q1a', 'q2a', 'q3a', 'q4a'];
 
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-        document.querySelector('#theme-btn i').className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
-    };
-
-    window.salvarTudo = () => {
+    // --- SALVAMENTO E SINCRONIA MENTORIA ---
+    window.salvarTudo = async (status = "rascunho") => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
-        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
-        carregarHangar();
+        
+        // Salva os textos no Firebase
+        await set(ref(db, `estudos/${activeEx}`), { 
+            ...data, 
+            status: status,
+            ts: Date.now() 
+        });
+
+        // Se for finalizado, notificamos a mentoria (opcional: salvar URL do PDF se usar Storage)
+        if(status === "finalizado") {
+            alert("🚀 MISSÃO FINALIZADA! Enviada para o Hangar da Mentoria.");
+        }
     };
 
-    window.carregarHangar = () => {
-        const hangar = document.getElementById('lista-historico');
-        onValue(ref(db, 'estudos/'), (snap) => {
-            const dados = snap.val();
-            hangar.innerHTML = '';
-            if(!dados) return;
-            Object.keys(dados).reverse().forEach(id => {
-                const card = document.createElement('div');
-                card.className = 'missao-card';
-                card.innerHTML = `
-                    <div class="missao-meta">Sincronia: ${new Date(dados[id].ts).toLocaleString()}</div>
-                    <div class="missao-title">EXAME ${id} <button class="btn-ref" style="width:auto; height:25px; font-size:0.6rem" onclick="window.carregarExame('${id}')">ABRIR</button></div>
-                    <div class="missao-preview">${dados[id]['editor-peca'] || ''}</div>
-                `;
-                hangar.appendChild(card);
-            });
-        }, { onlyOnce: true });
+    // --- FUNÇÃO CIRÚRGICA: FINALIZAR E EMITIR PDF ---
+    window.finalizarEMitir = async () => {
+        if(!confirm("Deseja selar esta peça? Ela será enviada para a Mentoria em formato PDF.")) return;
+        
+        const element = document.getElementById('export-area');
+        const opt = {
+            margin: 10,
+            filename: `Exame_${activeEx}_JoaquimElite.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Gera o PDF e baixa automaticamente (ou abre)
+        html2pdf().set(opt).from(element).save();
+
+        // Salva no Firebase como finalizado
+        salvarTudo("finalizado");
     };
 
-    window.carregarExame = (id) => {
-        activeEx = id;
-        document.querySelectorAll('.exame-btn').forEach(b => b.classList.toggle('active', b.innerText === `E${id}`));
-        onValue(ref(db, `estudos/${id}`), (s) => {
+    // --- LOGICA DE NAVEGAÇÃO E RADAR ---
+    window.carregarDados = () => {
+        onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
-            if(d) ids.forEach(field => document.getElementById(field).innerText = d[field] || '');
-            executarRadar();
+            if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
-    };
 
-    const executarRadar = () => {
+        // Radar Lógico
         const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
+        const DICIONARIO = ["AGRAVO DE PETIÇÃO", "RECURSO ORDINÁRIO", "CONTESTAÇÃO", "RECLAMAÇÃO", "CONSIGNATÓRIA"];
+        let detectada = DICIONARIO.find(p => txt.includes(p)) || "BUSCANDO...";
         
-        // --- CALIBRAGEM CIRÚRGICA: NOMES DAS SUAS ESTRUTURAS ---
-        const pecasKeys = [
-            {k: "AGRAVO DE PETIÇÃO", d: "AGRAVO PET."},
-            {k: "RECURSO ORDINÁRIO", d: "REC. ORD."},
-            {k: "CONTESTAÇÃO", d: "CONTESTAÇÃO"},
-            {k: "RECLAMAÇÃO TRABALHISTA", d: "INICIAL RT"},
-            {k: "AÇÃO DE CONSIGNAÇÃO", d: "CONSIGNATÓRIA"},
-            {k: "MANDADO DE SEGURANÇA", d: "MAND. SEGURANÇA"},
-            {k: "EMBARGOS À EXECUÇÃO", d: "EMBARGOS EXEC."},
-            {k: "RECURSO DE REVISTA", d: "REC. REVISTA"},
-            {k: "CONTRA-RAZÕES", d: "CONTRA-RAZÕES"},
-            {k: "EMBARGOS DE DECLARAÇÃO", d: "EMB. DECLARAÇÃO"}
-        ];
-
-        let found = pecasKeys.find(p => txt.includes(p.k));
-        
-        if (found) {
-            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.5rem">${found.d}</span>`;
-            radar.classList.add('detectado');
-        } else {
-            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.4rem">BUSCANDO...</span>`;
-            radar.classList.remove('detectado');
-        }
-    };
-
-    const initNav = () => {
-        const nav = document.getElementById('exam-nav');
-        for(let i=44; i>=35; i--) {
-            const b = document.createElement('div');
-            b.className = `exame-btn ${i == 41 ? 'active' : ''}`;
-            b.innerText = `E${i}`;
-            b.onclick = () => window.carregarExame(i.toString());
-            nav.appendChild(b);
-        }
+        radar.innerHTML = `<span>RADAR</span><span style="font-size:0.5rem">${detectada}</span>`;
+        radar.classList.toggle('detectado', detectada !== "BUSCANDO...");
+        document.getElementById('ex-num').innerText = activeEx;
     };
 
     window.togglePdf = (m) => {
@@ -233,22 +171,18 @@
         document.getElementById('pdf-panel').classList.add('open');
     };
 
-    // --- FUNÇÕES DE ESTRUTURAS ---
-    window.abrirEstruturas = () => {
-        // Lógica para abrir o modal de estruturas e injetar no editor-peca
-        alert("Abrindo Estruturas...");
-    };
-
-    window.injetarEspelho = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ GABARITO OFICIAL ---\n[ ] " + checklist;
-            window.salvarTudo();
+    const initNav = () => {
+        const nav = document.getElementById('exam-nav');
+        for(let i=44; i>=35; i--) {
+            const b = document.createElement('div');
+            b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
+            b.innerText = `E${i}`;
+            b.onclick = () => { activeEx = i.toString(); initNav(); carregarDados(); };
+            nav.appendChild(b);
         }
     };
 
-    initNav(); window.carregarExame("41"); setTimeout(carregarHangar, 2000);
+    initNav(); carregarDados();
 </script>
 </body>
 </html>
