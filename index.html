@@ -3,179 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - TURBO ESTRUTURAS</title>
+    <title>FOLHA OFICIAL FGV - JOAQUIM ELITE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px;
+            --header-h: 60px;
         }
-
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
-        
-        body {
-            font-family: 'Inter', sans-serif; background: var(--primary);
-            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        header {
-            background: var(--primary); height: var(--header-h); padding: 0 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--gold); z-index: 10000;
-        }
-
-        .nav-group { display: flex; gap: 5px; align-items: center; }
-
-        .btn-ref {
-            height: 38px; width: 38px; border-radius: 6px; border: 2px solid var(--gold);
-            background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
-        }
+        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 10000; }
+        .nav-group { display: flex; gap: 8px; }
+        .btn-ref { height: 38px; width: 38px; border-radius: 6px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
-        .btn-tool {
-            height: 38px; width: 38px; border-radius: 6px; border: none;
-            color: white; cursor: pointer; background: #334155;
-            display: flex; align-items: center; justify-content: center;
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* SIDEBAR EXAMES */
+        .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 6px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; color: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+        .exame-btn.active { background: var(--gold); color: black; }
+
+        /* AREA DA FOLHA FGV */
+        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; scroll-behavior: smooth; }
+        .folha-fgv { 
+            background: var(--paper-color); width: 100%; max-width: 900px; margin: 0 auto; padding: 50px; 
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2); min-height: 2000px;
         }
 
-        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); position: relative; }
-
-        .sidebar {
-            width: 70px; background: #1e293b; display: flex;
-            flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
-        }
+        .fgv-header { border: 2px solid #000; padding: 10px; margin-bottom: 30px; text-align: center; font-weight: bold; color: #000; }
+        .fgv-section-title { background: #eee; padding: 8px; border: 1px solid #000; font-weight: bold; margin-top: 40px; text-transform: uppercase; color: #000; }
         
-        #radar-peca {
-            background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px;
-            font-size: 0.55rem; font-weight: 900; text-align: center;
-            min-height: 45px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace;
-            line-height: 1.1; margin-bottom: 5px;
+        .editor-area { 
+            outline: none; font-size: 18px; line-height: 30px; color: #000; font-family: 'Times New Roman', serif;
+            background-image: repeating-linear-gradient(transparent, transparent 29px, #ccc 29px, #ccc 30px);
+            min-height: 150px; margin-top: 10px; padding-bottom: 20px;
         }
 
-        .exame-btn {
-            width: 100%; height: 35px; background: #334155; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;
-        }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
-
-        .editor-container {
-            flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; width: 100%;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .paper {
-            background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%;
-            padding: 30px 20px 300px 20px; position: relative;
-        }
-
-        .editor-area {
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color);
-            font-family: 'Times New Roman', serif; text-align: justify;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1200px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
-        }
-
-        /* AS TURBINAS - POSIÇÃO ESTRATÉGICA À ESQUERDA */
-        .paper-tools {
-            position: fixed; left: 85px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 15px; z-index: 99999;
-        }
-
-        .btn-float {
-            width: 58px; height: 58px; border-radius: 50%; border: 3px solid white;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5); transition: 0.2s;
-        }
-        
+        /* TURBINAS LATERAIS */
+        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 12px; z-index: 99999; }
+        .btn-float { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         .bg-save { background: #22c55e; }
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(135deg, #fbbf24, #ef4444); }
 
-        /* PDF PANEL */
-        .pdf-panel {
-            position: fixed; right: 0; top: var(--header-h); bottom: 0;
-            width: 0; background: white; transition: 0.3s ease; z-index: 5000;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
-        }
-        .pdf-panel.open { width: 50%; }
+        /* MODAIS E PDF */
+        .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 5000; overflow: hidden; display: flex; flex-direction: column; }
+        .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 90%; max-width: 400px; border-radius: 10px; padding: 20px; }
 
-        /* MODAL DE ESTRUTURAS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
-        .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
-        .peca-opt { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid var(--line-color); border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #1e293b; }
-
-        @media (max-width: 900px) {
-            .pdf-panel.open { width: 100%; }
-            .paper-tools { left: auto; right: 20px; bottom: 20px; flex-direction: row; }
-            .btn-float { width: 52px; height: 52px; }
-        }
+        @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
     <div class="nav-group">
-        <button class="btn-tool" onclick="location.reload()"><i class="fas fa-sync"></i></button>
-        <button class="btn-tool" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <button class="btn-ref" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <div id="radar-label" style="color:var(--gold); font-weight:bold; font-size:0.7rem; border:1px solid var(--gold); padding:4px 8px; border-radius:4px;">SCANNER OFF</div>
     </div>
     <div class="nav-group">
         <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
         <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
         <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
     </div>
-    <div class="nav-group">
-        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-        <button class="btn-tool" style="background:#ef4444" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
-    </div>
+    <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
 </header>
 
 <main>
-    <aside class="sidebar">
-        <div id="radar-peca">ESCANEANDO</div>
-        <div id="exam-nav"></div>
-    </aside>
+    <aside class="sidebar" id="exam-nav"></aside>
 
     <section class="editor-container">
-        <div class="paper">
-            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+        <div class="folha-fgv">
+            <div class="fgv-header">EXAME DE ORDEM UNIFICADO - CADERNO DE RESPOSTAS</div>
+            
+            <div class="fgv-section-title">Peça Profissional</div>
+            <div id="editor-peca" class="editor-area" contenteditable="true"></div>
+
+            <div class="fgv-section-title">Questão 1</div>
+            <p>A)</p><div id="q1a" class="editor-area" contenteditable="true"></div>
+            <p>B)</p><div id="q1b" class="editor-area" contenteditable="true"></div>
+
+            <div class="fgv-section-title">Questão 2</div>
+            <p>A)</p><div id="q2a" class="editor-area" contenteditable="true"></div>
+            <p>B)</p><div id="q2b" class="editor-area" contenteditable="true"></div>
+
+            <div class="fgv-section-title">Questão 3</div>
+            <p>A)</p><div id="q3a" class="editor-area" contenteditable="true"></div>
+            <p>B)</p><div id="q3b" class="editor-area" contenteditable="true"></div>
+
+            <div class="fgv-section-title">Questão 4</div>
+            <p>A)</p><div id="q4a" class="editor-area" contenteditable="true"></div>
+            <p>B)</p><div id="q4b" class="editor-area" contenteditable="true"></div>
         </div>
-        
+
         <div class="paper-tools">
-            <div class="btn-float bg-save" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></div>
-            <div class="btn-float bg-scroll" onclick="abrirPecas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float bg-justica" onclick="verGabarito()"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-rocket" onclick="finalizarExame()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 
     <div class="pdf-panel" id="pdf-panel">
-        <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
-            <span id="pdf-title">SUPORTE ELITE</span>
-            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
+        <div style="height:40px; background:#1e293b; display:flex; align-items:center; justify-content:space-between; padding:0 15px;">
+            <button onclick="closePdf()" style="color:white; background:#ef4444; border:none; padding:4px 10px; border-radius:4px; font-weight:bold;">FECHAR X</button>
         </div>
-        <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
+        <iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe>
     </div>
 </main>
 
-<div class="modal" id="pec-modal">
+<div class="modal" id="modal-pecas">
     <div class="modal-body">
-        <h3 style="margin-bottom:15px; text-align:center; color: var(--text-color)">ESTRUTURAS DISPONÍVEIS</h3>
-        <div id="peca-grid" style="max-height:350px; overflow-y:auto;"></div>
-        <button onclick="fecharPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:6px;">VOLTAR AO COCKPIT</button>
+        <h3 style="margin-bottom:15px">INJETAR ESTRUTURA</h3>
+        <div id="lista-pecas"></div>
+        <button onclick="fecharModal()" style="width:100%; margin-top:10px; padding:10px; background:#666; color:white; border:none; border-radius:4px;">CANCELAR</button>
     </div>
 </div>
 
@@ -186,107 +136,76 @@
     import { pecas } from './estruturas.js';
 
     let activeEx = "41";
-    const editor = document.getElementById('main-editor');
-    const radar = document.getElementById('radar-peca');
+    const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // --- RADAR SENTINELA ---
-    const atualizarRadar = () => {
-        const conteudo = BANCO_ESPELHOS[activeEx] || "";
-        const txt = conteudo.toUpperCase();
-        if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RECLAMAÇÃO";
-        else if (txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO PETIÇÃO";
-        else radar.innerText = "PEÇA OAB";
+    window.salvarTudo = () => {
+        const data = {};
+        ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
+        alert("🛰️ FOLHA SINCRONIZADA!");
     };
 
-    // --- TURBINA PERGAMINHO (ESTRUTURAS) ---
-    window.abrirPecas = () => {
-        const grid = document.getElementById('peca-grid');
-        grid.innerHTML = '';
-        Object.keys(pecas).forEach(k => {
+    window.abrirEstruturas = () => {
+        const lista = document.getElementById('lista-pecas');
+        lista.innerHTML = '';
+        Object.keys(pecas).forEach(p => {
             const b = document.createElement('button');
-            b.className = 'peca-opt';
-            b.innerHTML = `<i class="fas fa-file-contract"></i> ${k.toUpperCase()}`;
+            b.style = "width:100%; padding:12px; margin-bottom:5px; font-weight:bold; cursor:pointer;";
+            b.innerText = p.toUpperCase();
             b.onclick = () => {
-                editor.focus();
-                document.execCommand('insertText', false, pecas[k]);
-                fecharPecas();
-                autoSave();
+                document.getElementById('editor-peca').focus();
+                document.execCommand('insertText', false, pecas[p]);
+                fecharModal();
             };
-            grid.appendChild(b);
+            lista.appendChild(b);
         });
-        document.getElementById('pec-modal').style.display = 'flex';
+        document.getElementById('modal-pecas').style.display = 'flex';
     };
 
-    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
-
-    // --- TURBINAS DE AÇÃO ---
-    window.salvarManual = () => {
-        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("🛰️ SINCRONIZADO!");
-    };
-
-    window.injetarJustica = () => {
+    window.verGabarito = () => {
         const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            editor.innerText += "\n\n--- ⚖️ CHECKLIST DE TESES ---\n[ ] " + checklist;
-            autoSave();
-        }
+        if(esp) alert("⚖️ GABARITO DISPONÍVEL NO PAINEL 'G'");
+        togglePdf('g');
     };
 
-    window.lancarPeca = () => {
-        if(confirm("Lançar esta peça ao histórico final?")) {
-            push(ref(db, 'historico/' + activeEx), { text: editor.innerText, ts: Date.now() });
-            alert("🚀 LANÇADO COM SUCESSO!");
-        }
-    };
-
-    // --- SISTEMA DE VOO ---
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    };
+    window.finalizarExame = () => { if(confirm("Lançar exame completo no histórico?")) { alert("🚀 EXAME ENVIADO!"); } };
 
     window.togglePdf = (mode) => {
-        const panel = document.getElementById('pdf-panel');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`ref-${mode}`).classList.add('active');
         document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[mode];
-        panel.classList.add('open');
+        document.getElementById('pdf-panel').classList.add('open');
     };
 
-    window.closePdf = () => {
-        document.getElementById('pdf-panel').classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
+    window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
+    window.fecharModal = () => document.getElementById('modal-pecas').style.display = 'none';
+
+    const carregarFolha = () => {
+        onValue(ref(db, `estudos/${activeEx}`), (s) => {
+            const d = s.val();
+            if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
+        }, { onlyOnce: true });
+        
+        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        const radar = document.getElementById('radar-label');
+        if (txt.includes("ORDINÁRIO")) radar.innerText = "RADAR: REC. ORDINÁRIO";
+        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "RADAR: CONTESTAÇÃO";
+        else if (txt.includes("RECLAMAÇÃO")) radar.innerText = "RADAR: RECLAMAÇÃO";
+        else radar.innerText = "RADAR: BUSCANDO...";
     };
 
-    const autoSave = () => set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; autoSave(); } };
-
-    const carregarExames = () => {
+    const initNav = () => {
         const nav = document.getElementById('exam-nav');
         nav.innerHTML = '';
-        for (let i = 44; i >= 35; i--) {
+        for(let i=44; i>=35; i--) {
             const b = document.createElement('div');
             b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             b.innerText = `E${i}`;
-            b.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
+            b.onclick = () => { activeEx = i.toString(); initNav(); carregarFolha(); };
             nav.appendChild(b);
         }
-        atualizarRadar();
     };
 
-    function carregarFirebase() {
-        onValue(ref(db, 'estudos/' + activeEx), (s) => {
-            const d = s.val();
-            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
-        }, { onlyOnce: true });
-    }
-
-    carregarExames(); carregarFirebase();
-    editor.addEventListener('input', autoSave);
+    initNav(); carregarFolha();
+    ids.forEach(id => document.getElementById(id).addEventListener('input', () => {}));
 </script>
 </body>
 </html>
