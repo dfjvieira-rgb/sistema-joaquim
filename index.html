@@ -89,27 +89,27 @@
             user-select: text; -webkit-user-select: text; white-space: pre-wrap;
         }
 
-        /* AS TURBINAS - DESIGN ELITE */
+        /* --- AS TURBINAS (MODO ELITE) --- */
         .paper-tools {
-            position: fixed; right: 30px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 15px; z-index: 5000;
+            position: fixed; right: 25px; bottom: 30px;
+            display: flex; flex-direction: column; gap: 12px; z-index: 5000;
         }
 
         .btn-float {
-            width: 60px; height: 60px; border-radius: 50%; border: 3px solid white;
+            width: 58px; height: 58px; border-radius: 50%; border: 3px solid white;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5); transition: 0.2s;
+            color: white; font-size: 1.4rem; cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4); transition: 0.2s;
         }
         .btn-float:active { transform: scale(0.9); }
         
-        .side-save { background: #22c55e; }
-        .side-justica { background: #3b82f6; }
-        .side-rocket { background: linear-gradient(135deg, #fbbf24, #ef4444); }
+        .bg-save { background: #22c55e; }
+        .bg-justica { background: #3b82f6; }
+        .bg-rocket { background: linear-gradient(45deg, #fbbf24, #ef4444); }
 
         @media (max-width: 600px) {
             .paper-tools { right: 15px; bottom: 20px; }
-            .btn-float { width: 55px; height: 55px; }
+            .btn-float { width: 52px; height: 52px; font-size: 1.2rem; }
         }
 
         .pdf-panel {
@@ -120,7 +120,7 @@
         .pdf-panel.open { width: 100%; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
     <div class="nav-group">
@@ -142,7 +142,7 @@
 
 <main>
     <aside class="sidebar" id="sidebar">
-        <div id="radar-peca" onclick="injetarEstruturaRadar()">SCANNER</div>
+        <div id="radar-peca" onclick="injetarPeloRadar()">SCANNER</div>
         <div id="exam-nav"></div>
     </aside>
 
@@ -152,9 +152,15 @@
         </div>
         
         <div class="paper-tools">
-            <div class="btn-float side-save" onclick="salvarManual()" title="Sincronizar"><i class="fas fa-cloud-upload-alt"></i></div>
-            <div class="btn-float side-justica" onclick="injetarJustica()" title="Teses do Espelho"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float side-rocket" onclick="lancarPeca()" title="Lançar Peça Finalizada"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-save" onclick="salvarManual()" title="Sincronizar Banco">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="btn-float bg-justica" onclick="injetarJustica()" title="Injetar Teses">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div class="btn-float bg-rocket" onclick="lancarPeca()" title="Lançar Finalizada">
+                <i class="fas fa-rocket"></i>
+            </div>
         </div>
     </section>
 
@@ -173,70 +179,64 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    window.db = db; window.ref = ref; window.set = set; window.onValue = onValue;
-
     let activeEx = "41";
-    let pecaChaveLocalizada = "";
+    let pecaIdentificada = "";
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
-    // --- INTELIGÊNCIA DO RADAR ---
+    // --- LÓGICA DO RADAR ---
     const atualizarRadar = () => {
         const conteudo = BANCO_ESPELHOS[activeEx];
         radar.classList.remove('found');
-        pecaChaveLocalizada = "";
+        pecaIdentificada = "";
 
         if (!conteudo) { radar.innerText = "SEM DADOS"; return; }
         
         const txt = conteudo.toUpperCase();
-        let nomeExibicao = "PEÇA OAB";
+        if (txt.includes("ORDINÁRIO")) pecaIdentificada = "ro";
+        else if (txt.includes("CONTESTAÇÃO")) pecaIdentificada = "contestacao";
+        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) pecaIdentificada = "rt";
+        else if (txt.includes("AGRAVO DE PETIÇÃO")) pecaIdentificada = "ap";
 
-        if (txt.includes("ORDINÁRIO")) { pecaChaveLocalizada = "ro"; nomeExibicao = "REC. ORDINÁRIO"; }
-        else if (txt.includes("CONTESTAÇÃO")) { pecaChaveLocalizada = "contestacao"; nomeExibicao = "CONTESTAÇÃO"; }
-        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) { pecaChaveLocalizada = "rt"; nomeExibicao = "RECLAMAÇÃO"; }
-        else if (txt.includes("AGRAVO DE PETIÇÃO")) { pecaChaveLocalizada = "ap"; nomeExibicao = "AGRAVO PETIÇÃO"; }
-
-        if(pecaChaveLocalizada) {
-            radar.innerText = "INJETAR: " + nomeExibicao;
+        if(pecaIdentificada) {
+            radar.innerText = "INJETAR " + pecaIdentificada.toUpperCase();
             radar.classList.add('found');
         } else {
-            radar.innerText = "ESCANEANDO";
+            radar.innerText = "PESQUISANDO";
         }
     };
 
-    window.injetarEstruturaRadar = () => {
-        if(pecaChaveLocalizada && pecas[pecaChaveLocalizada]) {
-            if(confirm("Injetar estrutura de " + pecaChaveLocalizada.toUpperCase() + "?")) {
-                editor.focus();
-                document.execCommand('insertText', false, pecas[pecaChaveLocalizada]);
-                window.autoSave();
-            }
+    window.injetarPeloRadar = () => {
+        if(pecaIdentificada && pecas[pecaIdentificada]) {
+            editor.focus();
+            document.execCommand('insertText', false, pecas[pecaIdentificada]);
+            window.autoSave();
         }
     };
 
-    // --- TURBINAS ---
+    // --- TURBINAS (AÇÕES) ---
     window.salvarManual = () => {
         set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
         alert("🛰️ SINCRONIZADO!");
     };
 
-    window.lancarPeca = () => {
-        if(confirm("Lançar peça ao histórico final?")) {
-            push(ref(db, 'historico/' + activeEx), { text: editor.innerText, ts: Date.now() });
-            alert("🚀 LANÇADO!");
-        }
-    };
-
     window.injetarJustica = () => {
         const esp = BANCO_ESPELHOS[activeEx];
         if(esp) {
-            const teses = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            editor.innerText += "\n\n--- TESES DO ESPELHO ---\n[ ] " + teses;
+            const limpo = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+            editor.innerText += "\n\n--- ⚖️ TESES DO GABARITO ---\n[ ] " + limpo;
             window.autoSave();
         }
     };
 
-    // --- LOGICA DE TELA E NAVEGAÇÃO ---
+    window.lancarPeca = () => {
+        if(confirm("Lançar esta peça ao histórico final?")) {
+            push(ref(db, 'historico/' + activeEx), { text: editor.innerText, ts: Date.now() });
+            alert("🚀 PEÇA LANÇADA!");
+        }
+    };
+
+    // --- NAVEGAÇÃO E TEMA ---
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
@@ -257,19 +257,13 @@
 
     window.togglePdf = (mode) => {
         const panel = document.getElementById('pdf-panel');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`ref-${mode}`).classList.add('active');
         document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[mode];
         panel.classList.add('open');
     };
 
-    window.closePdf = () => {
-        document.getElementById('pdf-panel').classList.remove('open');
-        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-    };
-
-    window.autoSave = () => { set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() }); };
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; window.autoSave(); } };
+    window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
+    window.autoSave = () => set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    window.resetarFolha = () => { if(confirm("Limpar tudo?")) { editor.innerText = ""; window.autoSave(); } };
 
     function carregarFirebase() {
         onValue(ref(db, 'estudos/' + activeEx), (s) => {
