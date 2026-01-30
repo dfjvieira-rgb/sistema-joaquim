@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - FULL COMMAND</title>
+    <title>JOAQUIM ELITE - RADAR CALIBRADO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -28,13 +28,17 @@
 
         /* SIDEBAR */
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
-        #radar-peca { background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 1px solid var(--gold); font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; }
+        #radar-peca { 
+            background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 1px solid var(--gold); 
+            font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 40px; display: flex; align-items: center; justify-content: center;
+        }
+        #radar-peca.detectado { background: #16a34a; color: white; border-color: white; }
 
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
         /* EDITOR E FOLHA FGV */
-        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; position: relative; scroll-behavior: smooth; }
+        .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; position: relative; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; }
         
         .fgv-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; }
@@ -55,9 +59,10 @@
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
-        /* PDF E MODAIS */
+        /* PDF PANEL */
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
         .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
 
@@ -87,7 +92,7 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="radar-peca">LOCALIZANDO...</div>
+            <div id="radar-peca">ESCANEANDO...</div>
             
             <div class="fgv-title">Peça Profissional</div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
@@ -118,6 +123,10 @@
     </section>
 
     <div class="pdf-panel" id="pdf-panel">
+        <div style="height:40px; background:#1e293b; display:flex; align-items:center; justify-content:space-between; padding:0 15px;">
+            <span style="color:var(--gold); font-size:0.8rem; font-weight:bold;">PDF VIEWER</span>
+            <button onclick="closePdf()" style="color:white; background:#ef4444; border:none; padding:4px 10px; border-radius:4px;">FECHAR X</button>
+        </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
     </div>
 </main>
@@ -139,28 +148,21 @@
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // --- TEMA CLARO/ESCURO ---
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         const icon = document.querySelector('#theme-btn i');
         icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
     };
 
-    // --- INJETOR DE ESPELHO (REPARADO) ---
     window.injetarEspelho = () => {
         const esp = BANCO_ESPELHOS[activeEx];
         if(esp) {
             const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            const editorPeca = document.getElementById('editor-peca');
-            editorPeca.innerText += "\n\n--- ⚖️ GABARITO OFICIAL ---\n[ ] " + checklist;
+            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ GABARITO OFICIAL ---\n[ ] " + checklist;
             salvarTudo();
-            alert("⚖️ Teses injetadas na Peça!");
-        } else {
-            alert("⚠️ Nenhum espelho encontrado para este exame.");
         }
     };
 
-    // --- SALVAMENTO E ESTRUTURAS ---
     window.salvarTudo = () => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
@@ -196,6 +198,7 @@
     window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
     window.resetarFolha = () => { if(confirm("Limpar tudo?")) ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); };
 
+    // --- REPARO DO RADAR (DETECÇÃO MULTI-PEÇA) ---
     const carregarDados = () => {
         onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
@@ -204,10 +207,23 @@
 
         const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
-        if (txt.includes("ORDINÁRIO")) radar.innerText = "RADAR: REC. ORDINÁRIO";
-        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "RADAR: CONTESTAÇÃO";
-        else if (txt.includes("RECLAMAÇÃO")) radar.innerText = "RADAR: RECLAMAÇÃO";
-        else radar.innerText = "RADAR: BUSCANDO...";
+        radar.classList.remove('detectado');
+
+        if (txt.includes("AGRAVO DE PETIÇÃO")) {
+            radar.innerText = "RADAR: AGRAVO PETIÇÃO";
+            radar.classList.add('detectado');
+        } else if (txt.includes("ORDINÁRIO")) {
+            radar.innerText = "RADAR: REC. ORDINÁRIO";
+            radar.classList.add('detectado');
+        } else if (txt.includes("CONTESTAÇÃO")) {
+            radar.innerText = "RADAR: CONTESTAÇÃO";
+            radar.classList.add('detectado');
+        } else if (txt.includes("RECLAMAÇÃO") || txt.includes("RT")) {
+            radar.innerText = "RADAR: RECLAMAÇÃO";
+            radar.classList.add('detectado');
+        } else {
+            radar.innerText = "RADAR: BUSCANDO...";
+        }
     };
 
     const initNav = () => {
