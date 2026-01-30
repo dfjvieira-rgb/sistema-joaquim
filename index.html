@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - MODO PROVA OFICIAL</title>
+    <title>JOAQUIM ELITE - FULL COMMAND</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -16,11 +16,12 @@
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
 
         header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 10000; }
-        .nav-group { display: flex; gap: 8px; }
-        .btn-ref { height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; }
+        .nav-group { display: flex; gap: 8px; align-items: center; }
+        
+        .btn-ref { height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -34,7 +35,7 @@
 
         /* EDITOR E FOLHA FGV */
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; position: relative; scroll-behavior: smooth; }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; }
         
         .fgv-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; }
         .q-label { font-weight: bold; color: var(--text-color); margin-top: 15px; display: block; border-left: 4px solid var(--gold); padding-left: 10px; }
@@ -44,7 +45,7 @@
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
             white-space: pre-wrap; min-height: 150px; margin-bottom: 20px;
         }
-        #editor-peca { min-height: 1200px; } /* Área maior para a peça */
+        #editor-peca { min-height: 1200px; }
 
         /* TURBINAS */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
@@ -54,9 +55,9 @@
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
-        /* MODAL E PDF */
+        /* PDF E MODAIS */
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
-        .pdf-panel.open { width: 50%; }
+        .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
 
@@ -68,14 +69,17 @@
 <header>
     <div class="nav-group">
         <button class="btn-ref" style="background:#334155; border:none; color:white;" onclick="location.reload()"><i class="fas fa-sync"></i></button>
-        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-ref" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i></button>
     </div>
     <div class="nav-group">
         <button class="btn-ref" id="ref-p" onclick="togglePdf('p')">P</button>
         <button class="btn-ref" id="ref-g" onclick="togglePdf('g')">G</button>
         <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
     </div>
-    <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+    <div class="nav-group">
+        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+    </div>
 </header>
 
 <main>
@@ -83,32 +87,32 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="radar-peca">ESCANEANDO...</div>
+            <div id="radar-peca">LOCALIZANDO...</div>
             
             <div class="fgv-title">Peça Profissional</div>
-            <div id="editor-peca" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <div id="editor-peca" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 1</div>
-            <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true" spellcheck="false"></div>
-            <span class="q-label">ITEM B)</span><div id="q1b" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">ITEM B)</span><div id="q1b" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 2</div>
-            <span class="q-label">ITEM A)</span><div id="q2a" class="editor-area" contenteditable="true" spellcheck="false"></div>
-            <span class="q-label">ITEM B)</span><div id="q2b" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <span class="q-label">ITEM A)</span><div id="q2a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">ITEM B)</span><div id="q2b" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 3</div>
-            <span class="q-label">ITEM A)</span><div id="q3a" class="editor-area" contenteditable="true" spellcheck="false"></div>
-            <span class="q-label">ITEM B)</span><div id="q3b" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <span class="q-label">ITEM A)</span><div id="q3a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">ITEM B)</span><div id="q3b" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 4</div>
-            <span class="q-label">ITEM A)</span><div id="q4a" class="editor-area" contenteditable="true" spellcheck="false"></div>
-            <span class="q-label">ITEM B)</span><div id="q4b" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <span class="q-label">ITEM A)</span><div id="q4a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">ITEM B)</span><div id="q4b" class="editor-area" contenteditable="true"></div>
         </div>
 
         <div class="paper-tools">
             <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
             <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
             <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
@@ -135,11 +139,32 @@
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
+    // --- TEMA CLARO/ESCURO ---
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('#theme-btn i');
+        icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    // --- INJETOR DE ESPELHO (REPARADO) ---
+    window.injetarEspelho = () => {
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) {
+            const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+            const editorPeca = document.getElementById('editor-peca');
+            editorPeca.innerText += "\n\n--- ⚖️ GABARITO OFICIAL ---\n[ ] " + checklist;
+            salvarTudo();
+            alert("⚖️ Teses injetadas na Peça!");
+        } else {
+            alert("⚠️ Nenhum espelho encontrado para este exame.");
+        }
+    };
+
+    // --- SALVAMENTO E ESTRUTURAS ---
     window.salvarTudo = () => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
         set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
-        alert("🛰️ BANCO DE DADOS ATUALIZADO!");
     };
 
     window.abrirEstruturas = () => {
@@ -153,18 +178,11 @@
                 document.getElementById('editor-peca').focus();
                 document.execCommand('insertText', false, pecas[k]);
                 fecharPecas();
+                salvarTudo();
             };
             grid.appendChild(b);
         });
         document.getElementById('pec-modal').style.display = 'flex';
-    };
-
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ TESES ---\n[ ] " + esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            alert("⚖️ TESES INJETADAS NA PEÇA!");
-        }
     };
 
     window.lancarPeca = () => { if(confirm("Lançar simulado completo?")) alert("🚀 LANÇADO!"); };
@@ -176,7 +194,7 @@
     };
 
     window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
-    window.resetarFolha = () => { if(confirm("Limpar tudo?")) ids.forEach(id => document.getElementById(id).innerText = ""); };
+    window.resetarFolha = () => { if(confirm("Limpar tudo?")) ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); };
 
     const carregarDados = () => {
         onValue(ref(db, `estudos/${activeEx}`), (s) => {
@@ -205,6 +223,7 @@
     };
 
     initNav(); carregarDados();
+    ids.forEach(id => document.getElementById(id).addEventListener('input', salvarTudo));
 </script>
 </body>
 </html>
