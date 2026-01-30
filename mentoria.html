@@ -1,3 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ARYANNA 2026 | BLACK BOX COMPLETA</title>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        :root { --bg: #f1f5f9; --text: #000; --primary: #1d4ed8; --border: #94a3b8; --purple: #5b21b6; --success: #065f46; --danger: #991b1b; --gold: #fbbf24; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); padding-bottom: 50px; }
+        header { background: #fff; border-bottom: 2px solid var(--border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .btn-voltar { color: #000; font-weight: 800; border: 2px solid #000; padding: 8px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.8rem; }
+        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        .panel { background: #fff; border-radius: 12px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden; }
+        .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); font-weight: 800; text-transform: uppercase; text-align: center; font-size: 0.8rem; }
+        .panel-body { padding: 15px; }
+        label { font-size: 0.7rem; font-weight: 800; display: block; margin-bottom: 4px; }
+        input, textarea { width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; font-family: inherit; }
+        .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; color: #fff; text-transform: uppercase; }
+        .feed { margin-top: 15px; max-height: 400px; overflow-y: auto; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; border: 2px solid var(--border); margin-bottom: 10px; position: relative; }
+        .btn-reveal { background: #000; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
+        .hidden-content { display: none; margin-top: 10px; padding: 10px; background: #dcfce7; border-radius: 6px; }
+        .black-box-item { background: #020617; color: #fff; border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 5px solid var(--gold); cursor: pointer; transition: 0.2s; }
+        .black-box-item:hover { transform: scale(1.02); }
+        .bb-meta { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--gold); font-weight: 900; }
+        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <div class="btn-voltar" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> COCKPIT</div>
+    <div style="font-weight: 800; font-size: 0.9rem;">ARYANNA 2026 | ORDEM TÉCNICA</div>
+</header>
+
+<main class="dashboard">
+    <!-- RADAR BLACK BOX (SINCRONIZADO) -->
+    <section class="panel" style="grid-column: 1 / -1; border-top: 6px solid #000;">
+        <div class="panel-header" style="background:#000; color:var(--gold)"><i class="fas fa-box"></i> Black Box: Peças no Radar</div>
+        <div class="panel-body" id="black-box-feed">
+            <p style="font-size: 0.7rem; opacity: 0.5;">Sincronizando telemetria...</p>
+        </div>
+    </section>
+
+    <!-- TRIPULAÇÃO 1: PRELIMINARES -->
+    <section class="panel" style="border-top: 6px solid var(--success);">
+        <div class="panel-header">Preliminares</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-pre">
+            <label>Título</label><input type="text" id="pre-t">
+            <label>Fundamentação</label><textarea id="pre-c"></textarea>
+            <button class="btn-save" style="background:var(--success)" onclick="salvar('pre')">Salvar Preliminar</button>
+            <div class="feed" id="feed-pre"></div>
+        </div>
+    </section>
+
+    <!-- TRIPULAÇÃO 2: QUAL É A PEÇA -->
+    <section class="panel" style="border-top: 6px solid var(--purple);">
+        <div class="panel-header">Qual é a Peça?</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-peca">
+            <label>Enunciado</label><textarea id="peca-t"></textarea>
+            <label>Gabarito</label><input type="text" id="peca-c">
+            <button class="btn-save" style="background:var(--purple)" onclick="salvar('peca')">Salvar Peça</button>
+            <div class="feed" id="feed-peca"></div>
+        </div>
+    </section>
+
+    <!-- TRIPULAÇÃO 3: NÃO CONFUNDA -->
+    <section class="panel" style="border-top: 6px solid var(--danger);">
+        <div class="panel-header">Não Confunda</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-nc">
+            <label>Conceito</label><input type="text" id="nc-t">
+            <label>Diferença</label><textarea id="nc-c"></textarea>
+            <button class="btn-save" style="background:var(--danger)" onclick="salvar('nc')">Salvar Radar</button>
+            <div class="feed" id="feed-nc"></div>
+        </div>
+    </section>
+
+    <!-- TRIPULAÇÃO 4: ARQUIVO DE TESES -->
+    <section class="panel" style="border-top: 6px solid var(--primary);">
+        <div class="panel-header">Arquivo de Teses</div>
+        <div class="panel-body">
+            <input type="hidden" id="id-tese">
+            <label>Título</label><input type="text" id="tese-t">
+            <label>Conteúdo</label><textarea id="tese-c"></textarea>
+            <button class="btn-save" style="background:var(--primary)" onclick="salvar('tese')">Arquivar Tese</button>
+            <div class="feed" id="feed-tese"></div>
+        </div>
+    </section>
+</main>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com";
     import { getDatabase, ref, push, set, onValue, remove, serverTimestamp } from "https://www.gstatic.com";
@@ -17,7 +112,7 @@
         const div = btn.nextElementSibling; 
         div.style.display = (div.style.display === "block" ? "none" : "block"); 
     };
-
+    
     window.salvar = (type) => {
         const id = document.getElementById(`id-${type}`).value;
         const t = document.getElementById(`${type}-t`).value;
@@ -26,57 +121,48 @@
         const data = { t, c, ts: serverTimestamp() };
         if(id) set(ref(db, `${paths[type]}/${id}`), data);
         else push(ref(db, paths[type]), data);
-        document.getElementById(`${type}-t`).value = '';
+        document.getElementById(`${type}-t`).value = ''; 
         document.getElementById(`${type}-c`).value = '';
     };
 
-    // --- RADAR BLACK BOX: SINCRONIZAÇÃO COM O COCKPIT (index.html) ---
-    onValue(ref(db, 'estudos'), (snap) => {
-        const feedBB = document.getElementById('black-box-feed');
-        const voos = snap.val();
-        if(!voos) { feedBB.innerHTML = "Radar limpo."; return; }
+    // ESCUTA GLOBAL E RENDERIZAÇÃO
+    onValue(ref(db), (s) => {
+        const v = s.val() || {};
         
+        // RENDER RADAR PRETO (SINCRONIA COM INDEX.HTML)
+        const feedBB = document.getElementById('black-box-feed'); 
         feedBB.innerHTML = "";
-        Object.keys(voos).sort((a,b) => b-a).forEach(exId => {
-            const voo = voos[exId];
-            
-            // Formatação da Data do Voo
-            let dataFmt = voo.ts ? new Date(voo.ts).toLocaleDateString('pt-BR') : "--/--/--";
+        if(v.estudos) {
+            Object.keys(v.estudos).sort((a,b) => b-a).forEach(ex => {
+                const voo = v.estudos[ex];
+                const dataFmt = voo.ts ? new Date(voo.ts).toLocaleDateString('pt-BR') : "--/--/--";
+                const texto = voo['editor-peca'] ? voo['editor-peca'].substring(0,80).replace(/<[^>]*>/g, '') + "..." : "Sem conteúdo...";
+                
+                feedBB.innerHTML += `
+                    <div class="black-box-item" onclick="location.href='index.html'">
+                        <div class="bb-meta"><span>EXAME E${ex}</span><span>${dataFmt}</span></div>
+                        <div style="font-size:0.8rem; opacity:0.8; font-family:serif;">${texto}</div>
+                    </div>`;
+            });
+        } else {
+            feedBB.innerHTML = "<p style='font-size:0.7rem; opacity:0.5;'>Radar limpo. Aguardando dados do cockpit...</p>";
+        }
 
-            // Captura o texto do editor-peca do index.html
-            const textoPreview = voo['editor-peca'] 
-                ? voo['editor-peca'].substring(0, 80).replace(/<[^>]*>?/gm, '') + "..." 
-                : "Sem conteúdo detectado...";
-            
-            const div = document.createElement('div');
-            div.className = 'black-box-item';
-            div.innerHTML = `
-                <div class="bb-meta"><span>EXAME E${exId}</span><span>${dataFmt}</span></div>
-                <div style="font-family:serif; font-size:0.85rem; opacity:0.9;">${textoPreview}</div>
-            `;
-            div.onclick = () => { location.href = 'index.html'; };
-            feedBB.appendChild(div);
-        });
-    });
-
-    // --- CARREGAMENTO DOS TRIPULANTES TÉCNICOS ---
-    onValue(ref(db), (snap) => {
-        const v = snap.val() || {};
+        // RENDER TRIPULANTES TÉCNICOS
         ['pre', 'peca', 'nc', 'tese'].forEach(type => {
-            const f = document.getElementById(`feed-${type}`);
-            if(!f) return;
+            const f = document.getElementById(`feed-${type}`); 
             f.innerHTML = "";
             const obj = v[paths[type]] || {};
-            Object.keys(obj).sort((a,b) => obj[b].ts - obj[a].ts).forEach(id => {
+            Object.keys(obj).forEach(id => {
                 const item = obj[id];
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<strong>${item.t}</strong><p>${item.c}</p>`;
-                if(type === 'peca') {
-                    card.innerHTML += `<button class="btn-reveal" onclick="window.toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>`;
-                }
-                f.appendChild(card);
+                f.innerHTML += `
+                    <div class="card">
+                        <strong>${item.t}</strong><p>${item.c}</p>
+                        ${type==='peca' ? `<button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : ''}
+                    </div>`;
             });
         });
     });
 </script>
+</body>
+</html>
