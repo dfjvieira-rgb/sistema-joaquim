@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - COCKPIT</title>
+    <title>SISTEMA ELITE 2026 - COCKPIT SCANNER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 75px; --mentoria: #a855f7;
+            --header-h: 75px; --mentoria: #a855f7; --scanner: #22c55e;
         }
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
@@ -31,12 +31,8 @@
             cursor: pointer; color: white; font-size: 1.2rem; text-decoration: none;
         }
         
-        /* BOTÃO MENTORIA - CORREDOR LIVRE */
-        .btn-mentoria { 
-            background: var(--mentoria) !important; 
-            border: 2px solid white !important; 
-            box-shadow: 0 0 15px rgba(168,85,247,0.5);
-        }
+        .btn-mentoria { background: var(--mentoria) !important; border: 2px solid white !important; box-shadow: 0 0 15px rgba(168,85,247,0.5); }
+        .btn-scanner { background: var(--scanner) !important; border: 2px solid white; font-weight: 900; }
 
         .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
@@ -79,13 +75,14 @@
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 95%; max-width: 450px; padding: 25px; border-radius: 20px; border: 4px solid var(--gold); }
+        .scan-result { background: #f0fdf4; padding: 15px; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 10px; cursor: pointer; }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
     <div class="nav-group">
-        <button class="btn-c" style="background:#334155" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-c btn-scanner" onclick="ativarScanner()" title="Scanner de Peça"><i class="fas fa-search-dollar"></i></button>
         <a href="mentoria.html" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
     </div>
     <div class="nav-group">
@@ -103,7 +100,7 @@
     <div id="viewport-master">
         <section class="editor-container">
             <div class="paper">
-                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false" placeholder="Inicie a identificação da peça ou escreva aqui..."></div>
             </div>
             <div class="paper-tools">
                 <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
@@ -113,8 +110,8 @@
             </div>
         </section>
         <section id="pdf-viewer">
-            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between; border-bottom:2px solid var(--gold);">
-                <span id="pdf-label">DOCUMENTOS</span>
+            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between;">
+                <span id="pdf-label">RADAR DE APOIO</span>
                 <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:5px 12px; border-radius:8px;">X</button>
             </div>
             <iframe id="pdf-frame"></iframe>
@@ -122,11 +119,22 @@
     </div>
 </main>
 
+<div class="modal" id="scan-modal">
+    <div class="modal-body">
+        <h3 style="text-align:center; margin-bottom:15px;">SCANNER DE IDENTIFICAÇÃO</h3>
+        <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px;">Cole o trecho final do enunciado (o comando da peça):</p>
+        <textarea id="scan-input" style="width:100%; height:100px; padding:10px; border-radius:10px; margin-bottom:10px;"></textarea>
+        <button onclick="processarScan()" style="width:100%; padding:15px; background:var(--scanner); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">ESCANEAR HORIZONTE</button>
+        <div id="scan-output" style="margin-top:20px;"></div>
+        <button onclick="document.getElementById('scan-modal').style.display='none'" style="width:100%; margin-top:10px; padding:10px; background:#ddd; border:none; border-radius:10px; cursor:pointer;">CANCELAR</button>
+    </div>
+</div>
+
 <div class="modal" id="pec-modal">
     <div class="modal-body">
-        <h3 style="margin-bottom:20px; text-align:center;">ESTRUTURAS</h3>
+        <h3 style="margin-bottom:20px; text-align:center;">BIBLIOTECA DE PEÇAS (ESTRUTURAS)</h3>
         <div id="peca-grid" style="display:grid; gap:12px; max-height:400px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:12px; font-weight:bold;">FECHAR</button>
+        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:12px; font-weight:bold;">VOLTAR</button>
     </div>
 </div>
 
@@ -139,11 +147,53 @@
     window.activeEx = "41";
     const editor = document.getElementById('main-editor');
 
+    // INTELIGÊNCIA DE IDENTIFICAÇÃO (SCANNER)
+    const BASE_IDENTIFICACAO = [
+        { termos: ['sentença', 'recorrer', 'decisão', 'prolatada'], peca: 'RECURSO ORDINÁRIO', chave: 'ro' },
+        { termos: ['defesa', 'audiência', 'reclamatória', 'contestação'], peca: 'CONTESTAÇÃO', chave: 'contestacao' },
+        { termos: ['liminar', 'autoridade', 'coatora', 'direito líquido'], peca: 'MANDADO DE SEGURANÇA', chave: 'ms' },
+        { termos: ['acórdão', 'tribunal regional', 'divergência'], peca: 'RECURSO DE REVISTA', chave: 'rr' },
+        { termos: ['execução', 'penhora', 'garantia do juízo'], peca: 'EMBARGOS À EXECUÇÃO', chave: 'embargos' },
+        { termos: ['ação', 'reclamar', 'empregado', 'verbas'], peca: 'RECLAMAÇÃO TRABALHISTA', chave: 'rt' }
+    ];
+
+    window.ativarScanner = () => {
+        document.getElementById('scan-modal').style.display = 'flex';
+        document.getElementById('scan-input').value = '';
+        document.getElementById('scan-output').innerHTML = '';
+    };
+
+    window.processarScan = () => {
+        const input = document.getElementById('scan-input').value.toLowerCase();
+        const output = document.getElementById('scan-output');
+        output.innerHTML = "";
+
+        let encontrados = BASE_IDENTIFICACAO.filter(p => 
+            p.termos.some(t => input.includes(t))
+        );
+
+        if(encontrados.length > 0) {
+            encontrados.forEach(e => {
+                const div = document.createElement('div');
+                div.className = "scan-result";
+                div.innerHTML = `<strong>ALVO DETECTADO:</strong> ${e.peca}<br><small>Clique para injetar a estrutura.</small>`;
+                div.onclick = () => {
+                    editor.focus();
+                    document.execCommand('insertText', false, "\n\n" + pecas[e.chave]);
+                    document.getElementById('scan-modal').style.display = 'none';
+                };
+                output.appendChild(div);
+            });
+        } else {
+            output.innerHTML = "<p style='color:red; text-align:center;'>Nenhum padrão identificado. Tente palavras como 'sentença', 'defesa' ou 'liminar'.</p>";
+        }
+    };
+
     window.injetarJustica = function() {
         const conteudo = BANCO_ESPELHOS[window.activeEx];
         if(conteudo) {
             editor.focus();
-            const formatado = "\n\n--- ⚖️ JUSTIÇA ---\n" + conteudo.replace(/<[^>]*>/g, '');
+            const formatado = "\n\n--- ⚖️ FUNDAMENTAÇÃO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
             document.execCommand('insertText', false, formatado);
         }
     };
@@ -153,7 +203,7 @@
         grid.innerHTML = '';
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
-            b.style = "padding:15px; text-align:left; border:1px solid #ddd; border-radius:12px; font-weight:bold; cursor:pointer;";
+            b.style = "padding:15px; text-align:left; border:1px solid #ddd; border-radius:12px; font-weight:bold; cursor:pointer; background:#f8fafc;";
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 editor.focus();
@@ -175,7 +225,7 @@
 
     window.salvarManual = () => {
         set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("SINCRONIZADO!");
+        alert("DADOS SINCRONIZADOS!");
     };
 
     window.lancarPeca = () => {
@@ -184,7 +234,7 @@
         alert("🚀 LANÇADO!");
     };
 
-    window.limparTudo = () => { if(confirm("LIMPAR RASCUNHO?")) editor.innerText = ""; };
+    window.limparTudo = () => { if(confirm("APAGAR TUDO?")) editor.innerText = ""; };
 
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
