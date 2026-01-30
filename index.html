@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - LOGIC SCANNER</title>
+    <title>JOAQUIM ELITE - LOGIC SCANNER & HISTORY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -55,9 +55,8 @@
         /* TURBINAS */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
         .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-float:hover { transform: scale(1.1); }
         
-        .bg-save { background: #22c55e; }
+        .bg-save { background: #22c55e; } /* Botão de Salvamento e Histórico */
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
@@ -70,6 +69,14 @@
         .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
 
         @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
+
+        /* Estilo para Impressão/PDF */
+        @media print {
+            body * { visibility: hidden; }
+            .paper, .paper * { visibility: visible; }
+            .paper { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+            .paper-tools, header, .sidebar { display: none; }
+        }
     </style>
 </head>
 <body class="dark-mode">
@@ -85,7 +92,7 @@
         <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
     </div>
     <div class="nav-group">
-        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-history"></i></button>
         <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
     </div>
 </header>
@@ -94,13 +101,13 @@
     <aside class="sidebar" id="exam-nav"></aside>
 
     <section class="editor-container">
-        <div class="paper">
+        <div class="paper" id="printable-paper">
             <div id="radar-peca">
                 <span>SCANNER</span>
                 <span class="radar-blink">VARRENDO...</span>
             </div>
             
-            <div class="fgv-title">Peça Profissional</div>
+            <div class="fgv-title">Peça Profissional - Exame <span id="ex-display">41</span></div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 1</div>
@@ -121,7 +128,7 @@
         </div>
 
         <div class="paper-tools">
-            <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-save" onclick="executarSalvamentoMestre()" title="Salvar no Histórico"><i class="fas fa-cloud-upload-alt"></i></div>
             <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
             <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
             <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
@@ -150,6 +157,37 @@
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
+    // --- SALVAMENTO EM TEMPO REAL (MANTIDO) ---
+    window.salvarTudo = () => {
+        const data = {};
+        ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
+    };
+
+    // --- SALVAMENTO NO HISTÓRICO (NOVO: MENTORIA PDF) ---
+    window.executarSalvamentoMestre = () => {
+        // 1. Força o salvamento imediato no Firebase
+        salvarTudo();
+
+        // 2. Cria o registro no Histórico da Mentoria
+        const historicoRef = ref(db, `mentoria/historico`);
+        const novaEntrada = push(historicoRef);
+        
+        const snapshotPeca = {
+            exame: activeEx,
+            data: new Date().toLocaleDateString('pt-BR'),
+            hora: new Date().toLocaleTimeString('pt-BR'),
+            preview: document.getElementById('editor-peca').innerText.substring(0, 100) + "...",
+            conteudoFull: document.getElementById('printable-paper').innerHTML // Salva o HTML estruturado para o "PDF"
+        };
+
+        set(novaEntrada, snapshotPeca).then(() => {
+            alert("✅ PEÇA ARQUIVADA NO HISTÓRICO DA MENTORIA!");
+            // Simulação de geração de PDF (Abre diálogo de impressão focado na folha)
+            window.print(); 
+        });
+    };
+
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         const icon = document.querySelector('#theme-btn i');
@@ -165,18 +203,12 @@
         }
     };
 
-    window.salvarTudo = () => {
-        const data = {};
-        ids.forEach(id => data[id] = document.getElementById(id).innerText);
-        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
-    };
-
     window.abrirEstruturas = () => {
         const grid = document.getElementById('peca-grid');
         grid.innerHTML = '';
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('button');
-            b.style = "width:100%; padding:12px; margin-bottom:5px; font-weight:bold; cursor:pointer;";
+            b.style = "width:100%; padding:12px; margin-bottom:5px; font-weight:bold; cursor:pointer; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:5px;";
             b.innerText = k.toUpperCase();
             b.onclick = () => {
                 document.getElementById('editor-peca').focus();
@@ -189,7 +221,7 @@
         document.getElementById('pec-modal').style.display = 'flex';
     };
 
-    window.lancarPeca = () => { if(confirm("Lançar simulado completo?")) alert("🚀 LANÇADO!"); };
+    window.lancarPeca = () => { if(confirm("Deseja finalizar e lançar simulado?")) executarSalvamentoMestre(); };
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
 
     window.togglePdf = (mode) => {
@@ -197,11 +229,10 @@
         document.getElementById('pdf-panel').classList.add('open');
     };
 
-    window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
-    window.resetarFolha = () => { if(confirm("Limpar tudo?")) ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); };
+    window.resetarFolha = () => { if(confirm("Limpar tudo? Isso apagará o rascunho atual.")) { ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); } };
 
-    // --- REFINAMENTO LÓGICO DO RADAR (ALGORITMO DE DECISÃO) ---
     const carregarDados = () => {
+        document.getElementById('ex-display').innerText = activeEx;
         onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
@@ -209,27 +240,18 @@
 
         const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
-        
-        // Módulo de Decisão Lógica por Prioridade
         const DICIONARIO_PECAS = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO" },
             { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO" },
             { id: "RECLAMAÇÃO TRABALHISTA", display: "RECLAMAÇÃO" },
-            { id: "INICIAL", display: "RECLAMAÇÃO" },
             { id: "CONSIGNATÓRIA", display: "CONSIGNATÓRIA" },
-            { id: "EMBARGOS À EXECUÇÃO", display: "EMBARGOS EXEC." },
             { id: "MANDADO DE SEGURANÇA", display: "MAND. SEGURANÇA" }
         ];
 
         let pecaEncontrada = null;
-
-        // Loop Lógico: Varre o texto em busca da primeira correspondência forte
         for (let item of DICIONARIO_PECAS) {
-            if (txt.includes(item.id)) {
-                pecaEncontrada = item.display;
-                break; // Achou a peça principal, encerra a varredura
-            }
+            if (txt.includes(item.id)) { pecaEncontrada = item.display; break; }
         }
 
         if (pecaEncontrada) {
