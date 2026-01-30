@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - COCKPIT BLINDADO V4</title>
+    <title>JOAQUIM ELITE - COCKPIT BLINDADO V4 (CORRIGIDO)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -25,7 +25,7 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* SIDEBAR DE EXAMES */
+        /* SIDEBAR */
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
         #radar-peca { 
             background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 1px solid var(--gold); 
@@ -33,10 +33,10 @@
         }
         #radar-peca.detectado { background: #16a34a; color: white; border-color: white; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5); }
 
-        .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
+        .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; border: none; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        /* EDITOR FGV */
+        /* EDITOR */
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; scroll-behavior: smooth; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
@@ -48,26 +48,21 @@
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
             white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify;
         }
-        #editor-peca { min-height: 800px; }
 
-        /* HANGAR DE HISTÓRICO ANALÍTICO */
-        .hangar-container { background: var(--paper-color); width: 100%; max-width: 850px; margin: 40px auto; padding: 25px; border-radius: 12px; border: 3px solid var(--gold); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        /* HANGAR */
+        .hangar-container { background: var(--paper-color); width: 100%; max-width: 850px; margin: 40px auto; padding: 25px; border-radius: 12px; border: 3px solid var(--gold); }
         .hangar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--line-color); padding-bottom: 15px; margin-bottom: 20px; }
         .missao-card { background: #f8fafc; border: 1px solid var(--line-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; transition: 0.3s; color: #1e293b; }
-        .missao-card:hover { border-color: var(--gold); transform: translateY(-3px); }
-        .missao-meta { font-size: 0.65rem; color: #64748b; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .missao-title { font-weight: 900; display: flex; justify-content: space-between; align-items: center; color: var(--primary); margin-bottom: 10px; }
+        .missao-meta { font-size: 0.65rem; color: #64748b; font-weight: 800; display: flex; justify-content: space-between; }
         .missao-preview { 
             font-family: 'Times New Roman', serif; font-size: 0.9rem; color: #475569; 
             max-height: 50px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            transition: 0.4s ease; padding: 0; border: none;
+            transition: 0.4s ease;
         }
-        .btn-hangar { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin-left: 5px; }
 
-        /* TURBINAS FLUTUANTES */
+        /* BOTÕES FLUTUANTES */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
-        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-float:hover { transform: scale(1.1); }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         .bg-save { background: #22c55e; }
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
@@ -76,11 +71,7 @@
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
         .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
 
-        @media (max-width: 900px) { 
-            .pdf-panel.open { width: 100%; } 
-            .paper-tools { left: auto; right: 20px; flex-direction: row; bottom: 20px; } 
-            .btn-float { width: 50px; height: 50px; font-size: 1.2rem; }
-        }
+        @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
     </style>
 </head>
 <body class="dark-mode">
@@ -105,10 +96,10 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="radar-peca"><span>RADAR LÓGICO</span><span style="font-size:0.4rem">INICIANDO...</span></div>
+            <div id="radar-peca"><span>SCANNER</span><span style="font-size:0.4rem">VARRENDO...</span></div>
             
             <div class="fgv-title">Peça Profissional</div>
-            <div id="editor-peca" class="editor-area" contenteditable="true" placeholder="Comece sua peça aqui..."></div>
+            <div id="editor-peca" class="editor-area" contenteditable="true"></div>
 
             <div class="fgv-title">Questão 1</div>
             <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
@@ -129,19 +120,17 @@
 
         <div class="hangar-container">
             <div class="hangar-header">
-                <h2 style="color: var(--primary); font-size: 1.2rem;"><i class="fas fa-box-archive"></i> HANGAR DE MISSÕES SALVAS</h2>
-                <button onclick="carregarHangar()" class="btn-ref" style="width:auto; padding:0 15px; font-size:0.7rem;">ATUALIZAR LISTA</button>
+                <h2 style="color: var(--primary); font-size: 1.1rem;"><i class="fas fa-history"></i> HANGAR DE MISSÕES</h2>
+                <button onclick="carregarHangar()" class="btn-ref" style="width:auto; padding:0 10px; font-size:0.7rem;">ATUALIZAR</button>
             </div>
-            <div id="lista-historico">
-                <p style="text-align:center; color:#64748b; padding:20px;">Aguardando autorização da torre...</p>
-            </div>
+            <div id="lista-historico"></div>
         </div>
 
         <div class="paper-tools">
-            <div class="btn-float bg-save" title="Salvar no Firebase" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
-            <div class="btn-float bg-scroll" title="Estruturas" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" title="Gabarito" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" title="Lançar Missão" onclick="alert('MISSÃO LANÇADA PARA APROVAÇÃO!')"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-rocket" onclick="alert('MISSÃO LANÇADA!')"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 
@@ -154,120 +143,89 @@
     import { db } from './firebase-config.js';
     import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    
-    // IDs de todos os campos de texto
-    const camposIds = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
-    let exameAtivo = "41";
 
-    // Mapeamento do Radar baseado em suas estruturas
-    const DICIONARIO_PECAS = [
-        {k: "AGRAVO DE PETIÇÃO", d: "AGRAVO PET."},
-        {k: "RECURSO ORDINÁRIO", d: "REC. ORD."},
-        {k: "CONTESTAÇÃO", d: "CONTESTAÇÃO"},
-        {k: "RECLAMAÇÃO TRABALHISTA", d: "INICIAL RT"},
-        {k: "AÇÃO DE CONSIGNAÇÃO", d: "CONSIGNATÓRIA"},
-        {k: "MANDADO DE SEGURANÇA", d: "MAND. SEGURANÇA"},
-        {k: "EMBARGOS À EXECUÇÃO", d: "EMBARGOS EXEC."},
-        {k: "RECURSO DE REVISTA", d: "REC. REVISTA"},
-        {k: "CONTRA-RAZÕES", d: "CONTRA-RAZÕES"},
-        {k: "EMBARGOS DE DECLARAÇÃO", d: "EMB. DECLARAÇÃO"}
-    ];
+    let activeEx = "41";
+    const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // --- MÁQUINA DE SALVAMENTO ---
-    window.salvarTudo = () => {
-        const payload = {};
-        camposIds.forEach(id => payload[id] = document.getElementById(id).innerText);
-        payload.ts = Date.now();
-        
-        set(ref(db, `estudos/${exameAtivo}`), payload)
-            .then(() => {
-                alert(`Missão E${exameAtivo} salva com sucesso!`);
-                carregarHangar();
-            });
+    // --- FUNÇÕES DE INTERFACE ---
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        document.querySelector('#theme-btn i').className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
     };
 
-    // --- HANGAR: CONSULTA E SNAPSHOT ---
+    window.togglePdf = (m) => {
+        document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[m];
+        document.getElementById('pdf-panel').classList.add('open');
+    };
+
+    // --- MÁQUINA DE SALVAR ---
+    window.salvarTudo = () => {
+        const payload = {};
+        ids.forEach(id => payload[id] = document.getElementById(id).innerText);
+        payload.ts = Date.now();
+        set(ref(db, `estudos/${activeEx}`), payload).then(() => {
+            alert(`Exame ${activeEx} salvo!`);
+            carregarHangar();
+        });
+    };
+
+    // --- HANGAR DE MISSÕES (SNAPSHOT) ---
     window.carregarHangar = () => {
         const hangar = document.getElementById('lista-historico');
         onValue(ref(db, 'estudos/'), (snap) => {
             const dados = snap.val();
             hangar.innerHTML = '';
-            if(!dados) {
-                hangar.innerHTML = '<p>Nenhuma missão encontrada no Firebase.</p>';
-                return;
-            }
-
+            if(!dados) return;
             Object.keys(dados).reverse().forEach(id => {
-                const missao = dados[id];
-                const dataStr = new Date(missao.ts).toLocaleString();
-                const previewText = missao['editor-peca'] || 'Sem conteúdo...';
-                const statusStr = previewText.length > 500 ? '✅ CONCLUÍDA' : '⏳ EM ANDAMENTO';
-
                 const card = document.createElement('div');
                 card.className = 'missao-card';
                 card.innerHTML = `
-                    <div class="missao-meta">
-                        <span>EXAME E${id}</span>
-                        <span>${dataStr} | ${statusStr}</span>
-                    </div>
-                    <div class="missao-title">
-                        <span><i class="fas fa-file-lines"></i> PEÇA PROFISSIONAL</span>
+                    <div class="missao-meta"><span>EXAME ${id}</span><span>${new Date(dados[id].ts).toLocaleString()}</span></div>
+                    <div style="display:flex; justify-content:space-between; margin:10px 0;">
+                        <strong>PEÇA PROFISSIONAL</strong>
                         <div>
-                            <button class="btn-hangar" style="background:#3b82f6; color:white;" onclick="window.visualizarSnapshot('${id}')">VER SNAPSHOT</button>
-                            <button class="btn-hangar" style="background:var(--gold); color:black;" onclick="window.carregarExame('${id}')">RESTAURAR</button>
+                            <button onclick="window.visualizarSnapshot('${id}')" style="background:#3b82f6; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer;">SNAPSHOT</button>
+                            <button onclick="window.carregarExame('${id}')" style="background:var(--gold); border:none; padding:4px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer; margin-left:5px;">ABRIR</button>
                         </div>
                     </div>
-                    <div class="missao-preview" id="prev-${id}">${previewText}</div>
+                    <div class="missao-preview" id="prev-${id}">${dados[id]['editor-peca'] || ''}</div>
                 `;
                 hangar.appendChild(card);
             });
         }, { onlyOnce: true });
     };
 
-    // Função para ler sem carregar no editor
     window.visualizarSnapshot = (id) => {
         const p = document.getElementById(`prev-${id}`);
-        if(p.style.maxHeight === 'none') {
-            p.style.maxHeight = '50px';
-            p.style.display = '-webkit-box';
-            p.style.background = 'transparent';
-        } else {
-            p.style.maxHeight = 'none';
-            p.style.display = 'block';
-            p.style.background = '#fff';
-            p.style.padding = '15px';
-            p.style.border = '1px dashed #fbbf24';
-            p.style.marginTop = '10px';
-        }
+        p.style.maxHeight = p.style.maxHeight === 'none' ? '50px' : 'none';
+        p.style.display = p.style.display === 'block' ? '-webkit-box' : 'block';
     };
 
-    // --- NAVEGAÇÃO E RADAR ---
+    // --- RADAR E NAVEGAÇÃO ---
     window.carregarExame = (id) => {
-        exameAtivo = id;
+        activeEx = id;
         document.querySelectorAll('.exame-btn').forEach(b => b.classList.toggle('active', b.innerText === `E${id}`));
-        
         onValue(ref(db, `estudos/${id}`), (s) => {
             const d = s.val();
-            camposIds.forEach(f => document.getElementById(f).innerText = (d && d[f]) ? d[f] : '');
+            ids.forEach(f => document.getElementById(f).innerText = d ? (d[f] || '') : '');
             executarRadar();
         }, { onlyOnce: true });
     };
 
     const executarRadar = () => {
-        const espelho = (BANCO_ESPELHOS[exameAtivo] || "").toUpperCase();
-        const radarDiv = document.getElementById('radar-peca');
-        let detectada = DICIONARIO_PECAS.find(p => espelho.includes(p.k));
-        
-        if(detectada) {
-            radarDiv.innerHTML = `<span>RADAR: DETECTADO</span><span style="font-size:0.6rem; color:#fff">${detectada.d}</span>`;
-            radarDiv.classList.add('detectado');
-        } else {
-            radarDiv.innerHTML = `<span>RADAR LÓGICO</span><span style="font-size:0.4rem">BUSCANDO ALVO...</span>`;
-            radarDiv.classList.remove('detectado');
-        }
+        const esp = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        const radar = document.getElementById('radar-peca');
+        const chaves = [
+            {k:"AGRAVO DE PETIÇÃO", d:"AGRAVO PET."}, {k:"RECURSO ORDINÁRIO", d:"REC. ORD."},
+            {k:"CONTESTAÇÃO", d:"CONTESTAÇÃO"}, {k:"RECLAMAÇÃO TRABALHISTA", d:"INICIAL RT"},
+            {k:"AÇÃO DE CONSIGNAÇÃO", d:"CONSIGNATÓRIA"}, {k:"MANDADO DE SEGURANÇA", d:"MAND. SEGURANÇA"}
+        ];
+        let found = chaves.find(c => esp.includes(c.k));
+        radar.innerHTML = found ? `<span>RADAR</span><span style="font-size:0.5rem">${found.d}</span>` : `<span>RADAR</span><span style="font-size:0.4rem">VARRENDO...</span>`;
+        radar.classList.toggle('detectado', !!found);
     };
 
-    // Inicialização do Painel Lateral
+    // --- STARTUP ---
     const init = () => {
         const nav = document.getElementById('exam-nav');
         for(let i=44; i>=35; i--) {
@@ -279,34 +237,12 @@
         }
     };
 
-    // Funções de Interface
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-        document.querySelector('#theme-btn i').className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
-    };
-
-    window.togglePdf = (tipo) => {
-        const frame = document.getElementById('pdf-frame');
-        const urls = {
-            'p': `ro${exameAtivo}.pdf`,
-            'g': `ro${exameAtivo}-gabarito.pdf`,
-            'v': `vade.pdf`
-        };
-        frame.src = urls[tipo];
-        document.getElementById('pdf-panel').classList.add('open');
-    };
-
     window.injetarEspelho = () => {
-        const esp = BANCO_ESPELHOS[exameAtivo];
-        if(esp) {
-            const txt = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ CHECKLIST DE PONTUAÇÃO ---\n[ ] " + txt;
-        }
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ GABARITO ---\n" + esp.replace(/<[^>]*>/g, '');
     };
 
-    init();
-    window.carregarExame("41");
-    setTimeout(carregarHangar, 2000);
+    init(); window.carregarExame("41"); setTimeout(carregarHangar, 2000);
 </script>
 </body>
 </html>
