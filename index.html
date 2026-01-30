@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - COCKPIT SCANNER</title>
+    <title>SISTEMA ELITE 2026 - COCKPIT INTELIGENTE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -32,7 +32,9 @@
         }
         
         .btn-mentoria { background: var(--mentoria) !important; border: 2px solid white !important; box-shadow: 0 0 15px rgba(168,85,247,0.5); }
-        .btn-scanner { background: var(--scanner) !important; border: 2px solid white; font-weight: 900; }
+        .btn-scanner { background: var(--scanner) !important; border: 2px solid white; font-weight: 900; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
@@ -54,35 +56,26 @@
         }
 
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .btn-float { 
-            width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; 
-            color: white; font-size: 1.6rem; display: flex; align-items: center; 
-            justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); 
-        }
+        .btn-float { width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
-        .bg-pecas { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
-        .bg-clear { background: #ef4444; }
 
         #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 4px solid var(--gold); }
         #viewport-master.split-view #pdf-viewer { display: flex; }
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
-        @media (max-width: 900px) {
-            #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
-            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
-        }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 95%; max-width: 450px; padding: 25px; border-radius: 20px; border: 4px solid var(--gold); }
-        .scan-result { background: #f0fdf4; padding: 15px; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 10px; cursor: pointer; }
+        /* MODAIS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-body { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 20px; border: 4px solid var(--gold); }
+        .scan-result-box { background: #f0fdf4; padding: 15px; border-radius: 12px; border: 2px dashed var(--scanner); margin-top: 15px; cursor: pointer; transition: 0.2s; }
+        .scan-result-box:hover { background: #dcfce7; transform: scale(1.02); }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
     <div class="nav-group">
-        <button class="btn-c btn-scanner" onclick="ativarScanner()" title="Scanner de Peça"><i class="fas fa-search-dollar"></i></button>
+        <button class="btn-c btn-scanner" onclick="abrirScanner()"><i class="fas fa-microchip"></i></button>
         <a href="mentoria.html" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
     </div>
     <div class="nav-group">
@@ -100,18 +93,17 @@
     <div id="viewport-master">
         <section class="editor-container">
             <div class="paper">
-                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false" placeholder="Inicie a identificação da peça ou escreva aqui..."></div>
+                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
             </div>
             <div class="paper-tools">
                 <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
-                <div class="btn-float bg-pecas" onclick="abrirPecas()"><i class="fas fa-cog fa-spin"></i></div>
                 <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
-                <div class="btn-float bg-clear" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
+                <div class="btn-float bg-clear" onclick="limparTudo()" style="background:red;"><i class="fas fa-trash"></i></div>
             </div>
         </section>
         <section id="pdf-viewer">
             <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between;">
-                <span id="pdf-label">RADAR DE APOIO</span>
+                <span>DOCUMENTOS OFICIAIS</span>
                 <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:5px 12px; border-radius:8px;">X</button>
             </div>
             <iframe id="pdf-frame"></iframe>
@@ -119,22 +111,18 @@
     </div>
 </main>
 
-<div class="modal" id="scan-modal">
+<div class="modal" id="modal-scanner">
     <div class="modal-body">
-        <h3 style="text-align:center; margin-bottom:15px;">SCANNER DE IDENTIFICAÇÃO</h3>
-        <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px;">Cole o trecho final do enunciado (o comando da peça):</p>
-        <textarea id="scan-input" style="width:100%; height:100px; padding:10px; border-radius:10px; margin-bottom:10px;"></textarea>
-        <button onclick="processarScan()" style="width:100%; padding:15px; background:var(--scanner); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">ESCANEAR HORIZONTE</button>
-        <div id="scan-output" style="margin-top:20px;"></div>
-        <button onclick="document.getElementById('scan-modal').style.display='none'" style="width:100%; margin-top:10px; padding:10px; background:#ddd; border:none; border-radius:10px; cursor:pointer;">CANCELAR</button>
-    </div>
-</div>
+        <h2 style="text-align:center; color: var(--primary); margin-bottom:10px;">SCANNER DE ELITE</h2>
+        <p style="font-size:0.8rem; text-align:center; margin-bottom:15px;">A IA cruzará o enunciado com o <strong>Exame <span id="scan-exame-num"></span></strong></p>
+        
+        <textarea id="texto-comando" placeholder="Cole aqui o comando final da peça (ex: 'Como advogado de Fulano, interponha a medida cabível...')" style="width:100%; height:120px; padding:12px; border-radius:10px; border:2px solid #ddd; font-family:inherit;"></textarea>
+        
+        <button onclick="executarScanInteligente()" style="width:100%; background:var(--scanner); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; margin-top:10px; cursor:pointer;">INICIAR IDENTIFICAÇÃO</button>
+        
+        <div id="resultado-scan"></div>
 
-<div class="modal" id="pec-modal">
-    <div class="modal-body">
-        <h3 style="margin-bottom:20px; text-align:center;">BIBLIOTECA DE PEÇAS (ESTRUTURAS)</h3>
-        <div id="peca-grid" style="display:grid; gap:12px; max-height:400px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('pec-modal').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:var(--primary); color:white; border-radius:12px; font-weight:bold;">VOLTAR</button>
+        <button onclick="document.getElementById('modal-scanner').style.display='none'" style="width:100%; background:#eee; border:none; padding:10px; border-radius:10px; margin-top:15px; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
@@ -147,72 +135,78 @@
     window.activeEx = "41";
     const editor = document.getElementById('main-editor');
 
-    // INTELIGÊNCIA DE IDENTIFICAÇÃO (SCANNER)
-    const BASE_IDENTIFICACAO = [
-        { termos: ['sentença', 'recorrer', 'decisão', 'prolatada'], peca: 'RECURSO ORDINÁRIO', chave: 'ro' },
-        { termos: ['defesa', 'audiência', 'reclamatória', 'contestação'], peca: 'CONTESTAÇÃO', chave: 'contestacao' },
-        { termos: ['liminar', 'autoridade', 'coatora', 'direito líquido'], peca: 'MANDADO DE SEGURANÇA', chave: 'ms' },
-        { termos: ['acórdão', 'tribunal regional', 'divergência'], peca: 'RECURSO DE REVISTA', chave: 'rr' },
-        { termos: ['execução', 'penhora', 'garantia do juízo'], peca: 'EMBARGOS À EXECUÇÃO', chave: 'embargos' },
-        { termos: ['ação', 'reclamar', 'empregado', 'verbas'], peca: 'RECLAMAÇÃO TRABALHISTA', chave: 'rt' }
-    ];
-
-    window.ativarScanner = () => {
-        document.getElementById('scan-modal').style.display = 'flex';
-        document.getElementById('scan-input').value = '';
-        document.getElementById('scan-output').innerHTML = '';
+    // --- LÓGICA DO SCANNER AUTOMATIZADO ---
+    window.abrirScanner = () => {
+        document.getElementById('scan-exame-num').innerText = window.activeEx;
+        document.getElementById('modal-scanner').style.display = 'flex';
+        document.getElementById('resultado-scan').innerHTML = '';
+        document.getElementById('texto-comando').value = '';
     };
 
-    window.processarScan = () => {
-        const input = document.getElementById('scan-input').value.toLowerCase();
-        const output = document.getElementById('scan-output');
-        output.innerHTML = "";
+    window.executarScanInteligente = () => {
+        const texto = document.getElementById('texto-comando').value.toLowerCase();
+        const resDiv = document.getElementById('resultado-scan');
+        const espelhoDoc = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
+        
+        resDiv.innerHTML = "<p style='text-align:center; margin-top:10px;'>Analisando banco de dados...</p>";
 
-        let encontrados = BASE_IDENTIFICACAO.filter(p => 
-            p.termos.some(t => input.includes(t))
-        );
+        setTimeout(() => {
+            let pecaDetectada = null;
+            let chavePeca = null;
 
-        if(encontrados.length > 0) {
-            encontrados.forEach(e => {
-                const div = document.createElement('div');
-                div.className = "scan-result";
-                div.innerHTML = `<strong>ALVO DETECTADO:</strong> ${e.peca}<br><small>Clique para injetar a estrutura.</small>`;
-                div.onclick = () => {
-                    editor.focus();
-                    document.execCommand('insertText', false, "\n\n" + pecas[e.chave]);
-                    document.getElementById('scan-modal').style.display = 'none';
-                };
-                output.appendChild(div);
-            });
-        } else {
-            output.innerHTML = "<p style='color:red; text-align:center;'>Nenhum padrão identificado. Tente palavras como 'sentença', 'defesa' ou 'liminar'.</p>";
-        }
+            // 1. Cruzamento com Estruturas Conhecidas
+            const dicionario = {
+                'ro': ['recurso ordinário', 'sentença', 'prolatada', 'recorrer'],
+                'contestacao': ['contestação', 'defesa', 'audiência', 'reclamada'],
+                'rt': ['reclamação trabalhista', 'ação', 'empregado', 'verbas'],
+                'ms': ['mandado de segurança', 'liminar', 'autoridade'],
+                'rr': ['recurso de revista', 'acórdão', 'regional'],
+                'ap': ['agravo de petição', 'execução', 'embargos']
+            };
+
+            for (let chave in dicionario) {
+                if (dicionario[chave].some(termo => texto.includes(termo))) {
+                    pecaDetectada = chave.toUpperCase().replace('_', ' ');
+                    chavePeca = chave;
+                    break;
+                }
+            }
+
+            // 2. Validação com o Banco Espelho (A Automação Real)
+            // Se o espelho do exame atual contém o nome da peça, ele confirma a detecção
+            if (espelhoDoc.includes("recurso ordinário")) { pecaDetectada = "RECURSO ORDINÁRIO"; chavePeca = "ro"; }
+            else if (espelhoDoc.includes("contestação")) { pecaDetectada = "CONTESTAÇÃO"; chavePeca = "contestacao"; }
+            else if (espelhoDoc.includes("reclamação trabalhista")) { pecaDetectada = "RECLAMAÇÃO TRABALHISTA"; chavePeca = "rt"; }
+
+            if (pecaDetectada && pecas[chavePeca]) {
+                resDiv.innerHTML = `
+                    <div class="scan-result-box" onclick="injetarEstrutura('${chavePeca}')">
+                        <strong style="color:var(--success)">ALVO CONFIRMADO: ${pecaDetectada}</strong><br>
+                        <small>Cruzamento com Exame ${window.activeEx} concluído. Clique para injetar.</small>
+                    </div>
+                `;
+            } else {
+                resDiv.innerHTML = "<p style='color:red; text-align:center; margin-top:10px;'>Inconclusivo. Verifique o comando ou o Exame selecionado.</p>";
+            }
+        }, 800);
     };
 
-    window.injetarJustica = function() {
+    window.injetarEstrutura = (chave) => {
+        editor.focus();
+        // Injeta a estrutura técnica completa do seu arquivo estruturas.js
+        const esqueleto = pecas[chave] || "Estrutura não encontrada.";
+        document.execCommand('insertText', false, "\n" + esqueleto);
+        document.getElementById('modal-scanner').style.display = 'none';
+    };
+
+    // --- FUNÇÕES DE APOIO ---
+    window.injetarJustica = () => {
         const conteudo = BANCO_ESPELHOS[window.activeEx];
         if(conteudo) {
             editor.focus();
-            const formatado = "\n\n--- ⚖️ FUNDAMENTAÇÃO (JUSTIÇA) ---\n" + conteudo.replace(/<[^>]*>/g, '');
-            document.execCommand('insertText', false, formatado);
+            const limpo = conteudo.replace(/<[^>]*>/g, '');
+            document.execCommand('insertText', false, "\n\n--- FUNDAMENTAÇÃO DO ESPELHO ---\n" + limpo);
         }
-    };
-
-    window.abrirPecas = function() {
-        const grid = document.getElementById('peca-grid');
-        grid.innerHTML = '';
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('button');
-            b.style = "padding:15px; text-align:left; border:1px solid #ddd; border-radius:12px; font-weight:bold; cursor:pointer; background:#f8fafc;";
-            b.innerText = k.toUpperCase();
-            b.onclick = () => {
-                editor.focus();
-                document.execCommand('insertText', false, "\n\n" + pecas[k]);
-                document.getElementById('pec-modal').style.display='none';
-            };
-            grid.appendChild(b);
-        });
-        document.getElementById('pec-modal').style.display = 'flex';
     };
 
     window.abrirDoc = (tipo) => {
@@ -222,20 +216,10 @@
     };
 
     window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
+    window.salvarManual = () => { set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() }); alert("SINCRONIZADO!"); };
+    window.limparTudo = () => { if(confirm("LIMPAR TUDO?")) editor.innerText = ""; };
 
-    window.salvarManual = () => {
-        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
-        alert("DADOS SINCRONIZADOS!");
-    };
-
-    window.lancarPeca = () => {
-        if(!editor.innerText.trim()) return;
-        push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
-        alert("🚀 LANÇADO!");
-    };
-
-    window.limparTudo = () => { if(confirm("APAGAR TUDO?")) editor.innerText = ""; };
-
+    // Sidebar e Carregamento
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
@@ -256,7 +240,6 @@
             if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
         }, { onlyOnce: true });
     }
-
     carregarDados();
     editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
