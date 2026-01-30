@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA ELITE 2026 - COCKPIT RESTAURADO</title>
+    <title>SISTEMA ELITE 2026 - COCKPIT TOTAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -21,71 +21,77 @@
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 15px; 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 2000;
+            border-bottom: 3px solid var(--gold); z-index: 2000;
         }
 
-        /* RADAR AUTOMÁTICO */
+        /* BARRA DO RADAR */
         #radar-auto {
             background: #000; color: var(--gold); height: 35px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 800; border-bottom: 2px solid var(--gold);
-            text-transform: uppercase; z-index: 1900;
+            font-size: 0.7rem; font-weight: 800; border-bottom: 2px solid var(--gold);
+            text-transform: uppercase; z-index: 1900; letter-spacing: 1px;
         }
 
-        .nav-group { display: flex; gap: 10px; align-items: center; }
+        .nav-group { display: flex; gap: 8px; align-items: center; }
         .btn-c { 
             height: 45px; width: 45px; border-radius: 10px; border: none;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; color: white; font-size: 1.1rem; text-decoration: none;
         }
         .btn-mentoria { background: var(--mentoria) !important; border: 2px solid white !important; }
-        .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
+        .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; font-size: 0.9rem; }
         .btn-ref.active { background: var(--gold); color: var(--primary); }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: 65px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
-        .exame-btn { width: 100%; height: 35px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        
+        /* SIDEBAR DE EXAMES */
+        .sidebar { width: 65px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
+        .exame-btn { width: 100%; height: 35px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; height: 100%; }
+        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
         #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
         
-        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
+        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; padding-top: 10px; position: relative; }
         
-        /* ALERTA DE SUGESTÃO */
+        /* ALERTA DE SUGESTÃO DO RADAR */
         #sugestao-alerta {
-            width: 90%; max-width: 700px; background: var(--gold); color: #000;
-            padding: 10px; font-weight: 800; text-align: center; border-radius: 10px;
-            margin-bottom: 10px; cursor: pointer; display: none; z-index: 100;
+            width: 90%; max-width: 600px; background: var(--gold); color: #000;
+            padding: 12px; font-weight: 900; text-align: center; border-radius: 12px;
+            margin-bottom: 15px; cursor: pointer; display: none; z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white;
         }
 
-        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 300px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 400px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
+            outline: none; font-size: 18px; line-height: 31px; color: var(--text-color); font-family: 'Times New Roman', serif;
             min-height: 1000px; white-space: pre-wrap;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
+            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 30px, var(--line-color) 30px, var(--line-color) 31px);
         }
 
-        /* AS TURBINAS (BOTOES FLUTUANTES) */
+        /* AS TURBINAS (BOTOES FLUTUANTES) - AGORA BLINDADAS */
         .paper-tools { 
-            position: fixed; right: 25px; bottom: 30px; 
-            display: flex; flex-direction: column; gap: 15px; z-index: 2500; 
+            position: fixed; right: 20px; bottom: 30px; 
+            display: flex; flex-direction: column; gap: 12px; z-index: 3000; 
         }
         .btn-float { 
-            width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; 
-            color: white; font-size: 1.4rem; display: flex; align-items: center; 
-            justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+            width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; 
+            color: white; font-size: 1.5rem; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.6); 
+            transition: transform 0.2s;
         }
-        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
-        .bg-justica { background: #3b82f6; }
-        .bg-save { background: #22c55e; }
+        .btn-float:active { transform: scale(0.9); }
+        
+        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); } /* TURBINA FOGUETE */
+        .bg-justica { background: #3b82f6; } /* TURBINA JUSTIÇA */
+        .bg-save { background: #22c55e; } /* TURBINA SALVAR */
 
         #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 3px solid var(--gold); }
         #viewport-master.split-view #pdf-viewer { display: flex; }
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
         @media (max-width: 900px) {
-            .paper-tools { right: 15px; bottom: 20px; }
+            .paper-tools { right: 15px; bottom: 25px; }
             #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
         }
     </style>
@@ -94,19 +100,21 @@
 
 <header>
     <div class="nav-group">
-        <a href="mentoria.html" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
+        <a href="mentoria.html" class="btn-c btn-mentoria" title="Mentoria"><i class="fas fa-brain"></i></a>
         <button class="btn-c" style="background:#334155" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
     </div>
     <div class="nav-group">
-        <button class="btn-c btn-ref" onclick="abrirDoc('p')">P</button>
-        <button class="btn-c btn-ref" onclick="abrirDoc('g')">G</button>
-        <button class="btn-c btn-ref" onclick="abrirDoc('v')">V</button>
+        <button class="btn-c btn-ref" id="btn-p" onclick="abrirDoc('p')">P</button>
+        <button class="btn-c btn-ref" id="btn-g" onclick="abrirDoc('g')">G</button>
+        <button class="btn-c btn-ref" id="btn-v" onclick="abrirDoc('v')">V</button>
     </div>
-    <div class="btn-c" style="background:#ef4444" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
+    <div class="nav-group">
+        <button class="btn-c" style="background:#ef4444" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></button>
+    </div>
 </header>
 
 <div id="radar-auto">
-    <i class="fas fa-satellite-dish"></i> RADAR: AGUARDANDO COMANDO...
+    <i class="fas fa-satellite-dish"></i> RADAR ELITE: AGUARDANDO EXAME...
 </div>
 
 <main>
@@ -114,25 +122,34 @@
     <div id="viewport-master">
         <section class="editor-container">
             <div id="sugestao-alerta" onclick="injetarSugestao()">
-                🚀 PEÇA: <span id="txt-sugestao">---</span> | INJETAR ESTRUTURA
+                🚀 PEÇA IDENTIFICADA: <span id="txt-sugestao">---</span><br>
+                <small>CLIQUE PARA INJETAR A TRIPULAÇÃO</small>
             </div>
+            
             <div class="paper">
                 <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
             </div>
         </section>
+
         <section id="pdf-viewer">
-            <div style="background:#000; color:var(--gold); padding:8px; display:flex; justify-content:space-between; font-size: 0.8rem;">
-                <span>VISTA TÉCNICA</span>
-                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:2px 8px; border-radius:4px;">FECHAR</button>
+            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:bold; font-size:0.8rem;">AUXÍLIO DE VOO</span>
+                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:4px 10px; border-radius:6px; font-weight:bold;">X</button>
             </div>
             <iframe id="pdf-frame"></iframe>
         </section>
     </div>
 
     <div class="paper-tools">
-        <div class="btn-float bg-save" onclick="salvarManual()" title="Sincronizar Banco"><i class="fas fa-cloud-upload-alt"></i></div>
-        <div class="btn-float bg-justica" onclick="injetarJustica()" title="Injetar Fundamentação"><i class="fas fa-gavel"></i></div>
-        <div class="btn-float bg-rocket" onclick="lancarPeca()" title="Lançar Peça Finalizada"><i class="fas fa-paper-plane"></i></div>
+        <div class="btn-float bg-save" onclick="salvarManual()" title="Sincronizar Nuvem">
+            <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <div class="btn-float bg-justica" onclick="injetarJustica()" title="Injetar Fundamentação">
+            <i class="fas fa-gavel"></i>
+        </div>
+        <div class="btn-float bg-rocket" onclick="lancarPeca()" title="Lançar Peça Finalizada">
+            <i class="fas fa-rocket"></i>
+        </div>
     </div>
 </main>
 
@@ -143,62 +160,93 @@
     import { pecas } from './estruturas.js';
 
     window.activeEx = "41";
-    let pecaChave = "";
+    let pecaChaveDetectada = "";
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-auto');
     const alerta = document.getElementById('sugestao-alerta');
 
-    // RADAR DE IDENTIFICAÇÃO AUTOMÁTICA
-    function rodarRadar() {
-        const espelho = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
+    // --- LÓGICA DO RADAR AUTOMÁTICO ---
+    function escaneandoCeu() {
+        const conteudo = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
         alerta.style.display = "none";
-        radar.innerHTML = `<i class="fas fa-satellite-dish"></i> SCANNER ATIVO: EXAME ${window.activeEx}`;
+        radar.innerHTML = `<i class="fas fa-satellite-dish fa-spin"></i> ESCANEANDO EXAME ${window.activeEx}...`;
 
         const rotas = [
-            { n: 'RECURSO ORDINÁRIO', c: 'ro' },
-            { n: 'CONTESTAÇÃO', c: 'contestacao' },
-            { n: 'RECLAMAÇÃO TRABALHISTA', c: 'rt' },
-            { n: 'MANDADO DE SEGURANÇA', c: 'ms' },
-            { n: 'AGRAVO DE PETIÇÃO', c: 'ap' }
+            { nome: 'RECURSO ORDINÁRIO', chave: 'ro' },
+            { nome: 'CONTESTAÇÃO', chave: 'contestacao' },
+            { nome: 'RECLAMAÇÃO TRABALHISTA', chave: 'rt' },
+            { nome: 'MANDADO DE SEGURANÇA', chave: 'ms' },
+            { nome: 'AGRAVO DE PETIÇÃO', chave: 'ap' }
         ];
 
-        const match = rotas.find(r => espelho.includes(r.n.toLowerCase()));
-        if(match) {
-            pecaChave = match.c;
-            document.getElementById('txt-sugestao').innerText = match.n;
+        const encontrada = rotas.find(r => conteudo.includes(r.nome.toLowerCase()));
+
+        if(encontrada) {
+            pecaChaveDetectada = encontrada.chave;
+            document.getElementById('txt-sugestao').innerText = encontrada.nome;
             alerta.style.display = "block";
-            radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> ALVO: ${match.n}`;
+            radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> ALVO LOCALIZADO: ${encontrada.nome}`;
+        } else {
+            radar.innerHTML = `<i class="fas fa-search"></i> AGUARDANDO IDENTIFICAÇÃO NO EXAME ${window.activeEx}`;
         }
     }
 
+    // --- INJEÇÃO DA TRIPULAÇÃO (PEÇAS) ---
     window.injetarSugestao = () => {
-        if(pecaChave && pecas[pecaChave]) {
+        if(pecaChaveDetectada && pecas[pecaChaveDetectada]) {
             editor.focus();
-            document.execCommand('insertText', false, pecas[pecaChave]);
-            alerta.style.display = "none";
+            document.execCommand('insertText', false, pecas[pecaChaveDetectada]);
+            alerta.style.background = "#22c55e";
+            alerta.innerHTML = "✅ TRIPULAÇÃO EM POSIÇÃO!";
+            setTimeout(() => alerta.style.display = "none", 1500);
         }
     };
 
+    // --- TURBINA JUSTIÇA ---
     window.injetarJustica = () => {
         const conteudo = BANCO_ESPELHOS[window.activeEx];
         if(conteudo) {
             editor.focus();
-            document.execCommand('insertText', false, "\n\n--- FUNDAMENTAÇÃO OFICIAL ---\n" + conteudo.replace(/<[^>]*>/g, ''));
+            const limpo = conteudo.replace(/<[^>]*>/g, '');
+            document.execCommand('insertText', false, "\n\n--- ⚖️ FUNDAMENTAÇÃO DO ESPELHO ---\n" + limpo);
         }
     };
 
+    // --- TURBINA SALVAR ---
+    window.salvarManual = () => {
+        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
+        alert("🛰️ SINCRONIZADO COM A BASE!");
+    };
+
+    // --- TURBINA FOGUETE ---
+    window.lancarPeca = () => {
+        if(!editor.innerText.trim()) return;
+        push(ref(db, 'historico/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
+        alert("🚀 PEÇA LANÇADA AO ESPAÇO!");
+    };
+
+    // --- CONTROLE DE PDF ---
     window.abrirDoc = (tipo) => {
-        const f = document.getElementById('pdf-frame');
-        f.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
+        const frame = document.getElementById('pdf-frame');
+        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + tipo).classList.add('active');
+        
+        frame.src = { 
+            'p': `ro${window.activeEx}.pdf`, 
+            'g': `ro${window.activeEx}-gabarito.pdf`, 
+            'v': `vade.pdf` 
+        }[tipo];
         document.getElementById('viewport-master').classList.add('split-view');
     };
 
-    window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
-    window.salvarManual = () => { set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() }); alert("SINCRONIZADO!"); };
-    window.lancarPeca = () => { push(ref(db, 'historico/' + window.activeEx), { text: editor.innerText, ts: Date.now() }); alert("LANÇADO!"); };
-    window.limparTudo = () => { if(confirm("LIMPAR?")) editor.innerText = ""; };
+    window.fecharDoc = () => {
+        document.getElementById('viewport-master').classList.remove('split-view');
+        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
+    };
 
-    // SIDEBAR
+    window.limparTudo = () => { if(confirm("DESEJA APAGAR TODO O CONTEÚDO?")) editor.innerText = ""; };
+
+    // --- CONSTRUÇÃO DA SIDEBAR ---
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
@@ -208,7 +256,7 @@
             window.activeEx = i.toString();
             document.querySelectorAll('.exame-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
-            rodarRadar();
+            escaneandoCeu();
             carregarDados();
         };
         nav.appendChild(b);
@@ -221,8 +269,9 @@
         }, { onlyOnce: true });
     }
 
+    // Inicialização
     carregarDados();
-    rodarRadar();
+    escaneandoCeu();
     editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
 </body>
