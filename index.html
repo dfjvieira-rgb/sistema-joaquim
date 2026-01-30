@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026</title>
+    <title>JOAQUIM ELITE 2026 | SIMULADOR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,65 +11,98 @@
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
             --header-h: 65px;
         }
+
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+        
         body {
             font-family: 'Inter', sans-serif; background: var(--primary);
             height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden;
         }
+
         header {
             background: var(--primary); height: var(--header-h); padding: 0 10px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid var(--gold); z-index: 1000;
         }
+
         .nav-group { display: flex; gap: 8px; align-items: center; }
+
         .btn-tool {
-            height: 38px; width: 38px; border-radius: 6px; border: none;
+            height: 40px; width: 40px; border-radius: 6px; border: none;
             color: white; cursor: pointer; background: #334155;
             display: flex; align-items: center; justify-content: center;
         }
+
         main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); }
+
         .sidebar {
             width: 70px; background: #1e293b; display: flex;
             flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.1);
         }
+        
         #radar-peca {
             background: #000; color: var(--gold); padding: 5px 2px; border-radius: 4px;
-            font-size: 0.55rem; font-weight: 900; text-align: center; border: 1px solid var(--gold);
+            font-size: 0.55rem; font-weight: 900; text-align: center;
+            min-height: 45px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--gold); text-transform: uppercase; font-family: monospace;
+            line-height: 1.1; margin-bottom: 5px;
         }
+
         .exame-btn {
             width: 100%; height: 35px; background: #334155; border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
             font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
-        .editor-container { flex: 1; overflow-y: auto; display: flex; justify-content: center; }
+
+        .editor-container {
+            flex: 1; overflow-y: auto; background: var(--bg-paper);
+            display: flex; justify-content: center; width: 100%;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .paper {
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%;
-            padding: 40px; position: relative;
+            padding: 50px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
+
         .editor-area {
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color);
+            outline: none; font-size: 18px; line-height: 30px; color: #000;
             font-family: 'Times New Roman', serif; text-align: justify;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 1000px;
+            background-image: repeating-linear-gradient(transparent, transparent 29px, var(--line-color) 29px, var(--line-color) 30px);
+            min-height: 1200px; width: 100%; word-wrap: break-word;
         }
+
         .paper-tools {
             position: fixed; right: 30px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 15px;
+            display: flex; flex-direction: column; gap: 15px; z-index: 1500;
         }
+
         .btn-side {
-            width: 55px; height: 55px; border-radius: 50%; border: none;
+            width: 55px; height: 55px; border-radius: 50%; border: 2px solid #fff;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.4rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
+
+        /* AJUSTES PARA IMPRESSÃO / PDF OFICIAL */
         @media print {
             header, .sidebar, .paper-tools { display: none !important; }
             body, main, .editor-container { background: white !important; overflow: visible !important; }
-            .paper { width: 100% !important; padding: 0 !important; box-shadow: none !important; }
+            .paper { width: 100% !important; padding: 0 !important; box-shadow: none !important; margin: 0 !important; }
+            .editor-area { background-image: none !important; }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar { width: 60px; }
+            .paper-tools { right: 15px; bottom: 15px; }
+            .btn-side { width: 50px; height: 50px; }
         }
     </style>
 </head>
@@ -77,29 +110,31 @@
 
 <header>
     <div class="nav-group">
-        <button class="btn-tool" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-tool" onclick="location.reload()"><i class="fas fa-home"></i></button>
         <button class="btn-tool" style="background:#a855f7" onclick="window.open('mentoria.html', '_blank')"><i class="fas fa-brain"></i></button>
     </div>
-    <div style="color:var(--gold); font-weight:900; font-size:1.2rem;">ELITE OAB</div>
+
+    <div style="color:var(--gold); font-weight:900;">SIMULADOR ELITE</div>
+
     <div class="nav-group">
-        <button class="btn-tool" id="btn-save-disk" style="background:#22c55e" onclick="salvarEPDF()"><i class="fas fa-save"></i></button>
+        <button class="btn-tool" id="btn-sync" style="background:#22c55e" onclick="salvarEPDF()"><i class="fas fa-save"></i></button>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div id="radar-peca">RADAR</div>
+        <div id="radar-peca">ESCANEANDO</div>
         <div id="exam-nav"></div>
     </aside>
 
     <section class="editor-container">
-        <div class="paper" id="print-area">
+        <div class="paper">
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
         
         <div class="paper-tools">
-            <button class="btn-side" style="background:#3b82f6" onclick="window.print()"><i class="fas fa-print"></i></button>
-            <button class="btn-side" style="background:#ef4444" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+            <button class="btn-side" style="background:#3b82f6" onclick="window.print()" title="Imprimir PDF"><i class="fas fa-print"></i></button>
+            <button class="btn-side" style="background:#ef4444" onclick="resetarFolha()" title="Excluir tudo"><i class="fas fa-trash-alt"></i></button>
         </div>
     </section>
 </main>
@@ -109,37 +144,18 @@
     import { getDatabase, ref, set, onValue, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+    };
     const app = initializeApp(config);
     const db = getDatabase(app);
 
     let activeEx = "41";
     const editor = document.getElementById('main-editor');
-
-    window.salvarEPDF = () => {
-        // 1. Salva no Firebase para persistência
-        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: serverTimestamp() });
-        
-        // 2. Envia para a Mentoria (Disquete)
-        const snap = {
-            exame: activeEx,
-            data: new Date().toLocaleString('pt-BR'),
-            conteudo: editor.innerText,
-            qualPeca: "", dicasNC: ""
-        };
-        push(ref(db, 'mentoria/historico'), snap);
-
-        // 3. Feedback e comando de Impressão/PDF
-        alert("Peça Salva no Banco! Preparando PDF...");
-        window.print();
-    };
-
-    window.resetarFolha = () => {
-        if(confirm("Deseja apagar toda a folha de respostas?")) {
-            editor.innerText = "";
-            set(ref(db, 'estudos/' + activeEx), { text: "", ts: serverTimestamp() });
-        }
-    };
+    const radar = document.getElementById('radar-peca');
 
     const carregarExames = () => {
         const nav = document.getElementById('exam-nav');
@@ -148,11 +164,49 @@
             const btn = document.createElement('div');
             btn.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             btn.innerText = `E${i}`;
-            btn.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
+            btn.onclick = () => mudarExame(i);
             nav.appendChild(btn);
         }
-        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        document.getElementById('radar-peca').innerText = txt.includes("ORDINÁRIO") ? "RO" : txt.includes("CONTESTAÇÃO") ? "CONT" : "PEÇA";
+        atualizarRadar();
+    };
+
+    const mudarExame = (i) => {
+        activeEx = i.toString();
+        carregarExames();
+        carregarFirebase();
+    };
+
+    const atualizarRadar = () => {
+        const conteudo = BANCO_ESPELHOS[activeEx];
+        if (!conteudo) { radar.innerText = "OFFLINE"; return; }
+        const txt = conteudo.toUpperCase();
+        if (txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO PETIÇÃO";
+        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RECLAMATÓRIA";
+        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
+        else if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
+        else radar.innerText = "PEÇA OAB";
+    };
+
+    window.salvarEPDF = () => {
+        // Salva persistência local do exame
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: serverTimestamp() });
+        
+        // Envia snapshot para o Histórico da Mentoria
+        push(ref(db, 'mentoria/historico'), {
+            exame: activeEx,
+            data: new Date().toLocaleString('pt-BR'),
+            conteudo: editor.innerText
+        });
+
+        alert("🏆 Peça salva no histórico! Abrindo gerador de PDF...");
+        window.print();
+    };
+
+    window.resetarFolha = () => {
+        if(confirm("Deseja DELETAR todo o conteúdo desta folha?")) {
+            editor.innerText = "";
+            set(ref(db, 'estudos/' + activeEx), { text: "", ts: serverTimestamp() });
+        }
     };
 
     function carregarFirebase() {
@@ -164,6 +218,8 @@
 
     carregarExames();
     carregarFirebase();
+
+    // Auto-save inteligente ao digitar
     editor.addEventListener('input', () => {
         set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: serverTimestamp() });
     });
