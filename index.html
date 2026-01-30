@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - COCKPIT</title>
+    <title>JOAQUIM ELITE - LOGIC SCANNER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
@@ -16,32 +17,66 @@
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
 
-        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; }
-        .nav-group { display: flex; gap: 8px; }
-        .btn-tool { height: 40px; width: 40px; border-radius: 8px; border: 1px solid var(--gold); background: #1e293b; color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 70px; background: #1e293b; display: flex; flex-direction: column; gap: 5px; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
-        #radar-peca { background: #000; color: var(--gold); padding: 5px; border-radius: 4px; font-size: 0.55rem; font-weight: 900; text-align: center; border: 1px solid var(--gold); margin-bottom: 10px; }
+        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 10000; }
+        .nav-group { display: flex; gap: 8px; align-items: center; }
         
-        .exame-btn { width: 100%; height: 35px; background: #334155; color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; cursor: pointer; margin-bottom: 4px; }
-        .exame-btn.active { background: var(--gold); color: var(--primary); }
+        .btn-ref { height: 40px; width: 40px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
+        #radar-peca { 
+            background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold); 
+            font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #radar-peca.detectado { background: #16a34a; color: white; border-color: white; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5); }
+        .radar-blink { font-size: 0.45rem; opacity: 0.7; margin-top: 2px; }
+
+        .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; margin-bottom: 5px; }
+        .exame-btn.active { background: var(--gold); color: black; }
 
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; position: relative; }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 1200px; }
+        
+        /* FOLHA FGV - ÁREA DE IMPRESSÃO */
+        .paper { 
+            background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; 
+            position: relative;
+        }
+        
+        .fgv-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-left: 5px solid var(--gold); }
+        .q-label { font-weight: bold; color: var(--text-color); margin-top: 15px; display: block; padding-left: 10px; font-size: 0.85rem; }
+
         .editor-area { 
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            white-space: pre-wrap; word-wrap: break-word; text-align: justify;
+            white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify;
         }
+        #editor-peca { min-height: 1200px; }
 
-        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
-        .btn-side { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.4rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* TURBINAS */
+        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
+        
+        .bg-save { background: #22c55e; }
+        .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
+        .bg-justica { background: #3b82f6; }
+        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
-        .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: white; transition: 0.3s; z-index: 1500; overflow: hidden; border-left: 0 solid var(--gold); }
-        .pdf-panel.open { width: 50%; border-left-width: 4px; }
+        .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
+        .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
+        .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
+
+        @media print {
+            .paper-tools, header, .sidebar, .pdf-panel { display: none !important; }
+            body { background: white; }
+            .editor-container { padding: 0; overflow: visible; }
+            .paper { box-shadow: none; width: 100%; max-width: 100%; }
+        }
 
         @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
     </style>
@@ -50,42 +85,60 @@
 
 <header>
     <div class="nav-group">
-        <button class="btn-tool" onclick="location.reload()"><i class="fas fa-sync"></i></button>
-        <button class="btn-tool" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <button class="btn-ref" style="background:#334155; border:none; color:white;" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-ref" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i></button>
     </div>
     <div class="nav-group">
-        <button class="btn-tool" onclick="togglePdf('p')">P</button>
-        <button class="btn-tool" onclick="togglePdf('g')">G</button>
-        <button class="btn-tool" onclick="togglePdf('v')">V</button>
+        <button class="btn-ref" onclick="togglePdf('p')">P</button>
+        <button class="btn-ref" onclick="togglePdf('g')">G</button>
+        <button class="btn-ref" onclick="togglePdf('v')">V</button>
     </div>
     <div class="nav-group">
-        <button class="btn-tool" style="background:#a855f7; border:none;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
-        <button class="btn-tool" style="background:#ef4444; border:none;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
     </div>
 </header>
 
 <main>
-    <aside class="sidebar">
-        <div id="radar-peca">SCANNER</div>
-        <div id="exam-nav"></div>
-    </aside>
+    <aside class="sidebar" id="exam-nav"></aside>
 
     <section class="editor-container">
-        <div class="paper" id="folha-fgv">
-            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+        <div class="paper" id="area-impressao">
+            <div id="radar-peca">
+                <span>RADAR STATUS</span>
+                <span class="radar-blink">VARRENDO...</span>
+            </div>
+            
+            <div class="fgv-title">Peça Profissional - Exame E<span class="ex-num">41</span></div>
+            <div id="editor-peca" class="editor-area" contenteditable="true"></div>
+
+            <div class="fgv-title">Questões Discursivas</div>
+            <span class="q-label">QUESTÃO 1 - ITEM A/B</span><div id="q1a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">QUESTÃO 2 - ITEM A/B</span><div id="q2a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">QUESTÃO 3 - ITEM A/B</span><div id="q3a" class="editor-area" contenteditable="true"></div>
+            <span class="q-label">QUESTÃO 4 - ITEM A/B</span><div id="q4a" class="editor-area" contenteditable="true"></div>
         </div>
 
         <div class="paper-tools">
-            <button class="btn-side" style="background:#22c55e" onclick="salvarTudo()"><i class="fas fa-save"></i></button>
-            <button class="btn-side" style="background:#1e293b" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></button>
-            <button class="btn-side" style="background:#3b82f6" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+            <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-rocket" onclick="gerarDocumento()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 
     <div class="pdf-panel" id="pdf-panel">
-        <iframe id="pdf-frame" style="width:100%; height:100%; border:none;"></iframe>
+        <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
     </div>
 </main>
+
+<div class="modal" id="pec-modal">
+    <div class="modal-body">
+        <h3 style="margin-bottom:15px; color:var(--text-color)">ESTRUTURAS</h3>
+        <div id="peca-grid" style="max-height:300px; overflow-y:auto;"></div>
+        <button onclick="fecharPecas()" style="width:100%; margin-top:10px; padding:10px; background:#ef4444; color:white; border:none; border-radius:6px;">FECHAR</button>
+    </div>
+</div>
 
 <script type="module">
     import { db } from './firebase-config.js';
@@ -94,54 +147,94 @@
     import { pecas } from './estruturas.js';
 
     let activeEx = "41";
-    const editor = document.getElementById('main-editor');
+    const ids = ['editor-peca', 'q1a', 'q2a', 'q3a', 'q4a'];
 
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('#theme-btn i');
+        icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    // FUNÇÃO ROCKET: GERA PDF DA FOLHA FGV
+    window.gerarDocumento = () => {
+        const elemento = document.getElementById('area-impressao');
+        const opt = {
+            margin:       10,
+            filename:     `OAB_E${activeEx}_Simulado_Joaquim.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if(confirm("Deseja gerar o PDF oficial da prova para o Hangar?")) {
+            html2pdf().set(opt).from(elemento).save();
+        }
+    };
+
+    window.injetarEspelho = () => {
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) {
+            const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+            document.getElementById('editor-peca').innerText += "\n\n--- ⚖️ GABARITO OFICIAL ---\n[ ] " + checklist;
+            salvarTudo();
+        }
     };
 
     window.salvarTudo = () => {
-        const path = ref(db, 'estudos/' + activeEx);
-        set(path, {
-            text: editor.innerText,
-            ts: Date.now(),
-            exame: activeEx
-        }).then(() => {
-            console.log("Voo registrado no Firebase.");
-            const btn = document.querySelector('.fa-save').parentElement;
-            btn.style.transform = "scale(1.2)";
-            setTimeout(() => btn.style.transform = "scale(1)", 200);
+        const data = {};
+        ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
+    };
+
+    window.abrirEstruturas = () => {
+        const grid = document.getElementById('peca-grid');
+        grid.innerHTML = '';
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('button');
+            b.style = "width:100%; padding:12px; margin-bottom:5px; font-weight:bold; cursor:pointer;";
+            b.innerText = k.toUpperCase();
+            b.onclick = () => {
+                document.getElementById('editor-peca').innerText += "\n" + pecas[k];
+                fecharPecas();
+                salvarTudo();
+            };
+            grid.appendChild(b);
         });
+        document.getElementById('pec-modal').style.display = 'flex';
     };
 
-    window.togglePdf = (m) => {
-        const panel = document.getElementById('pdf-panel');
-        const frame = document.getElementById('pdf-frame');
-        const url = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[m];
-        
-        if(panel.classList.contains('open') && frame.src.includes(url)) {
-            panel.classList.remove('open');
-        } else {
-            frame.src = url;
-            panel.classList.add('open');
-        }
+    window.togglePdf = (mode) => {
+        document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[mode];
+        document.getElementById('pdf-panel').classList.add('open');
     };
 
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) {
-            editor.innerText += "\n\n--- TESES GABARITO ---\n" + esp.replace(/<[^>]*>/g, '');
-            window.salvarTudo();
-        }
-    };
+    window.resetarFolha = () => { if(confirm("Limpar hangar?")) { ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); } };
+    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
 
-    const carregarFirebase = () => {
-        onValue(ref(db, 'estudos/' + activeEx), (s) => {
+    const carregarDados = () => {
+        document.querySelectorAll('.ex-num').forEach(el => el.innerText = activeEx);
+        onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
-            if(d && d.text && document.activeElement !== editor) {
-                editor.innerText = d.text;
-            }
+            if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
+
+        // RADAR LOGIC
+        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        const radar = document.getElementById('radar-peca');
+        const DICIONARIO = [
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO" },
+            { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO" },
+            { id: "RECLAMAÇÃO", display: "RECLAMAÇÃO" }
+        ];
+        let achou = DICIONARIO.find(i => txt.includes(i.id));
+        if (achou) {
+            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.5rem">${achou.display}</span>`;
+            radar.classList.add('detectado');
+        } else {
+            radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
+            radar.classList.remove('detectado');
+        }
     };
 
     const initNav = () => {
@@ -151,21 +244,13 @@
             const b = document.createElement('div');
             b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             b.innerText = `E${i}`;
-            b.onclick = () => { activeEx = i.toString(); initNav(); carregarFirebase(); };
+            b.onclick = () => { activeEx = i.toString(); initNav(); carregarDados(); };
             nav.appendChild(b);
         }
     };
 
-    window.resetarFolha = () => { if(confirm("Limpar hangar?")) { editor.innerText = ""; window.salvarTudo(); } };
-
-    // Início
-    initNav();
-    carregarFirebase();
-    editor.addEventListener('input', () => {
-        // Debounce simples para não sobrecarregar o firebase enquanto digita
-        clearTimeout(window.saveTimer);
-        window.saveTimer = setTimeout(window.salvarTudo, 2000);
-    });
+    initNav(); carregarDados();
+    ids.forEach(id => document.getElementById(id).addEventListener('input', salvarTudo));
 </script>
 </body>
 </html>
