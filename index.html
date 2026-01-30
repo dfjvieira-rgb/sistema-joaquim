@@ -1,165 +1,240 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>SISTEMA ELITE - MENTORIA INTELIGENTE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SISTEMA ELITE 2026 - COCKPIT SCANNER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #f1f5f9; --text: #0f172a; --primary: #1d4ed8; --border: #cbd5e1; --purple: #7c3aed; --success: #059669; --danger: #dc2626; --gold: #fbbf24; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; }
-        header { background: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--gold); }
-        .btn-voltar { background: rgba(251, 191, 36, 0.2); color: white; border: 2px solid var(--gold); padding: 10px 15px; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        :root { 
+            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
+            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
+            --header-h: 75px; --mentoria: #a855f7; --scanner: #22c55e;
+        }
+        body.dark-mode {
+            --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
+            --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        header { 
+            background: var(--primary); height: var(--header-h); padding: 0 15px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 2px solid var(--gold); z-index: 2000;
+        }
+
+        /* BARRA RADAR AUTOMÁTICO */
+        #radar-auto {
+            background: #000; color: var(--gold); height: 35px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 800; border-bottom: 2px solid var(--gold);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .nav-group { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        .btn-c { 
+            height: 50px; width: 50px; border-radius: 12px; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: white; font-size: 1.2rem; text-decoration: none;
+        }
+        .btn-mentoria { background: var(--mentoria) !important; border: 2px solid white !important; }
+        .btn-ref { background: #1e293b; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; }
+        .btn-ref.active { background: var(--gold); color: var(--primary); }
+
+        main { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 10px; padding: 10px 5px; border-right: 1px solid #334155; overflow-y: auto; }
+        .exame-btn { width: 100%; height: 40px; background: #334155; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+        .exame-btn.active { background: var(--gold); color: black; }
+
+        #viewport-master { flex: 1; display: grid; grid-template-columns: 1fr 0fr; transition: 0.3s; }
+        #viewport-master.split-view { grid-template-columns: 1fr 1fr; }
         
-        /* Alerta de Identificação Automática */
-        .radar-status { background: #0f172a; color: var(--gold); padding: 10px; text-align: center; font-size: 0.75rem; font-weight: 800; border-bottom: 2px solid var(--gold); }
+        .editor-container { overflow-y: auto; background: var(--bg-paper); display: flex; flex-direction: column; align-items: center; position: relative; }
         
-        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
-        .panel { background: #fff; border-radius: 12px; border: 2px solid var(--border); overflow: hidden; height: fit-content; }
-        .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; text-align: center; }
-        .panel-body { padding: 15px; }
-        label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 5px; color: #64748b; }
-        input, textarea { width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 12px; font-size: 1rem; margin-bottom: 10px; font-family: inherit; }
-        .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; color: #fff; cursor: pointer; text-transform: uppercase; }
-        .card { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; position: relative; }
-        .btn-edit-tool { position: absolute; top: 10px; right: 10px; display: flex; gap: 10px; }
-        .btn-edit-tool i { cursor: pointer; color: #94a3b8; }
-        .btn-reveal { background: #1e293b; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
-        .hidden-content { display: none; margin-top: 10px; padding: 12px; background: #dcfce7; border: 1px solid var(--success); border-radius: 6px; font-weight: 700; }
-        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
+        /* ALERTA DE SUGESTÃO IMEDIATA */
+        #sugestao-alerta {
+            width: 100%; max-width: 800px; background: var(--gold); color: #000;
+            padding: 12px; font-weight: 800; text-align: center; border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 15px; cursor: pointer;
+            display: none; animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+        .paper { background: var(--paper-color); width: 100%; max-width: 800px; padding: 30px 20px 300px 20px; min-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .editor-area { 
+            outline: none; font-size: 19px; line-height: 32px; color: var(--text-color); font-family: 'Times New Roman', serif;
+            min-height: 1200px; white-space: pre-wrap;
+            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 31px, var(--line-color) 31px, var(--line-color) 32px);
+        }
+
+        .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
+        .btn-float { width: 62px; height: 62px; border-radius: 50%; border: 3px solid white; color: white; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+        .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
+        .bg-justica { background: #3b82f6; }
+
+        #pdf-viewer { background: #222; display: none; flex-direction: column; border-left: 4px solid var(--gold); }
+        #viewport-master.split-view #pdf-viewer { display: flex; }
+        iframe { width: 100%; height: 100%; border: none; background: #fff; }
+
+        @media (max-width: 900px) {
+            #viewport-master.split-view { grid-template-columns: 0fr 1fr; }
+            .paper-tools { left: 0; bottom: 0; width: 100%; flex-direction: row; background: var(--primary); padding: 15px 10px 45px 10px; border-top: 2px solid var(--gold); justify-content: space-around; border-radius: 25px 25px 0 0; }
+        }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
-    <a href="index.html" class="btn-voltar"><i class="fas fa-arrow-left"></i> VOLTAR</a>
-    <div style="font-weight: 800; color: var(--gold);">MENTORIA DE ELITE</div>
+    <div class="nav-group">
+        <a href="mentoria.html" class="btn-c btn-mentoria"><i class="fas fa-brain"></i></a>
+        <button class="btn-c" style="background:#334155" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
+    </div>
+    <div class="nav-group">
+        <button class="btn-c btn-ref" onclick="abrirDoc('p')">P</button>
+        <button class="btn-c btn-ref" onclick="abrirDoc('g')">G</button>
+        <button class="btn-c btn-ref" onclick="abrirDoc('v')">V</button>
+    </div>
+    <div class="nav-group">
+        <button class="btn-c" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+    </div>
 </header>
 
-<div class="radar-status" id="radar-info">
-    <i class="fas fa-satellite-dish"></i> RADAR: AGUARDANDO SINCRONIA...
+<div id="radar-auto">
+    <i class="fas fa-satellite-dish" style="margin-right:8px;"></i> Radar Elite: Escaneando Horizonte...
 </div>
 
-<main class="dashboard">
-    <section class="panel" style="border-top: 6px solid var(--success);">
-        <div class="panel-header">Preliminares</div>
-        <div class="panel-body">
-            <input type="hidden" id="id-pre">
-            <label>Título</label><input type="text" id="pre-t">
-            <label>Fundamentação</label><textarea id="pre-c"></textarea>
-            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar</button>
-            <div id="feed-pre" style="margin-top:15px;"></div>
-        </div>
-    </section>
-
-    <section class="panel" style="border-top: 6px solid var(--purple);">
-        <div class="panel-header">Qual a Peça? (Auto-Scanner)</div>
-        <div class="panel-body">
-            <div id="peca-detectada-alert" style="display:none; margin-bottom:15px; padding:10px; background:var(--gold); border-radius:8px; color:#000; font-weight:800; font-size:0.8rem; text-align:center;">
-                🚨 SUGESTÃO DO ESPELHO: <span id="nome-peca-sugerida">---</span>
+<main>
+    <aside class="sidebar" id="exam-nav"></aside>
+    <div id="viewport-master">
+        <section class="editor-container">
+            <div id="sugestao-alerta" onclick="injetarSugestao()">
+                🚨 PEÇA IDENTIFICADA: <span id="txt-sugestao">---</span> (CLIQUE PARA INJETAR)
             </div>
-            <input type="hidden" id="id-peca">
-            <label>Enunciado / Comando</label><textarea id="peca-t"></textarea>
-            <label>Gabarito Identificado</label><input type="text" id="peca-c">
-            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Manualmente</button>
-            <div id="feed-peca" style="margin-top:15px;"></div>
-        </div>
-    </section>
+            <div class="paper">
+                <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            </div>
+            <div class="paper-tools">
+                <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
+                <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
+                <div class="btn-float" style="background:#ef4444" onclick="limparTudo()"><i class="fas fa-trash-alt"></i></div>
+            </div>
+        </section>
+        <section id="pdf-viewer">
+            <div style="background:#000; color:var(--gold); padding:10px; display:flex; justify-content:space-between;">
+                <span>MÓDULO DE REFERÊNCIA</span>
+                <button onclick="fecharDoc()" style="color:white; background:red; border:none; padding:5px 12px; border-radius:8px;">X</button>
+            </div>
+            <iframe id="pdf-frame"></iframe>
+        </section>
+    </div>
 </main>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    // IMPORTANTE: Certifique-se que o banco-espelhos.js está na mesma pasta
+    import { db } from './firebase-config.js';
+    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    import { pecas } from './estruturas.js';
 
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config);
-    const db = getDatabase(app);
+    window.activeEx = "41";
+    let pecaAtualDetectada = "";
+    const editor = document.getElementById('main-editor');
+    const radar = document.getElementById('radar-auto');
+    const alerta = document.getElementById('sugestao-alerta');
+    const txtSugestao = document.getElementById('txt-sugestao');
 
-    const paths = { pre: 'v13_pre', peca: 'v13_peca' };
+    // --- LÓGICA DE RADAR AUTOMÁTICO (IDENTIFICAÇÃO POR ESPELHO) ---
+    function radarInteligente() {
+        const conteudo = BANCO_ESPELHOS[window.activeEx] ? BANCO_ESPELHOS[window.activeEx].toLowerCase() : "";
+        alerta.style.display = "none";
+        radar.innerHTML = `<i class="fas fa-satellite-dish"></i> RADAR ELITE: EXAME ${window.activeEx} EM ANÁLISE...`;
 
-    // --- LÓGICA DE IDENTIFICAÇÃO AUTOMÁTICA (A ROTA CERTA) ---
-    function iniciarScannerAutomatico() {
-        // Pega o Exame Ativo (Simulando a pegada do index.html ou localStorage)
-        const exameAtivo = localStorage.getItem('activeExame') || "41";
-        const radar = document.getElementById('radar-info');
-        const alertaPeca = document.getElementById('peca-detectada-alert');
-        const nomePeca = document.getElementById('nome-peca-sugerida');
-
-        radar.innerHTML = `<i class="fas fa-sync fa-spin"></i> ESCANEANDO ESPELHO DO EXAME ${exameAtivo}...`;
-
-        const conteudoEspelho = BANCO_ESPELHOS[exameAtivo] ? BANCO_ESPELHOS[exameAtivo].toLowerCase() : "";
-
-        if (conteudoEspelho) {
+        if(conteudo) {
             let sugestao = "";
-            if (conteudoEspelho.includes("recurso ordinário")) sugestao = "RECURSO ORDINÁRIO";
-            else if (conteudoEspelho.includes("contestação")) sugestao = "CONTESTAÇÃO";
-            else if (conteudoEspelho.includes("reclamação trabalhista")) sugestao = "RECLAMAÇÃO TRABALHISTA";
-            else if (conteudoEspelho.includes("agravo de petição")) sugestao = "AGRAVO DE PETIÇÃO";
-            else if (conteudoEspelho.includes("recurso de revista")) sugestao = "RECURSO DE REVISTA";
+            let chave = "";
 
-            if (sugestao) {
-                alertaPeca.style.display = "block";
-                nomePeca.innerText = sugestao;
-                radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> IDENTIFICADO: ${exameAtivo} -> ${sugestao}`;
-                // Preenche o campo de gabarito automaticamente para facilitar
-                if(!document.getElementById('peca-c').value) document.getElementById('peca-c').value = sugestao;
+            if(conteudo.includes("recurso ordinário")) { sugestao = "RECURSO ORDINÁRIO"; chave = "ro"; }
+            else if(conteudo.includes("contestação")) { sugestao = "CONTESTAÇÃO"; chave = "contestacao"; }
+            else if(conteudo.includes("reclamação trabalhista")) { sugestao = "RECLAMAÇÃO TRABALHISTA"; chave = "rt"; }
+            else if(conteudo.includes("mandado de segurança")) { sugestao = "MANDADO DE SEGURANÇA"; chave = "ms"; }
+            else if(conteudo.includes("agravo de petição")) { sugestao = "AGRAVO DE PETIÇÃO"; chave = "ap"; }
+
+            if(sugestao) {
+                pecaAtualDetectada = chave;
+                txtSugestao.innerText = sugestao;
+                alerta.style.display = "block";
+                radar.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e"></i> ALVO LOCALIZADO: ${sugestao}`;
+            } else {
+                radar.innerHTML = `<i class="fas fa-search"></i> PADRÃO NÃO IDENTIFICADO NO EXAME ${window.activeEx}`;
             }
-        } else {
-            radar.innerHTML = `<i class="fas fa-exclamation-triangle"></i> SEM DADOS PARA O EXAME ${exameAtivo}`;
         }
     }
 
-    // Chama o scanner ao carregar a página
-    window.addEventListener('load', iniciarScannerAutomatico);
-
-    // --- RESTANTE DAS FUNÇÕES ORIGINAIS ---
-    window.toggleR = (btn) => { 
-        const div = btn.nextElementSibling; 
-        div.style.display = (div.style.display === "block" ? "none" : "block"); 
+    window.injetarSugestao = () => {
+        if(pecaAtualDetectada && pecas[pecaAtualDetectada]) {
+            editor.focus();
+            document.execCommand('insertText', false, pecas[pecaAtualDetectada]);
+            alerta.style.display = "none";
+        }
     };
 
-    window.salvar = (type) => {
-        const id = document.getElementById(`id-${type}`).value;
-        const t = document.getElementById(`${type}-t`).value;
-        const c = document.getElementById(`${type}-c`).value;
-        if(!t || !c) return;
-        const data = { t, c, ts: serverTimestamp() };
-        if(id) set(ref(db, `${paths[type]}/${id}`), data);
-        else push(ref(db, paths[type]), data);
-        document.getElementById(`id-${type}`).value = '';
-        document.getElementById(`${type}-t`).value = '';
-        document.getElementById(`${type}-c`).value = '';
+    window.injetarJustica = () => {
+        const conteudo = BANCO_ESPELHOS[window.activeEx];
+        if(conteudo) {
+            editor.focus();
+            const formatado = "\n\n--- FUNDAMENTAÇÃO DO ESPELHO ---\n" + conteudo.replace(/<[^>]*>/g, '');
+            document.execCommand('insertText', false, formatado);
+        }
     };
 
-    window.editar = (type, id, t, c) => {
-        document.getElementById(`id-${type}`).value = id;
-        document.getElementById(`${type}-t`).value = t;
-        document.getElementById(`${type}-c`).value = c;
+    window.abrirDoc = (tipo) => {
+        const frame = document.getElementById('pdf-frame');
+        frame.src = { 'p': `ro${window.activeEx}.pdf`, 'g': `ro${window.activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[tipo];
+        document.getElementById('viewport-master').classList.add('split-view');
     };
 
-    window.excluir = (type, id) => { if(confirm("Apagar?")) remove(ref(db, `${paths[type]}/${id}`)); };
+    window.fecharDoc = () => document.getElementById('viewport-master').classList.remove('split-view');
+    
+    window.salvarManual = () => {
+        set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
+        alert("SINCRONIZADO!");
+    };
 
-    onValue(ref(db), (snap) => {
-        const v = snap.val() || {};
-        Object.keys(paths).forEach(type => {
-            const f = document.getElementById(`feed-${type}`); f.innerHTML = "";
-            const obj = v[paths[type]] || {};
-            Object.keys(obj).forEach(id => {
-                const item = obj[id];
-                f.innerHTML += `<div class="card">
-                    <div class="btn-edit-tool">
-                        <i class="fas fa-pen" onclick="editar('${type}','${id}','${item.t}','${item.c}')"></i>
-                        <i class="fas fa-trash" onclick="excluir('${type}','${id}')"></i>
-                    </div>
-                    ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
-                </div>`;
-            });
-        });
-    });
+    window.lancarPeca = () => {
+        if(!editor.innerText.trim()) return;
+        push(ref(db, 'historico_pecas/' + window.activeEx), { conteudo: editor.innerText, ts: Date.now() });
+        alert("🚀 LANÇADO!");
+    };
+
+    window.limparTudo = () => { if(confirm("APAGAR TUDO?")) editor.innerText = ""; };
+
+    // Sidebar e Navegação
+    const nav = document.getElementById('exam-nav');
+    for(let i=44; i>=35; i--) {
+        const b = document.createElement('div');
+        b.className = `exame-btn ${i==41?'active':''}`;
+        b.innerText = 'E'+i;
+        b.onclick = () => { 
+            window.activeEx = i.toString(); 
+            document.querySelectorAll('.exame-btn').forEach(x=>x.classList.remove('active')); 
+            b.classList.add('active'); 
+            radarInteligente();
+            carregarDados(); 
+        };
+        nav.appendChild(b);
+    }
+
+    function carregarDados() {
+        onValue(ref(db, 'estudos/' + window.activeEx), (s) => {
+            const d = s.val();
+            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
+        }, { onlyOnce: true });
+    }
+
+    carregarDados();
+    radarInteligente();
+    editor.oninput = () => set(ref(db, 'estudos/' + window.activeEx), { text: editor.innerText, ts: Date.now() });
 </script>
 </body>
 </html>
