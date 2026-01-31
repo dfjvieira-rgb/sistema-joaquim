@@ -1,141 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JOAQUIM ELITE 2026 - COCKPIT FINAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="banco-espelhos.js"></script>
+    <script src="estruturas.js"></script>
+
+    <style>
+        :root {
+            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
+            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
+            --header-h: 60px; --sidebar-w: 85px;
+            --color-recurso: #3b82f6; --color-defesa: #22c55e; --color-inicial: #a855f7;
+        }
+        body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; }
+        
+        /* RADAR ESTILIZADO */
+        #radar-container {
+            background: #000; border: 2px solid var(--gold); border-radius: 8px;
+            margin-bottom: 10px; padding: 5px; text-align: center;
+            min-height: 80px; display: flex; flex-direction: column; justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .radar-label { font-size: 0.5rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-bottom: 3px; }
+        #radar-status { font-size: 0.65rem; color: #fff; font-weight: 900; line-height: 1.2; }
+        
+        .radar-recurso { border-color: var(--color-recurso) !important; box-shadow: 0 0 12px var(--color-recurso); }
+        .radar-defesa { border-color: var(--color-defesa) !important; box-shadow: 0 0 12px var(--color-defesa); }
+        .radar-inicial { border-color: var(--color-inicial) !important; box-shadow: 0 0 12px var(--color-inicial); }
+
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .btn-side { width: 100%; min-height: 55px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; cursor: pointer; transition: 0.2s; }
+        .btn-side:hover { transform: scale(1.05); opacity: 0.9; }
+
+        .editor-container { flex: 1; overflow-y: auto; display: flex; justify-content: center; padding: 20px; background: var(--bg-paper); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 0 25px rgba(0,0,0,0.2); min-height: 1000px; padding-bottom: 50px; }
+        
+        .fgv-header { background: #f1f5f9; color: #475569; font-weight: 900; padding: 8px; text-align: center; font-size: 0.75rem; border-bottom: 1px solid var(--gold); }
+        
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #94a3b8; text-align: center; border-right: 1px solid var(--line-color); padding-top: 8px; font-weight: bold; background: rgba(0,0,0,0.02); }
+        .linha-folha { flex: 1; height: 32px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Times New Roman', serif; color: var(--text-color); }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 90%; max-width: 480px; border-radius: 20px; padding: 25px; border: 3px solid var(--gold); max-height: 80vh; overflow-y: auto; color: #000; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold; cursor: pointer; text-align: left; }
+
+        .btn-tool { padding: 8px 15px; border-radius: 8px; border: 1px solid var(--gold); background: transparent; color: white; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; gap:10px;">
+        <button class="btn-tool" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-tool" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
+    </div>
+    <div style="color:var(--gold); font-weight: 900; font-size: 0.9rem;">JOAQUIM ELITE 2026</div>
+    <button class="btn-tool" style="background:#ef4444; border:none;" onclick="resetarTudo()"><i class="fas fa-trash-alt"></i></button>
+</header>
+
+<main>
+    <aside class="sidebar">
+        <div id="radar-container">
+            <div class="radar-label"><i class="fas fa-satellite-dish"></i> RADAR</div>
+            <div id="radar-status">AGUARDANDO</div>
+        </div>
+        
+        <button class="btn-side" style="background:var(--gold); color:var(--primary)" onclick="abrirModal('exames')" title="Trocar Exame"><i class="fas fa-bullseye"></i></button>
+        <button class="btn-side" style="background:#22c55e" onclick="salvarParaFirebase()" title="Salvar Nuvem"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-side" style="background:#334155; border:1px solid var(--gold); color:var(--gold)" onclick="abrirModal('pecas')" title="Estruturas"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6" onclick="injetarEspelho()" title="Martelo de Justiça"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:linear-gradient(135deg, #fbbf24, #ef4444)" onclick="window.print()" title="Imprimir"><i class="fas fa-print"></i></button>
+    </aside>
+
+    <section class="editor-container">
+        <div class="paper" id="folha-corpo"></div>
+    </section>
+</main>
+
+<div class="modal" id="universal-modal">
+    <div class="modal-body">
+        <h2 id="modal-header" style="text-align:center; margin-bottom:20px;">SELECIONE</h2>
+        <div id="modal-content"></div>
+        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:15px; background:#000; color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+    </div>
+</div>
+
 <script type="module">
     import { db } from './firebase-config.js';
     import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
 
     let activeEx = localStorage.getItem('activeEx') || "44";
-    let ultimaLinhaFocada = 1;
-    const folha = document.getElementById('folha-total');
+    let ultimaLinha = 1;
 
-    // --- ESCÂNER REFINADO (O Cérebro do Radar) ---
-    const escaneamentoPro = () => {
+    // 1. CRIAÇÃO DA FOLHA FGV
+    const criarFolha = () => {
+        const corpo = document.getElementById('folha-corpo');
+        corpo.innerHTML = '';
+        for(let i=1; i<=180; i++) {
+            if(i === 1) corpo.innerHTML += '<div class="fgv-header">PEÇA PROFISSIONAL</div>';
+            if(i === 51) corpo.innerHTML += '<div class="fgv-header">QUESTÕES DISCURSIVAS</div>';
+
+            const wrap = document.createElement('div');
+            wrap.className = 'linha-wrapper';
+            wrap.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" maxlength="85" autocomplete="off">`;
+            
+            const input = wrap.querySelector('input');
+            input.onfocus = () => ultimaLinha = i;
+            corpo.appendChild(wrap);
+        }
+        carregarDados();
+    };
+
+    // 2. RADAR INTELIGENTE (Lendo BANCO_ESPELHOS externo)
+    const atualizarRadar = () => {
         const radar = document.getElementById('radar-container');
         const status = document.getElementById('radar-status');
-        // Puxa o texto do seu banco de espelhos
-        const textoGabarito = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-
-        radar.className = ''; // Limpa cores anteriores
         
-        if (!textoGabarito) {
-            status.innerText = "EXAME " + activeEx + "\nSEM GABARITO";
+        // Verifica se o banco externo carregou
+        if (typeof BANCO_ESPELHOS === 'undefined') {
+            status.innerText = "ERRO: BANCO\nNÃO ACHADO";
             return;
         }
 
-        const buscas = [
-            { nome: "RECURSO ORDINÁRIO", keys: ["ORDINÁRIO", "895", "RO "], cor: "radar-recurso" },
-            { nome: "CONTESTAÇÃO", keys: ["CONTESTAÇÃO", "847", "ART. 847"], cor: "radar-defesa" },
-            { nome: "RECLAMAÇÃO TRAB.", keys: ["RECLAMAÇÃO", "840", "RT "], cor: "radar-inicial" },
-            { nome: "CONSIGNAÇÃO", keys: ["CONSIGNAÇÃO", "PAGAMENTO"], cor: "radar-inicial" },
-            { nome: "AGRAVO DE PETIÇÃO", keys: ["AGRAVO", "897"], cor: "radar-recurso" }
+        const espelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        radar.className = ''; 
+
+        const regras = [
+            { nome: "RECURSO ORDINÁRIO", keys: ["ORDINÁRIO", "895"], classe: "radar-recurso" },
+            { nome: "CONTESTAÇÃO", keys: ["CONTESTAÇÃO", "847"], classe: "radar-defesa" },
+            { nome: "RECLAMAÇÃO TRAB.", keys: ["RECLAMAÇÃO", "840"], classe: "radar-inicial" },
+            { nome: "AGRAVO DE PETIÇÃO", keys: ["AGRAVO", "897"], classe: "radar-recurso" }
         ];
 
-        let achou = buscas.find(b => b.keys.some(k => textoGabarito.includes(k)));
+        const match = regras.find(r => r.keys.some(k => espelho.includes(k)));
 
-        if (achou) {
-            status.innerText = achou.nome;
-            radar.classList.add(achou.cor);
+        if (match) {
+            status.innerText = match.nome;
+            radar.classList.add(match.classe);
         } else {
-            status.innerText = "PEÇA\nIDENTIFICADA";
-            radar.style.borderColor = "var(--gold)";
+            status.innerText = "EXAME " + activeEx + "\nPRONTO";
         }
     };
 
-    const criarFolha = () => {
-        folha.innerHTML = '';
-        for(let i=1; i<=180; i++) {
-            if(i === 1) folha.innerHTML += '<div class="fgv-header">PEÇA PROFISSIONAL</div>';
-            if(i === 51) folha.innerHTML += '<div class="fgv-header">QUESTÃO 1</div>';
-            
-            const wrap = document.createElement('div');
-            wrap.className = 'linha-wrapper';
-            wrap.innerHTML = `
-                <div class="linha-num">${i}</div>
-                <input class="linha-folha" id="L${i}" maxlength="85" autocomplete="off">
-            `;
-            const input = wrap.querySelector('input');
-            input.onfocus = () => ultimaLinhaFocada = i;
-            // Salva no Firebase ao digitar
-            input.onblur = () => salvar(); 
-            folha.appendChild(wrap);
-        }
-    };
-
-    const salvar = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() });
-    };
-
-    const carregarFirebase = () => {
-        onValue(ref(db, 'estudos/' + activeEx), (s) => {
-            const d = s.val();
+    // 3. FIREBASE & MODAIS
+    const carregarDados = () => {
+        onValue(ref(db, 'estudos/' + activeEx), (snapshot) => {
+            const data = snapshot.val();
             const inputs = document.querySelectorAll('.linha-folha');
-            if(d && d.linhas) {
-                d.linhas.forEach((txt, i) => { if(inputs[i]) inputs[i].value = txt; });
-            } else {
-                inputs.forEach(l => l.value = '');
-            }
-            escaneamentoPro(); // Atualiza o Radar após carregar
+            inputs.forEach((input, i) => {
+                input.value = (data && data.linhas) ? (data.linhas[i] || "") : "";
+            });
+            atualizarRadar();
         }, { onlyOnce: true });
     };
 
-    // FUNÇÕES TORNADAS GLOBAIS PARA OS BOTÕES FUNCIONAREM
+    window.salvarParaFirebase = () => {
+        const linhas = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
+        set(ref(db, 'estudos/' + activeEx), { linhas: linhas, ts: Date.now() })
+            .then(() => alert("☁️ SINCRONIZADO COM SUCESSO!"));
+    };
+
     window.abrirModal = (tipo) => {
         const content = document.getElementById('modal-content');
         const header = document.getElementById('modal-header');
         content.innerHTML = '';
-        
+
         if(tipo === 'exames') {
-            header.innerText = "SELECIONE O EXAME";
+            header.innerText = "TROCAR EXAME OAB";
             for(let i=44; i>=35; i--) {
-                const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`EXAME ${i}`;
-                b.onclick = () => { 
-                    activeEx = i.toString(); 
-                    localStorage.setItem('activeEx', activeEx);
-                    carregarFirebase(); 
-                    fecharModal(); 
-                };
+                const b = document.createElement('button'); b.className='opt-btn'; b.innerText=`EXAME ${i}`;
+                b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); criarFolha(); fecharModal(); };
                 content.appendChild(b);
             }
         } else if(tipo === 'pecas') {
-            header.innerText = "ESTRUTURAS (SCROLL)";
-            Object.keys(pecas).forEach(k => {
-                const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k.toUpperCase();
-                b.onclick = () => { 
-                    pecas[k].split('\n').forEach((txt, idx) => {
-                        const el = document.getElementById(`L${ultimaLinhaFocada + idx}`);
-                        if(el) el.value = txt.trim().substring(0, 85);
-                    });
-                    salvar(); fecharModal(); 
-                };
-                content.appendChild(b);
-            });
+            header.innerText = "ESTRUTURAS (PEÇAS)";
+            if(typeof pecas === 'undefined') {
+                content.innerHTML = "<p style='color:red'>Erro: estruturas.js não carregou.</p>";
+            } else {
+                Object.keys(pecas).forEach(k => {
+                    const b = document.createElement('button'); b.className='opt-btn'; b.innerText=k.toUpperCase();
+                    b.onclick = () => {
+                        pecas[k].split('\n').forEach((texto, idx) => {
+                            const input = document.getElementById(`L${ultimaLinha + idx}`);
+                            if(input) input.value = texto.trim();
+                        });
+                        fecharModal();
+                    };
+                    content.appendChild(b);
+                });
+            }
         }
         document.getElementById('universal-modal').style.display = 'flex';
     };
 
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)];
-        if(!esp) return alert("Gabarito não encontrado para o Exame " + activeEx);
+    window.injetarEspelho = () => {
+        if(typeof BANCO_ESPELHOS === 'undefined') return alert("Banco não carregado");
+        const texto = BANCO_ESPELHOS[activeEx];
+        if(!texto) return alert("Sem gabarito para este exame.");
         
-        const frases = esp.split('\n').filter(f => f.trim().length > 5);
-        frases.forEach((frase, index) => {
-            const el = document.getElementById(`L${ultimaLinhaFocada + index}`);
-            if(el) el.value = "➤ " + frase.trim().substring(0, 80);
+        texto.split('\n').filter(l => l.length > 5).forEach((frase, i) => {
+            const input = document.getElementById(`L${ultimaLinha + i}`);
+            if(input) input.value = "➤ " + frase.trim().substring(0, 80);
         });
-        salvar();
     };
 
     window.fecharModal = () => document.getElementById('universal-modal').style.display = 'none';
-    
-    window.resetarTudo = () => { 
-        if(confirm("Deseja apagar toda a folha do Exame " + activeEx + "?")) { 
-            document.querySelectorAll('.linha-folha').forEach(l => l.value = ''); 
-            salvar(); 
-        }
-    };
+    window.resetarTudo = () => { if(confirm("Limpar toda a folha?")) { document.querySelectorAll('.linha-folha').forEach(l => l.value = ''); } };
 
-    // Inicialização
+    // INIT
     criarFolha();
-    carregarFirebase();
+    Object.assign(window, { fecharModal, abrirModal, resetarTudo, injetarEspelho, salvarParaFirebase });
 </script>
+</body>
+</html>
