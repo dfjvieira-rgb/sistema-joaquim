@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - REATIVO</title>
+    <title>JOAQUIM ELITE 2026 - ESTÁVEL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -29,11 +29,11 @@
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         .linha-folha { flex: 1; height: 35px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Courier New', monospace; color: var(--text-color); width: 100%; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; text-align: center; }
+        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 80vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; color: #0f172a; text-align: center; }
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
-        .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; }
+        .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -49,11 +49,11 @@
 <main>
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-        <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
-        <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()"><i class="fas fa-robot"></i></button>
-        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()"><i class="fas fa-check-double"></i></button>
+        <button class="btn-side" style="background:var(--gold); color:black;" title="Trocar Exame" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
+        <button class="btn-side" style="background:#334155; color:var(--gold);" title="Estruturas" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6;" title="Injetar Espelho" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:var(--mentoria);" title="Mentoria" onclick="abrirMentoria()"><i class="fas fa-robot"></i></button>
+        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" title="Finalizar" onclick="concluirEEnviarAoRobo()"><i class="fas fa-check-double"></i></button>
         <hr style="opacity:0.1; margin:5px 0;">
         <button class="btn-side" style="background:#f97316;" onclick="abrirSplitPdf('p')"><b>P</b></button>
         <button class="btn-side" style="background:#eab308;" onclick="abrirSplitPdf('g')"><b>G</b></button>
@@ -86,13 +86,10 @@
     let timeoutSalvar = null;
     let ultimaLinhaFocada = 1;
 
-    // SCANNER CENTRALIZADO
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
-        
-        // Regra original: lê do banco fixo baseado no activeEx atual
         const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
 
         const DICIONARIO = [
@@ -147,9 +144,7 @@
     };
 
     const carregarDados = () => {
-        // ESSENCIAL: O Scanner roda ANTES e DEPOIS do Firebase
         escaneamentoElite(); 
-        
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
             document.querySelectorAll('.linha-folha').forEach(l => l.value = "");
@@ -159,7 +154,6 @@
                     if (el) el.value = txt;
                 });
             }
-            // Garante que o nome da peça atualize assim que os dados do novo exame chegarem
             escaneamentoElite(); 
         }, { onlyOnce: true });
     };
@@ -169,23 +163,67 @@
         content.innerHTML = `<h2>TROCAR EXAME</h2><div id="grid-ex" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>`;
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`OAB ${i}`;
-            b.onclick = () => { 
-                activeEx = i.toString(); 
-                localStorage.setItem('activeEx', activeEx); 
-                fecharModal();
-                montarFolha(); // O scanner será disparado dentro de carregarDados()
-            };
+            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); fecharModal(); montarFolha(); };
             document.getElementById('grid-ex').appendChild(b);
         }
         document.getElementById('universal-modal').style.display='flex';
     };
 
-    // ... (restante das funções abrirMentoria, concluir, fecharModal, etc permanecem as mesmas)
+    window.abrirModalPecas = () => {
+        const content = document.getElementById('modal-content');
+        content.innerHTML = `<h2>ESTRUTURAS</h2>`;
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
+            b.onclick = () => {
+                pecas[k].split('\n').forEach((t, i) => {
+                    const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
+                    if(el) el.value = t.substring(0, 85);
+                });
+                fecharModal(); autosave();
+            };
+            content.appendChild(b);
+        });
+        document.getElementById('universal-modal').style.display='flex';
+    };
 
+    window.injetarJustica = () => {
+        const dna = BANCO_ESPELHOS[activeEx] || "";
+        const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
+        frases.forEach((f, i) => {
+            const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
+            if(el) el.value = "➤ " + f.trim().substring(0, 83);
+        });
+        autosave();
+    };
+
+    window.concluirEEnviarAoRobo = () => {
+        if(!confirm(`Arquivar Exame ${activeEx} no Cofre?`)) return;
+        push(ref(db, 'mentoria/historico'), { exame: activeEx, data: new Date().toLocaleString('pt-BR'), ts: Date.now() })
+        .then(() => alert("🚀 ENVIADO!"));
+    };
+
+    window.abrirSplitPdf = (t) => {
+        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
+        document.getElementById('pdf-split-view').classList.add('active');
+    };
+
+    window.fecharSplitPdf = () => document.getElementById('pdf-split-view').classList.remove('active');
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.abrirMentoria = () => window.open('mentoria.html', 'Mentoria', 'width=500,height=800');
+
     window.onload = montarFolha;
-    Object.assign(window, { abrirModalExames, fecharModal, abrirMentoria });
+    
+    // TODAS AS FUNÇÕES EXPOSTAS PARA O HTML:
+    Object.assign(window, { 
+        abrirModalExames, 
+        abrirModalPecas, 
+        injetarJustica, 
+        concluirEEnviarAoRobo, 
+        abrirSplitPdf, 
+        fecharSplitPdf, 
+        fecharModal, 
+        abrirMentoria 
+    });
 </script>
 </body>
 </html>
