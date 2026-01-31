@@ -140,8 +140,7 @@
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" },
-            { id: "RECLAMATÓRIA", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
         let encontrado = DICIONARIO.find(p => dnaBanco.includes(p.id)) || DICIONARIO.find(p => textoEscrito.includes(p.id));
@@ -178,35 +177,52 @@
             input.id = `L${i}`;
             input.setAttribute('spellcheck', 'false');
 
-            // --- LÓGICA DE FLUXO DE TEXTO (AUTO-WRAP) ---
             input.oninput = () => {
                 escaneamentoElite();
                 if (input.value.length > LIMITE_LINHA) {
                     let texto = input.value;
                     let lastSpace = texto.lastIndexOf(" ");
                     let corte = (lastSpace > LIMITE_LINHA - 15) ? lastSpace : LIMITE_LINHA;
-                    
                     let atual = texto.substring(0, corte);
                     let sobra = texto.substring(corte).trim();
-                    
                     input.value = atual;
                     const prox = document.getElementById(`L${i + 1}`);
                     if (prox) {
-                        prox.value = sobra + " " + prox.value;
+                        prox.value = sobra + " " + (prox.value || "");
                         prox.focus();
                         prox.setSelectionRange(sobra.length, sobra.length);
                     }
                 }
             };
 
-            // --- LÓGICA DE TECLAS (ENTER E BACKSPACE) ---
             input.onkeydown = (e) => {
+                const pos = input.selectionStart;
+
+                // --- NAVEGAÇÃO POR SETAS ---
+                if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    const prox = document.getElementById(`L${i + 1}`);
+                    if (prox) { prox.focus(); prox.setSelectionRange(pos, pos); }
+                }
+                if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    const ant = document.getElementById(`L${i - 1}`);
+                    if (ant) { ant.focus(); ant.setSelectionRange(pos, pos); }
+                }
+                if (e.key === "ArrowRight" && pos === input.value.length) {
+                    const prox = document.getElementById(`L${i + 1}`);
+                    if (prox) { e.preventDefault(); prox.focus(); prox.setSelectionRange(0, 0); }
+                }
+                if (e.key === "ArrowLeft" && pos === 0) {
+                    const ant = document.getElementById(`L${i - 1}`);
+                    if (ant) { e.preventDefault(); ant.focus(); ant.setSelectionRange(ant.value.length, ant.value.length); }
+                }
+
+                // --- ENTER E BACKSPACE ---
                 if (e.key === "Enter") {
                     e.preventDefault();
-                    let cursor = input.selectionStart;
-                    let sobra = input.value.substring(cursor).trim();
-                    input.value = input.value.substring(0, cursor).trim();
-                    
+                    let sobra = input.value.substring(pos).trim();
+                    input.value = input.value.substring(0, pos).trim();
                     const prox = document.getElementById(`L${i + 1}`);
                     if (prox) {
                         prox.value = sobra + (prox.value ? " " + prox.value : "");
@@ -214,15 +230,15 @@
                         prox.setSelectionRange(0, 0);
                     }
                 }
-                if (e.key === "Backspace" && input.selectionStart === 0 && i > 1) {
+                if (e.key === "Backspace" && pos === 0 && i > 1) {
                     e.preventDefault();
                     const anterior = document.getElementById(`L${i - 1}`);
                     if (anterior) {
-                        let pos = anterior.value.length;
+                        let len = anterior.value.length;
                         anterior.value += " " + input.value;
                         input.value = "";
                         anterior.focus();
-                        anterior.setSelectionRange(pos, pos);
+                        anterior.setSelectionRange(len, len);
                     }
                 }
             };
