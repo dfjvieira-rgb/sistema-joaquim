@@ -24,22 +24,11 @@
         
         .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
         
-        #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
-        #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
-        .radar-blink { animation: blink 1.5s infinite; color: var(--gold); }
-        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-        #identificador-peca {
-            width: 100%; padding: 15px; background: #f8fafc;
-            border-bottom: 3px double var(--line-color); text-align: center;
-            font-weight: 900; font-size: 1.3rem; color: #64748b;
-            text-transform: uppercase; letter-spacing: 3px;
-        }
-
-        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
+        
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
         
-        /* --- ESTRUTURA DA FOLHA COM MARGEM --- */
+        /* FOLHA COM MARGEM DIREITA ATIVA */
         .paper { 
             background: var(--paper-color); 
             width: 100%; 
@@ -49,49 +38,32 @@
             position: relative;
             overflow: hidden;
         }
-        /* Linha da margem direita */
         .paper::after {
-            content: "";
-            position: absolute;
-            top: 0; right: 40px;
-            width: 2px; height: 100%;
-            background: var(--margem-cor);
-            opacity: 0.4;
-            pointer-events: none;
-            z-index: 10;
+            content: ""; position: absolute; top: 0; right: 45px;
+            width: 2px; height: 100%; background: var(--margem-cor);
+            opacity: 0.4; pointer-events: none; z-index: 10;
         }
 
+        .header-secao { background: #1e293b; color: var(--gold); padding: 12px; text-align: center; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); }
+        .sub-secao { background: #f1f5f9; color: #475569; padding: 5px 15px; font-size: 0.7rem; font-weight: 800; border-bottom: 1px solid var(--line-color); border-left: 5px solid var(--gold); }
+
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); position: relative; }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); z-index: 5; }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
-            padding: 0 50px 0 15px; /* Padding extra na direita para respeitar a margem */
-            font-size: 18px; font-family: 'Courier New', Courier, monospace;
+            padding: 0 55px 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%; letter-spacing: 0.5px;
-            overflow: hidden;
-            white-space: nowrap;
         }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 80vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; text-align: center; color: #000; }
 
         #sync-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); }
-
-        @media print {
-            header, .sidebar, .modal, #sync-overlay { display: none !important; }
-            .editor-container { padding: 0 !important; background: white !important; overflow: visible !important; }
-            .paper { box-shadow: none !important; width: 100% !important; }
-            .paper::after { opacity: 0.2; }
-        }
     </style>
 </head>
 <body>
 
 <div id="sync-overlay">
-    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
-    <p style="margin-top:15px; font-weight:900;">SINCRO-ELITE ATIVA...</p>
+    <i class="fas fa-sync fa-spin fa-3x"></i>
+    <p style="margin-top:15px; font-weight:900; letter-spacing:2px;">SINCRONIZANDO CADERNO OAB...</p>
 </div>
 
 <header>
@@ -103,41 +75,24 @@
 </header>
 
 <main>
-    <aside class="sidebar">
-        <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-        <button class="btn-side" style="background:var(--gold); color:black;" title="Trocar Exame" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
+    <aside class="sidebar" id="sidebar-home">
         <button class="btn-side" style="background:#0ea5e9;" title="Salvar" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" style="background:#334155; color:var(--gold);" title="Estruturas" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" style="background:#3b82f6;" title="Injetar Espelho" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" style="background:var(--danger);" title="Limpar Tudo" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
         <button class="btn-side" style="background:var(--mentoria);" title="Mentoria" onclick="window.location.href='mentoria.html'"><i class="fas fa-robot"></i></button>
-        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" title="Concluir" onclick="concluirEEnviarAoRobo()"><i class="fas fa-check-double"></i></button>
+        <button class="btn-side" style="background:var(--danger);" title="Limpar Tudo" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
         <hr style="opacity:0.1; margin:5px 0;">
-        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
-        <button class="btn-side" style="background:#475569;" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
-        <button class="btn-side" style="background:#475569;" onclick="irPara(51)"><i class="fas fa-chevron-down"></i></button>
+        <button class="btn-side" style="background:#475569;" title="Início" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
+        <button class="btn-side" style="background:#475569;" title="Questões" onclick="irPara(151)"><i class="fas fa-chevron-down"></i></button>
     </aside>
 
     <section class="editor-container">
-        <div class="paper">
-            <div id="identificador-peca">CARREGANDO...</div>
-            <div id="folha-total"></div>
-        </div>
+        <div class="paper" id="folha-oab">
+            </div>
     </section>
 </main>
 
-<div class="modal" id="universal-modal">
-    <div class="modal-body">
-        <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR À HOME</button>
-    </div>
-</div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
@@ -151,203 +106,100 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let activeEx = localStorage.getItem('activeEx') || "41";
+    const LIMITE = 85;
 
-    let activeEx = localStorage.getItem('activeEx') || "44";
-    let ultimaLinhaFocada = 1;
-    const LIMITE_LINHA = 85;
-
-    const escaneamentoElite = () => {
-        const sidebarStatus = document.getElementById('radar-status');
-        const boxSidebar = document.getElementById('radar-container');
-        const topoFolha = document.getElementById('identificador-peca');
-        const dnaBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        const textoEscrito = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value).join(' ').toUpperCase();
-
-        const DICIONARIO = [
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
-            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
-        ];
-
-        let encontrado = DICIONARIO.find(p => dnaBanco.includes(p.id)) || DICIONARIO.find(p => textoEscrito.includes(p.id));
-
-        if (encontrado) {
-            sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
-            boxSidebar.style.borderColor = encontrado.cor;
-            topoFolha.innerText = encontrado.display;
-            topoFolha.style.color = encontrado.cor;
-            topoFolha.style.borderBottom = `3px double ${encontrado.cor}`;
-        } else {
-            sidebarStatus.innerHTML = `RADAR<br><span class="radar-blink">BUSCANDO...</span>`;
-            boxSidebar.style.borderColor = "var(--gold)";
-            topoFolha.innerText = "CADERNO DE RESPOSTAS";
-            topoFolha.style.color = "#64748b";
-            topoFolha.style.borderBottom = "3px double var(--line-color)";
-        }
-    };
+    const layout = [
+        { nome: "Peça Profissional", de: 1, ate: 150 },
+        { nome: "Questão 1", de: 151, ate: 160, subs: { 151: "A", 156: "B" } },
+        { nome: "Questão 2", de: 161, ate: 170, subs: { 161: "A", 166: "B" } },
+        { nome: "Questão 3", de: 171, ate: 180, subs: { 171: "A", 176: "B" } },
+        { nome: "Questão 4", de: 181, ate: 190, subs: { 181: "A", 186: "B" } }
+    ];
 
     const montarFolha = () => {
-        const container = document.getElementById('folha-total');
-        container.innerHTML = "";
-        for(let i=1; i<=180; i++) {
-            if(i === 1 || i === 51) {
-                const h = document.createElement('div');
-                h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
-                h.innerText = i === 1 ? 'CADERNO DE RESPOSTAS - PEÇA' : 'CADERNO DE RESPOSTAS - QUESTÕES';
-                container.appendChild(h);
+        const papel = document.getElementById('folha-oab');
+        layout.forEach(sec => {
+            const h = document.createElement('div');
+            h.className = 'header-secao';
+            h.innerText = sec.nome;
+            papel.appendChild(h);
+
+            for(let i=sec.de; i<=sec.ate; i++) {
+                if(sec.subs && sec.subs[i]) {
+                    const sub = document.createElement('div');
+                    sub.className = 'sub-secao';
+                    sub.innerText = `ITEM ${sec.subs[i]}`;
+                    papel.appendChild(sub);
+                }
+
+                const row = document.createElement('div');
+                row.className = 'linha-wrapper';
+                row.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" spellcheck="false">`;
+                papel.appendChild(row);
+
+                const inp = row.querySelector('input');
+
+                // --- AJUSTES DE TECLADO MANTIDOS ---
+                inp.onkeydown = (e) => {
+                    const pos = inp.selectionStart;
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        let sobra = inp.value.substring(pos).trim();
+                        inp.value = inp.value.substring(0, pos).trim();
+                        const prox = document.getElementById(`L${i+1}`);
+                        if(prox) { prox.value = sobra + (prox.value ? " " + prox.value : ""); prox.focus(); prox.setSelectionRange(0,0); }
+                    }
+                    if (e.key === "ArrowDown") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
+                    if (e.key === "ArrowUp") { e.preventDefault(); document.getElementById(`L${i-1}`)?.focus(); }
+                    if (e.key === "ArrowRight" && pos === inp.value.length) { document.getElementById(`L${i+1}`)?.focus(); }
+                    if (e.key === "ArrowLeft" && pos === 0) { document.getElementById(`L${i-1}`)?.focus(); }
+                };
+
+                // --- AUTO-BREAK MANTIDO ---
+                inp.oninput = () => {
+                    if (inp.value.length > LIMITE) {
+                        let txt = inp.value;
+                        let lastSpace = txt.lastIndexOf(" ");
+                        let corte = (lastSpace > LIMITE - 15) ? lastSpace : LIMITE;
+                        let atual = txt.substring(0, corte);
+                        let sobra = txt.substring(corte).trim();
+                        inp.value = atual;
+                        const prox = document.getElementById(`L${i+1}`);
+                        if(prox) {
+                            prox.value = sobra + " " + (prox.value || "");
+                            prox.focus();
+                            prox.setSelectionRange(sobra.length, sobra.length);
+                        }
+                    }
+                };
             }
-            const row = document.createElement('div');
-            row.className = 'linha-wrapper';
-            const input = document.createElement('input');
-            input.className = 'linha-folha';
-            input.id = `L${i}`;
-            input.setAttribute('spellcheck', 'false');
-
-            input.oninput = () => {
-                escaneamentoElite();
-                if (input.value.length > LIMITE_LINHA) {
-                    let texto = input.value;
-                    let lastSpace = texto.lastIndexOf(" ");
-                    let corte = (lastSpace > LIMITE_LINHA - 15) ? lastSpace : LIMITE_LINHA;
-                    let atual = texto.substring(0, corte);
-                    let sobra = texto.substring(corte).trim();
-                    input.value = atual;
-                    const prox = document.getElementById(`L${i + 1}`);
-                    if (prox) {
-                        prox.value = sobra + " " + (prox.value || "");
-                        prox.focus();
-                        prox.setSelectionRange(sobra.length, sobra.length);
-                    }
-                }
-            };
-
-            input.onkeydown = (e) => {
-                const pos = input.selectionStart;
-
-                if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    const prox = document.getElementById(`L${i + 1}`);
-                    if (prox) { prox.focus(); prox.setSelectionRange(pos, pos); }
-                }
-                if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    const ant = document.getElementById(`L${i - 1}`);
-                    if (ant) { ant.focus(); ant.setSelectionRange(pos, pos); }
-                }
-                if (e.key === "ArrowRight" && pos === input.value.length) {
-                    const prox = document.getElementById(`L${i + 1}`);
-                    if (prox) { e.preventDefault(); prox.focus(); prox.setSelectionRange(0, 0); }
-                }
-                if (e.key === "ArrowLeft" && pos === 0) {
-                    const ant = document.getElementById(`L${i - 1}`);
-                    if (ant) { e.preventDefault(); ant.focus(); ant.setSelectionRange(ant.value.length, ant.value.length); }
-                }
-
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    let sobra = input.value.substring(pos).trim();
-                    input.value = input.value.substring(0, pos).trim();
-                    const prox = document.getElementById(`L${i + 1}`);
-                    if (prox) {
-                        prox.value = sobra + (prox.value ? " " + prox.value : "");
-                        prox.focus();
-                        prox.setSelectionRange(0, 0);
-                    }
-                }
-                if (e.key === "Backspace" && pos === 0 && i > 1) {
-                    e.preventDefault();
-                    const anterior = document.getElementById(`L${i - 1}`);
-                    if (anterior) {
-                        let len = anterior.value.length;
-                        anterior.value += " " + input.value;
-                        input.value = "";
-                        anterior.focus();
-                        anterior.setSelectionRange(len, len);
-                    }
-                }
-            };
-
-            input.onfocus = () => { ultimaLinhaFocada = i; };
-            row.innerHTML = `<div class="linha-num">${i}</div>`;
-            row.appendChild(input);
-            container.appendChild(row);
-        }
+        });
         carregarDados();
     };
 
     const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
-            if (data && data.linhas) {
+            if(data && data.linhas) {
                 data.linhas.forEach((txt, idx) => {
-                    const el = document.getElementById(`L${idx + 1}`);
-                    if (el) el.value = txt || "";
+                    const el = document.getElementById(`L${idx+1}`);
+                    if(el && document.activeElement !== el) el.value = txt || "";
                 });
             }
             document.getElementById('sync-overlay').style.display = 'none';
-            escaneamentoElite();
-        }, { onlyOnce: true });
+        });
     };
 
-    window.limparTudo = () => { if(confirm("Apagar caderno?")) { document.querySelectorAll('.linha-folha').forEach(inp => inp.value = ""); escaneamentoElite(); } };
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ HOME SINCRONIZADA!"));
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
     };
 
-    window.concluirEEnviarAoRobo = () => {
-        if(!confirm(`Arquivar Exame ${activeEx}?`)) return;
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value).join('\n');
-        push(ref(db, 'mentoria/historico'), {
-            exame: activeEx, conteudo: dados, data: new Date().toLocaleString('pt-BR'), ts: Date.now()
-        }).then(() => { alert("🚀 ARQUIVADO!"); window.location.href='mentoria.html'; });
-    };
-
-    window.abrirModalExames = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
-        const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
-        for(let i=44; i>=35; i--) {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); location.reload(); };
-            grid.appendChild(b);
-        }
-        content.appendChild(grid);
-        document.getElementById('universal-modal').style.display='flex';
-    };
-
-    window.abrirModalPecas = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">ESTRUTURAS</h2>`;
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
-            b.onclick = () => {
-                pecas[k].split('\n').forEach((t, i) => {
-                    const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-                    if(el) el.value = t.substring(0, LIMITE_LINHA);
-                });
-                fecharModal(); escaneamentoElite();
-            };
-            content.appendChild(b);
-        });
-        document.getElementById('universal-modal').style.display='flex';
-    };
-
-    window.injetarJustica = () => {
-        const dna = BANCO_ESPELHOS[activeEx] || "";
-        const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
-        frases.forEach((f, i) => {
-            const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-            if(el) el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2);
-        });
-        escaneamentoElite();
-    };
-
-    window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
+    window.limparTudo = () => { if(confirm("Limpar todo o caderno?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, salvarManual, injetarJustica, irPara, concluirEEnviarAoRobo, limparTudo });
+
+    window.onload = montarFolha;
 </script>
 </body>
 </html>
