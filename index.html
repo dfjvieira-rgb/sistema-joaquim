@@ -9,13 +9,12 @@
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px; --sidebar-w: 75px; --fgv-gray: #f1f5f9;
+            --header-h: 65px; --sidebar-w: 75px;
         }
 
         body.dark-mode {
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a;
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155;
-            --fgv-gray: #0f172a;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(0,0,0,0); }
@@ -52,6 +51,7 @@
             width: var(--sidebar-w); background: #1e293b; display: flex;
             flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto;
             border-right: 1px solid rgba(255,255,255,0.1); z-index: 100; flex-shrink: 0;
+            scrollbar-width: none;
         }
         
         #radar-peca {
@@ -79,33 +79,37 @@
 
         .editor-container {
             flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; align-items: flex-start;
-            padding: 20px;
+            display: flex; justify-content: center; padding: 20px;
         }
         
         .paper {
             background: var(--paper-color); width: 100%; max-width: 850px; 
-            padding-bottom: 300px; box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            min-height: fit-content; padding: 0; box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            position: relative;
         }
 
-        /* FGV ESTRUTURA */
-        .fgv-header {
-            background: var(--fgv-gray); padding: 10px; font-weight: 900;
-            border-bottom: 2px solid var(--line-color); color: var(--text-color);
-            text-align: center; font-size: 0.8rem; text-transform: uppercase;
+        /* MARCAÇÕES FGV VIA CSS (Não afetam o texto) */
+        .paper::before {
+            content: "PEÇA PROFISSIONAL";
+            display: block; background: #e2e8f0; color: #475569;
+            padding: 10px; font-weight: 900; text-align: center; font-size: 0.75rem;
+            border-bottom: 1px solid var(--line-color);
         }
 
         .editor-area {
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color);
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 400px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
-            padding: 0 40px;
+            min-height: 2500px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            padding: 0 40px 500px 40px; position: relative;
         }
 
-        .quest-label {
-            padding: 5px 40px; font-weight: bold; color: var(--gold);
-            background: var(--primary); font-size: 0.9rem;
+        /* Divisores Visuais de Questões (Simulação FGV) */
+        .fgv-mark {
+            pointer-events: none; user-select: none;
+            background: #f1f5f9; color: #475569; font-weight: 900;
+            padding: 10px; text-align: center; font-size: 0.75rem;
+            margin: 40px -40px 10px -40px; border-top: 2px solid var(--gold);
         }
 
         .pdf-panel {
@@ -156,31 +160,8 @@
     </aside>
 
     <section class="editor-container">
-        <div class="paper" id="caderno-prova">
-            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false">
-<div class="fgv-header" contenteditable="false">PEÇA PROFISSIONAL</div>
-[Escreva sua peça aqui...]
-
-<div class="fgv-header" contenteditable="false">QUESTÃO 1</div>
-<div class="quest-label" contenteditable="false">ITEM A)</div>
-
-<div class="quest-label" contenteditable="false">ITEM B)</div>
-
-<div class="fgv-header" contenteditable="false">QUESTÃO 2</div>
-<div class="quest-label" contenteditable="false">ITEM A)</div>
-
-<div class="quest-label" contenteditable="false">ITEM B)</div>
-
-<div class="fgv-header" contenteditable="false">QUESTÃO 3</div>
-<div class="quest-label" contenteditable="false">ITEM A)</div>
-
-<div class="quest-label" contenteditable="false">ITEM B)</div>
-
-<div class="fgv-header" contenteditable="false">QUESTÃO 4</div>
-<div class="quest-label" contenteditable="false">ITEM A)</div>
-
-<div class="quest-label" contenteditable="false">ITEM B)</div>
-            </div>
+        <div class="paper">
+            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
     </section>
 
@@ -242,7 +223,7 @@
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
 
     window.salvarManual = () => {
-        set(ref(db, 'estudos/' + activeEx), { text: editor.innerHTML, ts: Date.now() });
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
         alert("🛰️ SINCRONIZADO!");
     };
 
@@ -250,14 +231,14 @@
         const esp = BANCO_ESPELHOS[activeEx];
         if(esp) {
             const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            editor.innerHTML += "\n\n--- ⚖️ CHECKLIST ---\n[ ] " + checklist;
+            editor.innerText += "\n\n--- ⚖️ CHECKLIST ---\n[ ] " + checklist;
             autoSave();
         }
     };
 
     window.lancarPeca = () => {
         if(confirm("Lançar esta peça ao histórico final?")) {
-            push(ref(db, 'historico/' + activeEx), { text: editor.innerHTML, ts: Date.now() });
+            push(ref(db, 'historico/' + activeEx), { text: editor.innerText, ts: Date.now() });
             alert("🚀 LANÇADO COM SUCESSO!");
         }
     };
@@ -281,8 +262,8 @@
         document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
     };
 
-    const autoSave = () => set(ref(db, 'estudos/' + activeEx), { text: editor.innerHTML, ts: Date.now() });
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerHTML = ""; autoSave(); } };
+    const autoSave = () => set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; autoSave(); } };
 
     const carregarExames = () => {
         const nav = document.getElementById('exam-nav');
@@ -300,7 +281,7 @@
     function carregarFirebase() {
         onValue(ref(db, 'estudos/' + activeEx), (s) => {
             const d = s.val();
-            if(d && d.text && document.activeElement !== editor) editor.innerHTML = d.text;
+            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
         }, { onlyOnce: true });
     }
 
