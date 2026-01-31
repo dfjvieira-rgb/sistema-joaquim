@@ -1,155 +1,172 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MENTORIA ELITE 2026</title>
+    <title>MENTORIA ELITE | RAIO-X DE PERFORMANCE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1e293b; --gold: #fbbf24; --accent: #3b82f6;
-            --tese-bg: #f5f3ff; --tese-border: #7c3aed;
-            --confunda-bg: #fef2f2; --confunda-border: #ef4444;
-            --desafio-bg: #ecfeff; --desafio-border: #0891b2;
+            --primary: #020617; --gold: #fbbf24; --accent: #a855f7;
+            --card-bg: #1e293b; --text: #f8fafc; --border: #94a3b8;
+            --success: #16a34a; --purple: #5b21b6; --danger: #dc2626;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 0; padding: 0; color: #334155; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); color: var(--text); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--gold); padding-bottom: 15px; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--gold); }
+        .btn-voltar { padding: 10px 20px; background: var(--card-bg); border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 0.8rem; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+        .panel { background: var(--card-bg); border-radius: 12px; border: 1px solid #334155; display: flex; flex-direction: column; overflow: hidden; }
+        .panel-header { padding: 12px; background: rgba(255,255,255,0.05); border-bottom: 1px solid #334155; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; text-align: center; color: var(--gold); }
+        .panel-body { padding: 15px; }
+
+        label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; color: #94a3b8; }
+        input, textarea { width: 100%; border: 1px solid #334155; background: rgba(0,0,0,0.2); color: white; border-radius: 8px; padding: 12px; font-size: 1rem; margin-bottom: 10px; font-family: inherit; outline: none; }
         
-        /* Layout Portal */
-        header { background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--gold); }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; text-transform: uppercase; transition: 0.3s; }
+        
+        .feed { margin-top: 15px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 10px; position: relative; }
+        
+        .card-pdf { border-left: 5px solid var(--gold); background: rgba(251, 191, 36, 0.05); display: flex; justify-content: space-between; align-items: center; }
+        .pdf-actions i { cursor: pointer; font-size: 1.1rem; margin-left: 10px; transition: 0.2s; }
 
-        /* Estilo dos Cards de Conteúdo */
-        .mentoria-card {
-            background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 10px solid #ddd;
-            display: none; /* Escondido até o clique */
-            animation: slideIn 0.4s ease-out;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-reveal { background: var(--gold); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
+        .hidden-content { display: none; margin-top: 10px; padding: 12px; background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); border-radius: 6px; font-weight: 700; color: #4ade80; }
 
-        .card-desafio { border-color: var(--desafio-border); background: var(--desafio-bg); }
-        .card-tese { border-color: var(--tese-border); background: var(--tese-bg); }
-        .card-confunda { border-color: var(--confunda-border); background: var(--confunda-bg); }
-
-        .card-title { font-weight: 900; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .card-title i { font-size: 1.1rem; }
-        .text-body { font-size: 1.05rem; line-height: 1.6; color: #1e293b; }
-
-        /* Lista de Histórico */
-        .historico-section { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; margin-top: 30px; }
-        .historico-header { background: #f1f5f9; padding: 15px; font-weight: 800; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; }
-        .item-envio { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #f1f5f9; }
-        .btn-analisar { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-analisar:hover { background: #2563eb; transform: scale(1.05); }
-
-        .badge-peca { background: var(--primary); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; margin-top: 5px; display: inline-block; }
+        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-size: 1.5rem; font-weight: 900;">MENTORIA <span style="color:var(--gold)">ARYANNA</span></div>
-    <div style="font-size: 0.8rem; opacity: 0.8;">LABORATÓRIO DE ELITE 2026</div>
+    <div class="logo"><i class="fas fa-brain"></i> MENTORIA ELITE</div>
+    <a href="index.html" class="btn-voltar"><i class="fas fa-arrow-left"></i> VOLTAR AOS TREINOS</a>
 </header>
 
-<div class="container">
-    
-    <div id="card-desafio" class="mentoria-card card-desafio">
-        <div class="card-title" style="color: var(--desafio-border)"><i class="fas fa-bullseye"></i> Desafio: Qual é a Peça?</div>
-        <div id="txt-desafio" class="text-body"></div>
-    </div>
-
-    <div id="card-tese" class="mentoria-card card-tese">
-        <div class="card-title" style="color: var(--tese-border)"><i class="fas fa-gavel"></i> Teses e Fundamentação</div>
-        <div id="txt-tese" class="text-body"></div>
-    </div>
-
-    <div id="card-confunda" class="mentoria-card card-confunda">
-        <div class="card-title" style="color: var(--confunda-border)"><i class="fas fa-exclamation-triangle"></i> Não Confunda</div>
-        <div id="txt-confunda" class="text-body"></div>
-    </div>
-
-    <div class="historico-section">
-        <div class="historico-header">
-            <span>HISTÓRICO DE TREINOS</span>
-            <button onclick="window.close()" style="border:none; background:none; cursor:pointer; font-size:0.7rem; font-weight:bold;">[ FECHAR ]</button>
-        </div>
-        <div id="lista-envios">
+<main class="dashboard">
+    <section class="panel" style="border-top: 4px solid var(--gold); grid-column: span 2;">
+        <div class="panel-header"><i class="fas fa-save"></i> Histórico de Simulados (Vindo do Index)</div>
+        <div class="panel-body">
+            <div id="feed-pdf" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px;">
+                <p style="text-align:center; color:gray;">Buscando histórico...</p>
             </div>
-    </div>
-</div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--success);">
+        <div class="panel-header">Preliminares Processuais</div>
+        <div class="panel-body">
+            <label>Título (Ex: Incompetência)</label><input type="text" id="pre-t">
+            <label>Fundamentação (Artigos)</label><textarea id="pre-c" rows="2"></textarea>
+            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar Tese</button>
+            <div class="feed" id="feed-pre"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--purple);">
+        <div class="panel-header">Qual é a Peça? (Flashcard)</div>
+        <div class="panel-body">
+            <label>Trecho do Enunciado</label><textarea id="peca-t" rows="2"></textarea>
+            <label>Nome da Peça (Gabarito)</label><input type="text" id="peca-c">
+            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Flashcard</button>
+            <div class="feed" id="feed-peca"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--danger);">
+        <div class="panel-header">Radar: Não Confunda</div>
+        <div class="panel-body">
+            <label>Conceito A vs B</label><input type="text" id="nc-t">
+            <label>Diferença Crucial</label><textarea id="nc-c" rows="2"></textarea>
+            <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Alerta</button>
+            <div class="feed" id="feed-nc"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid #3b82f6;">
+        <div class="panel-header">Teses de Mérito</div>
+        <div class="panel-body">
+            <label>Tema (Ex: Horas Extras)</label><input type="text" id="tese-t">
+            <label>Estrutura da Tese</label><textarea id="tese-c" rows="2"></textarea>
+            <button class="btn-save" style="background: #3b82f6;" onclick="salvar('tese')">Arquivar Conhecimento</button>
+            <div class="feed" id="feed-tese"></div>
+        </div>
+    </section>
+</main>
 
 <script type="module">
-    import { db } from './firebase-config.js';
-    import { ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // O BANCO DE DADOS DA MENTORIA (TESES)
-    const CONTEUDO_MENTORIA = {
-        "CONTESTAÇÃO": {
-            desafio: "Identifique se o caso é de <b>Defesa</b>. O examinador dirá que seu cliente foi citado para responder a uma reclamação. <br>🎯 <i>Ação Reacional.</i>",
-            tese: "<b>Estrutura de Ouro:</b><br>1. Preliminares (Art. 337 CPC)<br>2. Prejudiciais (Prescrição - Art. 7, XXIX CF)<br>3. Mérito (Negativa dos Fatos ou Fato Impeditivo).",
-            confunda: "<b>CUIDADO!</b> Não confunda o prazo. Na JT a contestação é apresentada até a audiência (Art. 847 CLT)."
-        },
-        "RECURSO ORDINÁRIO": {
-            desafio: "Procure pela palavra <b>Sentença</b>. Se o juiz decidiu e você precisa atacar essa decisão no Tribunal, o caminho é o RO.",
-            tese: "<b>Fundamento:</b> Art. 895, I da CLT.<br>Não esqueça do <b>Preparo</b> (Custas + Depósito), sob pena de deserção.",
-            confunda: "O RO é o equivalente à Apelação do Cível. Não use o nome 'Apelação' jamais!"
-        }
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+    };
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+
+    const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
+
+    window.toggleR = (btn) => {
+        const div = btn.nextElementSibling;
+        div.style.display = (div.style.display === "block" ? "none" : "block");
+        btn.innerText = (div.style.display === "block" ? "OCULTAR GABARITO" : "VER GABARITO");
     };
 
-    // Carregar Lista
-    onValue(ref(db, 'mentoria/historico'), (snapshot) => {
-        const grid = document.getElementById('lista-envios');
-        grid.innerHTML = "";
-        const envios = snapshot.val();
-        if(envios) {
-            Object.keys(envios).map(k => ({id: k, ...envios[k]}))
-            .sort((a,b) => b.ts - a.ts)
-            .forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-envio';
-                div.innerHTML = `
-                    <div>
-                        <div style="font-weight:bold">Exame OAB ${item.exame}</div>
-                        <div style="font-size:0.7rem; color:#666">${item.data}</div>
-                    </div>
-                    <button class="btn-analisar" onclick="gerarMentoria('${item.exame}')">ANALISAR</button>
-                `;
-                grid.appendChild(div);
+    window.salvar = (type) => {
+        const t = document.getElementById(`${type}-t`).value;
+        const c = document.getElementById(`${type}-c`).value;
+        if(!t || !c) return;
+        push(ref(db, paths[type]), { t, c, ts: serverTimestamp() });
+        document.getElementById(`${type}-t`).value = '';
+        document.getElementById(`${type}-c`).value = '';
+    };
+
+    window.excluir = (type, id) => { if(confirm("Apagar?")) remove(ref(db, `${paths[type]}/${id}`)); };
+
+    onValue(ref(db), (snap) => {
+        const v = snap.val() || {};
+        
+        // Renderizar Seções de Texto
+        ['pre', 'peca', 'nc', 'tese'].forEach(type => {
+            const feed = document.getElementById(`feed-${type}`);
+            feed.innerHTML = "";
+            const items = v[paths[type]] || {};
+            Object.keys(items).reverse().forEach(id => {
+                const item = items[id];
+                feed.innerHTML += `
+                    <div class="card">
+                        <i class="fas fa-trash" style="position:absolute; right:10px; top:10px; font-size:0.7rem; color:gray; cursor:pointer" onclick="excluir('${type}','${id}')"></i>
+                        ${type === 'peca' ? 
+                            `<strong>Cenário:</strong> ${item.t}<button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : 
+                            `<strong>${item.t}</strong><p style="font-size:0.85rem; opacity:0.8; margin-top:5px;">${item.c}</p>`}
+                    </div>`;
             });
-        }
+        });
+
+        // Renderizar Histórico (Conversão com Index)
+        const feedPdf = document.getElementById('feed-pdf');
+        feedPdf.innerHTML = "";
+        const hist = v[paths.pdf] || {};
+        Object.keys(hist).reverse().forEach(id => {
+            const item = hist[id];
+            feedPdf.innerHTML += `
+                <div class="card card-pdf">
+                    <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
+                    <div class="pdf-actions">
+                        <i class="fas fa-play-circle" style="color:var(--gold)" onclick="location.href='index.html?exame=${item.exame}'"></i>
+                        <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
+                    </div>
+                </div>`;
+        });
     });
-
-    window.gerarMentoria = async (exNum) => {
-        const snap = await get(ref(db, `estudos/${exNum}`));
-        const dados = snap.val();
-        if(!dados) return alert("Conteúdo não encontrado.");
-
-        const texto = dados.linhas.join(" ").toUpperCase();
-        let pecaSugerida = "NÃO IDENTIFICADA";
-
-        // Busca qual peça está no texto
-        for (let p in CONTEUDO_MENTORIA) {
-            if (texto.includes(p)) pecaSugerida = p;
-        }
-
-        if(CONTEUDO_MENTORIA[pecaSugerida]) {
-            const info = CONTEUDO_MENTORIA[pecaSugerida];
-            
-            // Injetar nos cards
-            document.getElementById('txt-desafio').innerHTML = `Peça: <b>${pecaSugerida}</b><br><br>${info.desafio}`;
-            document.getElementById('txt-tese').innerHTML = info.tese;
-            document.getElementById('txt-confunda').innerHTML = info.confunda;
-
-            // Mostrar os cards com animação
-            document.querySelectorAll('.mentoria-card').forEach(c => c.style.display = 'block');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            alert("O sistema não identificou o nome da peça nas suas linhas para gerar as teses.");
-        }
-    };
-
-    Object.assign(window, { gerarMentoria });
 </script>
 </body>
 </html>
