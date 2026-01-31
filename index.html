@@ -1,199 +1,57 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA JOAQUIM - MULTI-EXAMES 35-44</title>
-    <style>
-        :root { 
-            --primary: #1a252f; --accent: #3498db; --bg: #f4f7f6; 
-            --orange: #f39c12; --green: #27ae60; --purple: #8e44ad; 
-            --yellow: #f1c40f; --text: #2c3e50; --header-h: 60px; 
+// --- MONTAGEM DA FOLHA ATUALIZADA ---
+const montarFolha = () => {
+    const container = document.getElementById('folha-total');
+    container.innerHTML = "";
+    for(let i=1; i<=180; i++) {
+        if(i === 1 || i === 51) {
+            const h = document.createElement('div');
+            h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
+            h.innerText = i === 1 ? 'CADERNO DE RESPOSTAS - PEÇA' : 'CADERNO DE RESPOSTAS - QUESTÕES';
+            container.appendChild(h);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header { background-color: var(--primary); color: white; height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        #timer { font-family: monospace; font-size: 1.3rem; color: var(--yellow); }
-
-        .nav-group { display: flex; gap: 8px; }
-        .dropdown { position: relative; }
-        .dropbtn { color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
-        .btn-struct { background-color: var(--accent); }
-        .btn-correc { background-color: var(--orange); }
-        .btn-postit { background-color: var(--yellow); color: #333; }
-        .btn-dicas { background-color: var(--purple); }
-
-        .dropdown-content { display: none; position: absolute; background: white; min-width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); right: 0; border-radius: 6px; padding: 8px; z-index: 2000; }
-        .dropdown:hover .dropdown-content { display: block; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.8rem; cursor: pointer; color: #333; }
-
-        main { display: flex; flex: 1; overflow: hidden; }
-        
-        .sidebar { width: 220px; background: #eaeff2; border-right: 1px solid #ccc; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; gap: 10px; }
-        .sidebar h4 { font-size: 0.65rem; color: #555; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 10px; }
-        
-        .exame-btn { background: white; border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; text-align: left; font-size: 0.7rem; font-weight: bold; transition: 0.2s; }
-        .exame-btn:hover { background: var(--accent); color: white; }
-        
-        .sticky-note { padding: 8px; border-radius: 4px; font-size: 0.7rem; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); border-left: 4px solid; background: white; margin-bottom: 5px; }
-        
-        .work-section { flex: 1; display: flex; flex-direction: column; background: white; }
-        
-        #aviso-edicao { 
-            display: none; background: var(--yellow); padding: 10px; 
-            text-align: center; font-weight: bold; font-size: 0.8rem; 
-            border-bottom: 2px solid #d4ac0d; 
-        }
-
-        .editor-header { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-
-        /* SUA FOLHA ORIGINAL COM AJUSTE DE MARGEM PROTEGIDA */
-        #area-peca { 
-            flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
-            font-size: 16px; line-height: 1.6; outline: none; 
-            background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
-            resize: none; width: 100%;
-            word-wrap: break-word; overflow-wrap: break-word; /* PROTEÇÃO DA MARGEM DIREITA */
-        }
-
-        .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; }
-        .pdf-box { background: #333; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
-        .pdf-header { padding: 5px 10px; color: white; font-size: 0.6rem; display: flex; justify-content: space-between; }
-        .pdf-frame { width: 100%; height: 42vh; border: none; background: white; }
-
-        .consulta-full { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; }
-        .consulta-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .consulta-body { flex: 1; padding: 20px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.1rem; }
-
-        .btn-action { border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.65rem; }
-
-        @media (max-width: 1024px) {
-            .sidebar { width: 100%; height: 120px; flex-direction: row; flex-shrink: 0; }
-            .mural-content { display: none; }
-            main { flex-direction: column; overflow-y: auto; }
-            .pdf-section { width: 100%; height: auto; }
-        }
-
-        /* AJUSTE PARA IMPRESSÃO NÃO CORTAR LATERAIS */
-        @media print {
-            header, .sidebar, .pdf-section, .editor-header, #aviso-edicao, .btn-action { display: none !important; }
-            body, main, .work-section { background: white; overflow: visible; display: block; }
-            #area-peca { padding: 0 !important; font-size: 12pt; line-height: 1.6em; background: none; overflow: visible; }
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div id="timer">05:00:00</div>
-    <div class="nav-group">
-        <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-postit">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
-        <div class="dropdown"><button class="dropbtn btn-dicas">👩‍🏫 Dicas Prof</button><div class="dropdown-content" id="list-db_dicas"></div></div>
-    </div>
-</header>
-
-<div id="aviso-edicao">
-    ⚠️ MODO EDIÇÃO: <span id="nome-item-editando"></span> 
-    <button class="btn-action" style="background:var(--green); margin-left:10px" onclick="salvarAlteracoes()">SALVAR NO BANCO</button>
-    <button class="btn-action" style="background:#e74c3c; margin-left:5px" onclick="cancelarEdicao()">CANCELAR</button>
-</div>
-
-<main>
-    <aside class="sidebar">
-        <h4>📂 Selecionar Exame</h4>
-        <div id="lista-exames" style="display:flex; flex-direction:column; gap:4px"></div>
-        <h4 class="mural-content">📌 Mural de Fixação</h4>
-        <div id="mural-content" class="mural-content"></div>
-        <button class="btn-action" style="background:#7f8c8d; width:100%; margin-top:15px; font-size:0.5rem" onclick="fazerBackup()">📥 BAIXAR BACKUP</button>
-    </aside>
-
-    <section class="work-section">
-        <div class="editor-header">
-            <span id="label-exame" style="font-weight: bold; font-size: 0.7rem; color:var(--primary)">📍 Aguardando Exame...</span>
-            <button class="btn-action" style="background:var(--green); margin-right:5px" onclick="window.print()">🖨️ IMPRIMIR</button>
-            <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR PEÇA TXT</button>
-        </div>
-        <textarea id="area-peca" placeholder="Selecione um exame à esquerda e comece sua peça..."></textarea>
-    </section>
-
-    <section class="pdf-section">
-        <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
-            <iframe class="pdf-frame" id="v-enu"></iframe>
-        </div>
-        <div class="pdf-box">
-            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
-            <iframe class="pdf-frame" id="v-gab"></iframe>
-        </div>
-    </section>
-</main>
-
-<div id="janela-consulta" class="consulta-full">
-    <div id="header-consulta" class="consulta-header"><span id="titulo-consulta"></span><button class="btn-action" style="background:rgba(0,0,0,0.3)" onclick="fecharConsulta()">VOLTAR ↩</button></div>
-    <div id="corpo-consulta" class="consulta-body"></div>
-    <div style="padding: 15px; background: #f8f9fa;"><button class="btn-action" style="background:var(--accent); width:100%; height: 50px;" onclick="inserirNoEditor()">COPIAR PARA PEÇA (PULANDO LINHA)</button></div>
-</div>
-
-<script>
-    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
-    const cores = { db_estruturas: '#3498db', db_correcoes: '#f39c12', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
-    
-    let modoEdicao = false;
-    let ctx = { banco: '', id: '' };
-    let cachePeca = ""; 
-    let textoConsultado = "";
-
-    function montarExames() {
-        const container = document.getElementById('lista-exames');
-        for (let i = 35; i <= 44; i++) {
-            const btn = document.createElement('button');
-            btn.className = 'exame-btn'; btn.innerText = `EXAME OAB XXX${i}`;
-            btn.onclick = () => carregarExame(i);
-            container.appendChild(btn);
-        }
+        const row = document.createElement('div');
+        row.className = 'linha-wrapper';
+        const input = document.createElement('input');
+        input.className = 'linha-folha';
+        input.id = `L${i}`;
+        input.setAttribute('spellcheck', 'false');
+        input.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } };
+        input.onfocus = () => { ultimaLinhaFocada = i; };
+        row.innerHTML = `<div class="linha-num">${i}</div>`;
+        row.appendChild(input);
+        container.appendChild(row);
     }
+    // Aqui ele busca os dados E já roda o scanner logo em seguida
+    carregarDados();
+};
 
-    function carregarExame(num) {
-        document.getElementById('v-enu').src = `./ro${num}.pdf`;
-        document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf`;
-        document.getElementById('label-exame').innerText = `📍 EXAME OAB XXX${num}`;
+// --- MODAL DE EXAMES ATUALIZADO (LOCALIZAÇÃO DIRETA) ---
+window.abrirModalExames = () => {
+    const content = document.getElementById('modal-content');
+    content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">SELECIONAR EXAME</h2>`;
+    const grid = document.createElement('div'); 
+    grid.style.display="grid"; 
+    grid.style.gridTemplateColumns="1fr 1fr"; 
+    grid.style.gap="10px";
+
+    for(let i=44; i>=35; i--) {
+        const b = document.createElement('div'); 
+        b.className='opt-btn'; 
+        b.innerText=`Exame ${i}`;
+        b.onclick = () => { 
+            activeEx = i.toString(); 
+            localStorage.setItem('activeEx', activeEx); 
+            
+            // 1. Monta a folha limpa
+            montarFolha(); 
+            
+            // 2. Força o scanner a ler o banco de espelhos do novo exame imediatamente
+            escaneamentoElite(); 
+            
+            fecharModal(); 
+        };
+        grid.appendChild(b);
     }
-
-    // AJUSTE NA INJEÇÃO: AGORA PULA LINHA AUTOMATICAMENTE
-    function inserirNoEditor() { 
-        if(modoEdicao) return;
-        const editor = document.getElementById('area-peca');
-        const valorOriginal = editor.value;
-        const separador = (valorOriginal && !valorOriginal.endsWith('\n')) ? "\n\n" : "";
-        editor.value = valorOriginal + separador + textoConsultado + "\n"; 
-        fecharConsulta(); 
-        editor.focus();
-    }
-
-    // SUAS FUNÇÕES ORIGINAIS PRESERVADAS
-    function renderizarTudo() { bancos.forEach(banco => { const db = JSON.parse(localStorage.getItem(banco)) || {}; const container = document.getElementById('list-' + banco); container.innerHTML = Object.keys(db).map(id => `<div class="menu-item"><span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span><span onclick="event.stopPropagation(); entrarModoEdicao('${banco}', '${id}')">✏️</span><span onclick="event.stopPropagation(); excluirItem('${banco}', '${id}')" style="margin-left:8px">🗑️</span></div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="entrarModoEdicao('${banco}', 'novo')">+ NOVO</button>`; }); const mural = document.getElementById('mural-content'); mural.innerHTML = ""; ['db_postits', 'db_dicas'].forEach(b => { const db = JSON.parse(localStorage.getItem(b)) || {}; Object.values(db).forEach(item => { const cor = b === 'db_postits' ? 'var(--yellow)' : 'var(--purple)'; mural.innerHTML += `<div class="sticky-note" style="border-color:${cor}"><b>${item.nome}</b><br>${item.texto.substring(0,40)}...</div>`; }); }); }
-    function excluirItem(banco, id) { if(confirm("Excluir?")) { let db = JSON.parse(localStorage.getItem(banco)); delete db[id]; localStorage.setItem(banco, JSON.stringify(db)); renderizarTudo(); } }
-    function entrarModoEdicao(banco, id) { if(modoEdicao) return; const db = JSON.parse(localStorage.getItem(banco)) || {}; cachePeca = document.getElementById('area-peca').value; ctx = { banco, id }; modoEdicao = true; const item = id === 'novo' ? { nome: "NOME", texto: "CONTEUDO" } : db[id]; document.getElementById('area-peca').value = `${item.nome}\n---\n${item.texto}`; document.getElementById('nome-item-editando').innerText = item.nome; document.getElementById('aviso-edicao').style.display = "block"; }
-    function salvarAlteracoes() { let db = JSON.parse(localStorage.getItem(ctx.banco)) || {}; const conteudo = document.getElementById('area-peca').value.split('\n---\n'); const id = ctx.id === 'novo' ? 'ID'+Date.now() : ctx.id; db[id] = { nome: conteudo[0].trim(), texto: conteudo[1] || "" }; localStorage.setItem(ctx.banco, JSON.stringify(db)); finalizarEdicao(); }
-    function finalizarEdicao() { modoEdicao = false; document.getElementById('area-peca').value = cachePeca; document.getElementById('aviso-edicao').style.display = "none"; renderizarTudo(); }
-    function cancelarEdicao() { finalizarEdicao(); }
-    function abrirConsulta(banco, id) { const db = JSON.parse(localStorage.getItem(banco)); textoConsultado = db[id].texto; document.getElementById('titulo-consulta').innerText = db[id].nome; document.getElementById('corpo-consulta').innerText = db[id].texto; document.getElementById('header-consulta').style.backgroundColor = cores[banco]; document.getElementById('janela-consulta').style.display = 'flex'; }
-    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
-    function expandir(id) { const el = document.getElementById(id); if (el.requestFullscreen) el.requestFullscreen(); }
-    function fazerBackup() { const dados = {}; bancos.forEach(b => dados[b] = JSON.parse(localStorage.getItem(b))); const blob = new Blob([JSON.stringify(dados)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_OAB.json`; a.click(); }
-    function exportarTXT() { const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "MinhaPeca.txt"; a.click(); }
-
-    window.onload = () => {
-        montarExames(); renderizarTudo();
-        let s = 18000; setInterval(() => {
-            let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
-            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
-            s--;
-        }, 1000);
-    };
-</script>
-</body>
-</html>
+    content.appendChild(grid);
+    document.getElementById('universal-modal').style.display='flex';
+};
