@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JOAQUIM ELITE - LOGIC SCANNER</title>
-    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -23,12 +22,11 @@
         .nav-group { display: flex; gap: 8px; align-items: center; }
         
         .btn-ref { height: 40px; min-width: 40px; padding: 0 10px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-        .btn-ref.active { background: var(--gold); color: var(--primary); }
         .btn-pdf-trigger { background: var(--gold); color: #000; display: none; border: 2px solid #000; }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* SIDEBAR DE EXAMES - SEM OBSTRUÇÃO */
+        /* SIDEBAR DE EXAMES */
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
         #radar-peca { 
             background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold); 
@@ -41,7 +39,7 @@
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        /* EDITOR E FOLHA */
+        /* EDITOR */
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; position: relative; }
         
@@ -54,28 +52,22 @@
             white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify;
         }
 
-        /* FERRAMENTAS FLUTUANTES */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
-        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         .bg-save { background: #22c55e; }
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
-        /* PAINEL PDF LATERAL */
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
         .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
 
-        /* IMPRESSÃO BLINDADA */
         @media print {
             header, .sidebar, .paper-tools, .pdf-panel { display: none !important; }
-            body { background: white !important; overflow: visible !important; }
-            main, .editor-container { display: block !important; padding: 0 !important; overflow: visible !important; }
-            .paper { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 0 !important; }
-            .editor-area { background-image: repeating-linear-gradient(#fff, #fff 29px, #ccc 29px, #ccc 30px) !important; color: #000 !important; }
+            body { background: white !important; }
+            main, .editor-container { display: block !important; padding: 0 !important; }
+            .paper { box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; }
         }
-
-        @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
     </style>
 </head>
 <body class="dark-mode">
@@ -148,11 +140,8 @@
         const params = new URLSearchParams(window.location.search);
         const exParam = params.get('exame');
         if (exParam) activeEx = exParam;
-        
         initNav();
         carregarDados();
-
-        // LOGICA BLINDADA: Se vier da mentoria, o botão de PDF aparece no Header sem cobrir nada
         if (params.get('view') === 'pdf') {
             document.getElementById('btn-gerar-pdf').style.display = 'flex';
             document.getElementById('label-ex-pdf').innerText = activeEx;
@@ -178,18 +167,24 @@
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
 
-        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        // INJEÇÃO DA LÓGICA DE NOMES OFICIAIS DAS ESTRUTURAS NO RADAR
+        const espelhoTexto = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
-        const DIC = [
-            { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO", cor: "#2563eb" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO", cor: "#dc2626" },
-            { id: "RECLAMAÇÃO TRABALHISTA", display: "RECLAMAÇÃO", cor: "#16a34a" },
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO", cor: "#9333ea" }
-        ];
-        let d = DIC.find(i => txt.includes(i.id));
-        if(d) {
-            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.6rem">${d.display}</span>`;
-            radar.style.background = d.cor;
+        
+        // Mapeia os nomes das peças vindos do arquivo de estruturas (pecas)
+        // Se a estrutura não carregar a tempo, usamos os termos técnicos da FGV
+        let pecaDetectada = null;
+
+        // Itera sobre as chaves do objeto 'pecas' (que contém os nomes oficiais das estruturas)
+        Object.keys(pecas).forEach(nomePeca => {
+            if (espelhoTexto.includes(nomePeca.toUpperCase())) {
+                pecaDetectada = nomePeca;
+            }
+        });
+
+        if(pecaDetectada) {
+            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.55rem; line-height:1">${pecaDetectada.toUpperCase()}</span>`;
+            radar.style.background = "#16a34a"; // Verde para detectado
             radar.classList.add('detectado');
         } else {
             radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
@@ -215,8 +210,7 @@
         document.getElementById('pdf-panel').classList.add('open');
     };
 
-    window.resetarFolha = () => { if(confirm("Apagar dados permanentemente?")) { remove(ref(db, `estudos/${activeEx}`)); location.reload(); } };
-
+    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { remove(ref(db, `estudos/${activeEx}`)); location.reload(); } };
     ids.forEach(id => document.getElementById(id).addEventListener('input', salvarTudo));
 </script>
 </body>
