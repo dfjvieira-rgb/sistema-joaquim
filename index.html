@@ -1,185 +1,54 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>JOAQUIM ELITE 2026 - ESTÁVEL</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+const montarFolha = () => {
+    const container = document.getElementById('folha-total');
+    container.innerHTML = "";
     
-    <script src="banco-espelhos.js"></script>
-    <script src="estruturas.js"></script>
-
-    <style>
-        :root { --primary: #020617; --gold: #fbbf24; --bg-paper: #0f172a; --paper-color: #ffffff; --sidebar-w: 85px; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { height: 60px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); background: #020617; color: white; }
-        main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 6px; padding: 8px; border-right: 1px solid #334155; }
-        #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 75px; color: white; }
-        .btn-side { width: 100%; height: 48px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; }
-        .editor-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; background: var(--bg-paper); }
-        .paper { background: white; width: 100%; max-width: 850px; min-height: 1200px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .linha-wrapper { display: flex; border-bottom: 1px solid #eee; height: 32px; }
-        .linha-num { width: 40px; font-size: 0.7rem; color: #999; display: flex; align-items: center; justify-content: center; border-right: 1px solid #eee; }
-        .linha-folha { flex: 1; border: none; outline: none; padding: 0 10px; font-size: 18px; font-family: 'Courier New', monospace; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-body { background: white; padding: 20px; border-radius: 15px; width: 350px; color: black; }
-        .opt-btn { width: 100%; padding: 12px; margin: 4px 0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; background: #f8fafc; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div style="font-weight:900">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
-    <div style="display:flex; gap:8px;">
-        <button onclick="location.reload()" style="background:none; border:1px solid var(--gold); color:white; padding:5px; border-radius:4px; cursor:pointer;"><i class="fas fa-sync"></i></button>
-        <button onclick="resetar()" style="background:red; border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-    </div>
-</header>
-
-<main>
-    <aside class="sidebar">
-        <div id="radar-container">
-            <div id="radar-status" style="font-size: 0.6rem; font-weight: 900;">RADAR<br><span style="opacity:0.5">VARRENDO...</span></div>
-        </div>
-        <button class="btn-side" style="background:#f97316" onclick="alert('PDF Peça')">P</button>
-        <button class="btn-side" style="background:#eab308" onclick="alert('PDF Gabarito')">G</button>
-        <button class="btn-side" style="background:#10b981" onclick="alert('Vade Mecum')">V</button>
-        <button class="btn-side" style="background:var(--gold); color:black" onclick="abrirExames()"><i class="fas fa-bullseye"></i></button>
-        <button class="btn-side" style="background:#3b82f6" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" style="background:#0ea5e9" onclick="salvarLocal()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" style="background:#334155" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" style="background:#a855f7" onclick="alert('IA Joaquim Ativa')"><i class="fas fa-robot"></i></button>
-        <button class="btn-side" style="background:#10b981" onclick="window.print()"><i class="fas fa-print"></i></button>
-    </aside>
-
-    <section class="editor-container">
-        <div class="paper" id="folha-total"></div>
-    </section>
-</main>
-
-<div id="modal-container" class="modal">
-    <div class="modal-body">
-        <h3 id="modal-titulo" style="margin-bottom:15px; border-bottom:2px solid var(--gold)"></h3>
-        <div id="modal-lista" style="max-height: 300px; overflow-y: auto;"></div>
-        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:10px; background:black; color:white; border-radius:8px; cursor:pointer;">FECHAR</button>
-    </div>
-</div>
-
-<script>
-    // VARIAVEIS GLOBAIS
-    var activeEx = localStorage.getItem('activeEx') || "44";
-    var ultimaLinha = 1;
-
-    // 1. CRIAR FOLHA (Sem erro de modulo)
-    function criarFolha() {
-        var f = document.getElementById('folha-total');
-        f.innerHTML = '';
-        for(var i=1; i<=150; i++) {
-            var w = document.createElement('div');
-            w.className = 'linha-wrapper';
-            w.innerHTML = '<div class="linha-num">'+i+'</div><input class="linha-folha" id="L'+i+'" maxlength="85">';
-            f.appendChild(w);
+    for(let i=1; i<=180; i++) {
+        if(i === 1 || i === 51) {
+            const h = document.createElement('div');
+            h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
+            h.innerText = i === 1 ? 'CADERNO DE RESPOSTAS - PEÇA' : 'CADERNO DE RESPOSTAS - QUESTÕES';
+            container.appendChild(h);
         }
-        // Listener de foco
-        document.querySelectorAll('.linha-folha').forEach(function(el, index) {
-            el.onfocus = function() { ultimaLinha = index + 1; };
-        });
-        carregarLocal();
-        atualizarRadar();
+        const row = document.createElement('div');
+        row.className = 'linha-wrapper';
+        const input = document.createElement('input');
+        input.className = 'linha-folha';
+        input.id = `L${i}`;
+        input.setAttribute('spellcheck', 'false');
+        input.setAttribute('maxlength', LIMITE_LINHA);
+
+        // --- LÓGICA DE APAGAR AO ARRASTAR (MOUSEOVER) ---
+        input.onmouseover = (e) => {
+            // Se o botão esquerdo do mouse estiver pressionado E a tecla Shift estiver segurada
+            if (e.buttons === 1 && e.shiftKey) {
+                input.value = "";
+                input.classList.add('apagando');
+                setTimeout(() => input.classList.remove('apagando'), 300);
+            }
+        };
+
+        // AUTO-PULO AO DIGITAR
+        input.oninput = () => {
+            if (input.value.length >= LIMITE_LINHA) {
+                document.getElementById(`L${i + 1}`)?.focus();
+            }
+        };
+
+        // CONTROLE DE TECLAS
+        input.onkeydown = (e) => { 
+            if (e.key === "Enter") { 
+                e.preventDefault(); 
+                document.getElementById(`L${i + 1}`)?.focus(); 
+            } 
+            if (e.key === "Backspace" && input.value.length === 0) {
+                document.getElementById(`L${i - 1}`)?.focus();
+            }
+        };
+
+        input.onfocus = () => { ultimaLinhaFocada = i; };
+        row.innerHTML = `<div class="linha-num">${i}</div>`;
+        row.appendChild(input);
+        container.appendChild(row);
     }
-
-    // 2. RADAR PRO
-    function atualizarRadar() {
-        var status = document.getElementById('radar-status');
-        var container = document.getElementById('radar-container');
-        
-        if (typeof BANCO_ESPELHOS === 'undefined') {
-            status.innerHTML = "RADAR<br>ERRO ARQUIVO"; return;
-        }
-
-        var txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        var cor = "#fbbf24"; var nome = "VARRENDO...";
-
-        if(txt.includes("ORDINÁRIO")) { cor = "#3b82f6"; nome = "REC. ORDINÁRIO"; }
-        else if(txt.includes("CONTESTAÇÃO")) { cor = "#22c55e"; nome = "CONTESTAÇÃO"; }
-        else if(txt.includes("RECLAMAÇÃO")) { cor = "#a855f7"; nome = "RECLAMATÓRIA"; }
-
-        status.innerHTML = '<span style="color:'+cor+'">RADAR</span><br><span style="font-size:0.55rem">'+nome+'</span>';
-        container.style.borderColor = cor;
-    }
-
-    // 3. SELETOR DE EXAMES (GRID)
-    function abrirExames() {
-        var lista = document.getElementById('modal-lista');
-        document.getElementById('modal-titulo').innerText = "SELECIONAR MISSÃO";
-        lista.innerHTML = '';
-        var grid = document.createElement('div');
-        grid.style.display = 'grid'; grid.style.gridTemplateColumns = '1fr 1fr 1fr'; grid.style.gap = '8px';
-
-        for(var i=44; i>=35; i--) {
-            (function(n){
-                var b = document.createElement('div');
-                b.className = 'opt-btn'; b.style.textAlign = 'center';
-                b.innerText = 'E'+n;
-                b.onclick = function() { activeEx = n.toString(); localStorage.setItem('activeEx', n); criarFolha(); fecharModal(); };
-                grid.appendChild(b);
-            })(i);
-        }
-        lista.appendChild(grid);
-        document.getElementById('modal-container').style.display = 'flex';
-    }
-
-    // 4. ESTRUTURAS (PEÇAS)
-    function abrirPecas() {
-        var lista = document.getElementById('modal-lista');
-        document.getElementById('modal-titulo').innerText = "ESTRUTURAS (SCROLL)";
-        lista.innerHTML = '';
-        if (typeof pecas === 'undefined') { alert("Arquivo estruturas.js não achado"); return; }
-        Object.keys(pecas).forEach(function(k) {
-            var b = document.createElement('button');
-            b.className = 'opt-btn'; b.innerText = k.toUpperCase();
-            b.onclick = function() {
-                var linhas = pecas[k].split('\n');
-                linhas.forEach(function(t, idx) {
-                    var input = document.getElementById('L' + (ultimaLinha + idx));
-                    if(input) input.value = t.trim();
-                });
-                fecharModal();
-            };
-            lista.appendChild(b);
-        });
-        document.getElementById('modal-container').style.display = 'flex';
-    }
-
-    // 5. AUXILIARES
-    function fecharModal() { document.getElementById('modal-container').style.display = 'none'; }
-    function salvarLocal() {
-        var dados = [];
-        document.querySelectorAll('.linha-folha').forEach(function(i) { dados.push(i.value); });
-        localStorage.setItem('rascunho_'+activeEx, JSON.stringify(dados));
-        alert("Salvo Localmente!");
-    }
-    function carregarLocal() {
-        var d = localStorage.getItem('rascunho_'+activeEx);
-        if(d) {
-            var dados = JSON.parse(d);
-            document.querySelectorAll('.linha-folha').forEach(function(input, i) { input.value = dados[i] || ''; });
-        }
-    }
-    function resetar() { if(confirm("Limpar?")) { document.querySelectorAll('.linha-folha').forEach(function(i){i.value='';}); localStorage.removeItem('rascunho_'+activeEx); } }
-    
-    function injetarEspelho() {
-        if(typeof BANCO_ESPELHOS === 'undefined') return;
-        var t = BANCO_ESPELHOS[activeEx];
-        if(!t) return;
-        t.split('\n').slice(0, 20).forEach(function(f, i) {
-            var input = document.getElementById('L' + (ultimaLinha + i));
-            if(input) input.value = "➤ " + f.trim().substring(0, 80);
-        });
-    }
-
-    window.onload = criarFolha;
-</script>
-</body>
-</html>
+    carregarDados();
+};
