@@ -61,6 +61,14 @@
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
+
+        /* PRINT SETTINGS */
+        @media print {
+            header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; }
+            .editor-container { padding: 0; background: white; overflow: visible; }
+            .paper { box-shadow: none; max-width: 100%; width: 100%; margin: 0; }
+            body { overflow: visible; height: auto; }
+        }
     </style>
 </head>
 <body>
@@ -91,6 +99,8 @@
         <button class="btn-side" style="background:#f97316;" onclick="abrirSplitPdf('p')"><b>P</b></button>
         <button class="btn-side" style="background:#eab308;" onclick="abrirSplitPdf('g')"><b>G</b></button>
         <button class="btn-side" style="background:#10b981;" onclick="abrirSplitPdf('v')"><b>V</b></button>
+        
+        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
         
         <button class="btn-side" style="background:#475569;" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
         <button class="btn-side" style="background:#475569;" onclick="irPara(51)"><i class="fas fa-chevron-down"></i></button>
@@ -125,9 +135,8 @@
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
     let mentoriaJanelaRef = null;
-    const LIMITE_LINHA = 85; // Limite de caracteres FGV
+    const LIMITE_LINHA = 85; 
 
-    // --- SCANNER RADAR ---
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
@@ -159,7 +168,6 @@
         }
     };
 
-    // --- MONTAGEM DA FOLHA COM AUTO-PULO ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -178,14 +186,12 @@
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
 
-            // AUTO-PULO AO DIGITAR
             input.oninput = () => {
                 if (input.value.length >= LIMITE_LINHA) {
                     document.getElementById(`L${i + 1}`)?.focus();
                 }
             };
 
-            // CONTROLE DE TECLAS
             input.onkeydown = (e) => { 
                 if (e.key === "Enter") { 
                     e.preventDefault(); 
@@ -217,7 +223,6 @@
         }, { onlyOnce: true });
     };
 
-    // --- MENTORIA EXTERNA ---
     window.abrirMentoria = () => {
         const width = 500;
         const height = window.screen.height;
@@ -230,7 +235,6 @@
         }
     };
 
-    // --- EXAMES E AÇÕES ---
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
         content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
