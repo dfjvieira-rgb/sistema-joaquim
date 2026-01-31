@@ -39,7 +39,7 @@
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
 
-        /* EDITOR */
+        /* EDITOR E FOLHA */
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; position: relative; }
         
@@ -52,8 +52,9 @@
             white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify;
         }
 
+        /* TODOS OS TRIPULANTES NO POSTO (BOTÕES FLUTUANTES) */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
-        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
         .bg-save { background: #22c55e; }
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
@@ -80,13 +81,11 @@
             <i class="fas fa-file-pdf"></i> &nbsp;GERAR PDF E<span id="label-ex-pdf"></span>
         </button>
     </div>
-    
     <div class="nav-group">
         <button class="btn-ref" onclick="togglePdf('p')">P</button>
         <button class="btn-ref" onclick="togglePdf('g')">G</button>
         <button class="btn-ref" onclick="togglePdf('v')">V</button>
     </div>
-
     <div class="nav-group">
         <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
         <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
@@ -95,36 +94,27 @@
 
 <main>
     <aside class="sidebar" id="exam-nav"></aside>
-
     <section class="editor-container">
         <div class="paper">
-            <div id="radar-peca">
-                <span>SCANNER</span><span class="radar-blink">VARRENDO...</span>
-            </div>
-            
+            <div id="radar-peca"><span>SCANNER</span><span class="radar-blink">VARRENDO...</span></div>
             <div class="fgv-title">Peça Profissional</div>
             <div id="editor-peca" class="editor-area" contenteditable="true"></div>
-
             <div class="fgv-title">Questão 1</div>
             <span class="q-label">ITEM A)</span><div id="q1a" class="editor-area" contenteditable="true"></div>
             <span class="q-label">ITEM B)</span><div id="q1b" class="editor-area" contenteditable="true"></div>
-
             <div class="fgv-title">Questão 2</div>
             <span class="q-label">ITEM A)</span><div id="q2a" class="editor-area" contenteditable="true"></div>
             <span class="q-label">ITEM B)</span><div id="q2b" class="editor-area" contenteditable="true"></div>
         </div>
 
         <div class="paper-tools">
-            <div class="btn-float bg-save" onclick="salvarTudo()"><i class="fas fa-save"></i></div>
-            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-save" onclick="salvarTudo()" title="Salvar"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-scroll" onclick="abrirEstruturas()" title="Estruturas"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float bg-justica" onclick="injetarEspelho()" title="Injetar Espelho"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-rocket" onclick="lancarPeca()" title="Lançar Peça"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
-
-    <div class="pdf-panel" id="pdf-panel">
-        <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
-    </div>
+    <div class="pdf-panel" id="pdf-panel"><iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe></div>
 </main>
 
 <script type="module">
@@ -140,8 +130,7 @@
         const params = new URLSearchParams(window.location.search);
         const exParam = params.get('exame');
         if (exParam) activeEx = exParam;
-        initNav();
-        carregarDados();
+        initNav(); carregarDados();
         if (params.get('view') === 'pdf') {
             document.getElementById('btn-gerar-pdf').style.display = 'flex';
             document.getElementById('label-ex-pdf').innerText = activeEx;
@@ -167,31 +156,39 @@
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
 
-        // INJEÇÃO DA LÓGICA DE NOMES OFICIAIS DAS ESTRUTURAS NO RADAR
         const espelhoTexto = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
-        
-        // Mapeia os nomes das peças vindos do arquivo de estruturas (pecas)
-        // Se a estrutura não carregar a tempo, usamos os termos técnicos da FGV
         let pecaDetectada = null;
-
-        // Itera sobre as chaves do objeto 'pecas' (que contém os nomes oficiais das estruturas)
         Object.keys(pecas).forEach(nomePeca => {
-            if (espelhoTexto.includes(nomePeca.toUpperCase())) {
-                pecaDetectada = nomePeca;
-            }
+            if (espelhoTexto.includes(nomePeca.toUpperCase())) pecaDetectada = nomePeca;
         });
 
         if(pecaDetectada) {
             radar.innerHTML = `<span>RADAR</span><span style="font-size:0.55rem; line-height:1">${pecaDetectada.toUpperCase()}</span>`;
-            radar.style.background = "#16a34a"; // Verde para detectado
+            radar.style.background = "#16a34a";
             radar.classList.add('detectado');
         } else {
             radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
-            radar.style.background = "#000";
-            radar.classList.remove('detectado');
+            radar.style.background = "#000"; radar.classList.remove('detectado');
         }
     };
+
+    window.abrirEstruturas = () => {
+        // Localiza a estrutura no objeto 'pecas' baseado na detecção do Radar
+        const radarText = document.getElementById('radar-peca').innerText;
+        alert("Acessando Estrutura: " + radarText);
+        // Aqui você pode implementar o modal ou redirecionamento para o arquivo de estruturas
+    };
+
+    window.injetarEspelho = () => {
+        const espelho = BANCO_ESPELHOS[activeEx];
+        if(espelho) {
+            document.getElementById('editor-peca').innerText = espelho;
+            salvarTudo();
+        } else { alert("Espelho não encontrado para este exame."); }
+    };
+
+    window.lancarPeca = () => { alert("Peça E" + activeEx + " lançada para o sistema de Mentoria."); };
 
     window.initNav = () => {
         const nav = document.getElementById('exam-nav');
