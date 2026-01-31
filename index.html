@@ -99,11 +99,22 @@
     let mentoriaJanelaRef = null;
     const LIMITE_LINHA = 85;
 
+    // MELHORIA 1: Scanner que lê diretamente a folha e o banco
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
-        const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        
+        // Lê o que está escrito nas primeiras 10 linhas da folha
+        let textoPresente = "";
+        for(let i=1; i<=10; i++){
+            textoPresente += (document.getElementById(`L${i}`)?.value || "").toUpperCase();
+        }
+        
+        // Se a folha estiver vazia, tenta ler do banco de espelhos como backup
+        if(textoPresente.trim().length < 5){
+            textoPresente = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        }
 
         const DICIONARIO = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
@@ -112,7 +123,7 @@
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
+        let encontrado = DICIONARIO.find(p => textoPresente.includes(p.id));
 
         if (encontrado) {
             sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
@@ -124,7 +135,7 @@
         } else {
             sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`;
             boxSidebar.style.borderColor = "var(--gold)";
-            topoFolha.innerText = "CADERNO DE RESPOSTAS";
+            topoFolha.innerText = "CADERNO DE RESPOSTAS (EXAME " + activeEx + ")";
             topoFolha.style.color = "#64748b";
             topoFolha.style.borderBottomColor = "var(--line-color)";
         }
@@ -147,7 +158,10 @@
             input.id = `L${i}`;
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
-            input.oninput = () => { if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); };
+            input.oninput = () => { 
+                if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); 
+                escaneamentoElite(); // Atualiza título enquanto digita
+            };
             input.onkeydown = (e) => { 
                 if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
                 if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
@@ -160,6 +174,7 @@
         carregarDados();
     };
 
+    // MELHORIA 2: Carregamento com Delay para garantir atualização do título
     const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
@@ -170,21 +185,28 @@
                     if (el) el.value = txt;
                 });
             }
-            escaneamentoElite();
+            // Delay de 200ms para o navegador processar o texto antes do Scanner ler
+            setTimeout(escaneamentoElite, 200);
         }, { onlyOnce: true });
     };
 
+    // MELHORIA 3: Envio com recarregamento forçado da Mentoria
     window.concluirEEnviarAoRobo = () => {
         const dataH = new Date().toLocaleDateString('pt-BR');
         const horaH = new Date().toLocaleTimeString('pt-BR');
         if(!confirm(`Arquivar Exame ${activeEx} no Cofre hoje (${dataH})?`)) return;
+        
         push(ref(db, 'mentoria/historico'), {
             exame: activeEx,
             data: `${dataH}, ${horaH}`,
             ts: Date.now()
         }).then(() => {
-            alert("🚀 ENVIADO!");
-            abrirMentoria();
+            alert("🚀 ENVIADO COM SUCESSO!");
+            if (mentoriaJanelaRef && !mentoriaJanelaRef.closed) {
+                mentoriaJanelaRef.location.reload();
+            } else {
+                abrirMentoria();
+            }
         });
     };
 
@@ -208,7 +230,10 @@
 
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => {
+            alert("☁️ SALVO!");
+            escaneamentoElite();
+        });
     };
 
     window.abrirModalPecas = () => {
@@ -249,7 +274,7 @@
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
     
-    window.onload = () => { montarFolha(); escaneamentoElite(); };
+    window.onload = () => { montarFolha(); };
     Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, abrirMentoria, concluirEEnviarAoRobo });
 </script>
 </body>
