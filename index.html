@@ -163,8 +163,14 @@
     let ultimaLinhaFocada = 1;
     const LIMITE_LINHA = 85;
 
+    // --- AJUSTE ELITE: SCANNER REFINADO ---
     const escaneamentoElite = () => {
-        const fullText = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value).join(' ').toUpperCase();
+        const fullText = Array.from(document.querySelectorAll('.linha-folha'))
+            .map(i => i.value)
+            .join(' ')
+            .toUpperCase()
+            .replace(/\s+/g, ' '); // Normaliza múltiplos espaços
+
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
@@ -173,7 +179,8 @@
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" },
+            { id: "RECLAMATÓRIA", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
         let encontrado = DICIONARIO.find(p => fullText.includes(p.id));
@@ -297,7 +304,7 @@
                     if(el) el.value = t.substring(0, LIMITE_LINHA);
                 });
                 fecharModal();
-                escaneamentoElite();
+                escaneamentoElite(); // Força o scanner após injetar peça
             };
             content.appendChild(b);
         });
@@ -311,7 +318,7 @@
             const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
             if(el) el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2);
         });
-        escaneamentoElite();
+        escaneamentoElite(); // Força o scanner após injetar espelho
     };
 
     window.abrirSplitPdf = (t) => {
