@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE - LOGIC SCANNER</title>
+    <title>JOAQUIM ELITE - BANCO DE INTELIGÊNCIA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -25,7 +25,7 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
-       
+        
         #radar-peca {
             background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold);
             font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -38,7 +38,7 @@
 
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; position: relative; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; margin: 0 auto; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; position: relative; }
-       
+        
         .fgv-title { background: #000; color: #fff; padding: 5px 15px; font-weight: bold; margin: 30px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; border-left: 5px solid var(--gold); }
         .editor-area { outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif; background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px); white-space: pre-wrap; min-height: 150px; margin-bottom: 20px; text-align: justify; }
 
@@ -54,16 +54,14 @@
 
 <header>
     <div class="nav-group">
-        <button class="btn-ref" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-ref" style="background:var(--gold); color:black; border:none;"><i class="fas fa-trophy"></i></button>
         <button class="btn-ref" onclick="toggleTheme()"><i class="fas fa-sun"></i></button>
     </div>
+    <div style="color:white; font-weight:900; letter-spacing:1px;">BANCO DE <span style="color:var(--gold)">TESES</span></div>
     <div class="nav-group">
         <button class="btn-ref" onclick="togglePdf('p')">P</button>
         <button class="btn-ref" onclick="togglePdf('g')">G</button>
-    </div>
-    <div class="nav-group">
-        <a href="mentoria.html" class="btn-ref" style="background:#a855f7; border:none; color:white;"><i class="fas fa-brain"></i></a>
-        <button class="btn-ref" style="background:#ef4444; border:none; color:white;" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+        <button class="btn-ref" style="background:#a855f7; border:none; color:white;" onclick="window.location.href='index.html'"><i class="fas fa-robot"></i></button>
     </div>
 </header>
 
@@ -72,9 +70,9 @@
     <section class="editor-container">
         <div class="paper" id="area-impressao">
             <div id="radar-peca"><span>RADAR</span><span class="radar-blink">VARRENDO...</span></div>
-            <div class="fgv-title">Peça Profissional - Exame E<span class="ex-num">41</span></div>
-            <div id="editor-peca" class="editor-area" contenteditable="true"></div>
-            <div class="fgv-title">Questões Discursivas</div>
+            <div class="fgv-title">Mapeamento de Teses - Exame E<span class="ex-num">41</span></div>
+            <div id="editor-peca" class="editor-area" contenteditable="true" placeholder="Anote aqui a estrutura lógica da peça..."></div>
+            <div class="fgv-title">Notas de Questões Discursivas</div>
             <div id="q1a" class="editor-area" contenteditable="true"></div>
             <div id="q2a" class="editor-area" contenteditable="true"></div>
         </div>
@@ -94,18 +92,17 @@
     import { ref, set, onValue, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
-    let activeEx = "41";
+    // Sincroniza o exame com o que foi escolhido no Cockpit
+    let activeEx = localStorage.getItem('activeEx') || "41";
     const ids = ['editor-peca', 'q1a', 'q2a'];
 
-    // --- FUNÇÕES GLOBAIS ---
-    window.toggleTheme = () => {
-        document.body.classList.toggle('dark-mode');
-    };
+    window.toggleTheme = () => { document.body.classList.toggle('dark-mode'); };
 
     window.salvarTudo = () => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
-        set(ref(db, `estudos/${activeEx}`), {
+        // Salvamos em um caminho diferente (mentoria_estudos) para não sobrepor o simulador
+        set(ref(db, `mentoria_estudos/${activeEx}`), {
             ...data,
             ts: serverTimestamp()
         });
@@ -114,17 +111,9 @@
     window.gerarDocumento = () => {
         const elemento = document.getElementById('area-impressao');
         const dataFmt = new Date().toLocaleString('pt-BR');
-       
-        // Salva no histórico da Mentoria (O Disquete)
-        push(ref(db, 'mentoria/historico'), {
-            exame: activeEx,
-            data: dataFmt,
-            ts: serverTimestamp()
-        });
-
         html2pdf().set({
             margin: 10,
-            filename: `OAB_E${activeEx}_Simulado.pdf`,
+            filename: `TESES_E${activeEx}.pdf`,
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(elemento).save();
@@ -139,7 +128,7 @@
     };
 
     window.resetarFolha = () => {
-        if(confirm("Limpar hangar?")) {
+        if(confirm("Limpar notas de mentoria?")) {
             ids.forEach(id => document.getElementById(id).innerText = "");
             window.salvarTudo();
         }
@@ -147,12 +136,11 @@
 
     const carregarDados = () => {
         document.querySelectorAll('.ex-num').forEach(el => el.innerText = activeEx);
-        onValue(ref(db, `estudos/${activeEx}`), (s) => {
+        onValue(ref(db, `mentoria_estudos/${activeEx}`), (s) => {
             const d = s.val();
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
 
-        // Radar de Peça
         const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
         if(txt.includes("CONTESTAÇÃO")) {
@@ -172,12 +160,16 @@
             const b = document.createElement('div');
             b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
             b.innerText = `E${i}`;
-            b.onclick = () => { activeEx = i.toString(); initNav(); carregarDados(); };
+            b.onclick = () => { 
+                activeEx = i.toString(); 
+                localStorage.setItem('activeEx', activeEx);
+                initNav(); 
+                carregarDados(); 
+            };
             nav.appendChild(b);
         }
     };
 
-    // Inicialização segura
     document.addEventListener('DOMContentLoaded', () => {
         initNav();
         carregarDados();
@@ -188,4 +180,4 @@
     });
 </script>
 </body>
-</html> 
+</html>
