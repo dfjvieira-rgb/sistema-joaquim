@@ -134,19 +134,25 @@
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
 
+    // FUNÇÕES TORNADAS GLOBAIS PARA FUNCIONAREM NOS BOTÕES
     window.visualizarPeca = async (idEnvio) => {
-        const snap = await get(ref(db, `${paths.pdf}/${idEnvio}`));
-        const data = snap.val();
-        if(!data || !data.linhas) return alert("Conteúdo textual não encontrado.");
+        try {
+            const snap = await get(ref(db, `${paths.pdf}/${idEnvio}`));
+            const data = snap.val();
+            if(!data || !data.linhas) return alert("Conteúdo textual não encontrado.");
 
-        const visor = document.getElementById('visor-texto');
-        const textoFinal = data.linhas
-            .map((txt, i) => txt.trim() ? `${(i + 1).toString().padStart(3, '0')} | ${txt}` : null)
-            .filter(l => l !== null)
-            .join('\n');
+            const visor = document.getElementById('visor-texto');
+            const textoFinal = data.linhas
+                .map((txt, i) => txt && txt.trim() !== "" ? `${(i + 1).toString().padStart(3, '0')} | ${txt}` : null)
+                .filter(l => l !== null)
+                .join('\n');
 
-        visor.innerText = `FOLHA DE RESPOSTAS - EXAME OAB ${data.exame}\nDATA DE ENVIO: ${data.data}\n${'='.repeat(40)}\n\n${textoFinal || "Nenhum texto escrito."}`;
-        document.getElementById('modal-leitura').style.display = 'block';
+            visor.innerText = `FOLHA DE RESPOSTAS - EXAME OAB ${data.exame}\nDATA DE ENVIO: ${data.data}\n${'='.repeat(40)}\n\n${textoFinal || "Nenhum texto escrito."}`;
+            document.getElementById('modal-leitura').style.display = 'block';
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao carregar peça.");
+        }
     };
 
     window.toggleR = (btn) => {
@@ -164,12 +170,20 @@
         document.getElementById(`${type}-c`).value = '';
     };
 
-    window.excluir = (type, id) => { if(confirm("Apagar?")) remove(ref(db, `${paths[type]}/${id}`)); };
+    window.excluir = (type, id) => { 
+        if(confirm("Deseja apagar permanentemente?")) {
+            remove(ref(db, `${paths[type]}/${id}`)); 
+        }
+    };
 
+    // ESCUTA EM TEMPO REAL
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
+        
+        // Atualiza painéis de teses e flashcards
         ['pre', 'peca', 'nc', 'tese'].forEach(type => {
             const feed = document.getElementById(`feed-${type}`);
+            if(!feed) return;
             feed.innerHTML = "";
             const items = v[paths[type]] || {};
             Object.keys(items).reverse().forEach(id => {
@@ -184,27 +198,27 @@
             });
         });
 
+        // Atualiza Histórico de Simulados
         const feedPdf = document.getElementById('feed-pdf');
         feedPdf.innerHTML = "";
-        const hist = v[paths.pdf] || {};
-        Object.keys(hist).reverse().forEach(id => {
-            const item = hist[id];
-            feedPdf.innerHTML += `
-                <div class="card card-pdf">
-                    <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
-                    <div class="pdf-actions">
-                        <i class="fas fa-eye" title="Ver e Imprimir" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
-                        <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
-                    </div>
-                </div>`;
-        });
+        const hist = v['mentoria']?.['historico'] || {};
+        
+        if (Object.keys(hist).length === 0) {
+            feedPdf.innerHTML = '<p style="text-align:center; color:gray; grid-column: 1/-1;">Nenhum simulado enviado ainda.</p>';
+        } else {
+            Object.keys(hist).reverse().forEach(id => {
+                const item = hist[id];
+                feedPdf.innerHTML += `
+                    <div class="card card-pdf">
+                        <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data || 'Sem data'}</small></div>
+                        <div class="pdf-actions">
+                            <i class="fas fa-eye" title="Ver e Imprimir" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
+                            <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
+                        </div>
+                    </div>`;
+            });
+        }
     });
-
-    // ESTA É A ÚNICA ADIÇÃO NECESSÁRIA PARA O SEU CÓDIGO FUNCIONAR:
-    window.visualizarPeca = visualizarPeca;
-    window.toggleR = toggleR;
-    window.salvar = salvar;
-    window.excluir = excluir;
 </script>
 </body>
 </html>
