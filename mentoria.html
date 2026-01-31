@@ -3,42 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | COFRE</title>
+    <title>ARYANNA 2026 | CONSULTOR ELITE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #fbbf24; --primary: #1d4ed8; --bg: #f1f5f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .panel { background: #fff; border-radius: 12px; border: 2px solid #94a3b8; margin-bottom: 15px; }
-        .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid #94a3b8; font-weight: 800; text-align: center; font-size: 0.8rem; }
-        .card-pdf { 
-            border-left: 8px solid var(--gold); display: flex; justify-content: space-between; 
-            align-items: center; background: #fff; padding: 12px; margin: 10px;
-            border-radius: 8px; border: 1px solid #cbd5e1; border-left-width: 8px;
-        }
-        .btn-revisar { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .status-hoje { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-bottom: 5px; display: inline-block; }
-        #analise-box { display: none; background: #1e293b; color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 8px solid #3b82f6; }
-        .btn-voltar { border: 2px solid #000; background: white; font-weight: 800; padding: 5px 15px; cursor: pointer; border-radius: 5px; transition: 0.2s; }
-        .btn-voltar:hover { background: #000; color: #fff; }
+        :root { --gold: #fbbf24; --primary: #1d4ed8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        /* BOXES DE INTELIGÊNCIA */
+        .robo-box { background: #2563eb; padding: 15px; border-radius: 12px; margin: 15px 0; display: none; border: 1px solid #60a5fa; }
+        .alerta-tese { background: #7c3aed; color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: none; border-left: 5px solid var(--gold); }
+        .alerta-confunda { background: #dc2626; color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: none; }
+        
+        .panel { background: var(--card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .panel-header { padding: 12px; background: rgba(0,0,0,0.2); font-weight: 800; font-size: 0.7rem; color: var(--gold); }
+        .card-pdf { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; margin: 8px; border-radius: 8px; border-left: 4px solid var(--gold); }
+        .btn-revisar { background: var(--gold); color: #000; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
+        .btn-voltar { border: 1px solid var(--gold); background: transparent; color: var(--gold); font-weight: 800; padding: 5px 15px; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-    <button onclick="irParaHome()" class="btn-voltar">VOLTAR</button>
-    <div style="font-weight:800;">PEÇAS NO COFRE</div>
+<header>
+    <div style="font-weight:900;">ELITE <span style="color:var(--gold)">CONSULTOR</span></div>
+    <button onclick="voltarFluxoPrincipal()" class="btn-voltar">VOLTAR</button>
 </header>
 
-<div id="analise-box">
-    <div style="font-weight: 900; color: var(--gold); margin-bottom: 5px; font-size: 0.7rem;">ANALISANDO...</div>
-    <div id="analise-texto" style="font-size: 0.9rem;"></div>
+<div id="robo-analise" class="robo-box">
+    <div style="font-weight: 800; font-size: 0.8rem; margin-bottom: 5px;"><i class="fas fa-robot"></i> QUAL É A PEÇA?</div>
+    <div id="status-peca" style="font-size: 1.1rem; font-weight: 900; color: #fff;"></div>
+</div>
+
+<div id="box-tese" class="alerta-tese">
+    <div style="font-weight: 800; font-size: 0.8rem;"><i class="fas fa-gavel"></i> TESE DETECTADA:</div>
+    <div id="texto-tese"></div>
+</div>
+
+<div id="box-confunda" class="alerta-confunda">
+    <div style="font-weight: 800; font-size: 0.8rem;"><i class="fas fa-exclamation-triangle"></i> NÃO CONFUNDA:</div>
+    <div id="texto-confunda"></div>
 </div>
 
 <div class="panel">
     <div class="panel-header">HISTÓRICO DE ENVIOS</div>
-    <div id="feed-historico" style="padding: 5px;">
-        <p style="text-align:center; padding:20px; color:#64748b;">Sincronizando com o satélite...</p>
-    </div>
+    <div id="feed-historico"></div>
 </div>
 
 <script type="module">
@@ -55,59 +63,74 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // ESCUTA EM TEMPO REAL
+    // Mapeamento de Inteligência (O Coração do Robô)
+    const REGRAS = {
+        "AGRAVO DE PETIÇÃO": { 
+            tese: "Art. 897, 'a', da CLT. Cabe das decisões na execução.",
+            confunda: "Agravo de Instrumento no Trabalho serve APENAS para destrancar recurso!" 
+        },
+        "RECURSO ORDINÁRIO": { 
+            tese: "Art. 895, I, da CLT. Prazo de 8 dias.",
+            confunda: "Não confunda com Apelação do CPC. O prazo aqui é sempre 8 dias úteis." 
+        },
+        "CONTESTAÇÃO": {
+            tese: "Art. 847 da CLT. Defesa do Reclamado.",
+            confunda: "Lembre-se da Reconvenção se houver pedidos contra o Reclamante!"
+        }
+    };
+
     onValue(ref(db, 'mentoria/historico'), (snapshot) => {
         const container = document.getElementById('feed-historico');
         container.innerHTML = "";
         const dados = snapshot.val();
         if (dados) {
-            const listaOrdenada = Object.keys(dados)
-                .map(id => ({ id, ...dados[id] }))
-                .sort((a, b) => (b.ts || 0) - (a.ts || 0));
-
-            listaOrdenada.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card-pdf';
-                card.innerHTML = `
-                    <div style="display:flex; flex-direction:column;">
-                        <span style="font-size:0.6rem; color:#64748b; font-weight:bold;">EXAME OAB</span>
-                        <b style="font-size:1.1rem; color:#1e293b;">EXAME ${item.exame || '??'}</b>
-                        <span style="font-size:0.7rem; color:#94a3b8;">${item.data || 'Sem data'}</span>
-                    </div>
-                    <button class="btn-revisar" onclick="analisarPeca('${item.exame}')">ANALISAR</button>
-                `;
-                container.appendChild(card);
-            });
+            Object.keys(dados).map(id => ({ id, ...dados[id] }))
+                .sort((a, b) => (b.ts || 0) - (a.ts || 0))
+                .forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card-pdf';
+                    card.innerHTML = `
+                        <div><b>EXAME ${item.exame}</b><br><small>${item.data}</small></div>
+                        <button class="btn-revisar" onclick="acionarIA('${item.exame}')">ANALISAR</button>
+                    `;
+                    container.appendChild(card);
+                });
         }
     });
 
-    window.analisarPeca = async (ex) => {
-        const box = document.getElementById('analise-box');
-        const texto = document.getElementById('analise-texto');
-        box.style.display = 'block';
-        texto.innerHTML = "O Robô está lendo suas linhas...";
+    window.acionarIA = async (ex) => {
         const snap = await get(ref(db, `estudos/${ex}`));
-        const dados = snap.val();
-        if (dados && dados.linhas) {
-            const preenchidas = dados.linhas.filter(l => l.trim() !== "").length;
-            texto.innerHTML = `
-                <b>Análise:</b> O Exame ${ex} possui ${preenchidas} linhas preenchidas.<br><br>
-                <button onclick="revisar('${ex}')" style="background:var(--gold); border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">ABRIR NO CADERNO</button>
-            `;
+        const linhas = snap.val()?.linhas || [];
+        const texto = linhas.join(" ").toUpperCase();
+
+        // 1. Identifica a Peça
+        let pecaIdentificada = "NÃO IDENTIFICADA";
+        for (let chave in REGRAS) {
+            if (texto.includes(chave)) pecaIdentificada = chave;
+        }
+
+        // 2. Exibe os Boxes baseado na peça
+        document.getElementById('robo-analise').style.display = 'block';
+        document.getElementById('status-peca').innerText = pecaIdentificada;
+
+        if (REGRAS[pecaIdentificada]) {
+            document.getElementById('box-tese').style.display = 'block';
+            document.getElementById('texto-tese').innerText = REGRAS[pecaIdentificada].tese;
+            
+            document.getElementById('box-confunda').style.display = 'block';
+            document.getElementById('texto-confunda').innerText = REGRAS[pecaIdentificada].confunda;
+        } else {
+            document.getElementById('box-tese').style.display = 'none';
+            document.getElementById('box-confunda').style.display = 'none';
         }
     };
 
-    // FUNÇÃO PARA VOLTAR À HOME
-    window.irParaHome = () => {
-        window.location.href = 'index.html';
+    window.voltarFluxoPrincipal = () => {
+        if (window.opener) { window.opener.focus(); window.close(); }
+        else { window.location.href = 'index.html'; }
     };
 
-    window.revisar = (ex) => {
-        localStorage.setItem('activeEx', ex);
-        window.location.href = 'index.html';
-    };
-
-    Object.assign(window, { analisarPeca, revisar, irParaHome });
+    Object.assign(window, { acionarIA, voltarFluxoPrincipal });
 </script>
 </body>
 </html>
