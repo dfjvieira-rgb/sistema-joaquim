@@ -45,7 +45,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); position: relative; }
+        main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); position: relative; width: 100%; }
 
         .sidebar {
             width: 70px; background: #1e293b; display: flex;
@@ -68,9 +68,10 @@
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
+        /* EDITOR E PAINEL PDF DIVIDINDO ESPAÇO */
         .editor-container {
             flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; width: 100%;
+            display: flex; justify-content: center; transition: 0.3s ease;
             -webkit-overflow-scrolling: touch;
         }
         
@@ -86,7 +87,6 @@
             min-height: 1200px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
         }
 
-        /* AS TURBINAS - POSIÇÃO ESTRATÉGICA À ESQUERDA */
         .paper-tools {
             position: fixed; left: 85px; bottom: 30px;
             display: flex; flex-direction: column; gap: 15px; z-index: 99999;
@@ -104,22 +104,21 @@
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(135deg, #fbbf24, #ef4444); }
 
-        /* PDF PANEL */
+        /* PDF PANEL - AGORA DIVIDINDO TELA */
         .pdf-panel {
-            position: fixed; right: 0; top: var(--header-h); bottom: 0;
-            width: 0; background: white; transition: 0.3s ease; z-index: 5000;
+            width: 0; background: white; transition: 0.3s ease;
             display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            border-left: 2px solid var(--gold);
         }
         .pdf-panel.open { width: 50%; }
 
-        /* MODAL DE ESTRUTURAS */
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
         .peca-opt { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid var(--line-color); border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #1e293b; }
 
         @media (max-width: 900px) {
-            .pdf-panel.open { width: 100%; }
+            .pdf-panel.open { width: 100%; position: absolute; top:0; bottom:0; right:0; z-index: 5001; }
             .paper-tools { left: auto; right: 20px; bottom: 20px; flex-direction: row; }
             .btn-float { width: 52px; height: 52px; }
         }
@@ -149,7 +148,7 @@
         <div id="exam-nav"></div>
     </aside>
 
-    <section class="editor-container">
+    <section class="editor-container" id="editor-cont">
         <div class="paper">
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
         </div>
@@ -165,7 +164,7 @@
     <div class="pdf-panel" id="pdf-panel">
         <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
             <span id="pdf-title">SUPORTE ELITE</span>
-            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px;">X</button>
+            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">X</button>
         </div>
         <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
     </div>
@@ -189,7 +188,6 @@
     const editor = document.getElementById('main-editor');
     const radar = document.getElementById('radar-peca');
 
-    // --- RADAR SENTINELA ---
     const atualizarRadar = () => {
         const conteudo = BANCO_ESPELHOS[activeEx] || "";
         const txt = conteudo.toUpperCase();
@@ -200,7 +198,6 @@
         else radar.innerText = "PEÇA OAB";
     };
 
-    // --- TURBINA PERGAMINHO (ESTRUTURAS) ---
     window.abrirPecas = () => {
         const grid = document.getElementById('peca-grid');
         grid.innerHTML = '';
@@ -221,7 +218,6 @@
 
     window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
 
-    // --- TURBINAS DE AÇÃO ---
     window.salvarManual = () => {
         set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
         alert("🛰️ SINCRONIZADO!");
@@ -243,7 +239,6 @@
         }
     };
 
-    // --- SISTEMA DE VOO ---
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
