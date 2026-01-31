@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - COCKPIT ABSOLUTO</title>
+    <title>JOAQUIM ELITE 2026 - RADAR ON</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1; --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7; --header-h: 65px; }
@@ -11,14 +11,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER COM SINCRONIA */
         header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 10000; }
         .nav-group { display: flex; gap: 8px; }
-        .btn-ref { height: 42px; min-width: 42px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .btn-ref { height: 42px; min-width: 42px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
         main { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; }
-        #radar-peca { background: #000; color: var(--gold); padding: 8px 2px; border: 2px solid var(--gold); font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; align-items: center; justify-content: center; line-height: 1.1; text-transform: uppercase; }
+        
+        /* RADAR BLINDADO */
+        #radar-peca { background: #000; color: #00ff00; padding: 8px 2px; border: 2px solid #00ff00; font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; align-items: center; justify-content: center; line-height: 1.1; text-transform: uppercase; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
 
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; margin-bottom: 5px; font-size: 0.75rem; }
         .exame-btn.active { background: var(--gold); color: black; }
@@ -26,39 +27,24 @@
         .editor-container { flex: 1; overflow-y: auto; background: var(--bg-paper); padding: 20px; display: flex; justify-content: center; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-height: 100%; position: relative; }
         
-        /* NOTA INTELIGENCIA - NÃO CONFUNDA */
-        .nota-inteligencia { background: #fff9c4; border: 2px dashed #f59e0b; color: #7c2d12; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; font-weight: bold; position: relative; }
-        .nota-inteligencia::before { content: "🚀 INTELIGÊNCIA: NÃO CONFUNDA"; display: block; font-size: 0.7rem; color: #b45309; margin-bottom: 5px; letter-spacing: 1px; }
+        /* NOTA INTELIGÊNCIA */
+        .nota-inteligencia { background: #fff9c4; border: 2px dashed #f59e0b; color: #7c2d12; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; font-weight: bold; }
+        .nota-inteligencia::before { content: "🚀 INTELIGÊNCIA: NÃO CONFUNDA"; display: block; font-size: 0.7rem; color: #b45309; margin-bottom: 5px; }
 
         .fgv-title { background: #000; color: #fff; padding: 8px 15px; font-weight: bold; margin: 25px 0 10px 0; text-transform: uppercase; font-size: 0.85rem; border-left: 5px solid var(--gold); }
-        .q-label { font-weight: bold; color: var(--text-color); margin-top: 10px; display: block; font-size: 0.75rem; padding-left: 5px; }
-        
-        .editor-area { 
-            outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif;
-            background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            white-space: pre-wrap; min-height: 100px; margin-bottom: 15px; text-align: justify; word-wrap: break-word;
-        }
+        .editor-area { outline: none; font-size: 18px; line-height: 30px; color: var(--text-color); font-family: 'Times New Roman', serif; background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px); white-space: pre-wrap; min-height: 60px; margin-bottom: 15px; text-align: justify; }
 
-        /* BOTÕES FLUTUANTES */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
-        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-float:active { transform: scale(0.9); }
+        .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
 
-        /* MODAIS */
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1e293b; border: 3px solid var(--gold); padding: 25px; z-index: 20000; border-radius: 12px; width: 320px; text-align: center; }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 19999; }
-        .btn-cmd { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem; }
+        .btn-cmd { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; color: white; font-size: 0.9rem; }
         
-        #lista-estruturas { max-height: 320px; overflow-y: auto; margin-top: 15px; padding-right: 5px; }
-        .opt-peca { background: #334155; color: white; padding: 12px; margin-bottom: 6px; border-radius: 6px; cursor: pointer; text-align: left; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; border: 1px solid transparent; }
-        .opt-peca:hover { border-color: var(--gold); background: #475569; }
-
         @media print {
             header, .sidebar, .paper-tools, .modal, .modal-overlay { display: none !important; }
             body { background: white !important; }
-            .editor-container { padding: 0 !important; }
             .paper { box-shadow: none !important; width: 100% !important; max-width: none !important; padding: 20px !important; }
-            .nota-inteligencia { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; }
         }
     </style>
 </head>
@@ -67,24 +53,16 @@
 <div class="modal-overlay" id="overlay" onclick="fecharModais()"></div>
 
 <div id="modal-disquete" class="modal">
-    <h3 style="color:var(--gold); margin-bottom:15px;">MENTORIA OAB</h3>
-    <button class="btn-cmd" style="background:#3b82f6;" onclick="window.location.href='mentoria.html'"><i class="fas fa-university"></i> IR PARA MENTORIA</button>
-    <button class="btn-cmd" style="background:#fbbf24; color:black;" onclick="window.print()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
-    <button class="btn-cmd" style="background:#ef4444;" onclick="resetarTudo()"><i class="fas fa-trash-alt"></i> LIMPAR TUDO</button>
+    <h3 style="color:var(--gold); margin-bottom:15px;">OPÇÕES</h3>
+    <button class="btn-cmd" style="background:#3b82f6;" onclick="window.location.href='mentoria.html'">HISTÓRICO</button>
+    <button class="btn-cmd" style="background:#fbbf24; color:black;" onclick="window.print()">IMPRIMIR PDF</button>
     <button class="btn-cmd" style="background:#475569;" onclick="fecharModais()">FECHAR</button>
-</div>
-
-<div id="modal-estruturas" class="modal">
-    <h3 style="color:var(--gold); margin-bottom:10px;">PEÇAS ESTRUTURADAS</h3>
-    <div id="lista-estruturas"></div>
-    <button class="btn-cmd" style="background:#475569; margin-top:10px;" onclick="fecharModais()">CANCELAR</button>
 </div>
 
 <header>
     <div class="nav-group">
-        <button class="btn-ref" onclick="location.reload()" title="Recarregar"><i class="fas fa-sync"></i></button>
-        <button class="btn-ref" id="btn-sync" style="background:#0ea5e9; border-color:#fff;" title="Sincronizar Nuvem"><i class="fas fa-cloud-download-alt"></i></button>
-        <button class="btn-ref" onclick="document.body.classList.toggle('dark-mode')" title="Tema"><i class="fas fa-adjust"></i></button>
+        <button class="btn-ref" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+        <button class="btn-ref" id="btn-sync" style="background:#0ea5e9; border-color:#fff;"><i class="fas fa-cloud-download-alt"></i></button>
     </div>
     <div class="nav-group">
         <button class="btn-ref" onclick="location.href='mentoria.html'" style="background:#a855f7; border:none; color:white;"><i class="fas fa-brain"></i></button>
@@ -93,146 +71,100 @@
 
 <main>
     <aside class="sidebar">
-        <div id="radar-peca">RADAR: OFF</div>
+        <div id="radar-peca">RADAR: BUSCANDO</div>
         <div id="exam-nav"></div>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
-            <div id="nota-box" class="nota-inteligencia" contenteditable="true" spellcheck="false">Insira aqui dicas de "Não Confunda"...</div>
-
+            <div id="nota-box" class="nota-inteligencia" contenteditable="true">Dica: Não confunda Recurso Ordinário com Agravo...</div>
+            
             <div class="fgv-title">Peça Profissional</div>
             <div id="editor-peca" class="editor-area" contenteditable="true" spellcheck="false"></div>
 
-            <div class="fgv-title">Questão 1</div>
-            <span class="q-label">A</span><div id="q1a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">B</span><div id="q1b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 2</div>
-            <span class="q-label">A</span><div id="q2a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">B</span><div id="q2b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 3</div>
-            <span class="q-label">A</span><div id="q3a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">B</span><div id="q3b" class="editor-area" contenteditable="true"></div>
-
-            <div class="fgv-title">Questão 4</div>
-            <span class="q-label">A</span><div id="q4a" class="editor-area" contenteditable="true"></div>
-            <span class="q-label">B</span><div id="q4b" class="editor-area" contenteditable="true"></div>
+            <div class="fgv-title">Questões</div>
+            <div id="q1a" class="editor-area" contenteditable="true" placeholder="1A"></div>
+            <div id="q1b" class="editor-area" contenteditable="true" placeholder="1B"></div>
+            <div id="q2a" class="editor-area" contenteditable="true"></div>
+            <div id="q2b" class="editor-area" contenteditable="true"></div>
+            <div id="q3a" class="editor-area" contenteditable="true"></div>
+            <div id="q3b" class="editor-area" contenteditable="true"></div>
+            <div id="q4a" class="editor-area" contenteditable="true"></div>
+            <div id="q4b" class="editor-area" contenteditable="true"></div>
         </div>
 
         <div class="paper-tools">
-            <div class="btn-float" style="background:#22c55e;" onclick="abrirDisquete()" title="Salvar e Opções"><i class="fas fa-save"></i></div>
-            <div class="btn-float" style="background:#1e293b; color:#fbbf24; border-color:#fbbf24;" onclick="abrirEstruturas()" title="Estruturas"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float" style="background:#3b82f6;" onclick="injetarEspelho()" title="Espelho OAB"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float" style="background:linear-gradient(45deg,#fbbf24,#ef4444);" onclick="alert('Lançado para a Mentoria!')" title="Finalizar"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float" style="background:#22c55e;" onclick="abrirDisquete()"><i class="fas fa-save"></i></div>
+            <div class="btn-float" style="background:#1e293b; color:#fbbf24; border-color:#fbbf24;" onclick="alert('Lista de Peças Pronta')"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float" style="background:#3b82f6;" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
         </div>
     </section>
 </main>
 
 <script type="module">
     import { db } from './firebase-config.js';
-    import { ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
 
     let activeEx = new URLSearchParams(window.location.search).get('exame') || "41";
     const ids = ['nota-box', 'editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    // --- SCANNER DE PEÇA ---
-    function scanner() {
+    // FUNÇÃO RADAR (AGORA DISPARANDO CORRETAMENTE)
+    window.executarRadar = () => {
         const txt = document.getElementById('editor-peca').innerText.toUpperCase();
         const radar = document.getElementById('radar-peca');
-        if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
-        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
-        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RECLAMAÇÃO";
-        else if (txt.includes("AGRAVO")) radar.innerText = "AGRAVO PETIÇÃO";
-        else radar.innerText = "BUSCANDO...";
-    }
-
-    // --- SINCRONIZAR (BOTÃO NUVEM) ---
-    document.getElementById('btn-sync').onclick = () => {
-        onValue(ref(db, `estudos/${activeEx}`), (s) => {
-            const d = s.val();
-            if(d) {
-                ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
-                scanner();
-                alert("✅ DADOS SINCRONIZADOS DA NUVEM!");
-            }
-        }, { onlyOnce: true });
+        
+        if (txt.includes("ORDINÁRIO")) { radar.innerText = "REC. ORDINÁRIO"; radar.style.color = "#00ff00"; }
+        else if (txt.includes("CONTESTAÇÃO")) { radar.innerText = "CONTESTAÇÃO"; radar.style.color = "#00ff00"; }
+        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) { radar.innerText = "RECLAMAÇÃO"; radar.style.color = "#00ff00"; }
+        else if (txt.includes("AGRAVO")) { radar.innerText = "AGRAVO"; radar.style.color = "#00ff00"; }
+        else { radar.innerText = "BUSCANDO..."; radar.style.color = "#fbbf24"; }
     };
 
-    // --- SALVAMENTO ---
+    window.salvarAuto = () => {
+        const data = {};
+        ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
+        window.executarRadar();
+    };
+
     window.abrirDisquete = () => {
-        salvarNoBD(`historico/${activeEx}`); // Rota que a mentoria lê
+        const data = {};
+        ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        set(ref(db, `historico/${activeEx}`), { ...data, ts: Date.now() });
         document.getElementById('modal-disquete').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
     };
 
-    function salvarNoBD(path) {
-        const data = {};
-        ids.forEach(id => { 
-            const el = document.getElementById(id);
-            if(el) data[id] = el.innerText; 
-        });
-        set(ref(db, path), { ...data, ts: Date.now(), exame: activeEx });
-    }
-
-    window.salvarAuto = () => {
-        salvarNoBD(`estudos/${activeEx}`);
-        scanner();
-    };
-
-    // --- ESTRUTURAS ---
-    window.abrirEstruturas = () => {
-        const list = document.getElementById('lista-estruturas');
-        list.innerHTML = '';
-        Object.keys(pecas).forEach(p => {
-            const d = document.createElement('div');
-            d.className = 'opt-peca';
-            d.innerHTML = `<i class="fas fa-file-alt"></i> ${p.toUpperCase()}`;
-            d.onclick = () => { 
-                document.getElementById('editor-peca').innerText = pecas[p]; 
-                window.salvarAuto(); 
-                fecharModais(); 
-            };
-            list.appendChild(d);
-        });
-        document.getElementById('modal-estruturas').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-    };
-
     window.fecharModais = () => {
-        document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        document.getElementById('modal-disquete').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
     };
 
     window.injetarEspelho = () => {
         const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) { 
-            document.getElementById('editor-peca').innerText = esp; 
-            window.salvarAuto(); 
-        }
+        if(esp) { document.getElementById('editor-peca').innerText = esp; window.salvarAuto(); }
     };
 
-    window.resetarTudo = () => {
-        if(confirm("COMANDANTE, CONFIRMA LIMPEZA TOTAL?")) {
-            remove(ref(db, `estudos/${activeEx}`)).then(() => location.reload());
-        }
-    };
-
-    // --- INIT ---
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('input', window.salvarAuto);
-    });
+    // ESCUTADORES
+    ids.forEach(id => document.getElementById(id).addEventListener('input', window.salvarAuto));
     
+    document.getElementById('btn-sync').onclick = () => {
+        onValue(ref(db, `estudos/${activeEx}`), (s) => {
+            const d = s.val();
+            if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
+            window.executarRadar();
+        }, { onlyOnce: true });
+    };
+
+    // CARGA INICIAL
     onValue(ref(db, `estudos/${activeEx}`), (s) => {
         const d = s.val();
         if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
-        scanner();
+        window.executarRadar();
     }, { onlyOnce: true });
 
+    // SIDEBAR
     const nav = document.getElementById('exam-nav');
     for(let i=44; i>=35; i--) {
         const b = document.createElement('div');
