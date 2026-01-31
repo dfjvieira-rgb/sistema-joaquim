@@ -23,7 +23,6 @@
         
         .btn-ref { height: 40px; min-width: 40px; padding: 0 10px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
 
-        /* MODAL COMANDO DISQUETE */
         #modal-disquete {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: #1e293b; border: 3px solid var(--gold); padding: 25px; z-index: 20000;
@@ -35,6 +34,8 @@
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         .sidebar { width: 75px; background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid #334155; overflow-y: auto; z-index: 100; }
         #radar-peca { background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold); font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .radar-blink { animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
         
         .exame-btn { width: 100%; height: 38px; background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
         .exame-btn.active { background: var(--gold); color: black; }
@@ -62,11 +63,10 @@
         .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
 
         @media print {
-            header, .sidebar, .paper-tools, .pdf-panel, #modal-disquete, .modal-overlay, .q-label { display: none !important; }
+            header, .sidebar, .paper-tools, .pdf-panel, #modal-disquete, .modal-overlay { display: none !important; }
             body { background: white !important; }
             main, .editor-container { display: block !important; padding: 0 !important; }
             .paper { box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; }
-            .fgv-title { color: black !important; border-left: 5px solid black !important; }
         }
     </style>
 </head>
@@ -124,10 +124,10 @@
         </div>
 
         <div class="paper-tools">
-            <div class="btn-float bg-save" onclick="disqueteCmd()" title="Disquete"><i class="fas fa-save"></i></div>
-            <div class="btn-float bg-scroll" title="Estruturas"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarEspelho()" title="Martelo"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" title="Lançar"><i class="fas fa-rocket"></i></div>
+            <div class="btn-float bg-save" onclick="disqueteCmd()"><i class="fas fa-save"></i></div>
+            <div class="btn-float bg-scroll" onclick="abrirEstruturas()"><i class="fas fa-scroll"></i></div>
+            <div class="btn-float bg-justica" onclick="injetarEspelho()"><i class="fas fa-gavel"></i></div>
+            <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
     <div class="pdf-panel" id="pdf-panel"><iframe id="pdf-frame" style="width:100%; flex:1; border:none;"></iframe></div>
@@ -137,20 +137,18 @@
     import { db } from './firebase-config.js';
     import { ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    import { pecas } from './estruturas.js';
 
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
 
-    window.onload = () => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('exame')) activeEx = params.get('exame');
-        initNav(); carregarDados();
-    };
-
+    // FUNÇÕES GLOBAIS (CONECTADAS AOS BOTÕES)
     window.disqueteCmd = () => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
-        set(ref(db, `historico/${activeEx}`), { ...data, ts: Date.now() }).then(() => {
+        const pecaNome = document.getElementById('radar-peca').innerText.replace('RADAR', '').trim();
+        
+        set(ref(db, `historico/${activeEx}`), { ...data, peca: pecaNome, ts: Date.now() }).then(() => {
             document.getElementById('modal-disquete').style.display = 'block';
             document.getElementById('overlay-cmd').style.display = 'block';
         });
@@ -162,7 +160,7 @@
     };
 
     window.excluirDoHistorico = () => {
-        if(confirm("Confirmar exclusão definitiva do histórico?")) {
+        if(confirm("Confirmar exclusão?")) {
             remove(ref(db, `historico/${activeEx}`)).then(() => { fecharMenuDisquete(); });
         }
     };
@@ -173,20 +171,61 @@
         set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
     };
 
+    window.injetarEspelho = () => {
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) { 
+            document.getElementById('editor-peca').innerText = esp; 
+            salvarTudo();
+            carregarDados(); // Força o Radar a escanear o novo texto
+        }
+    };
+
+    window.abrirEstruturas = () => { alert("Estrutura detectada: " + document.getElementById('radar-peca').innerText); };
+    window.lancarPeca = () => { alert("Peça E" + activeEx + " em órbita!"); };
+
+    window.togglePdf = (m) => {
+        const frame = document.getElementById('pdf-frame');
+        const panel = document.getElementById('pdf-panel');
+        frame.src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[m];
+        panel.classList.add('open');
+    };
+
+    window.resetarFolha = () => {
+        if(confirm("COMANDANTE: Apagar tudo?")) {
+            remove(ref(db, `estudos/${activeEx}`)).then(() => location.reload());
+        }
+    };
+
+    // LÓGICA DE CARREGAMENTO E RADAR
     window.carregarDados = () => {
         onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
+            executarScanner();
         }, { onlyOnce: true });
     };
 
-    window.injetarEspelho = () => {
-        const esp = BANCO_ESPELHOS[activeEx];
-        if(esp) { document.getElementById('editor-peca').innerText = esp; salvarTudo(); }
-    };
+    function executarScanner() {
+        const texto = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        const radar = document.getElementById('radar-peca');
+        let detectada = null;
+        
+        Object.keys(pecas).forEach(p => {
+            if (texto.includes(p.toUpperCase())) detectada = p;
+        });
+
+        if(detectada) {
+            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.55rem;">${detectada.toUpperCase()}</span>`;
+            radar.style.background = "#16a34a";
+        } else {
+            radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
+            radar.style.background = "#000";
+        }
+    }
 
     window.initNav = () => {
-        const nav = document.getElementById('exam-nav'); nav.innerHTML = '';
+        const nav = document.getElementById('exam-nav');
+        nav.innerHTML = '';
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div');
             b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
@@ -196,13 +235,17 @@
         }
     };
 
-    window.togglePdf = (m) => {
-        document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[m];
-        document.getElementById('pdf-panel').classList.add('open');
-    };
+    // INICIALIZAÇÃO
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('exame')) activeEx = params.get('exame');
+    initNav(); 
+    carregarDados();
 
-    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { remove(ref(db, `estudos/${activeEx}`)); location.reload(); } };
-    ids.forEach(id => document.getElementById(id).addEventListener('input', salvarTudo));
+    // AUTO-SAVE EM TODOS OS CAMPOS
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('input', salvarTudo);
+    });
 </script>
 </body>
 </html>
