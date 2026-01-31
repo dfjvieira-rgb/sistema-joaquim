@@ -60,7 +60,7 @@
 
 <main class="dashboard">
     <section class="panel" style="border-top: 4px solid var(--gold); grid-column: span 2;">
-        <div class="panel-header"><i class="fas fa-save"></i> Histórico de Simulados (Vindo do Index)</div>
+        <div class="panel-header"><i class="fas fa-save"></i> Histórico de Simulados</div>
         <div class="panel-body">
             <div id="feed-pdf" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px;">
                 <p style="text-align:center; color:gray;">Buscando histórico...</p>
@@ -71,8 +71,8 @@
     <section class="panel" style="border-top: 4px solid var(--success);">
         <div class="panel-header">Preliminares Processuais</div>
         <div class="panel-body">
-            <label>Título (Ex: Incompetência)</label><input type="text" id="pre-t">
-            <label>Fundamentação (Artigos)</label><textarea id="pre-c" rows="2"></textarea>
+            <label>Título</label><input type="text" id="pre-t">
+            <label>Fundamentação</label><textarea id="pre-c" rows="2"></textarea>
             <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar Tese</button>
             <div class="feed" id="feed-pre"></div>
         </div>
@@ -81,8 +81,8 @@
     <section class="panel" style="border-top: 4px solid var(--purple);">
         <div class="panel-header">Qual é a Peça? (Flashcard)</div>
         <div class="panel-body">
-            <label>Trecho do Enunciado</label><textarea id="peca-t" rows="2"></textarea>
-            <label>Nome da Peça (Gabarito)</label><input type="text" id="peca-c">
+            <label>Enunciado</label><textarea id="peca-t" rows="2"></textarea>
+            <label>Gabarito</label><input type="text" id="peca-c">
             <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Flashcard</button>
             <div class="feed" id="feed-peca"></div>
         </div>
@@ -92,7 +92,7 @@
         <div class="panel-header">Radar: Não Confunda</div>
         <div class="panel-body">
             <label>Conceito A vs B</label><input type="text" id="nc-t">
-            <label>Diferença Crucial</label><textarea id="nc-c" rows="2"></textarea>
+            <label>Diferença</label><textarea id="nc-c" rows="2"></textarea>
             <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Alerta</button>
             <div class="feed" id="feed-nc"></div>
         </div>
@@ -101,8 +101,8 @@
     <section class="panel" style="border-top: 4px solid #3b82f6;">
         <div class="panel-header">Teses de Mérito</div>
         <div class="panel-body">
-            <label>Tema (Ex: Horas Extras)</label><input type="text" id="tese-t">
-            <label>Estrutura da Tese</label><textarea id="tese-c" rows="2"></textarea>
+            <label>Tema</label><input type="text" id="tese-t">
+            <label>Estrutura</label><textarea id="tese-c" rows="2"></textarea>
             <button class="btn-save" style="background: #3b82f6;" onclick="salvar('tese')">Arquivar Conhecimento</button>
             <div class="feed" id="feed-tese"></div>
         </div>
@@ -115,7 +115,7 @@
             <button onclick="window.print()" style="background:#16a34a; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fas fa-print"></i> IMPRIMIR</button>
             <button onclick="document.getElementById('modal-leitura').style.display='none'" style="background:#000; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">FECHAR</button>
         </div>
-        <div id="visor-texto" style="font-family:'Courier New', monospace; line-height:1.6; white-space:pre-wrap; color: black;"></div>
+        <div id="visor-texto" style="font-family:'Courier New', monospace; line-height:1.6; white-space:pre-wrap; color: black; font-size: 14px;"></div>
     </div>
 </div>
 
@@ -134,38 +134,26 @@
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese' };
 
-    // FUNÇÕES GLOBAIS
-    window.visualizarPeca = async (idEnvio) => {
-        try {
-            // Tentativa de busca dinâmica para evitar erro de rota
-            let snap = await get(ref(db, `mentoria/historico/${idEnvio}`));
-            let data = snap.val();
-            
-            if(!data) {
-                snap = await get(ref(db, `mentoria/historico/${idEnvio}`));
-                data = snap.val();
-            }
+    // VISUALIZAR PEÇA - LENDO DE 'simulados'
+    window.visualizarPeca = async (id) => {
+        const snap = await get(ref(db, `simulados/${id}`));
+        const data = snap.val();
+        if(!data || !data.linhas) return alert("Erro ao recuperar linhas.");
 
-            if(!data || !data.linhas) return alert("Conteúdo textual não encontrado.");
+        const visor = document.getElementById('visor-texto');
+        const formatado = data.linhas
+            .map((l, i) => (l && l.trim() !== "") ? `${(i+1).toString().padStart(3,'0')} | ${l}` : null)
+            .filter(x => x !== null)
+            .join('\n');
 
-            const visor = document.getElementById('visor-texto');
-            const textoFinal = data.linhas
-                .map((txt, i) => (txt && txt.trim() !== "") ? `${(i + 1).toString().padStart(3, '0')} | ${txt}` : null)
-                .filter(l => l !== null)
-                .join('\n');
-
-            visor.innerText = `FOLHA DE RESPOSTAS - EXAME OAB ${data.exame}\nDATA DE ENVIO: ${data.data}\n${'='.repeat(40)}\n\n${textoFinal || "Nenhum texto escrito."}`;
-            document.getElementById('modal-leitura').style.display = 'block';
-        } catch (e) {
-            console.error(e);
-            alert("Erro ao carregar os dados.");
-        }
+        visor.innerText = `RAIO-X OAB ${data.exame} | ENVIADO EM: ${data.data}\n${'-'.repeat(50)}\n\n${formatado || "Folha em branco."}`;
+        document.getElementById('modal-leitura').style.display = 'block';
     };
 
     window.toggleR = (btn) => {
         const div = btn.nextElementSibling;
         div.style.display = (div.style.display === "block" ? "none" : "block");
-        btn.innerText = (div.style.display === "block" ? "OCULTAR GABARITO" : "VER GABARITO");
+        btn.innerText = (div.style.display === "block" ? "OCULTAR" : "VER GABARITO");
     };
 
     window.salvar = (type) => {
@@ -178,17 +166,17 @@
     };
 
     window.excluir = (type, id) => { 
-        if(confirm("Deseja apagar permanentemente?")) {
-            const caminho = type === 'pdf' ? `mentoria/historico/${id}` : `${paths[type]}/${id}`;
-            remove(ref(db, caminho)); 
+        if(confirm("Apagar permanentemente?")) {
+            const path = type === 'pdf' ? `simulados/${id}` : `${paths[type]}/${id}`;
+            remove(ref(db, path)); 
         }
     };
 
-    // ESCUTA EM TEMPO REAL COM DUPLO CHECK DE ROTA
+    // ESCUTA EM TEMPO REAL
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
         
-        // Atualiza painéis de teses e flashcards
+        // Teses e Flashcards
         ['pre', 'peca', 'nc', 'tese'].forEach(type => {
             const feed = document.getElementById(`feed-${type}`);
             if(!feed) return;
@@ -206,12 +194,10 @@
             });
         });
 
-        // HISTÓRICO DE SIMULADOS - LÓGICA DE CAPTURA ROBUSTA
+        // HISTÓRICO - LENDO DA NOVA PASTA 'simulados'
         const feedPdf = document.getElementById('feed-pdf');
         feedPdf.innerHTML = "";
-        
-        // Tenta capturar das duas formas possíveis que o Firebase organiza
-        const hist = (v.mentoria && v.mentoria.historico) ? v.mentoria.historico : (v['mentoria/historico'] || {});
+        const hist = v['simulados'] || {};
         const chaves = Object.keys(hist);
         
         if (chaves.length === 0) {
@@ -221,9 +207,9 @@
                 const item = hist[id];
                 feedPdf.innerHTML += `
                     <div class="card card-pdf">
-                        <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data || 'Sem data'}</small></div>
+                        <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
                         <div class="pdf-actions">
-                            <i class="fas fa-eye" title="Ver e Imprimir" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
+                            <i class="fas fa-eye" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
                             <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
                         </div>
                     </div>`;
@@ -231,8 +217,4 @@
         }
     });
 
-    // Garante que as funções estejam disponíveis no clique dos botões
-    Object.assign(window, { visualizarPeca, toggleR, salvar, excluir });
-</script>
-</body>
-</html>
+    Object.
