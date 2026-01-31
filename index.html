@@ -47,7 +47,7 @@
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
             padding: 0 15px; font-size: 18px; 
-            font-family: 'Courier New', Courier, monospace; /* FONTE DE PROVA */
+            font-family: 'Courier New', Courier, monospace; 
             color: var(--text-color); width: 100%; 
             letter-spacing: 0.5px;
         }
@@ -61,6 +61,17 @@
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
+
+        /* CSS DE IMPRESSÃO */
+        @media print {
+            header, .sidebar, #pdf-split-view, .btn-side, .btn-close-pdf, .modal { display: none !important; }
+            body { background: white !important; overflow: visible !important; }
+            main { display: block !important; overflow: visible !important; }
+            .editor-container { padding: 0 !important; background: white !important; overflow: visible !important; }
+            .paper { box-shadow: none !important; width: 100% !important; max-width: none !important; margin: 0 !important; }
+            .linha-folha { border: none !important; background: transparent !important; color: black !important; }
+            #identificador-peca { border-bottom: 2px solid black !important; color: black !important; }
+        }
     </style>
 </head>
 <body>
@@ -79,6 +90,7 @@
         
         <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
         <button class="btn-side" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" style="background:#6366f1;" onclick="window.imprimirFolha()" title="Imprimir PDF"><i class="fas fa-print"></i></button>
         <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
         
@@ -125,23 +137,28 @@
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
     let mentoriaJanelaRef = null;
-    const LIMITE_LINHA = 85; // Limite de caracteres FGV
+    const LIMITE_LINHA = 85;
 
-    // --- SCANNER RADAR ---
+    // --- SCANNER RADAR BEBENDO DO BANCO ---
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
-        const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        
+        // Pega todo o texto digitado na folha
+        const textoCompleto = Array.from(document.querySelectorAll('.linha-folha'))
+                                  .map(input => input.value)
+                                  .join(' ').toUpperCase();
 
         const DICIONARIO = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" },
+            { id: "MANDADO DE SEGURANÇA", display: "MANDADO DE SEGURANÇA", cor: "#06b6d4" }
         ];
 
-        let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
+        let encontrado = DICIONARIO.find(p => textoCompleto.includes(p.id));
 
         if (encontrado) {
             sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
@@ -159,7 +176,14 @@
         }
     };
 
-    // --- MONTAGEM DA FOLHA COM AUTO-PULO ---
+    // --- IMPRESSÃO ---
+    window.imprimirFolha = () => {
+        const pecaNome = document.getElementById('identificador-peca').innerText;
+        document.title = `SIMULADO_E${activeEx}_${pecaNome}`;
+        window.print();
+    };
+
+    // --- MONTAGEM DA FOLHA ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -178,14 +202,13 @@
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
 
-            // AUTO-PULO AO DIGITAR
             input.oninput = () => {
+                escaneamentoElite(); // Roda o scanner a cada letra
                 if (input.value.length >= LIMITE_LINHA) {
                     document.getElementById(`L${i + 1}`)?.focus();
                 }
             };
 
-            // CONTROLE DE TECLAS
             input.onkeydown = (e) => { 
                 if (e.key === "Enter") { 
                     e.preventDefault(); 
@@ -217,12 +240,9 @@
         }, { onlyOnce: true });
     };
 
-    // --- MENTORIA EXTERNA ---
     window.abrirMentoria = () => {
         const width = 500;
-        const height = window.screen.height;
-        const left = window.screen.width - width;
-        const config = `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`;
+        const config = `width=${width},height=${window.screen.height},top=0,left=${window.screen.width - width},resizable=yes,scrollbars=yes`;
         if (mentoriaJanelaRef === null || mentoriaJanelaRef.closed) {
             mentoriaJanelaRef = window.open('mentoria.html', 'MentoriaElite', config);
         } else {
@@ -230,18 +250,16 @@
         }
     };
 
-    // --- EXAMES E AÇÕES ---
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
         content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
         const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
-        for(let i=44; i>=35; i--) {
+        for(let i=45; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
             b.onclick = () => { 
                 activeEx = i.toString(); 
                 localStorage.setItem('activeEx', activeEx); 
                 montarFolha(); 
-                escaneamentoElite();
                 fecharModal(); 
             };
             grid.appendChild(b);
@@ -296,7 +314,7 @@
     window.resetarFolha = () => { if(confirm("Limpar folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
 
     window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha, abrirMentoria });
+    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha, abrirMentoria, imprimirFolha });
 </script>
 </body>
 </html>
