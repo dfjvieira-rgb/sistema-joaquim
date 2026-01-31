@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - HOME</title>
+    <title>JOAQUIM ELITE 2026 - COCKPIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
+            --primary: #020617; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
             --header-h: 60px; --sidebar-w: 80px;
         }
@@ -16,34 +16,45 @@
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
         main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); }
-        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 10px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); }
+        .btn-side { width: 100%; min-height: 50px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding-bottom: 50px; }
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         .linha-folha { flex: 1; height: 35px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Courier New', monospace; color: var(--text-color); }
+        #identificador { width: 100%; padding: 20px; text-align: center; font-weight: 900; color: #64748b; border-bottom: 2px solid var(--line-color); letter-spacing: 2px; }
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); }
     </style>
 </head>
 <body class="dark-mode">
 
+<div class="loading-overlay" id="loader">
+    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+    <p style="margin-top: 15px; font-weight: bold;">SINCRONIZANDO COM O COFRE...</p>
+</div>
+
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
-    <button class="btn-side" style="width:120px; background:var(--gold); color: black; font-weight: bold; font-size: 0.8rem;" onclick="window.location.href='mentoria.html'">ABRIR COFRE</button>
+    <button onclick="window.location.href='mentoria.html'" style="background:var(--gold); border:none; padding:10px 20px; border-radius:8px; font-weight:900; cursor:pointer;">ACESSAR MENTORIA</button>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()">
+        <button class="btn-side" style="background:#059669; border: 2px solid white;" title="Enviar Simulado" onclick="concluirEEnviarAoRobo()">
             <i class="fas fa-check-double"></i>
         </button>
-        <button class="btn-side" style="background:#475569;" onclick="window.location.reload(true)">
+        <button class="btn-side" style="background:#3b82f6;" title="Salvar Rascunho" onclick="alert('Rascunho salvo no navegador!')">
+            <i class="fas fa-save"></i>
+        </button>
+        <button class="btn-side" style="background:#475569;" title="Recarregar" onclick="window.location.reload()">
             <i class="fas fa-sync"></i>
         </button>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
+            <div id="identificador">FOLHA DE RESPOSTAS OAB</div>
             <div id="folha-total"></div>
         </div>
     </section>
@@ -51,7 +62,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
@@ -63,7 +74,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Montar Folha
+    // Gerar Folha de 180 linhas
     const container = document.getElementById('folha-total');
     for(let i=1; i<=180; i++) {
         const row = document.createElement('div');
@@ -72,27 +83,34 @@
         container.appendChild(row);
     }
 
-    // Função Global
+    // FUNÇÃO DE ENVIO REFORÇADA
     window.concluirEEnviarAoRobo = async () => {
-        const confirmar = confirm("Deseja enviar para o Cofre do Robô?");
-        if(!confirmar) return;
+        if(!confirm("Confirmar envio para o Cofre de Simulados?")) return;
+
+        const loader = document.getElementById('loader');
+        loader.style.display = 'flex'; // Mostra o carregamento
 
         try {
-            const linhas = Array.from(document.querySelectorAll('.linha-folha')).map(el => el.value);
-            
-            // Gravação direta na pasta 'simulados'
+            const inputs = document.querySelectorAll('.linha-folha');
+            const dadosLinhas = Array.from(inputs).map(el => el.value);
+
+            // AWAIT força o navegador a esperar a resposta do Firebase
             await push(ref(db, 'simulados'), {
-                exame: localStorage.getItem('activeEx') || "44",
+                exame: "44",
                 data: new Date().toLocaleString('pt-BR'),
-                linhas: linhas,
-                ts: Date.now()
+                linhas: dadosLinhas,
+                ts: serverTimestamp()
             });
 
+            // Só executa o alerta após o 'await' terminar com sucesso
+            loader.style.display = 'none';
             alert("🚀 EXAME ARQUIVADO NO COFRE!");
             window.location.href = 'mentoria.html';
 
         } catch (err) {
-            alert("Erro de Conexão: " + err.message);
+            loader.style.display = 'none';
+            console.error("Erro detalhado:", err);
+            alert("FALHA NA CONEXÃO: " + err.message);
         }
     };
 </script>
