@@ -50,8 +50,8 @@
         .sidebar {
             width: var(--sidebar-w); background: #1e293b; display: flex;
             flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1); z-index: 100; flex-shrink: 0;
-            scrollbar-width: none;
+            border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            scrollbar-width: none; flex-shrink: 0;
         }
         
         #radar-peca {
@@ -80,7 +80,7 @@
         .editor-container {
             flex: 1; overflow-y: auto; background: var(--bg-paper);
             display: flex; justify-content: center; align-items: flex-start;
-            height: 100%; padding: 20px;
+            height: 100%; padding: 20px; transition: 0.3s ease; scroll-behavior: smooth;
         }
         
         .paper {
@@ -88,7 +88,6 @@
             min-height: fit-content; box-shadow: 0 0 20px rgba(0,0,0,0.2); position: relative;
         }
 
-        /* CABEÇALHO FGV FIXO NO TOPO DA FOLHA */
         .paper::before {
             content: "PEÇA PROFISSIONAL";
             display: block; background: #e2e8f0; color: #1e293b; padding: 10px;
@@ -99,20 +98,32 @@
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color);
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 4000px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
-            padding: 10px 40px 500px 40px; position: relative; z-index: 1;
+            min-height: 5000px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            padding: 10px 40px 100px 40px; position: relative; z-index: 1;
         }
 
-        /* MARCAÇÕES VISUAIS QUE NÃO ATRAPALHAM O CURSOR */
-        .fgv-watermark {
-            position: absolute; width: 100%; left: 0; pointer-events: none; 
-            user-select: none; z-index: 0;
+        .fgv-mark {
+            pointer-events: none; user-select: none;
+            background: #f1f5f9; color: #475569; font-weight: 900;
+            padding: 10px; text-align: center; font-size: 0.75rem;
+            border-top: 2px solid var(--gold); border-bottom: 1px solid var(--line-color);
+        }
+        .fgv-sub-mark {
+            pointer-events: none; user-select: none;
+            background: var(--primary); color: var(--gold);
+            padding: 5px 40px; font-size: 0.7rem; font-weight: 800;
         }
 
-        .fgv-tag {
-            background: #f1f5f9; color: #64748b; padding: 8px; font-weight: 900;
-            font-size: 0.75rem; text-align: center; border-top: 1px solid var(--gold);
-            margin-top: 1500px; /* Espaço para as 150 linhas da peça */
+        /* GPS DE NAVEGAÇÃO RÁPIDA */
+        .gps-navegacao {
+            position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 5px; z-index: 9999;
+        }
+        .btn-gps {
+            width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--gold);
+            background: var(--primary); color: var(--gold); font-weight: bold;
+            font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .pdf-panel {
@@ -122,12 +133,21 @@
         }
         .pdf-panel.open { width: 50%; }
 
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
+        .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
+        .peca-opt { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid var(--line-color); border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #1e293b; }
+
         @media (max-width: 900px) {
             .sidebar { 
                 width: 100%; height: 60px; flex-direction: row; 
                 position: fixed; bottom: 0; left: 0; border-right: none; border-top: 1px solid var(--gold);
-                padding: 5px; overflow-x: auto; z-index: 10001;
+                padding: 5px; overflow-x: auto;
             }
+            .gps-navegacao { right: 10px; top: 40%; }
+            .sidebar-divider { width: 2px; height: 80%; margin: 0 5px; }
+            #radar-peca { min-width: 80px; height: 100%; margin-bottom: 0; font-size: 0.45rem; }
+            .exame-btn { min-width: 45px; height: 100%; }
+            .btn-side { min-width: 45px; height: 100%; }
             .editor-container { padding-bottom: 80px; height: calc(100vh - var(--header-h) - 60px); }
             .pdf-panel.open { width: 100%; position: absolute; top:0; bottom:60px; right:0; z-index: 5001; }
         }
@@ -146,4 +166,186 @@
         <button class="btn-ref" id="ref-v" onclick="togglePdf('v')">V</button>
     </div>
     <div class="nav-group">
-        <button class
+        <button class="btn-tool" style="background:#a855f7" onclick="location.href='mentoria.html'"><i class="fas fa-brain"></i></button>
+        <button class="btn-tool" style="background:#ef4444" onclick="resetarFolha()"><i class="fas fa-trash-alt"></i></button>
+    </div>
+</header>
+
+<div class="gps-navegacao">
+    <button class="btn-gps" onclick="irPara('top')">PEÇA</button>
+    <button class="btn-gps" onclick="irPara('q1')">Q1</button>
+    <button class="btn-gps" onclick="irPara('q2')">Q2</button>
+    <button class="btn-gps" onclick="irPara('q3')">Q3</button>
+    <button class="btn-gps" onclick="irPara('q4')">Q4</button>
+</div>
+
+<main>
+    <aside class="sidebar">
+        <div id="radar-peca">ESCANEANDO</div>
+        <div id="exam-nav" style="display:contents"></div>
+        <div class="sidebar-divider"></div>
+        <button class="btn-side" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-side" style="background:#334155; border:1px solid var(--gold); color:var(--gold)" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:linear-gradient(135deg, #fbbf24, #ef4444)" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
+    </aside>
+
+    <section class="editor-container" id="scroll-container">
+        <div class="paper">
+            <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            
+            <div contenteditable="false">
+                <div id="q1" class="fgv-mark">QUESTÃO 1</div>
+                <div class="fgv-sub-mark">ITEM A</div><div style="height:350px"></div>
+                <div class="fgv-sub-mark">ITEM B</div><div style="height:350px"></div>
+                
+                <div id="q2" class="fgv-mark">QUESTÃO 2</div>
+                <div class="fgv-sub-mark">ITEM A</div><div style="height:350px"></div>
+                <div class="fgv-sub-mark">ITEM B</div><div style="height:350px"></div>
+                
+                <div id="q3" class="fgv-mark">QUESTÃO 3</div>
+                <div class="fgv-sub-mark">ITEM A</div><div style="height:350px"></div>
+                <div class="fgv-sub-mark">ITEM B</div><div style="height:350px"></div>
+                
+                <div id="q4" class="fgv-mark">QUESTÃO 4</div>
+                <div class="fgv-sub-mark">ITEM A</div><div style="height:350px"></div>
+                <div class="fgv-sub-mark">ITEM B</div><div style="height:350px"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="pdf-panel" id="pdf-panel">
+        <div style="height:40px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; padding:0 15px; color:white;">
+            <span id="pdf-title">SUPORTE ELITE</span>
+            <button onclick="closePdf()" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">X</button>
+        </div>
+        <iframe id="pdf-frame" style="width:100%; flex:1; border:none; background:white;"></iframe>
+    </div>
+</main>
+
+<div class="modal" id="pec-modal">
+    <div class="modal-body">
+        <h3 style="margin-bottom:15px; text-align:center; color: var(--text-color)">ESTRUTURAS DISPONÍVEIS</h3>
+        <div id="peca-grid" style="max-height:350px; overflow-y:auto;"></div>
+        <button onclick="fecharPecas()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:6px;">VOLTAR AO COCKPIT</button>
+    </div>
+</div>
+
+<script type="module">
+    import { db } from './firebase-config.js';
+    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+    import { pecas } from './estruturas.js';
+
+    let activeEx = "41";
+    const editor = document.getElementById('main-editor');
+    const radar = document.getElementById('radar-peca');
+    const scrollCont = document.getElementById('scroll-container');
+
+    window.irPara = (id) => {
+        if(id === 'top') {
+            scrollCont.scrollTo({top: 0, behavior: 'smooth'});
+        } else {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const atualizarRadar = () => {
+        const conteudo = BANCO_ESPELHOS[activeEx] || "";
+        const txt = conteudo.toUpperCase();
+        if (txt.includes("ORDINÁRIO")) radar.innerText = "REC. ORDINÁRIO";
+        else if (txt.includes("CONTESTAÇÃO")) radar.innerText = "CONTESTAÇÃO";
+        else if (txt.includes("RECLAMAÇÃO") || txt.includes("INICIAL")) radar.innerText = "RECLAMAÇÃO";
+        else if (txt.includes("AGRAVO DE PETIÇÃO")) radar.innerText = "AGRAVO PETIÇÃO";
+        else radar.innerText = "PEÇA OAB";
+    };
+
+    window.abrirPecas = () => {
+        const grid = document.getElementById('peca-grid');
+        grid.innerHTML = '';
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('button');
+            b.className = 'peca-opt';
+            b.innerHTML = `<i class="fas fa-file-contract"></i> ${k.toUpperCase()}`;
+            b.onclick = () => {
+                editor.focus();
+                document.execCommand('insertText', false, pecas[k]);
+                fecharPecas();
+                autoSave();
+            };
+            grid.appendChild(b);
+        });
+        document.getElementById('pec-modal').style.display = 'flex';
+    };
+
+    window.fecharPecas = () => document.getElementById('pec-modal').style.display = 'none';
+
+    window.salvarManual = () => {
+        set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+        alert("🛰️ SINCRONIZADO!");
+    };
+
+    window.injetarJustica = () => {
+        const esp = BANCO_ESPELHOS[activeEx];
+        if(esp) {
+            const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
+            editor.innerText += "\n\n--- ⚖️ CHECKLIST DE TESES ---\n[ ] " + checklist;
+            autoSave();
+        }
+    };
+
+    window.lancarPeca = () => {
+        if(confirm("Lançar esta peça ao histórico final?")) {
+            push(ref(db, 'historico/' + activeEx), { text: editor.innerText, ts: Date.now() });
+            alert("🚀 LANÇADO COM SUCESSO!");
+        }
+    };
+
+    window.toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    };
+
+    window.togglePdf = (mode) => {
+        const panel = document.getElementById('pdf-panel');
+        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById(`ref-${mode}`);
+        if(btn) btn.classList.add('active');
+        document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[mode];
+        panel.classList.add('open');
+    };
+
+    window.closePdf = () => {
+        document.getElementById('pdf-panel').classList.remove('open');
+        document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
+    };
+
+    const autoSave = () => set(ref(db, 'estudos/' + activeEx), { text: editor.innerText, ts: Date.now() });
+    window.resetarFolha = () => { if(confirm("Apagar tudo?")) { editor.innerText = ""; autoSave(); } };
+
+    const carregarExames = () => {
+        const nav = document.getElementById('exam-nav');
+        nav.innerHTML = '';
+        for (let i = 44; i >= 35; i--) {
+            const b = document.createElement('div');
+            b.className = `exame-btn ${i == activeEx ? 'active' : ''}`;
+            b.innerText = `E${i}`;
+            b.onclick = () => { activeEx = i.toString(); carregarExames(); carregarFirebase(); };
+            nav.appendChild(b);
+        }
+        atualizarRadar();
+    };
+
+    function carregarFirebase() {
+        onValue(ref(db, 'estudos/' + activeEx), (s) => {
+            const d = s.val();
+            if(d && d.text && document.activeElement !== editor) editor.innerText = d.text;
+        }, { onlyOnce: true });
+    }
+
+    carregarExames(); carregarFirebase();
+    editor.addEventListener('input', autoSave);
+</script>
+</body>
+</html>
