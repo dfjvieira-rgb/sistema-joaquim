@@ -35,7 +35,6 @@
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
-        @media print { header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; } }
     </style>
 </head>
 <body>
@@ -93,17 +92,6 @@
     let ultimaLinhaFocada = 1;
     const LIMITE_LINHA = 85;
 
-    const escaneamentoElite = () => {
-        const sidebarStatus = document.getElementById('radar-status');
-        const boxSidebar = document.getElementById('radar-container');
-        const topoFolha = document.getElementById('identificador-peca');
-        const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        const DICIONARIO = [{ id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },{ id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },{ id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },{ id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }];
-        let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
-        if (encontrado) { sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`; boxSidebar.style.borderColor = encontrado.cor; topoFolha.innerText = encontrado.display; topoFolha.style.color = encontrado.cor; }
-        else { sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`; topoFolha.innerText = "CADERNO DE RESPOSTAS"; }
-    };
-
     const montarFolha = () => {
         const container = document.getElementById('folha-total'); container.innerHTML = "";
         for(let i=1; i<=180; i++) {
@@ -123,8 +111,26 @@
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
             if (data && data.linhas) data.linhas.forEach((txt, idx) => { const el = document.getElementById(`L${idx + 1}`); if (el) el.value = txt; });
-            escaneamentoElite();
         }, { onlyOnce: true });
+    };
+
+    // FUNÇÃO REFORÇADA DE ENVIO AO ROBÔ
+    window.concluirEEnviarAoRobo = () => {
+        const exameAtual = localStorage.getItem('activeEx') || activeEx;
+        if(!confirm(`Finalizar Exame ${exameAtual} e enviar ao Robô?`)) return;
+
+        const dadosPeca = {
+            exame: exameAtual,
+            data: new Date().toLocaleDateString('pt-BR'),
+            ts: Date.now()
+        };
+
+        push(ref(db, 'mentoria/historico'), dadosPeca)
+            .then(() => {
+                alert("🚀 ENVIADO! Verifique no histórico do Robô.");
+                window.abrirMentoria();
+            })
+            .catch(err => alert("Erro ao enviar: " + err.message));
     };
 
     window.abrirMentoria = () => {
@@ -132,14 +138,8 @@
         window.open('mentoria.html?mode=consultor', 'ConsultorElite', `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`);
     };
 
-    window.concluirEEnviarAoRobo = () => {
-        if(!confirm("Enviar este Exame para o Histórico do Robô?")) return;
-        push(ref(db, 'mentoria/historico'), { exame: activeEx, data: new Date().toLocaleDateString('pt-BR'), ts: Date.now() })
-        .then(() => { alert("🚀 MISSÃO CONCLUÍDA NO COFRE!"); abrirMentoria(); });
-    };
-
     window.abrirModalExames = () => {
-        const content = document.getElementById('modal-content'); content.innerHTML = `<h2 style="text-align:center;">EXAMES</h2>`;
+        const content = document.getElementById('modal-content'); content.innerHTML = `<h2>EXAMES</h2>`;
         const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
@@ -171,7 +171,7 @@
     };
 
     window.abrirSplitPdf = (t) => { document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`; document.getElementById('pdf-split-view').classList.add('active'); };
-    window.fecharSplitPdf = () => { document.getElementById('pdf-split-view').classList.remove('active'); };
+    window.fecharSplitPdf = () => document.getElementById('pdf-split-view').classList.remove('active');
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
 
