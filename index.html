@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JOAQUIM ELITE - LOGIC SCANNER</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -31,6 +32,7 @@
         #radar-peca { 
             background: #000; color: var(--gold); padding: 8px 2px; border-radius: 5px; border: 2px solid var(--gold); 
             font-size: 0.55rem; font-weight: 900; text-align: center; margin-bottom: 10px; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.3s;
         }
         #radar-peca.detectado { background: #16a34a; color: white; border-color: white; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5); }
         .radar-blink { font-size: 0.45rem; opacity: 0.7; margin-top: 2px; }
@@ -55,24 +57,47 @@
         /* TURBINAS */
         .paper-tools { position: fixed; left: 85px; bottom: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 99999; }
         .btn-float { width: 58px; height: 58px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transition: 0.2s; }
-        .btn-float:hover { transform: scale(1.1); }
         
         .bg-save { background: #22c55e; }
         .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
         .bg-justica { background: #3b82f6; }
         .bg-rocket { background: linear-gradient(45deg, #f59e0b, #ef4444); }
 
-        /* PDF PANEL */
+        /* BANNER PDF */
+        #banner-pdf {
+            position: fixed; top: 0; left: 0; width: 100%; background: #fbbf24; color: #000;
+            padding: 15px; z-index: 100000; display: none; justify-content: space-between; align-items: center;
+            font-weight: 800; border-bottom: 2px solid #000; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* MODAL E PANEL */
         .pdf-panel { position: fixed; right: 0; top: var(--header-h); bottom: 0; width: 0; background: #444; transition: 0.3s; z-index: 5000; display: flex; flex-direction: column; }
         .pdf-panel.open { width: 50%; border-left: 2px solid var(--gold); }
-
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
+
+        /* REGRAS DE IMPRESSÃO FGV */
+        @media print {
+            body * { visibility: hidden; }
+            #banner-pdf { display: none !important; }
+            .paper, .paper * { visibility: visible; }
+            .paper { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 0; }
+            .sidebar, header, .paper-tools, .pdf-panel { display: none !important; }
+            .editor-area { 
+                background-image: repeating-linear-gradient(#fff, #fff 29px, #ccc 29px, #ccc 30px) !important;
+                color: #000 !important;
+            }
+        }
 
         @media (max-width: 900px) { .pdf-panel.open { width: 100%; } .paper-tools { left: auto; right: 20px; flex-direction: row; } }
     </style>
 </head>
 <body class="dark-mode">
+
+<div id="banner-pdf">
+    <span><i class="fas fa-file-pdf"></i> MODO PDF ATIVADO: EXAME E<span id="label-ex-pdf"></span></span>
+    <button onclick="window.print()" style="background:#000; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:900; cursor:pointer;">GERAR PDF AGORA</button>
+</div>
 
 <header>
     <div class="nav-group">
@@ -143,12 +168,30 @@
 
 <script type="module">
     import { db } from './firebase-config.js';
-    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
     let activeEx = "41";
     const ids = ['editor-peca', 'q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q4a', 'q4b'];
+
+    // --- SOLDAGEM: MODO PDF REQUISITADO ---
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const exParam = params.get('exame');
+        const viewMode = params.get('view');
+
+        if (exParam) {
+            activeEx = exParam;
+            initNav();
+            carregarDados();
+        }
+
+        if (viewMode === 'pdf') {
+            document.getElementById('banner-pdf').style.display = 'flex';
+            document.getElementById('label-ex-pdf').innerText = activeEx;
+        }
+    };
 
     window.toggleTheme = () => {
         document.body.classList.toggle('dark-mode');
@@ -165,9 +208,11 @@
         }
     };
 
+    // --- SOLDAGEM: SALVAMENTO PARA MENTORIA (ESTUDOS) ---
     window.salvarTudo = () => {
         const data = {};
         ids.forEach(id => data[id] = document.getElementById(id).innerText);
+        // Salva na rota de estudos para a mentoria ler
         set(ref(db, `estudos/${activeEx}`), { ...data, ts: Date.now() });
     };
 
@@ -197,51 +242,49 @@
         document.getElementById('pdf-panel').classList.add('open');
     };
 
-    window.closePdf = () => document.getElementById('pdf-panel').classList.remove('open');
-    window.resetarFolha = () => { if(confirm("Limpar tudo?")) ids.forEach(id => document.getElementById(id).innerText = ""); salvarTudo(); };
+    window.resetarFolha = () => { 
+        if(confirm("Deseja apagar os dados deste exame permanentemente?")) {
+            ids.forEach(id => document.getElementById(id).innerText = "");
+            remove(ref(db, `estudos/${activeEx}`)); 
+        }
+    };
 
-    // --- REFINAMENTO LÓGICO DO RADAR (ALGORITMO DE DECISÃO) ---
-    const carregarDados = () => {
+    // --- SOLDAGEM: ESCÂNER E RADAR ---
+    window.carregarDados = () => {
         onValue(ref(db, `estudos/${activeEx}`), (s) => {
             const d = s.val();
+            // Limpa antes de carregar novo exame
+            ids.forEach(id => document.getElementById(id).innerText = "");
             if(d) ids.forEach(id => { if(d[id]) document.getElementById(id).innerText = d[id]; });
         }, { onlyOnce: true });
 
-        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        // Identificação por Espelho (Escâner)
+        const txtEspelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const radar = document.getElementById('radar-peca');
         
-        // Módulo de Decisão Lógica por Prioridade
-        const DICIONARIO_PECAS = [
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO" },
-            { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO" },
-            { id: "RECLAMAÇÃO TRABALHISTA", display: "RECLAMAÇÃO" },
-            { id: "INICIAL", display: "RECLAMAÇÃO" },
-            { id: "CONSIGNATÓRIA", display: "CONSIGNATÓRIA" },
-            { id: "EMBARGOS À EXECUÇÃO", display: "EMBARGOS EXEC." },
-            { id: "MANDADO DE SEGURANÇA", display: "MAND. SEGURANÇA" }
+        const DICIONARIO = [
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO", cor: "#9333ea" },
+            { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO", cor: "#2563eb" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO", cor: "#dc2626" },
+            { id: "RECLAMAÇÃO TRABALHISTA", display: "RECLAMAÇÃO", cor: "#16a34a" },
+            { id: "CONSIGNATÓRIA", display: "CONSIGNATÓRIA", cor: "#d97706" },
+            { id: "EMBARGOS À EXECUÇÃO", display: "EMBARGOS EXEC.", cor: "#0891b2" }
         ];
 
-        let pecaEncontrada = null;
+        let detectada = DICIONARIO.find(item => txtEspelho.includes(item.id));
 
-        // Loop Lógico: Varre o texto em busca da primeira correspondência forte
-        for (let item of DICIONARIO_PECAS) {
-            if (txt.includes(item.id)) {
-                pecaEncontrada = item.display;
-                break; // Achou a peça principal, encerra a varredura
-            }
-        }
-
-        if (pecaEncontrada) {
-            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.5rem">${pecaEncontrada}</span>`;
+        if (detectada) {
+            radar.innerHTML = `<span>RADAR</span><span style="font-size:0.6rem">${detectada.display}</span>`;
+            radar.style.background = detectada.cor;
             radar.classList.add('detectado');
         } else {
-            radar.innerHTML = `<span>RADAR</span><span class="radar-blink">BUSCANDO...</span>`;
+            radar.innerHTML = `<span>RADAR</span><span class="radar-blink">VARRENDO...</span>`;
+            radar.style.background = "#000";
             radar.classList.remove('detectado');
         }
     };
 
-    const initNav = () => {
+    window.initNav = () => {
         const nav = document.getElementById('exam-nav');
         nav.innerHTML = '';
         for(let i=44; i>=35; i--) {
@@ -253,7 +296,8 @@
         }
     };
 
-    initNav(); carregarDados();
+    initNav(); 
+    carregarDados();
     ids.forEach(id => document.getElementById(id).addEventListener('input', salvarTudo));
 </script>
 </body>
