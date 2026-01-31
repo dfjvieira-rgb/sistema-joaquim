@@ -38,7 +38,6 @@
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); transition: 0.3s; }
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         
-        /* ALERTA DE LINHA PROIBIDA */
         .linha-proibida { background-color: rgba(251, 191, 36, 0.15) !important; border-left: 5px solid var(--gold); }
 
         .linha-folha { 
@@ -49,10 +48,18 @@
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: 0.2s; }
         
+        /* CSS PARA IMPRESSÃO - GERAÇÃO DE PDF PROFISSIONAL */
+        @media print {
+            header, .sidebar, #status-bar, #pdf-split-view, .btn-side { display: none !important; }
+            body { background: white; height: auto; overflow: visible; }
+            .editor-container { padding: 0; background: white; overflow: visible; }
+            .paper { box-shadow: none; max-width: 100%; border: 1px solid #eee; }
+            .linha-folha { color: black !important; }
+            .linha-num { color: #999 !important; border-right: 1px solid #ddd !important; }
+        }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
-        #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; }
-        #pdf-split-view.active { display: block; }
     </style>
 </head>
 <body>
@@ -60,14 +67,14 @@
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
     <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:#64748b;" title="Modo Escuro" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
-        <button class="btn-side" style="width:40px; background:#ef4444;" title="Limpar Tudo" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
+        <button class="btn-side" style="width:40px; background:#64748b;" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
+        <button class="btn-side" style="width:40px; background:#ef4444;" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
     </div>
 </header>
 
 <div id="status-bar">
     <div><i class="fas fa-clock"></i> CRONÔMETRO: <span id="timer">05:00:00</span></div>
-    <div><i class="fas fa-keyboard"></i> FGV MODE: <span style="color:var(--gold)">85 CHARS/LINHA</span> | <i class="fas fa-eraser"></i> <span style="color:var(--gold)">SHIFT+ARRASAR</span></div>
+    <div><i class="fas fa-keyboard"></i> FGV MODE | <i class="fas fa-file-pdf"></i> <span style="color:var(--gold)">PDF DISPONÍVEL</span></div>
 </div>
 
 <main>
@@ -75,6 +82,9 @@
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
         <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
         <button class="btn-side" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+        
+        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
+        
         <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
         <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()"><i class="fas fa-robot"></i></button>
@@ -110,7 +120,6 @@
     let mentoriaJanelaRef = null;
     const LIMITE_CARACTERE = 85;
 
-    // --- CRONÔMETRO ---
     let segundos = 5 * 60 * 60;
     const dispararTimer = () => {
         setInterval(() => {
@@ -119,12 +128,10 @@
             let m = Math.floor((segundos % 3600) / 60);
             let s = segundos % 60;
             const tDisplay = document.getElementById('timer');
-            tDisplay.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if(segundos < 1800) tDisplay.style.color = "#ef4444";
+            if(tDisplay) tDisplay.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }, 1000);
     };
 
-    // --- VERIFICADOR DE ESPAÇOS PERIGOSOS ---
     const verificarEspacos = () => {
         const linhas = document.querySelectorAll('.linha-folha');
         linhas.forEach((l, idx) => {
@@ -137,7 +144,6 @@
         });
     };
 
-    // --- MONTAGEM DA FOLHA ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -149,32 +155,12 @@
             input.id = `L${i}`;
             input.maxLength = LIMITE_CARACTERE;
 
-            // BORRACHA (Shift + Mouse)
-            input.onmouseenter = (e) => {
-                if (e.shiftKey && e.buttons === 1) {
-                    input.value = "";
-                    verificarEspacos();
-                }
+            input.onmouseenter = (e) => { if (e.shiftKey && e.buttons === 1) { input.value = ""; verificarEspacos(); } };
+            input.oninput = () => { if (input.value.length >= LIMITE_CARACTERE) document.getElementById(`L${i+1}`)?.focus(); verificarEspacos(); };
+            input.onkeydown = (e) => { 
+                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
+                if (e.key === "Backspace" && input.value === "") document.getElementById(`L${i-1}`)?.focus();
             };
-
-            // AUTO-PULO INTELIGENTE
-            input.oninput = () => {
-                if (input.value.length >= LIMITE_CARACTERE) {
-                    document.getElementById(`L${i+1}`)?.focus();
-                }
-                verificarEspacos();
-            };
-
-            input.onkeydown = (e) => {
-                if (e.key === "Enter") { 
-                    e.preventDefault(); 
-                    document.getElementById(`L${i+1}`)?.focus(); 
-                }
-                if (e.key === "Backspace" && input.value === "") {
-                    document.getElementById(`L${i-1}`)?.focus();
-                }
-            };
-
             input.onfocus = () => { ultimaLinhaFocada = i; };
             row.innerHTML = `<div class="linha-num">${i}</div>`;
             row.appendChild(input);
@@ -183,31 +169,20 @@
         carregarDados();
     };
 
-    // --- APOIO ---
     const escaneamentoElite = () => {
         const status = document.getElementById('radar-status');
         const topo = document.getElementById('identificador-peca');
         const dna = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        
-        const peca = dna.includes("AGRAVO DE PETIÇÃO") ? {t:"AGRAVO DE PETIÇÃO", c:"#f87171"} :
-                     dna.includes("RECURSO ORDINÁRIO") ? {t:"RECURSO ORDINÁRIO", c:"#3b82f6"} :
-                     dna.includes("CONTESTAÇÃO") ? {t:"CONTESTAÇÃO", c:"#22c55e"} : 
-                     {t:"CADERNO DE PROVA", c:"#64748b"};
-
-        status.innerHTML = `<span style="color:${peca.c}">RADAR</span><br>${peca.t}`;
-        topo.innerText = peca.t;
-        topo.style.color = peca.c;
+        const p = dna.includes("AGRAVO") ? {t:"AGRAVO DE PETIÇÃO", c:"#f87171"} : dna.includes("ORDINÁRIO") ? {t:"RECURSO ORDINÁRIO", c:"#3b82f6"} : {t:"CONTESTAÇÃO", c:"#22c55e"};
+        status.innerHTML = `<span style="color:${p.c}">RADAR</span><br>${p.t}`;
+        topo.innerText = p.t + " - EXAME " + activeEx;
+        topo.style.color = p.c;
     };
 
     const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
-            if (data && data.linhas) {
-                data.linhas.forEach((txt, idx) => {
-                    const el = document.getElementById(`L${idx + 1}`);
-                    if (el) el.value = txt;
-                });
-            }
+            if (data && data.linhas) data.linhas.forEach((txt, idx) => { if (document.getElementById(`L${idx+1}`)) document.getElementById(`L${idx+1}`).value = txt; });
             escaneamentoElite();
             verificarEspacos();
         }, { onlyOnce: true });
@@ -215,13 +190,7 @@
 
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
-    };
-
-    window.abrirMentoria = () => {
-        const specs = `width=500,height=${window.screen.height},top=0,left=${window.screen.width-500}`;
-        if (!mentoriaJanelaRef || mentoriaJanelaRef.closed) mentoriaJanelaRef = window.open('mentoria.html', 'MentoriaElite', specs);
-        else mentoriaJanelaRef.focus();
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
     };
 
     window.abrirModalExames = () => {
@@ -232,17 +201,14 @@
             b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); fecharModal(); };
             content.querySelector('#grid-ex').appendChild(b);
         }
-        content.innerHTML += `<button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:10px; background:#000; color:#fff; border-radius:8px;">FECHAR</button>`;
         document.getElementById('universal-modal').style.display='flex';
     };
 
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.onload = () => { montarFolha(); dispararTimer(); };
-    window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=""); verificarEspacos(); };
-    window.abrirSplitPdf = (t) => { 
-        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}.pdf`; 
-        document.getElementById('pdf-split-view').classList.add('active'); 
-    };
+    window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=""); };
+    window.abrirSplitPdf = (t) => { document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}.pdf`; document.getElementById('pdf-split-view').classList.add('active'); };
+    window.abrirMentoria = () => { const specs = `width=500,height=${window.screen.height},top=0,left=${window.screen.width-500}`; window.open('mentoria.html', 'Mentoria', specs); };
     
     Object.assign(window, { abrirModalExames, fecharModal, abrirSplitPdf, salvarManual, abrirMentoria, resetarFolha });
 </script>
