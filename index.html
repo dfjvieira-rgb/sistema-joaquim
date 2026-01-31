@@ -3,59 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - FINAL FIX</title>
+    <title>JOAQUIM ELITE 2026 - RADAR PRO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
             --header-h: 60px; --sidebar-w: 85px;
+            /* Cores de Identificação */
+            --color-recurso: #3b82f6; --color-defesa: #22c55e; --color-inicial: #a855f7;
         }
         body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; flex-shrink: 0; }
-        .nav-group { display: flex; gap: 8px; }
-        .btn-tool, .btn-ref { height: 42px; width: 42px; border-radius: 8px; border: 2px solid var(--gold); background: #1e293b; color: var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 10px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        #radar-peca { 
-            background: #000; color: var(--gold); padding: 8px 4px; border-radius: 6px; 
-            font-size: 0.58rem; font-weight: 900; text-align: center; border: 1.5px solid var(--gold); 
-            min-height: 65px; display: flex; align-items: center; justify-content: center; 
-            text-transform: uppercase; margin-bottom: 5px; line-height: 1.2;
+        header { background: var(--primary); height: var(--header-h); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; }
+        
+        /* RADAR EVOLUÍDO */
+        #radar-container {
+            background: #000; border: 2px solid var(--gold); border-radius: 8px;
+            margin-bottom: 10px; padding: 5px; text-align: center;
+            min-height: 80px; display: flex; flex-direction: column; justify-content: center;
+            transition: all 0.3s ease;
         }
-        .btn-side { width: 100%; min-height: 55px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; cursor: pointer; transition: 0.1s; }
-        .btn-side:active { background: var(--gold); color: var(--primary); }
+        .radar-label { font-size: 0.5rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-bottom: 3px; }
+        #radar-status { font-size: 0.65rem; color: #fff; font-weight: 900; line-height: 1.2; }
+        
+        /* STATUS DE CORES DO RADAR */
+        .radar-recurso { border-color: var(--color-recurso) !important; box-shadow: 0 0 10px var(--color-recurso); }
+        .radar-defesa { border-color: var(--color-defesa) !important; box-shadow: 0 0 10px var(--color-defesa); }
+        .radar-inicial { border-color: var(--color-inicial) !important; box-shadow: 0 0 10px var(--color-inicial); }
+
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .btn-side { width: 100%; min-height: 55px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; cursor: pointer; }
 
         .editor-container { flex: 1; overflow-y: auto; display: flex; justify-content: center; padding: 20px; background: var(--bg-paper); scroll-behavior: smooth; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; position: relative; box-shadow: 0 0 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; padding-bottom: 150px; }
         
-        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); align-items: center; }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #94a3b8; text-align: center; border-right: 1px solid var(--line-color); user-select: none; font-weight: bold; }
-        .linha-folha { flex: 1; height: 32px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 19px; font-family: 'Times New Roman', serif; color: var(--text-color); width: 100%; }
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #94a3b8; text-align: center; border-right: 1px solid var(--line-color); padding-top: 8px; font-weight: bold; }
+        .linha-folha { flex: 1; height: 32px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 19px; font-family: 'Times New Roman', serif; color: var(--text-color); }
 
-        .fgv-separador { background: #f1f5f9; color: #475569; font-weight: 900; padding: 10px; text-align: center; font-size: 0.8rem; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); width: 100%; pointer-events: none; }
-        .fgv-item-label { background: var(--primary); color: var(--gold); padding: 5px 20px; font-size: 0.7rem; font-weight: 800; width: 100%; pointer-events: none; }
-
-        .gps-navegacao { position: fixed; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .btn-gps { width: 45px; height: 45px; border-radius: 10px; border: 2px solid var(--gold); background: var(--primary); color: var(--gold); font-weight: 900; cursor: pointer; font-size: 0.7rem; }
-
+        .fgv-header { background: #f1f5f9; color: #475569; font-weight: 900; padding: 8px; text-align: center; font-size: 0.75rem; border-y: 1px solid var(--gold); pointer-events: none; }
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .modal-body { background: var(--paper-color); width: 90%; max-width: 480px; border-radius: 20px; padding: 25px; border: 2px solid var(--gold); max-height: 80vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold; cursor: pointer; text-align: center; color: #333; }
 
-        .pdf-panel { width: 0; background: white; transition: 0.3s; display: flex; flex-direction: column; overflow: hidden; border-left: 2px solid var(--gold); z-index: 1500; }
-        .pdf-panel.open { width: 50%; }
-
         @media (max-width: 900px) {
-            .sidebar { width: 100%; height: 80px; flex-direction: row; position: fixed; bottom: 0; left: 0; z-index: 2000; border-top: 2px solid var(--gold); padding: 5px; justify-content: space-around; }
-            #radar-peca { display: none; }
-            .gps-navegacao { display: none; }
-            .pdf-panel.open { width: 100%; position: absolute; inset: 0; }
+            .sidebar { width: 100%; height: 85px; flex-direction: row; position: fixed; bottom: 0; left: 0; padding: 5px; justify-content: space-around; }
+            #radar-container { display: none; }
+            .editor-container { padding-bottom: 100px; }
         }
     </style>
 </head>
@@ -67,27 +66,16 @@
         <button class="btn-tool" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
     </div>
     <div class="nav-group">
-        <button class="btn-ref" onclick="togglePdf('p')">P</button>
-        <button class="btn-ref" onclick="togglePdf('g')">G</button>
-        <button class="btn-ref" onclick="togglePdf('v')">V</button>
-    </div>
-    <div class="nav-group">
-        <button class="btn-tool" style="background:#a855f7; border:none;" onclick="window.open('mentoria.html','_blank')"><i class="fas fa-brain"></i></button>
         <button class="btn-tool" style="background:#ef4444; border:none;" onclick="resetarTudo()"><i class="fas fa-trash-alt"></i></button>
     </div>
 </header>
 
-<div class="gps-navegacao">
-    <button class="btn-gps" onclick="irPara(1)">PEÇA</button>
-    <button class="btn-gps" onclick="irPara(51)">Q1</button>
-    <button class="btn-gps" onclick="irPara(81)">Q2</button>
-    <button class="btn-gps" onclick="irPara(111)">Q3</button>
-    <button class="btn-gps" onclick="irPara(141)">Q4</button>
-</div>
-
 <main>
     <aside class="sidebar">
-        <div id="radar-peca">OFFLINE</div>
+        <div id="radar-container">
+            <div class="radar-label"><i class="fas fa-satellite-dish"></i> Radar Elite</div>
+            <div id="radar-status">AGUARDANDO...</div>
+        </div>
         <button class="btn-side" style="background:var(--gold); color:var(--primary)" onclick="abrirModal('exames')"><i class="fas fa-bullseye"></i></button>
         <button class="btn-side" style="background:#22c55e" onclick="salvar()"><i class="fas fa-cloud-upload-alt"></i></button>
         <button class="btn-side" style="background:#334155; border:1px solid var(--gold); color:var(--gold)" onclick="abrirModal('pecas')"><i class="fas fa-scroll"></i></button>
@@ -98,18 +86,11 @@
     <section class="editor-container" id="scroll-ctx">
         <div class="paper" id="folha-total"></div>
     </section>
-
-    <div class="pdf-panel" id="pdf-panel">
-        <div style="height:40px; background:var(--primary); display:flex; justify-content:flex-end; padding:5px;">
-             <button onclick="togglePdf()" style="background:#ef4444; color:white; border:none; padding:0 15px; border-radius:5px; font-weight:bold;">FECHAR</button>
-        </div>
-        <iframe id="pdf-frame" style="width:100%; height:100%; border:none; background:white;"></iframe>
-    </div>
 </main>
 
 <div class="modal" id="universal-modal">
     <div class="modal-body">
-        <h2 id="modal-header" style="text-align:center; margin-bottom:20px; color:#1e293b; border-bottom:2px solid var(--gold);">SELECIONE</h2>
+        <h2 id="modal-header" style="text-align:center; margin-bottom:20px; color:#1e293b">SELECIONE</h2>
         <div id="modal-content"></div>
         <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:bold;">VOLTAR</button>
     </div>
@@ -125,67 +106,61 @@
     let ultimaLinhaFocada = 1;
     const folha = document.getElementById('folha-total');
 
-    // --- ESCÂNER (RADAR) CORRIGIDO ---
-    const atualizarRadar = () => {
-        const display = document.getElementById('radar-peca');
-        // Busca tanto por chave string quanto número para evitar erro de referência
-        const espelhoRaw = BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)];
+    // --- ESCÂNER REFINADO ---
+    const escaneamentoPro = () => {
+        const radar = document.getElementById('radar-container');
+        const status = document.getElementById('radar-status');
+        const espelho = (BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)] || "").toUpperCase();
+
+        radar.className = ''; // Reseta classes
         
-        if(!espelhoRaw) {
-            display.innerText = "RADAR:\nSEM DADOS";
-            console.warn("Radar não encontrou o exame:", activeEx);
+        if (!espelho) {
+            status.innerText = "GABARITO\nNÃO MAPEADO";
             return;
         }
 
-        const texto = espelhoRaw.toUpperCase();
-        let detectado = "PEÇA OAB";
+        // Mapeamento por Estrutura de Peça
+        const buscas = [
+            { nome: "RECURSO ORDINÁRIO", keys: ["ORDINÁRIO", "895"], cor: "radar-recurso" },
+            { nome: "CONTESTAÇÃO", keys: ["CONTESTAÇÃO", "847"], cor: "radar-defesa" },
+            { nome: "RECLAMATÓRIA", keys: ["RECLAMAÇÃO", "RECLAMATÓRIA", "840"], cor: "radar-inicial" },
+            { nome: "CONSIGNAÇÃO", keys: ["CONSIGNAÇÃO", "PAGAMENTO"], cor: "radar-inicial" },
+            { nome: "EMBARGOS", keys: ["EMBARGOS", "EXECUÇÃO"], cor: "radar-defesa" },
+            { nome: "AÇÃO DE INDENIZAÇÃO", keys: ["INDENIZAÇÃO", "DANOS"], cor: "radar-inicial" }
+        ];
 
-        if(texto.includes("ORDINÁRIO")) detectado = "REC. ORDINÁRIO";
-        else if(texto.includes("CONTESTAÇÃO")) detectado = "CONTESTAÇÃO";
-        else if(texto.includes("CONSIGNAÇÃO")) detectado = "CONSIGNAÇÃO";
-        else if(texto.includes("RECLAMAÇÃO") || texto.includes("RECLAMATÓRIA")) detectado = "RECLAMATÓRIA";
-        else if(texto.includes("EMBARGOS")) detectado = "EMBARGOS";
-        else if(texto.includes("MANDADO DE SEGURANÇA")) detectado = "MAN. SEGURANÇA";
+        let achou = buscas.find(b => b.keys.some(k => espelho.includes(k)));
 
-        display.innerText = "RADAR:\n" + detectado;
+        if (achou) {
+            status.innerText = achou.nome;
+            radar.classList.add(achou.cor);
+        } else {
+            status.innerText = "PEÇA\nIDENTIFICADA";
+        }
     };
 
     const criarFolha = () => {
         folha.innerHTML = '';
         for(let i=1; i<=180; i++) {
-            if(i === 1) folha.innerHTML += '<div class="fgv-separador">PEÇA PROFISSIONAL</div>';
-            if(i === 51) { folha.innerHTML += '<div class="fgv-separador">QUESTÃO 1</div><div class="fgv-item-label">ITEM A</div>'; }
-            if(i === 66) folha.innerHTML += '<div class="fgv-item-label">ITEM B</div>';
-            if(i === 81) { folha.innerHTML += '<div class="fgv-separador">QUESTÃO 2</div><div class="fgv-item-label">ITEM A</div>'; }
-            if(i === 96) folha.innerHTML += '<div class="fgv-item-label">ITEM B</div>';
-            if(i === 111) { folha.innerHTML += '<div class="fgv-separador">QUESTÃO 3</div><div class="fgv-item-label">ITEM A</div>'; }
-            if(i === 126) folha.innerHTML += '<div class="fgv-item-label">ITEM B</div>';
-            if(i === 141) { folha.innerHTML += '<div class="fgv-separador">QUESTÃO 4</div><div class="fgv-item-label">ITEM A</div>'; }
-            if(i === 156) folha.innerHTML += '<div class="fgv-item-label">ITEM B</div>';
+            if(i === 1) folha.innerHTML += '<div class="fgv-header">PEÇA PROFISSIONAL</div>';
+            if(i === 51) folha.innerHTML += '<div class="fgv-header">QUESTÃO 1 (A/B)</div>';
+            if(i === 81) folha.innerHTML += '<div class="fgv-header">QUESTÃO 2 (A/B)</div>';
+            if(i === 111) folha.innerHTML += '<div class="fgv-header">QUESTÃO 3 (A/B)</div>';
+            if(i === 141) folha.innerHTML += '<div class="fgv-header">QUESTÃO 4 (A/B)</div>';
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'linha-wrapper';
+            const wrap = document.createElement('div');
+            wrap.className = 'linha-wrapper';
             const num = document.createElement('div');
             num.className = 'linha-num'; num.innerText = i;
-
             const input = document.createElement('input');
             input.className = 'linha-folha';
             input.id = `L${i}`;
-            input.type = "text"; // Força comportamento de input padrão
             input.onfocus = () => ultimaLinhaFocada = i;
             input.oninput = salvar;
 
-            wrapper.appendChild(num);
-            wrapper.appendChild(input);
-            folha.appendChild(wrapper);
-        }
-    };
-
-    window.irPara = (linha) => {
-        const el = document.getElementById(`L${linha}`);
-        if(el) { 
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-            setTimeout(() => el.focus(), 500); 
+            wrap.appendChild(num);
+            wrap.appendChild(input);
+            folha.appendChild(wrap);
         }
     };
 
@@ -194,39 +169,16 @@
         set(ref(db, 'estudos/'+activeEx), { linhas: dados, ts: Date.now() });
     };
 
-    window.injetarJustica = () => {
-        const esp = BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)];
-        if(!esp) return;
-        const frases = esp.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
-        if(confirm(`Injetar teses na linha ${ultimaLinhaFocada}?`)) {
-            frases.forEach((frase, index) => {
-                const el = document.getElementById(`L${ultimaLinhaFocada + index}`);
-                if(el) el.value = "[ ] " + frase.trim();
-            });
-            salvar();
-        }
-    };
-
-    window.lancarPeca = () => {
-        if(confirm("Lançar no histórico?")) {
-            const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
-            push(ref(db, 'historico/'+activeEx), { linhas: dados, ts: Date.now() });
-            alert("🚀 LANÇADO!");
-        }
-    };
-
     const carregarFirebase = () => {
         onValue(ref(db, 'estudos/'+activeEx), (s) => {
             const d = s.val();
             const inputs = document.querySelectorAll('.linha-folha');
             if(d && d.linhas) {
-                d.linhas.forEach((txt, i) => {
-                    if(inputs[i]) inputs[i].value = txt;
-                });
+                d.linhas.forEach((txt, i) => { if(inputs[i]) inputs[i].value = txt; });
             } else {
                 inputs.forEach(l => l.value = '');
             }
-            atualizarRadar();
+            escaneamentoPro();
         }, { onlyOnce: true });
     };
 
@@ -260,19 +212,23 @@
         document.getElementById('universal-modal').style.display = 'flex';
     };
 
-    window.fecharModal = () => document.getElementById('universal-modal').style.display = 'none';
-    window.togglePdf = (m) => {
-        if(!m) { document.getElementById('pdf-panel').classList.remove('open'); return; }
-        document.getElementById('pdf-frame').src = m==='v' ? 'vade.pdf' : `ro${activeEx}${m==='g'?'-gabarito':''}.pdf`;
-        document.getElementById('pdf-panel').classList.add('open');
+    window.injetarJustica = () => {
+        const esp = BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)];
+        if(!esp) return;
+        const frases = esp.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
+        frases.forEach((frase, index) => {
+            const el = document.getElementById(`L${ultimaLinhaFocada + index}`);
+            if(el) el.value = "[ ] " + frase.trim();
+        });
+        salvar();
     };
-    window.resetarTudo = () => { if(confirm("Limpar tudo?")) { document.querySelectorAll('.linha-folha').forEach(l => l.value=''); salvar(); }};
 
-    // START
+    window.fecharModal = () => document.getElementById('universal-modal').style.display = 'none';
+    window.resetarTudo = () => { if(confirm("Limpar?")) { document.querySelectorAll('.linha-folha').forEach(l => l.value=''); salvar(); }};
+
     criarFolha();
     carregarFirebase();
-    
-    Object.assign(window, { abrirModal, fecharModal, togglePdf, resetarTudo, irPara, injetarJustica, lancarPeca });
+    Object.assign(window, { abrirModal, fecharModal, resetarTudo, injetarJustica });
 </script>
 </body>
 </html>
