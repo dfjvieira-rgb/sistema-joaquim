@@ -9,7 +9,7 @@
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #eef2f7;
-            --header-h: 65px;
+            --header-h: 65px; --sidebar-w: 75px;
         }
 
         body.dark-mode {
@@ -47,10 +47,12 @@
 
         main { display: flex; flex: 1; overflow: hidden; background: var(--bg-paper); position: relative; width: 100%; }
 
+        /* SIDEBAR COM TURBINAS INTEGRADAS */
         .sidebar {
-            width: 70px; background: #1e293b; display: flex;
-            flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto;
+            width: var(--sidebar-w); background: #1e293b; display: flex;
+            flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto;
             border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            scrollbar-width: none;
         }
         
         #radar-peca {
@@ -68,16 +70,23 @@
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        /* EDITOR E PAINEL PDF DIVIDINDO ESPAÇO */
+        /* DIVISOR DE COMANDOS NA SIDEBAR */
+        .sidebar-divider { height: 2px; background: rgba(255,255,255,0.1); margin: 5px 0; }
+
+        .btn-side {
+            width: 100%; height: 50px; border-radius: 8px; border: none;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+        }
+
         .editor-container {
             flex: 1; overflow-y: auto; background: var(--bg-paper);
             display: flex; justify-content: center; transition: 0.3s ease;
-            -webkit-overflow-scrolling: touch;
         }
         
         .paper {
             background: var(--paper-color); width: 100%; max-width: 850px; min-height: 100%;
-            padding: 30px 20px 300px 20px; position: relative;
+            padding: 30px 20px 100px 20px; position: relative;
         }
 
         .editor-area {
@@ -87,24 +96,6 @@
             min-height: 1200px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
         }
 
-        .paper-tools {
-            position: fixed; left: 85px; bottom: 30px;
-            display: flex; flex-direction: column; gap: 15px; z-index: 99999;
-        }
-
-        .btn-float {
-            width: 58px; height: 58px; border-radius: 50%; border: 3px solid white;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5); transition: 0.2s;
-        }
-        
-        .bg-save { background: #22c55e; }
-        .bg-scroll { background: #1e293b; color: var(--gold); border-color: var(--gold); }
-        .bg-justica { background: #3b82f6; }
-        .bg-rocket { background: linear-gradient(135deg, #fbbf24, #ef4444); }
-
-        /* PDF PANEL - AGORA DIVIDINDO TELA */
         .pdf-panel {
             width: 0; background: white; transition: 0.3s ease;
             display: flex; flex-direction: column; overflow: hidden;
@@ -118,9 +109,17 @@
         .peca-opt { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid var(--line-color); border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #1e293b; }
 
         @media (max-width: 900px) {
-            .pdf-panel.open { width: 100%; position: absolute; top:0; bottom:0; right:0; z-index: 5001; }
-            .paper-tools { left: auto; right: 20px; bottom: 20px; flex-direction: row; }
-            .btn-float { width: 52px; height: 52px; }
+            .sidebar { 
+                width: 100%; height: 60px; flex-direction: row; 
+                position: fixed; bottom: 0; left: 0; border-right: none; border-top: 1px solid var(--gold);
+                padding: 5px; overflow-x: auto;
+            }
+            .sidebar-divider { width: 2px; height: 80%; margin: 0 5px; }
+            #radar-peca { min-width: 80px; height: 100%; margin-bottom: 0; font-size: 0.45rem; }
+            .exame-btn { min-width: 45px; height: 100%; }
+            .btn-side { min-width: 45px; height: 100%; }
+            .editor-container { padding-bottom: 65px; }
+            .pdf-panel.open { width: 100%; position: absolute; top:0; bottom:60px; right:0; z-index: 5001; }
         }
     </style>
 </head>
@@ -145,19 +144,20 @@
 <main>
     <aside class="sidebar">
         <div id="radar-peca">ESCANEANDO</div>
-        <div id="exam-nav"></div>
+        
+        <div id="exam-nav" style="display:contents"></div>
+
+        <div class="sidebar-divider"></div>
+
+        <button class="btn-side" style="background:#22c55e" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
+        <button class="btn-side" style="background:#334155; border:1px solid var(--gold); color:var(--gold)" onclick="abrirPecas()"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:linear-gradient(135deg, #fbbf24, #ef4444)" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
     </aside>
 
-    <section class="editor-container" id="editor-cont">
+    <section class="editor-container">
         <div class="paper">
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
-        </div>
-        
-        <div class="paper-tools">
-            <div class="btn-float bg-save" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></div>
-            <div class="btn-float bg-scroll" onclick="abrirPecas()"><i class="fas fa-scroll"></i></div>
-            <div class="btn-float bg-justica" onclick="injetarJustica()"><i class="fas fa-gavel"></i></div>
-            <div class="btn-float bg-rocket" onclick="lancarPeca()"><i class="fas fa-rocket"></i></div>
         </div>
     </section>
 
@@ -247,7 +247,8 @@
     window.togglePdf = (mode) => {
         const panel = document.getElementById('pdf-panel');
         document.querySelectorAll('.btn-ref').forEach(b => b.classList.remove('active'));
-        document.getElementById(`ref-${mode}`).classList.add('active');
+        const btn = document.getElementById(`ref-${mode}`);
+        if(btn) btn.classList.add('active');
         document.getElementById('pdf-frame').src = { 'p': `ro${activeEx}.pdf`, 'g': `ro${activeEx}-gabarito.pdf`, 'v': `vade.pdf` }[mode];
         panel.classList.add('open');
     };
