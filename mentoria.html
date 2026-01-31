@@ -2,56 +2,39 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | CONSULTOR ELITE</title>
+    <title>ARYANNA 2026 | MENTORIA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #fbbf24; --primary: #1d4ed8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden; }
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
-        /* BOXES DE INTELIGÊNCIA */
-        .robo-box { background: #2563eb; padding: 15px; border-radius: 12px; margin: 15px 0; display: none; border: 1px solid #60a5fa; }
-        .alerta-tese { background: #7c3aed; color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: none; border-left: 5px solid var(--gold); }
-        .alerta-confunda { background: #dc2626; color: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: none; }
-        
-        .panel { background: var(--card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        .panel-header { padding: 12px; background: rgba(0,0,0,0.2); font-weight: 800; font-size: 0.7rem; color: var(--gold); }
-        .card-pdf { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; margin: 8px; border-radius: 8px; border-left: 4px solid var(--gold); }
-        .btn-revisar { background: var(--gold); color: #000; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
-        .btn-voltar { border: 1px solid var(--gold); background: transparent; color: var(--gold); font-weight: 800; padding: 5px 15px; border-radius: 20px; cursor: pointer; }
+        body { font-family: sans-serif; background: #f1f5f9; padding: 15px; }
+        .panel { background: #fff; border-radius: 12px; border: 2px solid #94a3b8; margin-bottom: 20px; overflow: hidden; }
+        .panel-header { background: #f8fafc; padding: 10px; font-weight: bold; border-bottom: 2px solid #94a3b8; text-align: center; }
+        .panel-body { padding: 15px; }
+        .card-cofre { border-left: 8px solid #fbbf24; background: #fff; border: 1px solid #ddd; border-left-width: 8px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-revisar { background: #1d4ed8; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight:900;">ELITE <span style="color:var(--gold)">CONSULTOR</span></div>
-    <button onclick="voltarFluxoPrincipal()" class="btn-voltar">VOLTAR</button>
+<header style="display:flex; justify-content:space-between; margin-bottom:20px;">
+    <button onclick="window.close()" style="font-weight:bold; cursor:pointer;">FECHAR</button>
+    <b style="font-size:1.2rem;">ARYANNA 2026</b>
 </header>
 
-<div id="robo-analise" class="robo-box">
-    <div style="font-weight: 800; font-size: 0.8rem; margin-bottom: 5px;"><i class="fas fa-robot"></i> QUAL É A PEÇA?</div>
-    <div id="status-peca" style="font-size: 1.1rem; font-weight: 900; color: #fff;"></div>
-</div>
-
-<div id="box-tese" class="alerta-tese">
-    <div style="font-weight: 800; font-size: 0.8rem;"><i class="fas fa-gavel"></i> TESE DETECTADA:</div>
-    <div id="texto-tese"></div>
-</div>
-
-<div id="box-confunda" class="alerta-confunda">
-    <div style="font-weight: 800; font-size: 0.8rem;"><i class="fas fa-exclamation-triangle"></i> NÃO CONFUNDA:</div>
-    <div id="texto-confunda"></div>
+<div class="panel">
+    <div class="panel-header">PEÇAS NO COFRE</div>
+    <div class="panel-body" id="feed-historico">
+        <p style="text-align:center; color:gray;">Carregando cofre...</p>
+    </div>
 </div>
 
 <div class="panel">
-    <div class="panel-header">HISTÓRICO DE ENVIOS</div>
-    <div id="feed-historico"></div>
+    <div class="panel-header">Preliminares</div>
+    <div class="panel-body" id="feed-pre"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const config = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
@@ -63,74 +46,53 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // Mapeamento de Inteligência (O Coração do Robô)
-    const REGRAS = {
-        "AGRAVO DE PETIÇÃO": { 
-            tese: "Art. 897, 'a', da CLT. Cabe das decisões na execução.",
-            confunda: "Agravo de Instrumento no Trabalho serve APENAS para destrancar recurso!" 
-        },
-        "RECURSO ORDINÁRIO": { 
-            tese: "Art. 895, I, da CLT. Prazo de 8 dias.",
-            confunda: "Não confunda com Apelação do CPC. O prazo aqui é sempre 8 dias úteis." 
-        },
-        "CONTESTAÇÃO": {
-            tese: "Art. 847 da CLT. Defesa do Reclamado.",
-            confunda: "Lembre-se da Reconvenção se houver pedidos contra o Reclamante!"
-        }
-    };
-
+    // --- LER PEÇAS DO COFRE ---
     onValue(ref(db, 'mentoria/historico'), (snapshot) => {
         const container = document.getElementById('feed-historico');
         container.innerHTML = "";
         const dados = snapshot.val();
+
         if (dados) {
-            Object.keys(dados).map(id => ({ id, ...dados[id] }))
-                .sort((a, b) => (b.ts || 0) - (a.ts || 0))
-                .forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card-pdf';
-                    card.innerHTML = `
-                        <div><b>EXAME ${item.exame}</b><br><small>${item.data}</small></div>
-                        <button class="btn-revisar" onclick="acionarIA('${item.exame}')">ANALISAR</button>
-                    `;
-                    container.appendChild(card);
-                });
+            // Transformar em array e inverter para mostrar o mais novo primeiro
+            Object.keys(dados).reverse().forEach(id => {
+                const item = dados[id];
+                container.innerHTML += `
+                    <div class="card-cofre">
+                        <div>
+                            <small>EXAME OAB</small><br>
+                            <b>EXAME ${item.exame}</b><br>
+                            <small>${item.data}</small>
+                        </div>
+                        <button class="btn-revisar" onclick="revisarNoCockpit('${item.exame}')">REVISAR</button>
+                    </div>
+                `;
+            });
+        } else {
+            container.innerHTML = "O cofre está vazio.";
         }
     });
 
-    window.acionarIA = async (ex) => {
-        const snap = await get(ref(db, `estudos/${ex}`));
-        const linhas = snap.val()?.linhas || [];
-        const texto = linhas.join(" ").toUpperCase();
-
-        // 1. Identifica a Peça
-        let pecaIdentificada = "NÃO IDENTIFICADA";
-        for (let chave in REGRAS) {
-            if (texto.includes(chave)) pecaIdentificada = chave;
+    // --- LER PRELIMINARES ---
+    onValue(ref(db, 'v13_pre'), (snapshot) => {
+        const feed = document.getElementById('feed-pre');
+        feed.innerHTML = "";
+        const items = snapshot.val();
+        if(items) {
+            Object.keys(items).reverse().forEach(id => {
+                feed.innerHTML += `<div style="border-bottom:1px solid #ddd; padding:10px;"><b>${items[id].t}</b><br><small>${items[id].c}</small></div>`;
+            });
         }
+    });
 
-        // 2. Exibe os Boxes baseado na peça
-        document.getElementById('robo-analise').style.display = 'block';
-        document.getElementById('status-peca').innerText = pecaIdentificada;
-
-        if (REGRAS[pecaIdentificada]) {
-            document.getElementById('box-tese').style.display = 'block';
-            document.getElementById('texto-tese').innerText = REGRAS[pecaIdentificada].tese;
-            
-            document.getElementById('box-confunda').style.display = 'block';
-            document.getElementById('texto-confunda').innerText = REGRAS[pecaIdentificada].confunda;
+    window.revisarNoCockpit = (ex) => {
+        if(window.opener) {
+            window.opener.localStorage.setItem('activeEx', ex);
+            window.opener.location.reload();
+            window.close();
         } else {
-            document.getElementById('box-tese').style.display = 'none';
-            document.getElementById('box-confunda').style.display = 'none';
+            alert("Abra pelo Cockpit!");
         }
     };
-
-    window.voltarFluxoPrincipal = () => {
-        if (window.opener) { window.opener.focus(); window.close(); }
-        else { window.location.href = 'index.html'; }
-    };
-
-    Object.assign(window, { acionarIA, voltarFluxoPrincipal });
 </script>
 </body>
 </html>
