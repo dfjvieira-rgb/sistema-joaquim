@@ -3,76 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - RADAR ATIVO</title>
+    <title>JOAQUIM ELITE 2026 - SPLIT VIEW</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
-            --header-h: 65px; --sidebar-w: 85px;
+            --header-h: 60px; --sidebar-w: 80px;
         }
         body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { 
-            background: var(--primary); height: var(--header-h); padding: 0 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 2000;
-        }
+        header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
 
-        main { display: flex; flex: 1; overflow: hidden; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* SIDEBAR 12 BOTÕES */
-        .sidebar { 
-            width: var(--sidebar-w); background: #1e293b; display: flex; 
-            flex-direction: column; gap: 6px; padding: 8px; 
-            border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
-            overflow-y: auto; scrollbar-width: none;
-        }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 6px; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; }
         
-        /* ESTILIZAÇÃO DO RADAR */
         #radar-container {
             background: #000; border: 2px solid var(--gold); border-radius: 6px;
             padding: 4px; text-align: center; min-height: 65px;
-            display: flex; flex-direction: column; justify-content: center; margin-bottom: 5px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; justify-content: center; transition: 0.3s;
         }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
-        
-        .radar-blink { animation: blink 1.5s infinite; color: var(--gold); }
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        
-        .detectado { transform: scale(1.02); border-width: 3px !important; }
+        .radar-blink { animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        .btn-side { width: 100%; min-height: 44px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.1s; }
-        .btn-side:active { transform: scale(0.92); }
+        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; }
 
-        /* ÁREA DA FOLHA */
-        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 15px; background: var(--bg-paper); -webkit-overflow-scrolling: touch; }
-        .paper { background: var(--paper-color); width: 100%; max-width: 820px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 2px; position: relative; padding: 40px 0; flex-shrink: 0; margin-bottom: 50px; }
+        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 15px; background: var(--bg-paper); position: relative; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 820px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 40px 0; margin-bottom: 50px; }
         
-        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); position: relative; }
-        .linha-wrapper::before { content: ''; position: absolute; left: 55px; top: 0; bottom: 0; width: 1px; background: rgba(239, 68, 68, 0.3); pointer-events: none; }
-        .linha-num { width: 55px; font-size: 0.75rem; color: #64748b; text-align: center; background: rgba(0,0,0,0.02); padding-top: 10px; font-family: monospace; border-right: 1px solid var(--line-color); }
-        .linha-folha { flex: 1; height: 38px; border: none; outline: none; background: transparent; padding: 0 20px 0 15px; font-size: 19px; font-family: 'Georgia', serif; color: var(--text-color); width: 100%; }
-        .fgv-header { background: #1e293b; color: var(--gold); font-weight: 800; padding: 12px; text-align: center; font-size: 0.7rem; text-transform: uppercase; }
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
+        .linha-folha { flex: 1; height: 35px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Georgia', serif; color: var(--text-color); }
 
-        /* MODAIS */
+        /* SPLIT VIEW PDF */
+        #pdf-split-view {
+            display: none; width: 45%; background: #525659; border-left: 4px solid var(--gold);
+            position: relative; height: 100%;
+        }
+        #pdf-split-view.active { display: block; }
+        .btn-close-pdf { position: absolute; top: 10px; left: -35px; background: var(--gold); border: none; width: 35px; height: 35px; border-radius: 5px 0 0 5px; cursor: pointer; z-index: 1002; }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 80vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #334155; }
-        .opt-btn.active-ex { background: var(--gold); color: #000; border-color: #000; }
+        .modal-body { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; border: 3px solid var(--gold); }
+        .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <span style="color:white; font-weight:900; letter-spacing:1px;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></span>
-    </div>
+    <span style="color:white; font-weight:900; font-size: 1.2rem;">ELITE <span style="color:var(--gold)">2026</span></span>
     <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:#a855f7;" onclick="window.open('mentoria.html','_blank')"><i class="fas fa-brain"></i></button>
         <button class="btn-side" style="width:40px; background:#64748b;" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
         <button class="btn-side" style="width:40px; background:#ef4444;" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
     </div>
@@ -81,38 +65,34 @@
 <main>
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-
         <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModal('exames')"><i class="fas fa-bullseye"></i></button>
-        
         <button class="btn-side" style="background:#0ea5e9;" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
-        
         <button class="btn-side" style="background:#22c55e;" onclick="salvarManual()"><i class="fas fa-cloud-upload-alt"></i></button>
-        
-        <button class="btn-side" style="background:#334155; border:1px solid var(--gold); color:var(--gold);" onclick="abrirModal('pecas')"><i class="fas fa-scroll"></i></button>
-        
+        <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModal('pecas')"><i class="fas fa-scroll"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
         
-        <button class="btn-side" style="background:#f97316;" onclick="togglePdf('p')"><b>P</b></button>
-        <button class="btn-side" style="background:#eab308;" onclick="togglePdf('g')"><b>G</b></button>
-        <button class="btn-side" style="background:#10b981;" onclick="togglePdf('v')"><b>V</b></button>
+        <div style="margin: 5px 0; border-top: 1px solid #444;"></div>
+        
+        <button class="btn-side" style="background:#f97316;" onclick="abrirSplitPdf('p')"><b>P</b></button>
+        <button class="btn-side" style="background:#eab308;" onclick="abrirSplitPdf('g')"><b>G</b></button>
+        <button class="btn-side" style="background:#10b981;" onclick="abrirSplitPdf('v')"><b>V</b></button>
         
         <button class="btn-side" style="background:#475569;" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
         <button class="btn-side" style="background:#475569;" onclick="irPara(51)"><i class="fas fa-chevron-down"></i></button>
-
         <button class="btn-side" style="background:linear-gradient(135deg, #fbbf24, #ef4444);" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
     </aside>
 
     <section class="editor-container">
         <div class="paper" id="folha-total"></div>
     </section>
+
+    <div id="pdf-split-view">
+        <button class="btn-close-pdf" onclick="fecharSplitPdf()"><i class="fas fa-times"></i></button>
+        <iframe id="pdf-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+    </div>
 </main>
 
-<div class="modal" id="universal-modal">
-    <div class="modal-body">
-        <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; padding:12px; background:#000; color:#fff; border-radius:8px; border:none; margin-top:10px; font-weight:bold;">VOLTAR AO COCKPIT</button>
-    </div>
-</div>
+<div class="modal" id="universal-modal"><div class="modal-body" id="modal-content"></div></div>
 
 <script type="module">
     import { db } from './firebase-config.js';
@@ -123,43 +103,63 @@
     let activeEx = localStorage.getItem('activeEx') || "41";
     let ultimaLinhaFocada = 1;
 
-    // --- MOTOR DE REFINAMENTO DO RADAR ---
-    const reativarEscaneamento = () => {
+    // --- ESCÂNER REATIVADO (REFINADO) ---
+    const escaneamentoElite = () => {
         const status = document.getElementById('radar-status');
         const box = document.getElementById('radar-container');
         
-        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+        // Pega o conteúdo do banco de espelhos e força limpeza de espaços
+        const rawContent = BANCO_ESPELHOS[activeEx] || BANCO_ESPELHOS[parseInt(activeEx)] || "";
+        const txt = rawContent.toUpperCase().trim();
 
         const DICIONARIO = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO", cor: "#3b82f6" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA", cor: "#a855f7" }
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA", cor: "#a855f7" },
+            { id: "RECURSO DE REVISTA", display: "REC. REVISTA", cor: "#ec4899" }
         ];
 
-        let achou = DICIONARIO.find(i => txt.includes(i.id));
+        let encontrado = DICIONARIO.find(p => txt.includes(p.id));
 
-        if (achou) {
-            status.innerHTML = `<span style="color:${achou.cor}">RADAR</span><br><span style="font-size:0.5rem">${achou.display}</span>`;
-            box.style.borderColor = achou.cor;
-            box.style.boxShadow = `0 0 15px ${achou.cor}66`;
-            box.classList.add('detectado');
+        if (encontrado) {
+            status.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.display}`;
+            box.style.borderColor = encontrado.cor;
+            box.style.boxShadow = `0 0 10px ${encontrado.cor}55`;
+            box.classList.remove('radar-blink');
         } else {
             status.innerHTML = `<span>RADAR</span><br><span class="radar-blink">VARRENDO...</span>`;
             box.style.borderColor = "var(--gold)";
             box.style.boxShadow = "none";
-            box.classList.remove('detectado');
         }
     };
 
+    // --- FUNÇÕES PDF (SPLIT VIEW) ---
+    window.abrirSplitPdf = (tipo) => {
+        const view = document.getElementById('pdf-split-view');
+        const frame = document.getElementById('pdf-frame');
+        let url = tipo === 'v' ? 'vade.pdf' : `ro${activeEx}${tipo === 'g' ? '-gabarito' : ''}.pdf`;
+        
+        frame.src = url;
+        view.classList.add('active');
+    };
+
+    window.fecharSplitPdf = () => {
+        document.getElementById('pdf-split-view').classList.remove('active');
+        document.getElementById('pdf-frame').src = "";
+    };
+
+    // --- SISTEMA DE FOLHA ---
     const criarFolha = () => {
         const folha = document.getElementById('folha-total');
         folha.innerHTML = "";
         for(let i=1; i<=180; i++) {
-            if(i === 1) folha.innerHTML += '<div class="fgv-header">PEÇA PROFISSIONAL</div>';
-            if(i === 51) folha.innerHTML += '<div class="fgv-header">QUESTÕES DISCURSIVAS</div>';
-            const wrap = document.createElement('div');
-            wrap.className = 'linha-wrapper';
+            if(i === 1 || i === 51) {
+                const h = document.createElement('div'); h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
+                h.innerText = i === 1 ? 'PEÇA PROFISSIONAL' : 'QUESTÕES DISCURSIVAS';
+                folha.appendChild(h);
+            }
+            const wrap = document.createElement('div'); wrap.className = 'linha-wrapper';
             wrap.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" spellcheck="false" autocomplete="off">`;
             wrap.querySelector('input').onfocus = () => ultimaLinhaFocada = i;
             folha.appendChild(wrap);
@@ -167,18 +167,21 @@
         carregarFirebase();
     };
 
-    window.salvarManual = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
-        set(ref(db, 'estudos/'+activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
-    };
-
     const carregarFirebase = () => {
         onValue(ref(db, 'estudos/'+activeEx), (s) => {
             const d = s.val();
-            const inputs = document.querySelectorAll('.linha-folha');
-            if(d && d.linhas) d.linhas.forEach((txt, i) => { if(inputs[i]) inputs[i].value = txt; });
-            reativarEscaneamento();
+            if(d && d.linhas) d.linhas.forEach((txt, i) => { 
+                const el = document.getElementById(`L${i+1}`);
+                if(el) el.value = txt;
+            });
+            // Ativa o radar após os dados (e banco) carregarem
+            setTimeout(escaneamentoElite, 300);
         }, { onlyOnce: true });
+    };
+
+    window.salvarManual = () => {
+        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
+        set(ref(db, 'estudos/'+activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
     };
 
     window.injetarJustica = () => {
@@ -191,48 +194,41 @@
         window.salvarManual();
     };
 
-    window.lancarPeca = () => {
-        if(confirm("Commit final para o histórico?")) {
-            const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
-            push(ref(db, 'historico/'+activeEx), { linhas: dados, ts: Date.now() });
-            alert("🚀 LANÇADO!");
-        }
-    };
-
     window.abrirModal = (tipo) => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3 style="margin-bottom:15px; border-bottom:2px solid var(--gold)">${tipo.toUpperCase()}</h3>`;
+        content.innerHTML = `<h3 style="border-bottom:2px solid var(--gold); padding-bottom:10px;">${tipo.toUpperCase()}</h3><br>`;
         if(tipo === 'exames') {
-            const grid = document.createElement('div');
-            grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(3, 1fr)'; grid.style.gap = '8px';
+            const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
             for(let i=44; i>=35; i--) {
-                const b = document.createElement('div'); 
-                b.className = `opt-btn ${i == activeEx ? 'active-ex' : ''}`; 
-                b.style.textAlign = 'center'; b.innerText = `E${i}`;
+                const b = document.createElement('button'); b.className='opt-btn'; b.innerText=`EXAME ${i}`;
                 b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', i); criarFolha(); fecharModal(); };
                 grid.appendChild(b);
             }
             content.appendChild(grid);
         } else {
             Object.keys(pecas).forEach(k => {
-                const b = document.createElement('div'); b.className="opt-btn"; b.innerText=k.toUpperCase();
+                const b = document.createElement('button'); b.className='opt-btn'; b.innerText=k;
                 b.onclick = () => { 
-                    pecas[k].split('\n').forEach((t, i) => { const el=document.getElementById(`L${ultimaLinhaFocada+i}`); if(el) el.value=t; });
+                    pecas[k].split('\n').forEach((t, i) => { 
+                        const el = document.getElementById(`L${ultimaLinhaFocada+i}`);
+                        if(el) el.value = t;
+                    });
                     fecharModal(); 
                 };
                 content.appendChild(b);
             });
         }
+        content.innerHTML += `<button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:10px; background:black; color:white; border-radius:8px;">FECHAR</button>`;
         document.getElementById('universal-modal').style.display = 'flex';
     };
 
     window.fecharModal = () => document.getElementById('universal-modal').style.display = 'none';
-    window.resetarFolha = () => { if(confirm("Limpar texto?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=''); };
-    window.togglePdf = (t) => window.open(t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`, '_blank');
+    window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=''); };
     window.irPara = (l) => document.getElementById(`L${l}`)?.scrollIntoView({behavior:'smooth', block:'center'});
+    window.lancarPeca = () => { push(ref(db, 'historico/'+activeEx), { ts: Date.now() }); alert("🚀 LANÇADO!"); };
 
     window.onload = () => criarFolha();
-    Object.assign(window, { abrirModal, fecharModal, irPara, resetarFolha, togglePdf, salvarManual, injetarJustica, lancarPeca });
+    Object.assign(window, { fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, abrirModal, lancarPeca, irPara, resetarFolha });
 </script>
 </body>
 </html>
