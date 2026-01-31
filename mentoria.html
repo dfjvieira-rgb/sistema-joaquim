@@ -38,7 +38,6 @@
         .btn-reveal { background: var(--gold); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
         .hidden-content { display: none; margin-top: 10px; padding: 12px; background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); border-radius: 6px; font-weight: 700; color: #4ade80; }
 
-        /* NOVO: Estilos para o Modal de Impressão */
         #modal-leitura { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; padding: 20px; }
         .area-impressao { max-width: 800px; margin: auto; background: white; color: black; padding: 40px; border-radius: 8px; height: 90vh; overflow-y: auto; position: relative; }
         
@@ -135,11 +134,10 @@
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
 
-    // FUNÇÃO PARA VISUALIZAR A PEÇA SALVA
     window.visualizarPeca = async (idEnvio) => {
         const snap = await get(ref(db, `${paths.pdf}/${idEnvio}`));
         const data = snap.val();
-        if(!data || !data.linhas) return alert("Conteúdo textual não encontrado neste registro.");
+        if(!data || !data.linhas) return alert("Conteúdo textual não encontrado.");
 
         const visor = document.getElementById('visor-texto');
         const textoFinal = data.linhas
@@ -170,7 +168,6 @@
 
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
-        
         ['pre', 'peca', 'nc', 'tese'].forEach(type => {
             const feed = document.getElementById(`feed-${type}`);
             feed.innerHTML = "";
@@ -197,12 +194,17 @@
                     <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
                     <div class="pdf-actions">
                         <i class="fas fa-eye" title="Ver e Imprimir" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
-                        <i class="fas fa-play-circle" title="Retomar" style="color:#4ade80" onclick="location.href='index.html?exame=${item.exame}'"></i>
                         <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
                     </div>
                 </div>`;
         });
     });
+
+    // ESTA É A ÚNICA ADIÇÃO NECESSÁRIA PARA O SEU CÓDIGO FUNCIONAR:
+    window.visualizarPeca = visualizarPeca;
+    window.toggleR = toggleR;
+    window.salvar = salvar;
+    window.excluir = excluir;
 </script>
 </body>
 </html>
