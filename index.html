@@ -203,7 +203,6 @@
     const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
-            document.querySelectorAll('.linha-folha').forEach(l => l.value = ""); // Limpa antes
             if (data && data.linhas) {
                 data.linhas.forEach((txt, idx) => {
                     const el = document.getElementById(`L${idx + 1}`);
@@ -221,16 +220,18 @@
         if (mentoriaJanelaRef) mentoriaJanelaRef.focus();
     };
 
+    // --- NOVA FUNÇÃO DE ENVIO INTEGRADA ---
     window.concluirEEnviarAoRobo = () => {
         if(!confirm(`Deseja enviar o Exame ${activeEx} para o Cofre do Robô?`)) return;
+        
         push(ref(db, 'mentoria/historico'), {
             exame: activeEx,
-            data: new Date().toLocaleDateString('pt-BR'),
+            data: new Date().toLocaleDateString('pt-BR') + ", " + new Date().toLocaleTimeString('pt-BR'),
             ts: Date.now()
         }).then(() => {
             alert("🚀 EXAME ARQUIVADO NO COFRE!");
-            window.abrirMentoria();
-        });
+            abrirMentoria();
+        }).catch(err => alert("Erro ao enviar: " + err));
     };
 
     window.abrirModalExames = () => {
@@ -239,7 +240,7 @@
         const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); fecharModal(); };
+            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); escaneamentoElite(); fecharModal(); };
             grid.appendChild(b);
         }
         content.appendChild(grid);
@@ -288,9 +289,10 @@
     window.fecharSplitPdf = () => { document.getElementById('pdf-split-view').classList.remove('active'); document.getElementById('pdf-frame').src = ""; };
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    
+    window.resetarFolha = () => { if(confirm("Limpar folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
+
     window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, abrirMentoria, concluirEEnviarAoRobo });
+    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha, abrirMentoria, concluirEEnviarAoRobo });
 </script>
 </body>
 </html>
