@@ -2,71 +2,232 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>MENTORIA ELITE | CENTRAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MENTORIA ELITE | RAIO-X DE PERFORMANCE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #020617; --gold: #fbbf24; --card: #1e293b; --text: #f8fafc; }
+        :root {
+            --primary: #020617; --gold: #fbbf24; --accent: #a855f7;
+            --card-bg: #1e293b; --text: #f8fafc; --border: #94a3b8;
+            --success: #16a34a; --purple: #5b21b6; --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); color: var(--text); padding: 20px; }
-        header { border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; font-weight: 900; color: var(--gold); }
-        .panel { background: var(--card); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
-        .panel-h { font-size: 0.8rem; color: var(--gold); margin-bottom: 10px; font-weight: 800; text-transform: uppercase; }
-        input, textarea { width: 100%; background: #000; color: #fff; border: 1px solid #475569; padding: 10px; border-radius: 5px; margin-bottom: 10px; }
-        .btn { width: 100%; padding: 10px; border: none; border-radius: 5px; font-weight: 800; cursor: pointer; color: #fff; }
-        .card { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid var(--gold); position: relative; }
-        #modal-rx { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; padding: 20px; }
-        .rx-box { background: #fff; color: #000; padding: 30px; border-radius: 5px; height: 90vh; overflow-y: auto; font-family: monospace; white-space: pre-wrap; }
-        @media print { body * { visibility: hidden; } .rx-box, .rx-box * { visibility: visible; position: absolute; left: 0; top: 0; width: 100%; } }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--gold); padding-bottom: 15px; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--gold); }
+        .btn-voltar { padding: 10px 20px; background: var(--card-bg); border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 0.8rem; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+        .panel { background: var(--card-bg); border-radius: 12px; border: 1px solid #334155; display: flex; flex-direction: column; overflow: hidden; }
+        .panel-header { padding: 12px; background: rgba(255,255,255,0.05); border-bottom: 1px solid #334155; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; text-align: center; color: var(--gold); }
+        .panel-body { padding: 15px; }
+
+        label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; color: #94a3b8; }
+        input, textarea { width: 100%; border: 1px solid #334155; background: rgba(0,0,0,0.2); color: white; border-radius: 8px; padding: 12px; font-size: 1rem; margin-bottom: 10px; font-family: inherit; outline: none; }
+        
+        .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; text-transform: uppercase; transition: 0.3s; }
+        
+        .feed { margin-top: 15px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 10px; position: relative; }
+        
+        .card-pdf { border-left: 5px solid var(--gold); background: rgba(251, 191, 36, 0.05); display: flex; justify-content: space-between; align-items: center; }
+        .pdf-actions i { cursor: pointer; font-size: 1.1rem; margin-left: 10px; transition: 0.2s; }
+
+        .btn-reveal { background: var(--gold); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
+        .hidden-content { display: none; margin-top: 10px; padding: 12px; background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); border-radius: 6px; font-weight: 700; color: #4ade80; }
+
+        #modal-leitura { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; padding: 20px; }
+        .area-impressao { max-width: 800px; margin: auto; background: white; color: black; padding: 40px; border-radius: 8px; height: 90vh; overflow-y: auto; position: relative; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            .area-impressao, .area-impressao * { visibility: visible; }
+            .area-impressao { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; height: auto; }
+            .no-print { display: none !important; }
+        }
+
+        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header><i class="fas fa-robot"></i> MENTORIA ELITE 2026</header>
-    
-    <div class="panel">
-        <div class="panel-h">Histórico (Raio-X)</div>
-        <div id="feed-pdf"></div>
-    </div>
 
-    <div class="panel" style="border-top: 4px solid #16a34a;">
-        <div class="panel-h">Preliminares</div>
-        <input id="pre-t" placeholder="Título"><textarea id="pre-c" placeholder="Tese"></textarea>
-        <button class="btn" style="background:#16a34a" onclick="salvar('pre')">ARQUIVAR</button>
-        <div id="feed-pre"></div>
-    </div>
+<header>
+    <div class="logo"><i class="fas fa-brain"></i> MENTORIA ELITE</div>
+    <a href="index.html" class="btn-voltar"><i class="fas fa-arrow-left"></i> VOLTAR AOS TREINOS</a>
+</header>
 
-    <div id="modal-rx">
-        <div style="margin-bottom:10px;"><button onclick="window.print()">IMPRIMIR</button> <button onclick="document.getElementById('modal-rx').style.display='none'">FECHAR</button></div>
-        <div class="rx-box" id="rx-box"></div>
+<main class="dashboard">
+    <section class="panel" style="border-top: 4px solid var(--gold); grid-column: span 2;">
+        <div class="panel-header"><i class="fas fa-save"></i> Histórico de Simulados (RAIO-X)</div>
+        <div class="panel-body">
+            <div id="feed-pdf" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px;">
+                <p style="text-align:center; color:gray;">Buscando histórico...</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--success);">
+        <div class="panel-header">Preliminares Processuais</div>
+        <div class="panel-body">
+            <label>Título (Ex: Incompetência)</label><input type="text" id="pre-t">
+            <label>Fundamentação (Artigos)</label><textarea id="pre-c" rows="2"></textarea>
+            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar Tese</button>
+            <div class="feed" id="feed-pre"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--purple);">
+        <div class="panel-header">Qual é a Peça? (Flashcard)</div>
+        <div class="panel-body">
+            <label>Trecho do Enunciado</label><textarea id="peca-t" rows="2"></textarea>
+            <label>Nome da Peça (Gabarito)</label><input type="text" id="peca-c">
+            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Flashcard</button>
+            <div class="feed" id="feed-peca"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid var(--danger);">
+        <div class="panel-header">Radar: Não Confunda</div>
+        <div class="panel-body">
+            <label>Conceito A vs B</label><input type="text" id="nc-t">
+            <label>Diferença Crucial</label><textarea id="nc-c" rows="2"></textarea>
+            <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Alerta</button>
+            <div class="feed" id="feed-nc"></div>
+        </div>
+    </section>
+
+    <section class="panel" style="border-top: 4px solid #3b82f6;">
+        <div class="panel-header">Teses de Mérito</div>
+        <div class="panel-body">
+            <label>Tema (Ex: Horas Extras)</label><input type="text" id="tese-t">
+            <label>Estrutura da Tese</label><textarea id="tese-c" rows="2"></textarea>
+            <button class="btn-save" style="background: #3b82f6;" onclick="salvar('tese')">Arquivar Conhecimento</button>
+            <div class="feed" id="feed-tese"></div>
+        </div>
+    </section>
+</main>
+
+<div id="modal-leitura">
+    <div class="area-impressao" id="area-impressao">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;" class="no-print">
+            <button onclick="window.print()" style="background:#16a34a; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fas fa-print"></i> IMPRIMIR</button>
+            <button onclick="document.getElementById('modal-leitura').style.display='none'" style="background:#000; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">FECHAR</button>
+        </div>
+        <div id="visor-texto" style="font-family:'Courier New', monospace; line-height:1.4; white-space:pre-wrap; color: black; font-size: 14px;"></div>
     </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config); const db = getDatabase(app);
+    import { getDatabase, ref, push, onValue, remove, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    window.visualizarPeca = async (id) => {
-        const s = await get(ref(db, `mentoria/historico/${id}`));
-        const d = s.val();
-        document.getElementById('rx-box').innerText = `OAB EXAME ${d.exame}\n${d.data}\n\n` + d.linhas.map((l,i)=> l.trim()? `${(i+1).toString().padStart(3,'0')} | ${l}` : null).filter(x=>x).join('\n');
-        document.getElementById('modal-rx').style.display='block';
+    const config = { 
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
+        authDomain: "masteroab-db5e1.firebaseapp.com", 
+        projectId: "masteroab-db5e1", 
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
+    };
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+
+    const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
+
+    // --- FUNÇÃO DE VISUALIZAÇÃO CORRIGIDA ---
+    window.visualizarPeca = async (idEnvio) => {
+        const snap = await get(ref(db, `${paths.pdf}/${idEnvio}`));
+        const data = snap.val();
+        
+        if(!data || !data.linhas) {
+            return alert("Joaquim, este registro não possui o texto das linhas. Verifique se o envio no Index foi concluído.");
+        }
+
+        const visor = document.getElementById('visor-texto');
+        
+        // Formata as linhas para o Raio-X (pula as vazias ou mostra com número)
+        const textoFormatado = data.linhas
+            .map((txt, i) => {
+                if(txt && txt.trim() !== "") {
+                    return `${(i + 1).toString().padStart(3, '0')} | ${txt}`;
+                }
+                return null;
+            })
+            .filter(l => l !== null)
+            .join('\n');
+
+        visor.innerText = `RAIO-X DE PERFORMANCE - OAB ${data.exame}\nDATA: ${data.data}\n${'-'.repeat(50)}\n\n${textoFormatado || "O caderno estava em branco."}`;
+        document.getElementById('modal-leitura').style.display = 'block';
     };
 
-    window.salvar = (t) => { const tit=document.getElementById(t+'-t').value, con=document.getElementById(t+'-c').value; push(ref(db, 'v13_'+t), {t:tit, c:con}); };
-    window.excluir = (p, id) => { if(confirm("Apagar?")) remove(ref(db, p+'/'+id)); };
+    window.toggleR = (btn) => {
+        const div = btn.nextElementSibling;
+        const isHidden = div.style.display === "none" || div.style.display === "";
+        div.style.display = isHidden ? "block" : "none";
+        btn.innerText = isHidden ? "OCULTAR GABARITO" : "VER GABARITO";
+    };
 
-    onValue(ref(db), (s) => {
-        const v = s.val() || {};
-        const fPdf = document.getElementById('feed-pdf'); fPdf.innerHTML = "";
-        const h = v['mentoria/historico'] || {};
-        Object.keys(h).reverse().forEach(id => {
-            fPdf.innerHTML += `<div class="card">OAB ${h[id].exame} - ${h[id].data} <i class="fas fa-eye" onclick="visualizarPeca('${id}')" style="float:right; cursor:pointer"></i></div>`;
+    window.salvar = (type) => {
+        const t = document.getElementById(`${type}-t`).value;
+        const c = document.getElementById(`${type}-c`).value;
+        if(!t || !c) return;
+        push(ref(db, paths[type]), { t, c, ts: serverTimestamp() });
+        document.getElementById(`${type}-t`).value = '';
+        document.getElementById(`${type}-c`).value = '';
+    };
+
+    window.excluir = (type, id) => { 
+        if(confirm("Deseja apagar este registro permanentemente?")) {
+            remove(ref(db, `${paths[type]}/${id}`)); 
+        }
+    };
+
+    // ESCUTA EM TEMPO REAL
+    onValue(ref(db), (snap) => {
+        const v = snap.val() || {};
+        
+        // Atualiza Paineis de Estudo
+        ['pre', 'peca', 'nc', 'tese'].forEach(type => {
+            const feed = document.getElementById(`feed-${type}`);
+            feed.innerHTML = "";
+            const items = v[paths[type]] || {};
+            Object.keys(items).reverse().forEach(id => {
+                const item = items[id];
+                feed.innerHTML += `
+                    <div class="card">
+                        <i class="fas fa-trash" style="position:absolute; right:10px; top:10px; font-size:0.7rem; color:gray; cursor:pointer" onclick="excluir('${type}','${id}')"></i>
+                        ${type === 'peca' ? 
+                            `<strong>Cenário:</strong> ${item.t}<button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : 
+                            `<strong>${item.t}</strong><p style="font-size:0.85rem; opacity:0.8; margin-top:5px;">${item.c}</p>`}
+                    </div>`;
+            });
         });
-        const fPre = document.getElementById('feed-pre'); fPre.innerHTML = "";
-        const pr = v['v13_pre'] || {};
-        Object.keys(pr).reverse().forEach(id => { fPre.innerHTML += `<div class="card"><b>${pr[id].t}</b><br>${pr[id].c} <i class="fas fa-trash" onclick="excluir('v13_pre','${id}')" style="position:absolute; right:5px; top:5px; cursor:pointer; font-size:0.7rem"></i></div>`; });
+
+        // Atualiza Histórico de Peças
+        const feedPdf = document.getElementById('feed-pdf');
+        feedPdf.innerHTML = "";
+        const hist = v[paths.pdf] || {};
+        const keys = Object.keys(hist).reverse();
+        
+        if(keys.length === 0) {
+            feedPdf.innerHTML = '<p style="text-align:center; color:gray; grid-column: 1/-1;">Nenhum simulado enviado ainda.</p>';
+        }
+
+        keys.forEach(id => {
+            const item = hist[id];
+            feedPdf.innerHTML += `
+                <div class="card card-pdf">
+                    <div><strong>EXAME ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
+                    <div class="pdf-actions">
+                        <i class="fas fa-eye" title="Raio-X" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
+                        <i class="fas fa-trash-alt" style="color:var(--danger); font-size: 0.8rem;" onclick="excluir('pdf','${id}')"></i>
+                    </div>
+                </div>`;
+        });
     });
-    Object.assign(window, { visualizarPeca, salvar, excluir });
+
+    // Expor funções ao escopo global
+    Object.assign(window, { visualizarPeca, toggleR, salvar, excluir });
 </script>
 </body>
 </html>
