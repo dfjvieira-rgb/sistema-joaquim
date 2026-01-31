@@ -47,13 +47,14 @@
         }
 
         .editor-header { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* SUA FOLHA ORIGINAL COM AJUSTE DE MARGEM DIREITA */
+
+        /* SUA FOLHA ORIGINAL COM AJUSTE DE MARGEM PROTEGIDA */
         #area-peca { 
             flex: 1; padding: 30px; border: none; font-family: 'Courier New', monospace; 
             font-size: 16px; line-height: 1.6; outline: none; 
             background-image: linear-gradient(#f1f1f1 1px, transparent 1px); background-size: 100% 1.6em; 
-            width: 100%; resize: none;
+            resize: none; width: 100%;
+            word-wrap: break-word; overflow-wrap: break-word; /* PROTEÇÃO DA MARGEM DIREITA */
         }
 
         .pdf-section { width: 35%; background: #525659; display: flex; flex-direction: column; gap: 5px; padding: 5px; overflow-y: auto; }
@@ -67,20 +68,18 @@
 
         .btn-action { border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.65rem; }
 
-        /* BLOCO CIRÚRGICO PARA IMPRESSÃO - CORRIGE CORTE DA MARGEM DIREITA */
+        @media (max-width: 1024px) {
+            .sidebar { width: 100%; height: 120px; flex-direction: row; flex-shrink: 0; }
+            .mural-content { display: none; }
+            main { flex-direction: column; overflow-y: auto; }
+            .pdf-section { width: 100%; height: auto; }
+        }
+
+        /* AJUSTE PARA IMPRESSÃO NÃO CORTAR LATERAIS */
         @media print {
-            @page { size: A4; margin: 10mm 15mm 10mm 15mm; } /* Margens rígidas FGV */
             header, .sidebar, .pdf-section, .editor-header, #aviso-edicao, .btn-action { display: none !important; }
-            body, main, .work-section { display: block; overflow: visible; height: auto; background: white; }
-            #area-peca { 
-                padding: 0 !important; 
-                margin: 0 !important; 
-                width: 100% !important; 
-                background-image: none !important; 
-                color: black !important;
-                overflow: visible !important;
-                line-height: 1.6em !important;
-            }
+            body, main, .work-section { background: white; overflow: visible; display: block; }
+            #area-peca { padding: 0 !important; font-size: 12pt; line-height: 1.6em; background: none; overflow: visible; }
         }
     </style>
 </head>
@@ -89,7 +88,6 @@
 <header>
     <div id="timer">05:00:00</div>
     <div class="nav-group">
-        <button class="btn-action" style="background:var(--green); margin-right:5px" onclick="window.print()">🖨️ IMPRIMIR</button>
         <div class="dropdown"><button class="dropbtn btn-struct">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
         <div class="dropdown"><button class="dropbtn btn-correc">⚖️ Correção</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
         <div class="dropdown"><button class="dropbtn btn-postit">📌 Post-its</button><div class="dropdown-content" id="list-db_postits"></div></div>
@@ -115,6 +113,7 @@
     <section class="work-section">
         <div class="editor-header">
             <span id="label-exame" style="font-weight: bold; font-size: 0.7rem; color:var(--primary)">📍 Aguardando Exame...</span>
+            <button class="btn-action" style="background:var(--green); margin-right:5px" onclick="window.print()">🖨️ IMPRIMIR</button>
             <button class="btn-action" style="background:var(--green)" onclick="exportarTXT()">💾 SALVAR PEÇA TXT</button>
         </div>
         <textarea id="area-peca" placeholder="Selecione um exame à esquerda e comece sua peça..."></textarea>
@@ -122,11 +121,11 @@
 
     <section class="pdf-section">
         <div class="pdf-box">
-            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')">⛶</button></div>
+            <div class="pdf-header"><span>ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
             <iframe class="pdf-frame" id="v-enu"></iframe>
         </div>
         <div class="pdf-box">
-            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')">⛶</button></div>
+            <div class="pdf-header"><span>GABARITO</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white; cursor:pointer">⛶</button></div>
             <iframe class="pdf-frame" id="v-gab"></iframe>
         </div>
     </section>
@@ -163,32 +162,19 @@
         document.getElementById('label-exame').innerText = `📍 EXAME OAB XXX${num}`;
     }
 
-    function renderizarTudo() {
-        bancos.forEach(banco => {
-            const db = JSON.parse(localStorage.getItem(banco)) || {};
-            const container = document.getElementById('list-' + banco);
-            container.innerHTML = Object.keys(db).map(id => `
-                <div class="menu-item">
-                    <span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span>
-                    <span onclick="event.stopPropagation(); entrarModoEdicao('${banco}', '${id}')">✏️</span>
-                    <span onclick="event.stopPropagation(); excluirItem('${banco}', '${id}')" style="margin-left:8px">🗑️</span>
-                </div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="entrarModoEdicao('${banco}', 'novo')">+ NOVO</button>`;
-        });
-    }
-
-    // INJEÇÃO COM PULO DE LINHA CORRIGIDO
+    // AJUSTE NA INJEÇÃO: AGORA PULA LINHA AUTOMATICAMENTE
     function inserirNoEditor() { 
         if(modoEdicao) return;
         const editor = document.getElementById('area-peca');
         const valorOriginal = editor.value;
-        // Se a peça não estiver vazia e não terminar com quebra de linha, adiciona uma
         const separador = (valorOriginal && !valorOriginal.endsWith('\n')) ? "\n\n" : "";
         editor.value = valorOriginal + separador + textoConsultado + "\n"; 
         fecharConsulta(); 
         editor.focus();
     }
 
-    // MANTIVE TODAS AS SUAS FUNÇÕES ORIGINAIS ABAIXO
+    // SUAS FUNÇÕES ORIGINAIS PRESERVADAS
+    function renderizarTudo() { bancos.forEach(banco => { const db = JSON.parse(localStorage.getItem(banco)) || {}; const container = document.getElementById('list-' + banco); container.innerHTML = Object.keys(db).map(id => `<div class="menu-item"><span onclick="abrirConsulta('${banco}', '${id}')" style="flex:1"><b>${db[id].nome}</b></span><span onclick="event.stopPropagation(); entrarModoEdicao('${banco}', '${id}')">✏️</span><span onclick="event.stopPropagation(); excluirItem('${banco}', '${id}')" style="margin-left:8px">🗑️</span></div>`).join('') + `<button class="btn-action" style="width:100%; background:#333; margin-top:5px;" onclick="entrarModoEdicao('${banco}', 'novo')">+ NOVO</button>`; }); const mural = document.getElementById('mural-content'); mural.innerHTML = ""; ['db_postits', 'db_dicas'].forEach(b => { const db = JSON.parse(localStorage.getItem(b)) || {}; Object.values(db).forEach(item => { const cor = b === 'db_postits' ? 'var(--yellow)' : 'var(--purple)'; mural.innerHTML += `<div class="sticky-note" style="border-color:${cor}"><b>${item.nome}</b><br>${item.texto.substring(0,40)}...</div>`; }); }); }
     function excluirItem(banco, id) { if(confirm("Excluir?")) { let db = JSON.parse(localStorage.getItem(banco)); delete db[id]; localStorage.setItem(banco, JSON.stringify(db)); renderizarTudo(); } }
     function entrarModoEdicao(banco, id) { if(modoEdicao) return; const db = JSON.parse(localStorage.getItem(banco)) || {}; cachePeca = document.getElementById('area-peca').value; ctx = { banco, id }; modoEdicao = true; const item = id === 'novo' ? { nome: "NOME", texto: "CONTEUDO" } : db[id]; document.getElementById('area-peca').value = `${item.nome}\n---\n${item.texto}`; document.getElementById('nome-item-editando').innerText = item.nome; document.getElementById('aviso-edicao').style.display = "block"; }
     function salvarAlteracoes() { let db = JSON.parse(localStorage.getItem(ctx.banco)) || {}; const conteudo = document.getElementById('area-peca').value.split('\n---\n'); const id = ctx.id === 'novo' ? 'ID'+Date.now() : ctx.id; db[id] = { nome: conteudo[0].trim(), texto: conteudo[1] || "" }; localStorage.setItem(ctx.banco, JSON.stringify(db)); finalizarEdicao(); }
@@ -201,8 +187,7 @@
     function exportarTXT() { const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "MinhaPeca.txt"; a.click(); }
 
     window.onload = () => {
-        montarExames();
-        renderizarTudo();
+        montarExames(); renderizarTudo();
         let s = 18000; setInterval(() => {
             let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
             document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
