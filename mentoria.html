@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | CONSULTOR DE PEÇAS</title>
+    <title>ARYANNA 2026 | MENTORIA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg: #f1f5f9; --text: #000; --primary: #1d4ed8; --border: #94a3b8; --purple: #5b21b6; --success: #065f46; --danger: #991b1b; --gold: #fbbf24; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+        
         header { background: #fff; border-bottom: 2px solid var(--border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .btn-voltar { text-decoration: none; color: #000; font-weight: 800; border: 2px solid #000; padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; }
+        
+        /* BOTÃO DINÂMICO */
+        .btn-acao { text-decoration: none; color: #000; font-weight: 800; border: 2px solid #000; padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; background: white; }
+        .btn-acao:hover { background: #000; color: #fff; }
+
         .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
         .panel { background: #fff; border-radius: 12px; border: 2px solid var(--border); display: flex; flex-direction: column; margin-bottom: 15px; }
         .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; text-align: center; }
@@ -22,18 +27,27 @@
         .feed { margin-top: 15px; max-height: 400px; overflow-y: auto; }
         .card { background: #fff; padding: 15px; border-radius: 8px; border: 2px solid var(--border); margin-bottom: 10px; position: relative; }
         .card-pdf { border-left: 8px solid var(--gold); background: #fffbeb; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* ESTILO CONSULTOR */
         .highlight-consultor { border: 4px solid var(--purple) !important; box-shadow: 0 0 20px rgba(91, 33, 182, 0.2); }
+        .modo-leitura .panel-body input, 
+        .modo-leitura .panel-body textarea, 
+        .modo-leitura .btn-save,
+        .modo-leitura label { display: none !important; }
+
         @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="btn-voltar" onclick="window.close()"><i class="fas fa-times"></i> FECHAR CONSULTA</div>
+    <a id="btn-voltar-dinamico" class="btn-acao">
+        <i class="fas fa-sync-alt"></i> CARREGANDO...
+    </a>
     <div id="status-title" style="font-weight: 800; font-size: 0.9rem;">ARYANNA 2026 | MENTORIA</div>
 </header>
 
-<main class="dashboard">
+<main class="dashboard" id="main-container">
     <section id="section-historico" class="panel" style="border-top: 6px solid var(--gold); grid-column: span 2;">
         <div class="panel-header"><i class="fas fa-robot"></i> CONSULTOR RÁPIDO: SUAS PEÇAS FINALIZADAS</div>
         <div class="panel-body">
@@ -77,11 +91,22 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // Detectar se veio pelo Robô
+    // --- LÓGICA DE SENSIBILIZAÇÃO DO MODO ---
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('mode') === 'consultor') {
+    const isConsultor = urlParams.get('mode') === 'consultor';
+    const btnNav = document.getElementById('btn-voltar-dinamico');
+
+    if(isConsultor) {
+        // Se abriu pelo ROBÔ
+        document.body.classList.add('modo-leitura');
         document.getElementById('section-historico').classList.add('highlight-consultor');
         document.getElementById('status-title').innerText = "MODO CONSULTA ATIVO";
+        btnNav.innerHTML = '<i class="fas fa-times"></i> FECHAR CONSULTA';
+        btnNav.onclick = () => window.close(); // Aqui o close funciona pois é janela pop-up
+    } else {
+        // Se abriu pelo TROFÉU
+        btnNav.innerHTML = '<i class="fas fa-arrow-left"></i> VOLTAR AO COCKPIT';
+        btnNav.href = 'index.html'; // Volta navegando para não fechar a página
     }
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
@@ -94,8 +119,6 @@
         document.getElementById(`${type}-t`).value = '';
         document.getElementById(`${type}-c`).value = '';
     };
-
-    window.excluir = (type, id) => { if(confirm("Excluir?")) remove(ref(db, `${paths[type]}/${id}`)); };
 
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
@@ -112,19 +135,23 @@
                         <small>${item.data}</small>
                     </div>
                     <button onclick="window.opener.location.href='index.html?exame=${item.exame}'; window.close();" 
-                            style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer">
+                            style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-weight:bold;">
                         REVISAR
                     </button>
                 </div>`;
         });
 
-        // Render outros campos (simplificado)
+        // Render Preliminares e Peças
         ['pre', 'peca'].forEach(type => {
             const feed = document.getElementById(`feed-${type}`);
             feed.innerHTML = "";
             const items = v[paths[type]] || {};
             Object.keys(items).reverse().forEach(id => {
-                feed.innerHTML += `<div class="card"><strong>${items[id].t}</strong><p>${items[id].c}</p></div>`;
+                feed.innerHTML += `
+                <div class="card">
+                    <strong>${items[id].t}</strong>
+                    <p style="margin-top:5px; color:#334155;">${items[id].c}</p>
+                </div>`;
             });
         });
     });
