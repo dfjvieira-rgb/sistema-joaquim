@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - FULL COCKPIT</title>
+    <title>JOAQUIM ELITE 2026 - RADAR ATIVO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -18,7 +18,7 @@
         header { 
             background: var(--primary); height: var(--header-h); padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 2000; flex-shrink: 0; 
+            border-bottom: 2px solid var(--gold); z-index: 2000;
         }
 
         main { display: flex; flex: 1; overflow: hidden; }
@@ -31,13 +31,19 @@
             overflow-y: auto; scrollbar-width: none;
         }
         
+        /* ESTILIZAÇÃO DO RADAR */
         #radar-container {
             background: #000; border: 2px solid var(--gold); border-radius: 6px;
             padding: 4px; text-align: center; min-height: 65px;
             display: flex; flex-direction: column; justify-content: center; margin-bottom: 5px;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
+        
+        .radar-blink { animation: blink 1.5s infinite; color: var(--gold); }
+        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        
+        .detectado { transform: scale(1.02); border-width: 3px !important; }
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.1s; }
         .btn-side:active { transform: scale(0.92); }
@@ -56,6 +62,7 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 80vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 15px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #334155; }
+        .opt-btn.active-ex { background: var(--gold); color: #000; border-color: #000; }
     </style>
 </head>
 <body>
@@ -103,7 +110,7 @@
 <div class="modal" id="universal-modal">
     <div class="modal-body">
         <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; padding:12px; background:#000; color:#fff; border-radius:8px; border:none; margin-top:10px; font-weight:bold;">VOLTAR AO VOO</button>
+        <button onclick="fecharModal()" style="width:100%; padding:12px; background:#000; color:#fff; border-radius:8px; border:none; margin-top:10px; font-weight:bold;">VOLTAR AO COCKPIT</button>
     </div>
 </div>
 
@@ -116,44 +123,35 @@
     let activeEx = localStorage.getItem('activeEx') || "41";
     let ultimaLinhaFocada = 1;
 
-    // --- REFINAMENTO DO ESCÂNER: CRUZAMENTO ESTRUTURAS X BANCO ---
-    const escaneamentoRefinado = () => {
+    // --- MOTOR DE REFINAMENTO DO RADAR ---
+    const reativarEscaneamento = () => {
         const status = document.getElementById('radar-status');
         const box = document.getElementById('radar-container');
         
-        const dnaEspelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        const chavesEstruturas = Object.keys(pecas);
-        
-        let pecaDetectada = "SCANNER ATIVO";
-        let cor = "var(--gold)";
-        let match = false;
+        const txt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
 
-        // Tenta achar o nome da estrutura dentro do banco de espelhos
-        chavesEstruturas.forEach(chave => {
-            if (dnaEspelho.includes(chave.toUpperCase())) {
-                pecaDetectada = chave.toUpperCase();
-                match = true;
-            }
-        });
+        const DICIONARIO = [
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO PETIÇÃO", cor: "#f87171" },
+            { id: "RECURSO ORDINÁRIO", display: "REC. ORDINÁRIO", cor: "#3b82f6" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO", cor: "#22c55e" },
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA", cor: "#a855f7" }
+        ];
 
-        // Backup por fundamentação legal (Artigos) caso o nome não seja explícito
-        if (!match) {
-            if (dnaEspelho.includes("895")) { pecaDetectada = "RO"; match = true; }
-            else if (dnaEspelho.includes("847")) { pecaDetectada = "CONTESTAÇÃO"; match = true; }
-            else if (dnaEspelho.includes("840")) { pecaDetectada = "INICIAL"; match = true; }
+        let achou = DICIONARIO.find(i => txt.includes(i.id));
+
+        if (achou) {
+            status.innerHTML = `<span style="color:${achou.cor}">RADAR</span><br><span style="font-size:0.5rem">${achou.display}</span>`;
+            box.style.borderColor = achou.cor;
+            box.style.boxShadow = `0 0 15px ${achou.cor}66`;
+            box.classList.add('detectado');
+        } else {
+            status.innerHTML = `<span>RADAR</span><br><span class="radar-blink">VARRENDO...</span>`;
+            box.style.borderColor = "var(--gold)";
+            box.style.boxShadow = "none";
+            box.classList.remove('detectado');
         }
-
-        // Define cores baseadas na identificação
-        if (pecaDetectada.includes("RO")) cor = "#3b82f6"; // Azul
-        else if (pecaDetectada.includes("CONTEST")) cor = "#22c55e"; // Verde
-        else if (pecaDetectada.includes("RECLAMA") || pecaDetectada.includes("INICIAL")) cor = "#a855f7"; // Roxo
-
-        status.innerHTML = `<span style="color:${cor}">RADAR ELITE:</span><br>${pecaDetectada}`;
-        box.style.borderColor = cor;
-        box.style.boxShadow = `0 0 15px ${cor}44`;
     };
 
-    // --- GERADOR DA FOLHA ---
     const criarFolha = () => {
         const folha = document.getElementById('folha-total');
         folha.innerHTML = "";
@@ -169,10 +167,9 @@
         carregarFirebase();
     };
 
-    // --- GATILHOS (TRIGGERS) ---
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
-        set(ref(db, 'estudos/'+activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
+        set(ref(db, 'estudos/'+activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
     };
 
     const carregarFirebase = () => {
@@ -180,42 +177,45 @@
             const d = s.val();
             const inputs = document.querySelectorAll('.linha-folha');
             if(d && d.linhas) d.linhas.forEach((txt, i) => { if(inputs[i]) inputs[i].value = txt; });
-            escaneamentoRefinado();
+            reativarEscaneamento();
         }, { onlyOnce: true });
     };
 
     window.injetarJustica = () => {
         const dna = BANCO_ESPELHOS[activeEx] || "";
         const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
-        if(confirm(`Injetar teses na linha ${ultimaLinhaFocada}?`)) {
-            frases.forEach((f, i) => {
-                const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-                if(el) el.value = "➤ " + f.trim();
-            });
-            window.salvarManual();
-        }
+        frases.forEach((f, i) => {
+            const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
+            if(el) el.value = "➤ " + f.trim();
+        });
+        window.salvarManual();
     };
 
     window.lancarPeca = () => {
-        if(confirm("Deseja arquivar este treino no histórico?")) {
+        if(confirm("Commit final para o histórico?")) {
             const dados = Array.from(document.querySelectorAll('.linha-folha')).map(l => l.value);
             push(ref(db, 'historico/'+activeEx), { linhas: dados, ts: Date.now() });
-            alert("🚀 FOGUETE LANÇADO!");
+            alert("🚀 LANÇADO!");
         }
     };
 
     window.abrirModal = (tipo) => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3 style="margin-bottom:15px; border-bottom:2px solid var(--gold); color:#1e293b;">${tipo.toUpperCase()}</h3>`;
+        content.innerHTML = `<h3 style="margin-bottom:15px; border-bottom:2px solid var(--gold)">${tipo.toUpperCase()}</h3>`;
         if(tipo === 'exames') {
+            const grid = document.createElement('div');
+            grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(3, 1fr)'; grid.style.gap = '8px';
             for(let i=44; i>=35; i--) {
-                const b = document.createElement('div'); b.className="opt-btn"; b.innerHTML=`<i class="fas fa-file-alt"></i> EXAME ${i}`;
+                const b = document.createElement('div'); 
+                b.className = `opt-btn ${i == activeEx ? 'active-ex' : ''}`; 
+                b.style.textAlign = 'center'; b.innerText = `E${i}`;
                 b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', i); criarFolha(); fecharModal(); };
-                content.appendChild(b);
+                grid.appendChild(b);
             }
+            content.appendChild(grid);
         } else {
             Object.keys(pecas).forEach(k => {
-                const b = document.createElement('div'); b.className="opt-btn"; b.innerHTML=`<i class="fas fa-scroll"></i> ${k.toUpperCase()}`;
+                const b = document.createElement('div'); b.className="opt-btn"; b.innerText=k.toUpperCase();
                 b.onclick = () => { 
                     pecas[k].split('\n').forEach((t, i) => { const el=document.getElementById(`L${ultimaLinhaFocada+i}`); if(el) el.value=t; });
                     fecharModal(); 
