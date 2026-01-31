@@ -9,47 +9,41 @@
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
-            --mentoria: #a855f7; --header-h: 60px; --sidebar-w: 80px;
+            --header-h: 60px; --sidebar-w: 80px;
         }
         body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; }
-        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
+        header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        main { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); }
+        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; }
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding-bottom: 40px; margin-bottom: 50px; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); }
         .linha-folha { flex: 1; height: 35px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Courier New', monospace; color: var(--text-color); }
-        #identificador-peca { width: 100%; padding: 15px; background: #f8fafc; border-bottom: 3px double var(--line-color); text-align: center; font-weight: 900; font-size: 1.3rem; color: #64748b; text-transform: uppercase; letter-spacing: 3px; }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
-    <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:var(--gold); color: black;" onclick="window.location.href='mentoria.html'"><i class="fas fa-trophy"></i></button>
-        <button class="btn-side" style="width:40px; background:#64748b;" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
-    </div>
+    <button class="btn-side" style="width:120px; background:var(--gold); color: black; font-weight: bold; font-size: 0.8rem;" onclick="window.location.href='mentoria.html'">ABRIR COFRE</button>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" style="background:#0ea5e9;" onclick="window.location.reload()"><i class="fas fa-sync"></i></button>
         <button class="btn-side" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()">
             <i class="fas fa-check-double"></i>
         </button>
-        <button class="btn-side" style="background:var(--mentoria);" onclick="window.location.href='mentoria.html'">
-            <i class="fas fa-robot"></i>
+        <button class="btn-side" style="background:#475569;" onclick="window.location.reload(true)">
+            <i class="fas fa-sync"></i>
         </button>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
-            <div id="identificador-peca">CADERNO DE RESPOSTAS</div>
             <div id="folha-total"></div>
         </div>
     </section>
@@ -59,7 +53,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // CONFIGURAÇÃO DIRETA (SUBSTITUA SE O SEU ID FOR DIFERENTE)
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
         authDomain: "masteroab-db5e1.firebaseapp.com",
@@ -70,30 +63,28 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Montar a folha de 1 a 180
+    // Montar Folha
     const container = document.getElementById('folha-total');
     for(let i=1; i<=180; i++) {
         const row = document.createElement('div');
         row.className = 'linha-wrapper';
-        row.innerHTML = `
-            <div class="linha-num">${i}</div>
-            <input class="linha-folha" id="L${i}" maxlength="85" spellcheck="false">
-        `;
+        row.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" maxlength="85" spellcheck="false">`;
         container.appendChild(row);
     }
 
-    // FUNÇÃO DE ENVIO PARA 'simulados'
+    // Função Global
     window.concluirEEnviarAoRobo = async () => {
-        if(!confirm("Deseja enviar este Exame para o Cofre do Robô?")) return;
+        const confirmar = confirm("Deseja enviar para o Cofre do Robô?");
+        if(!confirmar) return;
 
         try {
-            const inputs = document.querySelectorAll('.linha-folha');
-            const dadosLinhas = Array.from(inputs).map(el => el.value);
-
+            const linhas = Array.from(document.querySelectorAll('.linha-folha')).map(el => el.value);
+            
+            // Gravação direta na pasta 'simulados'
             await push(ref(db, 'simulados'), {
-                exame: "44", // Pode mudar conforme precisar
-                data: new Date().toLocaleDateString('pt-BR') + " " + new Date().toLocaleTimeString('pt-BR'),
-                linhas: dadosLinhas,
+                exame: localStorage.getItem('activeEx') || "44",
+                data: new Date().toLocaleString('pt-BR'),
+                linhas: linhas,
                 ts: Date.now()
             });
 
@@ -101,8 +92,7 @@
             window.location.href = 'mentoria.html';
 
         } catch (err) {
-            console.error(err);
-            alert("Erro ao enviar: " + err.message);
+            alert("Erro de Conexão: " + err.message);
         }
     };
 </script>
