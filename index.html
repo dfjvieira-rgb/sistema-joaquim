@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - SUPREMA</title>
+    <title>JOAQUIM ELITE 2026 - SISTEMA INTEGRADO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -54,8 +54,7 @@
         /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; color: #0f172a; text-align: center; transition: 0.2s; }
-        .opt-btn:hover { background: #e2e8f0; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; color: #0f172a; text-align: center; }
     </style>
 </head>
 <body>
@@ -78,7 +77,7 @@
         <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
         
         <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()">
-            <i class="fas fa-brain" title="Mentoria Elite"></i>
+            <i class="fas fa-robot" title="Mentoria Elite"></i>
         </button>
         
         <hr style="opacity:0.1; margin:5px 0;">
@@ -93,7 +92,7 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="identificador-peca">ANALISANDO ESTRUTURA...</div>
+            <div id="identificador-peca">ANALISANDO...</div>
             <div id="folha-total"></div>
         </div>
     </section>
@@ -107,7 +106,7 @@
 <div class="modal" id="universal-modal">
     <div class="modal-body">
         <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR AO COCKPIT</button>
+        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
@@ -120,7 +119,7 @@
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
 
-    // --- SCANNER E IDENTIFICADOR ---
+    // --- LOGICA DE IDENTIFICAÇÃO ---
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
@@ -131,8 +130,7 @@
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
             { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMAÇÃO TRABALHISTA", cor: "#a855f7" },
-            { id: "RECURSO DE REVISTA", display: "RECURSO DE REVISTA", cor: "#ec4899" }
+            { id: "RECLAMAÇÃO", display: "RECLAMAÇÃO TRABALHISTA", cor: "#a855f7" }
         ];
 
         let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
@@ -143,16 +141,14 @@
             boxSidebar.classList.remove('radar-blink');
             topoFolha.innerText = encontrado.display;
             topoFolha.style.color = encontrado.cor;
-            topoFolha.style.borderBottomColor = encontrado.cor;
         } else {
             sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`;
-            boxSidebar.style.borderColor = "var(--gold)";
             topoFolha.innerText = "PEÇA PROFISSIONAL";
             topoFolha.style.color = "#64748b";
         }
     };
 
-    // --- MONTAGEM DA FOLHA ---
+    // --- MONTAGEM DA FOLHA + ENTER ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -176,10 +172,10 @@
             row.appendChild(input);
             container.appendChild(row);
         }
-        carregarDadosNuvem();
+        carregarDados();
     };
 
-    const carregarDadosNuvem = () => {
+    const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
             if (data && data.linhas) {
@@ -187,42 +183,40 @@
                     const el = document.getElementById(`L${idx + 1}`);
                     if (el) el.value = txt;
                 });
-            } else {
-                document.querySelectorAll('.linha-folha').forEach(i => i.value = "");
             }
             escaneamentoElite();
         }, { onlyOnce: true });
     };
 
+    // --- FUNÇÃO MENTORIA (INTEGRAÇÃO MENTORIA.HTML) ---
+    window.abrirMentoria = async () => {
+        const content = document.getElementById('modal-content');
+        content.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:2rem; color:var(--mentoria);"></i><br><br>CONECTANDO AO MENTORIA.HTML...</div>`;
+        document.getElementById('universal-modal').style.display = 'flex';
+
+        try {
+            const response = await fetch('mentoria.html');
+            if (!response.ok) throw new Error('Arquivo não encontrado');
+            const html = await response.text();
+            content.innerHTML = html;
+        } catch (err) {
+            content.innerHTML = `
+                <div style="text-align:center; color:#ef4444; padding:20px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:2rem;"></i>
+                    <p style="margin-top:10px;"><b>ERRO: mentoria.html offline.</b><br>Verifique se o arquivo está na pasta.</p>
+                </div>`;
+        }
+    };
+
+    // --- DEMAIS FUNÇÕES ---
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
         set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
     };
 
-    // --- MENTORIA ELITE ---
-    window.abrirMentoria = () => {
-        const content = document.getElementById('modal-content');
-        const linhasEscritas = Array.from(document.querySelectorAll('.linha-folha'))
-                                   .filter(i => i.value.length > 2).length;
-
-        content.innerHTML = `
-            <div style="text-align:center; margin-bottom:20px;">
-                <i class="fas fa-robot" style="font-size:3rem; color:var(--mentoria);"></i>
-                <h2 style="color:var(--primary); margin-top:10px;">MENTORIA ELITE IA</h2>
-            </div>
-            <div style="background:#f8fafc; padding:15px; border-radius:10px; border-left:5px solid var(--mentoria); margin-bottom:20px;">
-                <p style="font-size:0.9rem;">Comandante, identifiquei <strong>${linhasEscritas} linhas</strong> preenchidas no <strong>Exame ${activeEx}</strong>. O que deseja fazer?</p>
-            </div>
-            <button class="opt-btn" onclick="alert('Analisando teses baseadas no banco OAB...')">🔍 ANALISAR MINHA PEÇA</button>
-            <button class="opt-btn" onclick="alert('Gerando estrutura de tese padrão...')">💡 SUGERIR TESE DE DIREITO</button>
-            <button class="opt-btn" onclick="alert('Revisando concordância e termos jurídicos...')">✍️ REVISAR PORTUGUÊS JURÍDICO</button>
-        `;
-        document.getElementById('universal-modal').style.display = 'flex';
-    };
-
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">SELECIONAR EXAME</h2>`;
+        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
         const grid = document.createElement('div');
         grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
@@ -269,14 +263,10 @@
         document.getElementById('pdf-split-view').classList.add('active');
     };
 
-    window.fecharSplitPdf = () => {
-        document.getElementById('pdf-split-view').classList.remove('active');
-        document.getElementById('pdf-frame').src = "";
-    };
-
+    window.fecharSplitPdf = () => { document.getElementById('pdf-split-view').classList.remove('active'); document.getElementById('pdf-frame').src = ""; };
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    window.resetarFolha = () => { if(confirm("Limpar esta folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
+    window.resetarFolha = () => { if(confirm("Limpar folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
 
     window.onload = () => montarFolha();
     Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha, abrirMentoria });
