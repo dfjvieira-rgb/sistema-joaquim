@@ -41,14 +41,16 @@
         /* EDITOR (SIMULADOR DE LINHAS) */
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); -webkit-overflow-scrolling: touch; }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 0 0 40px 0; margin-bottom: 50px; position: relative; }
-        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); flex-shrink: 0; }
+        
+        /* CORREÇÃO DA MARGEM: O wrapper agora trava o input */
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); align-items: center; overflow: hidden; }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding: 10px 0; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); flex-shrink: 0; }
         
         .linha-folha { 
-            flex: 1; height: 35px; border: none; outline: none; background: transparent; 
+            flex: 1; min-width: 0; height: 35px; border: none; outline: none; background: transparent; 
             padding: 0 15px; font-size: 18px; 
             font-family: 'Courier New', Courier, monospace; 
-            color: var(--text-color); width: 100%; 
+            color: var(--text-color);
             letter-spacing: 0.5px;
         }
 
@@ -57,12 +59,10 @@
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 85vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; color: #0f172a; text-align: center; }
 
-        /* PDF VIEW */
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
 
-        /* CSS DE IMPRESSÃO */
         @media print {
             header, .sidebar, #pdf-split-view, .btn-side, .btn-close-pdf, .modal { display: none !important; }
             body { background: white !important; overflow: visible !important; }
@@ -87,23 +87,16 @@
 <main>
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-        
         <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
         <button class="btn-side" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
         <button class="btn-side" style="background:#6366f1;" onclick="window.imprimirFolha()" title="Imprimir PDF"><i class="fas fa-print"></i></button>
         <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-        
-        <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()">
-            <i class="fas fa-robot"></i>
-        </button>
-        
+        <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()"><i class="fas fa-robot"></i></button>
         <hr style="opacity:0.1; margin:5px 0;">
-        
         <button class="btn-side" style="background:#f97316;" onclick="abrirSplitPdf('p')"><b>P</b></button>
         <button class="btn-side" style="background:#eab308;" onclick="abrirSplitPdf('g')"><b>G</b></button>
         <button class="btn-side" style="background:#10b981;" onclick="abrirSplitPdf('v')"><b>V</b></button>
-        
         <button class="btn-side" style="background:#475569;" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
         <button class="btn-side" style="background:#475569;" onclick="irPara(51)"><i class="fas fa-chevron-down"></i></button>
     </aside>
@@ -139,16 +132,11 @@
     let mentoriaJanelaRef = null;
     const LIMITE_LINHA = 85;
 
-    // --- SCANNER RADAR BEBENDO DO BANCO ---
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
-        
-        // Pega todo o texto digitado na folha
-        const textoCompleto = Array.from(document.querySelectorAll('.linha-folha'))
-                                  .map(input => input.value)
-                                  .join(' ').toUpperCase();
+        const textoCompleto = Array.from(document.querySelectorAll('.linha-folha')).map(input => input.value).join(' ').toUpperCase();
 
         const DICIONARIO = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
@@ -159,7 +147,6 @@
         ];
 
         let encontrado = DICIONARIO.find(p => textoCompleto.includes(p.id));
-
         if (encontrado) {
             sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
             boxSidebar.style.borderColor = encontrado.cor;
@@ -176,14 +163,12 @@
         }
     };
 
-    // --- IMPRESSÃO ---
     window.imprimirFolha = () => {
         const pecaNome = document.getElementById('identificador-peca').innerText;
         document.title = `SIMULADO_E${activeEx}_${pecaNome}`;
         window.print();
     };
 
-    // --- MONTAGEM DA FOLHA ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -203,7 +188,7 @@
             input.setAttribute('maxlength', LIMITE_LINHA);
 
             input.oninput = () => {
-                escaneamentoElite(); // Roda o scanner a cada letra
+                escaneamentoElite();
                 if (input.value.length >= LIMITE_LINHA) {
                     document.getElementById(`L${i + 1}`)?.focus();
                 }
@@ -240,16 +225,6 @@
         }, { onlyOnce: true });
     };
 
-    window.abrirMentoria = () => {
-        const width = 500;
-        const config = `width=${width},height=${window.screen.height},top=0,left=${window.screen.width - width},resizable=yes,scrollbars=yes`;
-        if (mentoriaJanelaRef === null || mentoriaJanelaRef.closed) {
-            mentoriaJanelaRef = window.open('mentoria.html', 'MentoriaElite', config);
-        } else {
-            mentoriaJanelaRef.focus();
-        }
-    };
-
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
         content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
@@ -273,13 +248,15 @@
         set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
     };
 
+    // CORREÇÃO: Injeção de Estrutura Pula Linhas
     window.abrirModalPecas = () => {
         const content = document.getElementById('modal-content');
         content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">ESTRUTURAS</h2>`;
         Object.keys(pecas).forEach(k => {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
             b.onclick = () => {
-                pecas[k].split('\n').forEach((t, i) => {
+                const linhasEstrutura = pecas[k].split('\n');
+                linhasEstrutura.forEach((t, i) => {
                     const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
                     if(el) el.value = t.substring(0, LIMITE_LINHA);
                 });
@@ -290,6 +267,7 @@
         document.getElementById('universal-modal').style.display='flex';
     };
 
+    // CORREÇÃO: Injeção de Justiça Pula Linhas
     window.injetarJustica = () => {
         const dna = BANCO_ESPELHOS[activeEx] || "";
         const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
