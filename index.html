@@ -10,7 +10,7 @@
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
             --mentoria: #a855f7; --header-h: 60px; --sidebar-w: 80px;
-            --danger: #ef4444;
+            --danger: #ef4444; --margem-cor: #f87171;
         }
         body.dark-mode { 
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; 
@@ -38,13 +38,39 @@
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding-bottom: 40px; }
-        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
+        
+        /* --- ESTRUTURA DA FOLHA COM MARGEM --- */
+        .paper { 
+            background: var(--paper-color); 
+            width: 100%; 
+            max-width: 850px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            padding-bottom: 40px; 
+            position: relative;
+            overflow: hidden;
+        }
+        /* Linha da margem direita */
+        .paper::after {
+            content: "";
+            position: absolute;
+            top: 0; right: 40px;
+            width: 2px; height: 100%;
+            background: var(--margem-cor);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); position: relative; }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); z-index: 5; }
+        
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
-            padding: 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
+            padding: 0 50px 0 15px; /* Padding extra na direita para respeitar a margem */
+            font-size: 18px; font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%; letter-spacing: 0.5px;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
@@ -57,6 +83,7 @@
             header, .sidebar, .modal, #sync-overlay { display: none !important; }
             .editor-container { padding: 0 !important; background: white !important; overflow: visible !important; }
             .paper { box-shadow: none !important; width: 100% !important; }
+            .paper::after { opacity: 0.2; }
         }
     </style>
 </head>
@@ -198,7 +225,6 @@
             input.onkeydown = (e) => {
                 const pos = input.selectionStart;
 
-                // --- NAVEGAÇÃO POR SETAS ---
                 if (e.key === "ArrowDown") {
                     e.preventDefault();
                     const prox = document.getElementById(`L${i + 1}`);
@@ -218,7 +244,6 @@
                     if (ant) { e.preventDefault(); ant.focus(); ant.setSelectionRange(ant.value.length, ant.value.length); }
                 }
 
-                // --- ENTER E BACKSPACE ---
                 if (e.key === "Enter") {
                     e.preventDefault();
                     let sobra = input.value.substring(pos).trim();
@@ -266,7 +291,6 @@
     };
 
     window.limparTudo = () => { if(confirm("Apagar caderno?")) { document.querySelectorAll('.linha-folha').forEach(inp => inp.value = ""); escaneamentoElite(); } };
-    
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
         set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ HOME SINCRONIZADA!"));
