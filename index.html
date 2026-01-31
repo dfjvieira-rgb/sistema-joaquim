@@ -1,135 +1,271 @@
-<script type="module">
-    import { db } from './firebase-config.js';
-    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
-
-    let activeEx = localStorage.getItem('activeEx') || "44";
-    let ultimaLinhaFocada = 1;
-    const LIMITE_LINHA = 85;
-
-    // --- SCANNER RECONSTRUIDO (FORÇA BRUTA) ---
-    const rodarScanner = () => {
-        const status = document.getElementById('radar-status');
-        const box = document.getElementById('radar-container');
-        const topo = document.getElementById('identificador-peca');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JOAQUIM ELITE 2026 - MULTI-EXAME COCKPIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
+            --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
+            --mentoria: #a855f7; --header-h: 60px; --sidebar-w: 240px;
+        }
+        body.dark-mode { --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; }
         
-        // Pega o conteúdo do espelho e limpa tags HTML/Espaços
-        const conteudoBruto = BANCO_ESPELHOS[activeEx] || "";
-        const dnaLimpo = conteudoBruto.replace(/<[^>]*>/g, '').toUpperCase();
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-paper); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
+        #timer { font-family: 'Courier New', monospace; font-size: 1.4rem; color: var(--gold); font-weight: bold; }
 
-        const PECAS_DNA = [
-            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMAÇÃO TRABALHISTA", cor: "#a855f7" },
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
-            { id: "MANDADO DE SEGURANÇA", display: "MANDADO DE SEGURANÇA", cor: "#06b6d4" },
-            { id: "CONSIGNATÓRIA", display: "CONSIGNATÓRIA", cor: "#fbbf24" }
-        ];
+        .nav-group { display: flex; gap: 10px; }
+        .dropdown { position: relative; }
+        .dropbtn { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: #334155; transition: 0.2s; }
+        .dropbtn:hover { background: #475569; }
 
-        // Busca exata no DNA do Espelho
-        const alvo = PECAS_DNA.find(p => dnaLimpo.includes(p.id));
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 280px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); right: 0; border-radius: 8px; padding: 10px; z-index: 2000; border: 1px solid var(--gold); }
+        .dropdown:hover .dropdown-content { display: block; }
+        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; cursor: pointer; color: var(--primary); font-weight: 600; }
+        .menu-item:hover { background: #f8fafc; }
 
-        if (alvo) {
-            status.innerHTML = `<span style="color:${alvo.cor}">ALVO DETECTADO</span><br>${alvo.id}`;
-            box.style.borderColor = alvo.cor;
-            box.classList.remove('radar-blink');
-            topo.innerText = `EXAME ${activeEx}: ${alvo.display}`;
-            topo.style.color = alvo.cor;
-            topo.style.borderBottom = `3px solid ${alvo.cor}`;
-        } else {
-            status.innerHTML = `SCANNER<br><span class="radar-blink">BUSCANDO NO ESPELHO...</span>`;
-            box.style.borderColor = "var(--gold)";
-            topo.innerText = `EXAME ${activeEx}: SEM PEÇA DEFINIDA`;
-            topo.style.color = "#64748b";
-            topo.style.borderBottom = `3px double var(--line-color)`;
+        main { display: flex; flex: 1; overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar { width: var(--sidebar-w); background: #1e293b; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; padding: 15px; gap: 12px; overflow-y: auto; }
+        .sidebar h4 { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #334155; padding-bottom: 5px; margin-top: 10px; }
+        
+        .exame-btn { background: #334155; color: white; border: 1px solid #475569; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.75rem; font-weight: bold; transition: 0.2s; }
+        .exame-btn:hover, .exame-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
+        
+        .sticky-note { padding: 10px; border-radius: 6px; font-size: 0.75rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-left: 5px solid; background: #fff; margin-bottom: 8px; color: #333; }
+
+        /* EDITOR CENTRAL */
+        .work-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); padding: 15px; overflow-y: auto; align-items: center; }
+        
+        #radar-container { width: 100%; max-width: 850px; background: #000; border: 2px solid var(--gold); padding: 10px; margin-bottom: 15px; text-align: center; border-radius: 8px; }
+        #radar-status { color: var(--gold); font-weight: 900; font-size: 0.8rem; letter-spacing: 2px; }
+
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; min-height: 1200px; padding: 40px; }
+        #area-peca { 
+            width: 100%; height: 100%; min-height: 1000px; border: none; outline: none;
+            font-family: 'Courier New', Courier, monospace; font-size: 18px; line-height: 1.6;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px); background-size: 100% 1.6em;
+            resize: none; color: var(--text-color); background-attachment: local;
         }
-    };
 
-    // --- MONTAGEM DA FOLHA ---
-    window.montarFolha = () => {
-        const container = document.getElementById('folha-total');
-        container.innerHTML = "";
-        for(let i=1; i<=180; i++) {
-            const row = document.createElement('div');
-            row.className = 'linha-wrapper';
-            row.innerHTML = `<div class="linha-num">${i}</div>`;
-            const input = document.createElement('input');
-            input.className = 'linha-folha';
-            input.id = `L${i}`;
-            input.setAttribute('maxlength', LIMITE_LINHA);
-            input.setAttribute('spellcheck', 'false');
-            
-            input.onfocus = () => { ultimaLinhaFocada = i; };
-            input.oninput = () => {
-                if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i+1}`)?.focus();
-            };
-            input.onkeydown = (e) => {
-                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
-                if (e.key === "Backspace" && input.value === "") document.getElementById(`L${i-1}`)?.focus();
-            };
-            row.appendChild(input);
-            container.appendChild(row);
+        /* PDFs SECT */
+        .pdf-section { width: 400px; background: #334155; display: flex; flex-direction: column; gap: 10px; padding: 10px; }
+        .pdf-box { flex: 1; background: #1e293b; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #475569; }
+        .pdf-header { padding: 8px 12px; color: white; font-size: 0.7rem; font-weight: bold; display: flex; justify-content: space-between; background: #0f172a; }
+        .pdf-frame { width: 100%; flex: 1; border: none; background: white; }
+
+        /* MODAL CONSULTA */
+        .consulta-full { position: fixed; inset: 0; background: white; z-index: 5000; display: none; flex-direction: column; }
+        .consulta-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: bold; }
+        .consulta-body { flex: 1; padding: 30px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New'; font-size: 1.2rem; line-height: 1.5; color: #1e293b; }
+
+        .btn-action { border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 0.75rem; text-transform: uppercase; transition: 0.2s; }
+
+        @media (max-width: 1100px) {
+            main { flex-direction: column; overflow-y: auto; }
+            .sidebar, .pdf-section { width: 100%; height: auto; }
+            .paper { max-width: 95%; }
         }
-        carregarDados();
-        rodarScanner(); // Força o scanner ao montar
-    };
+    </style>
+</head>
+<body>
 
-    const carregarDados = () => {
-        onValue(ref(db, `estudos/${activeEx}`), (snap) => {
-            const d = snap.val();
-            if (d && d.linhas) {
-                d.linhas.forEach((txt, idx) => {
-                    const el = document.getElementById(`L${idx + 1}`);
-                    if (el) el.value = txt;
-                });
-            }
-        }, { onlyOnce: true });
-    };
+<header>
+    <div id="timer">05:00:00</div>
+    <div style="color:white; font-weight:900; font-size:1.2rem;">JOAQUIM <span style="color:var(--gold)">ELITE</span></div>
+    <div class="nav-group">
+        <div class="dropdown"><button class="dropbtn" style="border: 1px solid var(--gold);"><i class="fas fa-save"></i> DISQUETE</button>
+            <div class="dropdown-content">
+                <div class="menu-item" onclick="disqueteSalvarPDF()"><span>💾 Salvar PDF Mentoria</span></div>
+                <div class="menu-item" onclick="exportarTXT()"><span>📄 Baixar Peça (.txt)</span></div>
+                <div class="menu-item" onclick="fazerBackup()"><span>📥 Backup do Sistema</span></div>
+            </div>
+        </div>
+        <div class="dropdown"><button class="dropbtn">📑 Estruturas</button><div class="dropdown-content" id="list-db_estruturas"></div></div>
+        <div class="dropdown"><button class="dropbtn">⚖️ Peças</button><div class="dropdown-content" id="list-db_correcoes"></div></div>
+    </div>
+</header>
 
-    window.disqueteSalvarPDF = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        const historicoRef = ref(db, 'mentoria/historico');
-        push(historicoRef, {
+<main>
+    <aside class="sidebar">
+        <div id="radar-container"><div id="radar-status">SCANNER OFFLINE</div></div>
+        
+        <h4>📂 Exames Oficiais</h4>
+        <div id="lista-exames" style="display:flex; flex-direction:column; gap:6px"></div>
+        
+        <h4 class="mural-title">📌 Post-its & Dicas</h4>
+        <div id="mural-content"></div>
+    </aside>
+
+    <section class="work-section">
+        <div id="radar-container" style="background: var(--primary); border: 1px solid var(--gold); width: 100%; max-width: 850px; margin-bottom: 10px;">
+            <div id="label-exame" style="color: white; font-weight: bold; font-size: 0.8rem;">📍 SELECIONE UM EXAME PARA ATIVAR O COCKPIT</div>
+        </div>
+        <div class="paper">
+            <textarea id="area-peca" spellcheck="false" placeholder="Inicie a redação da peça..."></textarea>
+        </div>
+    </section>
+
+    <section class="pdf-section">
+        <div class="pdf-box">
+            <div class="pdf-header"><span><i class="fas fa-file-alt"></i> ENUNCIADO</span><button onclick="expandir('v-enu')" style="background:none; border:none; color:white; cursor:pointer"><i class="fas fa-expand"></i></button></div>
+            <iframe class="pdf-frame" id="v-enu"></iframe>
+        </div>
+        <div class="pdf-box">
+            <div class="pdf-header"><span><i class="fas fa-check-double"></i> GABARITO OFICIAL</span><button onclick="expandir('v-gab')" style="background:none; border:none; color:white; cursor:pointer"><i class="fas fa-expand"></i></button></div>
+            <iframe class="pdf-frame" id="v-gab"></iframe>
+        </div>
+    </section>
+</main>
+
+<div id="janela-consulta" class="consulta-full">
+    <div id="header-consulta" class="consulta-header">
+        <span id="titulo-consulta" style="font-size:1.5rem"></span>
+        <button class="btn-action" style="background:rgba(0,0,0,0.5)" onclick="fecharConsulta()">FECHAR [X]</button>
+    </div>
+    <div id="corpo-consulta" class="consulta-body"></div>
+    <div style="padding: 20px; background: #f1f5f9; display: flex; gap: 10px;">
+        <button class="btn-action" style="background:var(--mentoria); flex:1; height: 60px; font-size: 1rem;" onclick="inserirNoEditor()">INJETAR NA PEÇA</button>
+    </div>
+</div>
+
+<script>
+    // Configuração de Bancos e Cores
+    const bancos = ['db_estruturas', 'db_correcoes', 'db_postits', 'db_dicas'];
+    const cores = { db_estruturas: '#3498db', db_correcoes: '#e67e22', db_postits: '#f1c40f', db_dicas: '#8e44ad' };
+    let activeEx = localStorage.getItem('activeEx') || "44";
+    let textoConsultado = "";
+
+    function montarExames() {
+        const container = document.getElementById('lista-exames');
+        for (let i = 45; i >= 35; i--) {
+            const btn = document.createElement('button');
+            btn.className = `exame-btn ${activeEx == i ? 'active' : ''}`;
+            btn.innerText = `EXAME OAB XXX${i}`;
+            btn.onclick = () => carregarExame(i);
+            container.appendChild(btn);
+        }
+    }
+
+    function carregarExame(num) {
+        activeEx = num;
+        localStorage.setItem('activeEx', num);
+        document.querySelectorAll('.exame-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        document.getElementById('v-enu').src = `./ro${num}.pdf`;
+        document.getElementById('v-gab').src = `./ro${num}-gabarito.pdf`;
+        document.getElementById('label-exame').innerText = `📍 COCKPIT ATIVO: EXAME OAB XXX${num}`;
+        
+        // Simulação de Scanner "Beber do Espelho"
+        atualizarRadar(num);
+    }
+
+    function atualizarRadar(num) {
+        const radar = document.getElementById('radar-status');
+        const labels = {
+            "44": "RECURSO ORDINÁRIO",
+            "43": "CONTESTAÇÃO",
+            "42": "RECLAMAÇÃO TRABALHISTA",
+            "41": "AGRAVO DE PETIÇÃO"
+        };
+        const peca = labels[num] || "ANALISANDO ESPELHO...";
+        radar.innerText = `ALVO DETECTADO: ${peca}`;
+    }
+
+    function renderizarTudo() {
+        bancos.forEach(banco => {
+            const db = JSON.parse(localStorage.getItem(banco)) || {};
+            const container = document.getElementById('list-' + banco);
+            if(!container) return;
+            container.innerHTML = Object.keys(db).map(id => `
+                <div class="menu-item" onclick="abrirConsulta('${banco}', '${id}')">
+                    <span>${db[id].nome}</span>
+                    <i class="fas fa-chevron-right" style="opacity:0.3"></i>
+                </div>`).join('');
+        });
+
+        // Mural de Post-its
+        const mural = document.getElementById('mural-content');
+        mural.innerHTML = "";
+        ['db_postits', 'db_dicas'].forEach(b => {
+            const db = JSON.parse(localStorage.getItem(b)) || {};
+            Object.values(db).forEach(item => {
+                const cor = b === 'db_postits' ? 'var(--gold)' : 'var(--mentoria)';
+                mural.innerHTML += `<div class="sticky-note" style="border-color:${cor}"><b>${item.nome}</b><br>${item.texto.substring(0,60)}...</div>`;
+            });
+        });
+    }
+
+    // Função do Disquete solicitada: Salva PDF no Histórico e limpa
+    function disqueteSalvarPDF() {
+        const pecaConteudo = document.getElementById('area-peca').value;
+        if(!pecaConteudo) return alert("Peça vazia!");
+
+        const historico = JSON.parse(localStorage.getItem('mentoria_historico')) || [];
+        const novoRegistro = {
             exame: activeEx,
-            peca: document.getElementById('identificador-peca').innerText,
-            conteudo: dados,
-            ts: Date.now()
-        }).then(() => {
-            alert("💾 PDF SALVO NO HISTÓRICO!");
-            set(ref(db, `estudos/${activeEx}`), { linhas: dados, ts: Date.now() });
-        });
-    };
+            data: new Date().toLocaleString(),
+            conteudo: pecaConteudo,
+            id: Date.now()
+        };
+        
+        historico.push(novoRegistro);
+        localStorage.setItem('mentoria_historico', JSON.stringify(historico));
+        
+        alert("💾 [DISQUETE]: Peça salva com sucesso no histórico de mentoria!");
+        // Opcional: imprimir para PDF
+        window.print();
+    }
 
-    window.abrirModalExames = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3 style="text-align:center; margin-bottom:15px;">MUDAR EXAME</h3>`;
-        const grid = document.createElement('div'); grid.style.cssText="display:grid; grid-template-columns:1fr 1fr; gap:10px;";
-        [45,44,43,42,41,40,39,38,37,36,35].forEach(i => {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            if(i.toString() === activeEx) b.style.background = "var(--gold)";
-            b.onclick = () => { 
-                activeEx = i.toString(); 
-                localStorage.setItem('activeEx', activeEx); 
-                montarFolha(); 
-                fecharModal(); 
-            };
-            grid.appendChild(b);
-        });
-        content.appendChild(grid);
-        document.getElementById('universal-modal').style.display='flex';
-    };
+    function abrirConsulta(banco, id) {
+        const db = JSON.parse(localStorage.getItem(banco));
+        textoConsultado = db[id].texto;
+        document.getElementById('titulo-consulta').innerText = db[id].nome;
+        document.getElementById('corpo-consulta').innerText = db[id].texto;
+        document.getElementById('header-consulta').style.backgroundColor = cores[banco];
+        document.getElementById('janela-consulta').style.display = 'flex';
+    }
 
-    // Outras funções auxiliares
-    window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
-    window.fecharSplitPdf = () => document.getElementById('pdf-split-view').classList.remove('active');
-    window.abrirSplitPdf = (t) => {
-        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
-        document.getElementById('pdf-split-view').classList.add('active');
-    };
-    window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); rodarScanner(); };
+    function fecharConsulta() { document.getElementById('janela-consulta').style.display = 'none'; }
+    
+    function inserirNoEditor() { 
+        document.getElementById('area-peca').value += "\n" + textoConsultado; 
+        fecharConsulta(); 
+    }
 
-    window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, fecharModal, fecharSplitPdf, abrirSplitPdf, irPara, resetarFolha, disqueteSalvarPDF });
+    function exportarTXT() { 
+        const b = new Blob([document.getElementById('area-peca').value], {type:'text/plain'}); 
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(b); a.download = `OAB_XXX${activeEx}_Peca.txt`; a.click(); 
+    }
+
+    function expandir(id) {
+        const el = document.getElementById(id);
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+
+    window.onload = () => {
+        montarExames();
+        renderizarTudo();
+        carregarExame(activeEx);
+        
+        // Cronômetro de 5 horas
+        let s = 18000; 
+        setInterval(() => {
+            if(s <= 0) return;
+            let h=parseInt(s/3600), m=parseInt((s%3600)/60), sc=parseInt(s%60);
+            document.getElementById('timer').textContent = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
+            s--;
+        }, 1000);
+    };
 </script>
+</body>
+</html>
