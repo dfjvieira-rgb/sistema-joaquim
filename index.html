@@ -36,12 +36,9 @@
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
         @media print {
-            @page { size: A4; margin: 0; }
-            body { background: white !important; overflow: visible !important; }
             header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; }
             .editor-container { padding: 0 !important; margin: 0 !important; background: white !important; width: 100% !important; }
             .paper { box-shadow: none !important; width: 100% !important; max-width: 100% !important; }
-            .linha-folha { color: black !important; border-bottom: 1px solid #ddd !important; }
         }
     </style>
 </head>
@@ -99,22 +96,12 @@
     let mentoriaJanelaRef = null;
     const LIMITE_LINHA = 85;
 
-    // MELHORIA 1: Scanner que lê diretamente a folha e o banco
+    // REGRA ORIGINAL RESTAURADA: Lê do BANCO_ESPELHOS
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
         const topoFolha = document.getElementById('identificador-peca');
-        
-        // Lê o que está escrito nas primeiras 10 linhas da folha
-        let textoPresente = "";
-        for(let i=1; i<=10; i++){
-            textoPresente += (document.getElementById(`L${i}`)?.value || "").toUpperCase();
-        }
-        
-        // Se a folha estiver vazia, tenta ler do banco de espelhos como backup
-        if(textoPresente.trim().length < 5){
-            textoPresente = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        }
+        const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
 
         const DICIONARIO = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
@@ -123,7 +110,7 @@
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        let encontrado = DICIONARIO.find(p => textoPresente.includes(p.id));
+        let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
 
         if (encontrado) {
             sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
@@ -135,7 +122,7 @@
         } else {
             sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`;
             boxSidebar.style.borderColor = "var(--gold)";
-            topoFolha.innerText = "CADERNO DE RESPOSTAS (EXAME " + activeEx + ")";
+            topoFolha.innerText = "CADERNO DE RESPOSTAS";
             topoFolha.style.color = "#64748b";
             topoFolha.style.borderBottomColor = "var(--line-color)";
         }
@@ -158,10 +145,7 @@
             input.id = `L${i}`;
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
-            input.oninput = () => { 
-                if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); 
-                escaneamentoElite(); // Atualiza título enquanto digita
-            };
+            input.oninput = () => { if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); };
             input.onkeydown = (e) => { 
                 if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
                 if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
@@ -174,7 +158,6 @@
         carregarDados();
     };
 
-    // MELHORIA 2: Carregamento com Delay para garantir atualização do título
     const carregarDados = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
@@ -185,12 +168,11 @@
                     if (el) el.value = txt;
                 });
             }
-            // Delay de 200ms para o navegador processar o texto antes do Scanner ler
-            setTimeout(escaneamentoElite, 200);
+            escaneamentoElite(); // Chama a regra original após carregar
         }, { onlyOnce: true });
     };
 
-    // MELHORIA 3: Envio com recarregamento forçado da Mentoria
+    // Ajustado para garantir o arquivamento e recarregamento da mentoria
     window.concluirEEnviarAoRobo = () => {
         const dataH = new Date().toLocaleDateString('pt-BR');
         const horaH = new Date().toLocaleTimeString('pt-BR');
@@ -230,10 +212,7 @@
 
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => {
-            alert("☁️ SALVO!");
-            escaneamentoElite();
-        });
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
     };
 
     window.abrirModalPecas = () => {
