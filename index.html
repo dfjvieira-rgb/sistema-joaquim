@@ -68,9 +68,7 @@
         }
     </style>
 </head>
-<body>
-
-<header>
+<body class="dark-mode"> <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
     <div style="display:flex; gap:10px;">
         <button class="btn-side" style="width:40px; background:var(--gold); color: black;" onclick="window.location.href='mentoria.html'"><i class="fas fa-trophy"></i></button>
@@ -138,6 +136,7 @@
     let mentoriaJanelaRef = null;
     const LIMITE_LINHA = 85;
 
+    // RADAR DE IDENTIFICAÇÃO
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
@@ -169,6 +168,7 @@
         }
     };
 
+    // CONSTRUTOR DA FOLHA
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -216,27 +216,33 @@
     window.abrirMentoria = () => {
         const width = 550, height = window.screen.availHeight, left = window.screen.availWidth - width;
         const config = `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`;
-        mentoriaJanelaRef = window.open('mentoria.html?mode=consultor', 'ConsultorElite', config);
+        mentoriaJanelaRef = window.open('mentoria.html', 'ConsultorElite', config);
         if (mentoriaJanelaRef) mentoriaJanelaRef.focus();
     };
 
-    // FUNÇÃO CORRIGIDA PARA O ENDEREÇO SIMPLES 'simulados'
+    // FUNÇÃO DE ENVIO - TOTALMENTE REVISADA
     window.concluirEEnviarAoRobo = () => {
         if(!confirm(`Deseja enviar o Exame ${activeEx} para o Cofre do Robô?`)) return;
         
-        // Pega os textos de todas as linhas da folha
-        const dadosLinhas = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        
-        // Envia para o endereço 'simulados'
-        push(ref(db, 'simulados'), {
-            exame: activeEx,
-            data: new Date().toLocaleDateString('pt-BR') + ", " + new Date().toLocaleTimeString('pt-BR'),
-            linhas: dadosLinhas,
-            ts: Date.now()
-        }).then(() => {
-            alert("🚀 EXAME ARQUIVADO NO COFRE!");
-            abrirMentoria();
-        }).catch(err => alert("Erro ao enviar: " + err));
+        try {
+            const campos = document.querySelectorAll('.linha-folha');
+            const dadosLinhas = Array.from(campos).map(i => i.value);
+            
+            // Envia para a pasta simples 'simulados'
+            push(ref(db, 'simulados'), {
+                exame: activeEx,
+                data: new Date().toLocaleDateString('pt-BR') + ", " + new Date().toLocaleTimeString('pt-BR'),
+                linhas: dadosLinhas,
+                ts: Date.now()
+            }).then(() => {
+                alert("🚀 EXAME ARQUIVADO NO COFRE!");
+                abrirMentoria();
+            }).catch(err => {
+                alert("Erro no Firebase: " + err.message);
+            });
+        } catch (err) {
+            alert("Erro na captura: " + err.message);
+        }
     };
 
     window.abrirModalExames = () => {
@@ -250,7 +256,6 @@
                 localStorage.setItem('activeEx', activeEx); 
                 montarFolha(); 
                 escaneamentoElite();
-                if(mentoriaJanelaRef && !mentoriaJanelaRef.closed) mentoriaJanelaRef.location.reload();
                 fecharModal(); 
             };
             grid.appendChild(b);
