@@ -50,8 +50,8 @@
         .sidebar {
             width: var(--sidebar-w); background: #1e293b; display: flex;
             flex-direction: column; gap: 8px; padding: 8px; overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1); z-index: 100; flex-shrink: 0;
-            scrollbar-width: none;
+            border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            scrollbar-width: none; flex-shrink: 0;
         }
         
         #radar-peca {
@@ -65,67 +65,80 @@
         .exame-btn {
             width: 100%; height: 35px; background: #334155; border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;
+            font-weight: 800; font-size: 0.8rem; color: #cbd5e1; cursor: pointer; flex-shrink: 0;
         }
         .exame-btn.active { background: var(--gold); color: var(--primary); }
 
-        .sidebar-divider { height: 2px; background: rgba(255,255,255,0.1); margin: 5px 0; }
+        .sidebar-divider { height: 2px; background: rgba(255,255,255,0.1); margin: 5px 0; flex-shrink: 0; }
 
         .btn-side {
             width: 100%; height: 50px; border-radius: 8px; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+            color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s; flex-shrink: 0;
         }
 
         .editor-container {
             flex: 1; overflow-y: auto; background: var(--bg-paper);
-            display: flex; justify-content: center; padding: 20px;
+            display: flex; justify-content: center; align-items: flex-start;
+            height: 100%; padding: 20px;
         }
         
         .paper {
             background: var(--paper-color); width: 100%; max-width: 850px; 
-            min-height: fit-content; padding: 0; box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            position: relative;
+            min-height: fit-content; padding: 0; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.2); position: relative;
         }
 
-        /* MARCAÇÕES FGV VIA CSS (Não afetam o texto) */
+        /* SIMULADOR DE CADERNO FGV (BACKGROUND VISUAL) */
         .paper::before {
             content: "PEÇA PROFISSIONAL";
-            display: block; background: #e2e8f0; color: #475569;
-            padding: 10px; font-weight: 900; text-align: center; font-size: 0.75rem;
-            border-bottom: 1px solid var(--line-color);
+            display: block; background: #e2e8f0; color: #1e293b; padding: 10px;
+            text-align: center; font-weight: 900; font-size: 0.8rem; border-bottom: 1px solid var(--gold);
         }
 
         .editor-area {
             outline: none; font-size: 18px; line-height: 30px; color: var(--text-color);
             font-family: 'Times New Roman', serif; text-align: justify;
             background-image: repeating-linear-gradient(var(--paper-color), var(--paper-color) 29px, var(--line-color) 29px, var(--line-color) 30px);
-            min-height: 2500px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
-            padding: 0 40px 500px 40px; position: relative;
+            min-height: 3500px; width: 100%; word-wrap: break-word; white-space: pre-wrap;
+            padding: 20px 40px 100px 40px;
         }
 
-        /* Divisores Visuais de Questões (Simulação FGV) */
-        .fgv-mark {
-            pointer-events: none; user-select: none;
-            background: #f1f5f9; color: #475569; font-weight: 900;
-            padding: 10px; text-align: center; font-size: 0.75rem;
-            margin: 40px -40px 10px -40px; border-top: 2px solid var(--gold);
+        /* Marcadores das Questões (Efeito de Fundo Fixos) */
+        .fgv-divider {
+            background: #f1f5f9; color: #1e293b; padding: 8px; font-weight: 900;
+            font-size: 0.75rem; text-align: center; border-top: 2px solid var(--gold);
+            border-bottom: 1px solid var(--line-color); pointer-events: none;
+            user-select: none;
+        }
+        .fgv-sub {
+            background: var(--primary); color: var(--gold); padding: 4px 40px;
+            font-size: 0.7rem; font-weight: 800; pointer-events: none;
         }
 
         .pdf-panel {
             width: 0; background: white; transition: 0.3s ease;
             display: flex; flex-direction: column; overflow: hidden;
-            border-left: 2px solid var(--gold);
+            border-left: 2px solid var(--gold); flex-shrink: 0;
         }
         .pdf-panel.open { width: 50%; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; align-items: center; justify-content: center; }
+        .modal-body { background: var(--paper-color); width: 90%; max-width: 400px; border-radius: 15px; padding: 25px; border: 2px solid var(--gold); }
+        .peca-opt { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid var(--line-color); border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; background: #f8fafc; color: #1e293b; }
 
         @media (max-width: 900px) {
             .sidebar { 
                 width: 100%; height: 60px; flex-direction: row; 
-                position: fixed; bottom: 0; left: 0; border-top: 1px solid var(--gold);
-                padding: 5px; z-index: 10001;
+                position: fixed; bottom: 0; left: 0; border-right: none; border-top: 1px solid var(--gold);
+                padding: 5px; overflow-x: auto;
             }
-            .editor-container { padding-bottom: 80px; }
+            .sidebar-divider { width: 2px; height: 80%; margin: 0 5px; }
+            #radar-peca { min-width: 80px; height: 100%; margin-bottom: 0; font-size: 0.45rem; }
+            .exame-btn { min-width: 45px; height: 100%; }
+            .btn-side { min-width: 45px; height: 100%; }
+            .editor-container { padding-bottom: 80px; height: calc(100vh - var(--header-h) - 60px); }
             .pdf-panel.open { width: 100%; position: absolute; top:0; bottom:60px; right:0; z-index: 5001; }
         }
     </style>
@@ -159,9 +172,34 @@
         <button class="btn-side" style="background:linear-gradient(135deg, #fbbf24, #ef4444)" onclick="lancarPeca()"><i class="fas fa-rocket"></i></button>
     </aside>
 
-    <section class="editor-container">
+    <section class="editor-container" id="scroll-container">
         <div class="paper">
             <div id="main-editor" class="editor-area" contenteditable="true" spellcheck="false"></div>
+            <div contenteditable="false">
+                <div class="fgv-divider">QUESTÃO 1</div>
+                <div class="fgv-sub">ITEM A</div>
+                <div style="height:300px"></div>
+                <div class="fgv-sub">ITEM B</div>
+                <div style="height:300px"></div>
+
+                <div class="fgv-divider">QUESTÃO 2</div>
+                <div class="fgv-sub">ITEM A</div>
+                <div style="height:300px"></div>
+                <div class="fgv-sub">ITEM B</div>
+                <div style="height:300px"></div>
+
+                <div class="fgv-divider">QUESTÃO 3</div>
+                <div class="fgv-sub">ITEM A</div>
+                <div style="height:300px"></div>
+                <div class="fgv-sub">ITEM B</div>
+                <div style="height:300px"></div>
+
+                <div class="fgv-divider">QUESTÃO 4</div>
+                <div class="fgv-sub">ITEM A</div>
+                <div style="height:300px"></div>
+                <div class="fgv-sub">ITEM B</div>
+                <div style="height:300px"></div>
+            </div>
         </div>
     </section>
 
@@ -231,7 +269,7 @@
         const esp = BANCO_ESPELHOS[activeEx];
         if(esp) {
             const checklist = esp.replace(/<[^>]*>/g, '').split('\n').filter(l => l.trim()).join('\n[ ] ');
-            editor.innerText += "\n\n--- ⚖️ CHECKLIST ---\n[ ] " + checklist;
+            editor.innerText += "\n\n--- ⚖️ CHECKLIST DE TESES ---\n[ ] " + checklist;
             autoSave();
         }
     };
