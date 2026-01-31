@@ -17,7 +17,7 @@
         
         header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
 
-        /* STATUS BAR */
+        /* STATUS BAR - CRONÔMETRO */
         #status-bar { background: #1e293b; color: white; padding: 8px 20px; display: flex; justify-content: space-between; font-size: 0.75rem; border-bottom: 1px solid #334155; z-index: 1005; }
         #timer { font-weight: 900; color: var(--gold); font-size: 0.9rem; }
 
@@ -38,17 +38,18 @@
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); transition: 0.3s; }
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         
-        /* ALERTA DE LINHA PROIBIDA */
-        .linha-proibida { background-color: rgba(251, 191, 36, 0.15) !important; border-left: 5px solid var(--gold); }
+        /* ALERTA DE LINHA PROIBIDA (ESPAÇO VAZIO) */
+        .linha-proibida { background-color: rgba(251, 191, 36, 0.15) !important; }
 
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
             padding: 0 15px; font-size: 18px; font-family: 'Courier New', monospace; 
-            color: var(--text-color); width: 100%; letter-spacing: 0.5px;
+            color: var(--text-color); width: 100%; 
         }
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: 0.2s; }
         
+        /* MODAIS E PDF */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; }
@@ -60,14 +61,14 @@
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
     <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:#64748b;" title="Modo Escuro" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
-        <button class="btn-side" style="width:40px; background:#ef4444;" title="Limpar Tudo" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
+        <button class="btn-side" style="width:40px; background:#64748b;" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
+        <button class="btn-side" style="width:40px; background:#ef4444;" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
     </div>
 </header>
 
 <div id="status-bar">
     <div><i class="fas fa-clock"></i> CRONÔMETRO: <span id="timer">05:00:00</span></div>
-    <div><i class="fas fa-keyboard"></i> FGV MODE: <span style="color:var(--gold)">85 CHARS/LINHA</span> | <i class="fas fa-eraser"></i> <span style="color:var(--gold)">SHIFT+ARRASAR</span></div>
+    <div><i class="fas fa-eraser"></i> BORRACHA: <span style="color:var(--gold)">SHIFT + ARRASTAR</span></div>
 </div>
 
 <main>
@@ -87,7 +88,7 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="identificador-peca">COCKPIT PRONTO</div>
+            <div id="identificador-peca">CARREGANDO...</div>
             <div id="folha-total"></div>
         </div>
     </section>
@@ -110,7 +111,7 @@
     let mentoriaJanelaRef = null;
     const LIMITE_CARACTERE = 85;
 
-    // --- CRONÔMETRO ---
+    // --- 1. CRONÔMETRO (5 HORAS) ---
     let segundos = 5 * 60 * 60;
     const dispararTimer = () => {
         setInterval(() => {
@@ -124,12 +125,13 @@
         }, 1000);
     };
 
-    // --- VERIFICADOR DE ESPAÇOS PERIGOSOS ---
+    // --- 2. VERIFICADOR DE LINHAS PROIBIDAS (ESPAÇOS EM BRANCO) ---
     const verificarEspacos = () => {
         const linhas = document.querySelectorAll('.linha-folha');
         linhas.forEach((l, idx) => {
             const wrapper = l.parentElement;
-            if (idx > 5 && l.value.trim() === "" && linhas[idx-1]?.value.trim() === "" && linhas[idx-2]?.value.trim() === "") {
+            // Se a linha atual e a anterior estiverem vazias (acima da linha 5)
+            if (idx > 5 && l.value.trim() === "" && linhas[idx-1].value.trim() === "" && linhas[idx-2].value.trim() === "") {
                 wrapper.classList.add('linha-proibida');
             } else {
                 wrapper.classList.remove('linha-proibida');
@@ -137,7 +139,7 @@
         });
     };
 
-    // --- MONTAGEM DA FOLHA ---
+    // --- 3. MONTAGEM DA FOLHA (COM BORRACHA E PULO) ---
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -149,7 +151,7 @@
             input.id = `L${i}`;
             input.maxLength = LIMITE_CARACTERE;
 
-            // BORRACHA (Shift + Mouse)
+            // BORRACHA: SHIFT + ARRASTAR
             input.onmouseenter = (e) => {
                 if (e.shiftKey && e.buttons === 1) {
                     input.value = "";
@@ -157,22 +159,15 @@
                 }
             };
 
-            // AUTO-PULO INTELIGENTE
+            // PULO AUTOMÁTICO E NAVEGAÇÃO
             input.oninput = () => {
-                if (input.value.length >= LIMITE_CARACTERE) {
-                    document.getElementById(`L${i+1}`)?.focus();
-                }
+                if (input.value.length >= LIMITE_CARACTERE) document.getElementById(`L${i+1}`)?.focus();
                 verificarEspacos();
             };
 
             input.onkeydown = (e) => {
-                if (e.key === "Enter") { 
-                    e.preventDefault(); 
-                    document.getElementById(`L${i+1}`)?.focus(); 
-                }
-                if (e.key === "Backspace" && input.value === "") {
-                    document.getElementById(`L${i-1}`)?.focus();
-                }
+                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
+                if (e.key === "Backspace" && input.value === "") document.getElementById(`L${i-1}`)?.focus();
             };
 
             input.onfocus = () => { ultimaLinhaFocada = i; };
@@ -183,20 +178,20 @@
         carregarDados();
     };
 
-    // --- APOIO ---
+    // --- FUNÇÕES DE APOIO (Firebase & Radar) ---
     const escaneamentoElite = () => {
         const status = document.getElementById('radar-status');
         const topo = document.getElementById('identificador-peca');
         const dna = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         
-        const peca = dna.includes("AGRAVO DE PETIÇÃO") ? {t:"AGRAVO DE PETIÇÃO", c:"#f87171"} :
-                     dna.includes("RECURSO ORDINÁRIO") ? {t:"RECURSO ORDINÁRIO", c:"#3b82f6"} :
-                     dna.includes("CONTESTAÇÃO") ? {t:"CONTESTAÇÃO", c:"#22c55e"} : 
-                     {t:"CADERNO DE PROVA", c:"#64748b"};
+        const pecaEncontrada = dna.includes("AGRAVO DE PETIÇÃO") ? {t:"AGRAVO DE PETIÇÃO", c:"#f87171"} :
+                               dna.includes("RECURSO ORDINÁRIO") ? {t:"RECURSO ORDINÁRIO", c:"#3b82f6"} :
+                               dna.includes("CONTESTAÇÃO") ? {t:"CONTESTAÇÃO", c:"#22c55e"} : 
+                               {t:"CADERNO DE PROVA", c:"#64748b"};
 
-        status.innerHTML = `<span style="color:${peca.c}">RADAR</span><br>${peca.t}`;
-        topo.innerText = peca.t;
-        topo.style.color = peca.c;
+        status.innerHTML = `<span style="color:${pecaEncontrada.c}">RADAR</span><br>${pecaEncontrada.t}`;
+        topo.innerText = pecaEncontrada.t;
+        topo.style.color = pecaEncontrada.c;
     };
 
     const carregarDados = () => {
@@ -239,11 +234,9 @@
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.onload = () => { montarFolha(); dispararTimer(); };
     window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=""); verificarEspacos(); };
-    window.abrirSplitPdf = (t) => { 
-        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}.pdf`; 
-        document.getElementById('pdf-split-view').classList.add('active'); 
-    };
+    window.abrirSplitPdf = (t) => { document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}.pdf`; document.getElementById('pdf-split-view').classList.add('active'); };
     
+    // Exportar funções para o HTML
     Object.assign(window, { abrirModalExames, fecharModal, abrirSplitPdf, salvarManual, abrirMentoria, resetarFolha });
 </script>
 </body>
