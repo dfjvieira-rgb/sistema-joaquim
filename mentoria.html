@@ -3,55 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | CONSULTOR ELITE</title>
+    <title>ARYANNA 2026 | COFRE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #fbbf24; --primary: #1d4ed8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        /* Layout */
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .main-content { flex: 1; overflow-y: auto; padding-top: 15px; }
-
-        /* Estilo dos Cards */
-        .panel { background: var(--card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
-        .panel-header { padding: 12px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 0.7rem; color: var(--gold); letter-spacing: 1px; }
-        
+        :root { --gold: #fbbf24; --primary: #1d4ed8; --bg: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
+        .panel { background: #fff; border-radius: 12px; border: 2px solid #94a3b8; margin-bottom: 15px; }
+        .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid #94a3b8; font-weight: 800; text-align: center; font-size: 0.8rem; }
         .card-pdf { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(255,255,255,0.03); padding: 12px; margin: 8px;
-            border-radius: 8px; border-left: 4px solid var(--gold);
+            border-left: 8px solid var(--gold); display: flex; justify-content: space-between; 
+            align-items: center; background: #fff; padding: 12px; margin: 10px;
+            border-radius: 8px; border: 1px solid #cbd5e1; border-left-width: 8px;
         }
-
-        /* Botões */
-        .btn-revisar { background: var(--gold); color: #000; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; }
-        .btn-close { border: 1px solid var(--gold); background: transparent; color: var(--gold); font-weight: 800; padding: 5px 12px; border-radius: 20px; cursor: pointer; }
-
-        /* Área do Robô (A grande novidade) */
-        .robo-box { background: #2563eb; padding: 15px; border-radius: 12px; margin-top: 10px; display: none; }
-        .status-hoje { background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-bottom: 5px; display: inline-block; }
+        .btn-revisar { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .status-hoje { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-bottom: 5px; display: inline-block; }
+        #analise-box { display: none; background: #1e293b; color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 8px solid #3b82f6; }
+        .btn-voltar { border: 2px solid #000; background: white; font-weight: 800; padding: 5px 15px; cursor: pointer; border-radius: 5px; transition: 0.2s; }
+        .btn-voltar:hover { background: #000; color: #fff; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight:900; font-size: 1.2rem;">ELITE <span style="color:var(--gold)">COFRE</span></div>
-    <button onclick="window.close()" class="btn-close">FECHAR</button>
+<header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <button onclick="irParaHome()" class="btn-voltar">VOLTAR</button>
+    <div style="font-weight:800;">PEÇAS NO COFRE</div>
 </header>
 
-<div class="main-content">
-    <div id="robo-analise" class="robo-box">
-        <div style="font-weight: 800; font-size: 0.8rem; margin-bottom: 10px;"><i class="fas fa-robot"></i> CONSULTOR ELITE:</div>
-        <div id="conteudo-analise" style="font-size: 0.9rem; line-height: 1.4; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px;">
-            Selecione uma peça abaixo para o robô analisar...
-        </div>
-    </div>
+<div id="analise-box">
+    <div style="font-weight: 900; color: var(--gold); margin-bottom: 5px; font-size: 0.7rem;">ANALISANDO...</div>
+    <div id="analise-texto" style="font-size: 0.9rem;"></div>
+</div>
 
-    <div class="panel">
-        <div class="panel-header"><i class="fas fa-history"></i> HISTÓRICO DE ENVIOS NO COFRE</div>
-        <div id="feed-historico">
-            <p style="text-align:center; padding:20px; color:#94a3b8;">Sincronizando com o satélite...</p>
-        </div>
+<div class="panel">
+    <div class="panel-header">HISTÓRICO DE ENVIOS</div>
+    <div id="feed-historico" style="padding: 5px;">
+        <p style="text-align:center; padding:20px; color:#64748b;">Sincronizando com o satélite...</p>
     </div>
 </div>
 
@@ -59,7 +45,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Sua Configuração Original
     const config = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
         authDomain: "masteroab-db5e1.firebaseapp.com", 
@@ -70,69 +55,59 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // ESCUTA O COFRE
+    // ESCUTA EM TEMPO REAL
     onValue(ref(db, 'mentoria/historico'), (snapshot) => {
         const container = document.getElementById('feed-historico');
         container.innerHTML = "";
         const dados = snapshot.val();
-
         if (dados) {
-            const lista = Object.keys(dados)
+            const listaOrdenada = Object.keys(dados)
                 .map(id => ({ id, ...dados[id] }))
                 .sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
-            lista.forEach(item => {
+            listaOrdenada.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card-pdf';
                 card.innerHTML = `
                     <div style="display:flex; flex-direction:column;">
-                        <span style="font-size:0.6rem; color:var(--gold); font-weight:bold;">EXAME OAB</span>
-                        <b style="font-size:1rem;">EXAME ${item.exame || '??'}</b>
-                        <span style="font-size:0.7rem; opacity:0.6;">${item.data || ''}</span>
+                        <span style="font-size:0.6rem; color:#64748b; font-weight:bold;">EXAME OAB</span>
+                        <b style="font-size:1.1rem; color:#1e293b;">EXAME ${item.exame || '??'}</b>
+                        <span style="font-size:0.7rem; color:#94a3b8;">${item.data || 'Sem data'}</span>
                     </div>
-                    <button class="btn-revisar" onclick="revisarRobo('${item.exame}')">ANALISAR</button>
+                    <button class="btn-revisar" onclick="analisarPeca('${item.exame}')">ANALISAR</button>
                 `;
                 container.appendChild(card);
             });
         }
     });
 
-    // FUNÇÃO QUE TRAZ O EXAME PARA O ROBÔ
-    window.revisarRobo = async (ex) => {
-        const roboBox = document.getElementById('robo-analise');
-        const conteudo = document.getElementById('conteudo-analise');
-        
-        roboBox.style.display = 'block';
-        conteudo.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Robô acessando as linhas do Exame ${ex}...`;
-
-        // Busca o conteúdo real que você escreveu na folha
-        const snapshot = await get(ref(db, `estudos/${ex}`));
-        const dadosPeca = snapshot.val();
-
-        if (dadosPeca && dadosPeca.linhas) {
-            // Conta quantas linhas foram preenchidas
-            const linhasPreenchidas = dadosPeca.linhas.filter(l => l.trim() !== "").length;
-            
-            // Simulação de Inteligência do Robô (Aqui você pode conectar com sua IA)
-            conteudo.innerHTML = `
-                <b style="color: #fff;">Exame ${ex} carregado com sucesso!</b><br>
-                O robô detectou <b>${linhasPreenchidas} linhas</b> escritas no seu caderno.<br><br>
-                <button onclick="voltarParaHome('${ex}')" style="background:white; border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">ABRIR NO CADERNO</button>
+    window.analisarPeca = async (ex) => {
+        const box = document.getElementById('analise-box');
+        const texto = document.getElementById('analise-texto');
+        box.style.display = 'block';
+        texto.innerHTML = "O Robô está lendo suas linhas...";
+        const snap = await get(ref(db, `estudos/${ex}`));
+        const dados = snap.val();
+        if (dados && dados.linhas) {
+            const preenchidas = dados.linhas.filter(l => l.trim() !== "").length;
+            texto.innerHTML = `
+                <b>Análise:</b> O Exame ${ex} possui ${preenchidas} linhas preenchidas.<br><br>
+                <button onclick="revisar('${ex}')" style="background:var(--gold); border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">ABRIR NO CADERNO</button>
             `;
-        } else {
-            conteudo.innerHTML = "O robô não encontrou texto escrito para este exame no banco de dados.";
         }
     };
 
-    window.voltarParaHome = (ex) => {
-        if(window.opener) {
-            window.opener.localStorage.setItem('activeEx', ex);
-            window.opener.location.reload();
-            window.close();
-        }
+    // FUNÇÃO PARA VOLTAR À HOME
+    window.irParaHome = () => {
+        window.location.href = 'index.html';
     };
 
-    Object.assign(window, { revisarRobo, voltarParaHome });
+    window.revisar = (ex) => {
+        localStorage.setItem('activeEx', ex);
+        window.location.href = 'index.html';
+    };
+
+    Object.assign(window, { analisarPeca, revisar, irParaHome });
 </script>
 </body>
 </html>
