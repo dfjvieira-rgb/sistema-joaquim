@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - COCKPIT</title>
+    <title>JOAQUIM ELITE 2026 - HOME PRINCIPAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -36,20 +36,21 @@
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .btn-side:active { transform: scale(0.9); }
 
-        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding-bottom: 40px; margin-bottom: 50px; position: relative; }
+        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); -webkit-overflow-scrolling: touch; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 0 0 40px 0; margin-bottom: 50px; position: relative; }
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); flex-shrink: 0; }
         
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
             padding: 0 15px; font-size: 18px; 
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%; 
+            letter-spacing: 0.5px;
         }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
+        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); max-height: 85vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; font-weight: 800; cursor: pointer; background: #f1f5f9; color: #0f172a; text-align: center; }
 
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
@@ -57,19 +58,22 @@
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
 
         @media print {
-            body { background: white !important; }
-            header, .sidebar, #pdf-split-view, .modal { display: none !important; }
-            .editor-container { padding: 0 !important; background: white !important; }
-            .paper { box-shadow: none !important; width: 100% !important; }
+            @page { size: A4; margin: 0; }
+            body { background: white !important; overflow: visible !important; height: auto !important; }
+            header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; }
+            .editor-container { padding: 0 !important; margin: 0 !important; background: white !important; overflow: visible !important; width: 100% !important; }
+            .paper { box-shadow: none !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+            .linha-folha { color: black !important; border-bottom: 1px solid #ddd !important; }
+            #identificador-peca { background: white !important; border-bottom: 2px solid black !important; }
         }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
     <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:var(--gold); color: black;" onclick="abrirMentoria()"><i class="fas fa-trophy"></i></button>
+        <button class="btn-side" style="width:40px; background:var(--gold); color: black;" onclick="window.location.href='mentoria.html'"><i class="fas fa-trophy"></i></button>
         <button class="btn-side" style="width:40px; background:#64748b;" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></button>
     </div>
 </header>
@@ -105,7 +109,7 @@
 
     <section class="editor-container">
         <div class="paper">
-            <div id="identificador-peca">CADERNO DE RESPOSTAS</div>
+            <div id="identificador-peca">CARREGANDO...</div>
             <div id="folha-total"></div>
         </div>
     </section>
@@ -119,7 +123,7 @@
 <div class="modal" id="universal-modal">
     <div class="modal-body">
         <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR AO COCKPIT</button>
     </div>
 </div>
 
@@ -131,9 +135,9 @@
 
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
+    let mentoriaJanelaRef = null;
     const LIMITE_LINHA = 85;
 
-    // RADAR DINÂMICO
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
         const boxSidebar = document.getElementById('radar-container');
@@ -152,22 +156,29 @@
         if (encontrado) {
             sidebarStatus.innerHTML = `<span style="color:${encontrado.cor}">RADAR</span><br>${encontrado.id}`;
             boxSidebar.style.borderColor = encontrado.cor;
+            boxSidebar.classList.remove('radar-blink');
             topoFolha.innerText = encontrado.display;
             topoFolha.style.color = encontrado.cor;
             topoFolha.style.borderBottomColor = encontrado.cor;
         } else {
-            sidebarStatus.innerHTML = `RADAR<br><span class="radar-blink">BUSCANDO...</span>`;
+            sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`;
             boxSidebar.style.borderColor = "var(--gold)";
             topoFolha.innerText = "CADERNO DE RESPOSTAS";
             topoFolha.style.color = "#64748b";
+            topoFolha.style.borderBottomColor = "var(--line-color)";
         }
     };
 
-    // MONTAGEM DA FOLHA (180 LINHAS)
     const montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
         for(let i=1; i<=180; i++) {
+            if(i === 1 || i === 51) {
+                const h = document.createElement('div');
+                h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
+                h.innerText = i === 1 ? 'CADERNO DE RESPOSTAS - PEÇA' : 'CADERNO DE RESPOSTAS - QUESTÕES';
+                container.appendChild(h);
+            }
             const row = document.createElement('div');
             row.className = 'linha-wrapper';
             const input = document.createElement('input');
@@ -176,9 +187,12 @@
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
 
-            input.onfocus = () => { ultimaLinhaFocada = i; };
             input.oninput = () => { if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); };
-            
+            input.onkeydown = (e) => { 
+                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
+                if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
+            };
+            input.onfocus = () => { ultimaLinhaFocada = i; };
             row.innerHTML = `<div class="linha-num">${i}</div>`;
             row.appendChild(input);
             container.appendChild(row);
@@ -199,43 +213,46 @@
         }, { onlyOnce: true });
     };
 
-    // ENVIO REAL PARA A MENTORIA (CAPTURA TEXTO)
-    window.concluirEEnviarAoRobo = () => {
-        const todasAsLinhas = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        if(!todasAsLinhas.some(t => t.trim())) return alert("Caderno vazio!");
+    window.abrirMentoria = () => {
+        const width = 550, height = window.screen.availHeight, left = window.screen.availWidth - width;
+        const config = `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`;
+        mentoriaJanelaRef = window.open('mentoria.html?mode=consultor', 'ConsultorElite', config);
+        if (mentoriaJanelaRef) mentoriaJanelaRef.focus();
+    };
 
-        if(!confirm(`Arquivar Exame ${activeEx} para Raio-X?`)) return;
-        
+    window.concluirEEnviarAoRobo = () => {
+        if(!confirm(`Deseja enviar o Exame ${activeEx} para o Cofre do Robô?`)) return;
+        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
         push(ref(db, 'mentoria/historico'), {
             exame: activeEx,
-            data: new Date().toLocaleString('pt-BR'),
-            linhas: todasAsLinhas,
+            data: new Date().toLocaleDateString('pt-BR') + ", " + new Date().toLocaleTimeString('pt-BR'),
+            linhas: dados,
             ts: Date.now()
         }).then(() => {
-            alert("🚀 ENVIADO!");
+            alert("🚀 EXAME ARQUIVADO NO COFRE!");
             abrirMentoria();
-        });
-    };
-
-    window.abrirMentoria = () => {
-        const w = 550, h = window.screen.availHeight, l = window.screen.availWidth - w;
-        window.open('mentoria.html', 'MentoriaElite', `width=${w},height=${h},top=0,left=${l},resizable=yes,scrollbars=yes`);
-    };
-
-    window.salvarManual = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SALVO!"));
+        }).catch(err => alert("Erro ao enviar: " + err));
     };
 
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
         content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
+        const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
             b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); fecharModal(); };
-            content.appendChild(b);
+            grid.appendChild(b);
         }
+        content.appendChild(grid);
         document.getElementById('universal-modal').style.display='flex';
+    };
+
+    window.salvarManual = () => {
+        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => {
+            alert("☁️ SINCRONIZADO!");
+            escaneamentoElite();
+        });
     };
 
     window.abrirModalPecas = () => {
@@ -248,7 +265,7 @@
                     const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
                     if(el) el.value = t.substring(0, LIMITE_LINHA);
                 });
-                fecharModal();
+                fecharModal(); salvarManual();
             };
             content.appendChild(b);
         });
@@ -257,11 +274,14 @@
 
     window.injetarJustica = () => {
         const dna = BANCO_ESPELHOS[activeEx] || "";
-        const frases = dna.split('\n').filter(f => f.trim().length > 5);
-        frases.forEach((f, i) => {
-            const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-            if(el) el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2);
-        });
+        const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
+        if(frases.length > 0) {
+            frases.forEach((f, i) => {
+                const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
+                if(el) el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2);
+            });
+            salvarManual();
+        }
     };
 
     window.abrirSplitPdf = (t) => {
@@ -269,12 +289,14 @@
         document.getElementById('pdf-split-view').classList.add('active');
     };
 
-    window.fecharSplitPdf = () => document.getElementById('pdf-split-view').classList.remove('active');
+    window.fecharSplitPdf = () => { document.getElementById('pdf-split-view').classList.remove('active'); document.getElementById('pdf-frame').src = ""; };
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
+    window.resetarFolha = () => { if(confirm("Limpar folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
 
-    window.onload = montarFolha;
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, abrirMentoria, concluirEEnviarAoRobo });
+    window.onload = () => montarFolha();
+    
+    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha, abrirMentoria, concluirEEnviarAoRobo, escaneamentoElite });
 </script>
 </body>
 </html>
