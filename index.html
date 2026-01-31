@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - COCKPIT TOTAL</title>
+    <title>JOAQUIM ELITE 2026 - COCKPIT FINAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -22,7 +22,7 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
         
         #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
@@ -40,16 +40,18 @@
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: 0.2s; }
         
-        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
         .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; background: #f8fafc; color: #000; }
 
+        #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; }
+        #pdf-split-view.active { display: block; }
+
         @media print {
-            header, .sidebar, #status-bar, .btn-side { display: none !important; }
+            header, .sidebar, #status-bar, #pdf-split-view, .btn-side { display: none !important; }
             .editor-container { padding: 0; background: white; overflow: visible; }
             body { height: auto; overflow: visible; }
-            .paper { box-shadow: none; border: 1px solid #eee; }
+            .paper { box-shadow: none; max-width: 100%; border: 1px solid #eee; }
         }
     </style>
 </head>
@@ -58,33 +60,30 @@
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
     <div style="display:flex; gap:10px;">
-        <button class="btn-side" style="width:40px; background:#64748b;" onclick="window.toggleDarkMode()"><i class="fas fa-moon"></i></button>
-        <button class="btn-side" style="width:40px; background:#ef4444;" onclick="window.resetarFolha()"><i class="fas fa-trash"></i></button>
-    </div>
+        <button class="btn-side" style="width:40px; background:#64748b;" onclick="window.toggleDarkMode()"><i class="fas fa-moon"></i></button> <button class="btn-side" style="width:40px; background:#ef4444;" onclick="window.resetarFolha()"><i class="fas fa-trash"></i></button> </div>
 </header>
 
 <div id="status-bar">
     <div><i class="fas fa-clock"></i> <span id="timer">05:00:00</span></div>
-    <div>FGV MODE: <span style="color:var(--gold)">85 COLUNAS</span> | <i class="fas fa-file-pdf"></i> PDF OK</div>
+    <div>FGV MODE: <span style="color:var(--gold)">85 CHARS/LINHA</span></div>
 </div>
 
 <main>
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-        <button class="btn-side" style="background:var(--gold); color:black;" title="Trocar Exame" onclick="window.abrirModalExames()"><i class="fas fa-bullseye"></i></button>
-        <button class="btn-side" style="background:#0ea5e9;" title="Salvar Nuvem" onclick="window.salvarManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" style="background:#10b981;" title="Gerar PDF" onclick="window.print()"><i class="fas fa-print"></i></button>
-        <button class="btn-side" style="background:#334155; color:var(--gold);" title="Estruturas" onclick="window.abrirModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" style="background:#3b82f6;" title="Injetar Espelho" onclick="window.injetarJustica()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" style="background:var(--mentoria);" title="Mentoria" onclick="window.abrirMentoria()"><i class="fas fa-robot"></i></button>
-    </aside>
+        <button class="btn-side" style="background:var(--gold); color:black;" onclick="window.abrirModalExames()"><i class="fas fa-bullseye"></i></button> <button class="btn-side" style="background:#0ea5e9;" onclick="window.salvarManual()"><i class="fas fa-save"></i></button> <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button> <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="window.abrirModalPecas()"><i class="fas fa-scroll"></i></button> <button class="btn-side" style="background:#3b82f6;" onclick="window.injetarJustica()"><i class="fas fa-gavel"></i></button> <button class="btn-side" style="background:var(--mentoria);" onclick="window.abrirMentoria()"><i class="fas fa-robot"></i></button> <hr style="opacity:0.1; margin:5px 0;">
+        <button class="btn-side" style="background:#f97316;" onclick="window.abrirSplitPdf('p')"><b>P</b></button> <button class="btn-side" style="background:#eab308;" onclick="window.abrirSplitPdf('g')"><b>G</b></button> <button class="btn-side" style="background:#10b981;" onclick="window.abrirSplitPdf('v')"><b>V</b></button> </aside>
 
     <section class="editor-container">
         <div class="paper">
-            <div id="identificador-peca">ANALISANDO...</div>
+            <div id="identificador-peca">COCKPIT PRONTO</div>
             <div id="folha-total"></div>
         </div>
     </section>
+
+    <div id="pdf-split-view">
+        <iframe id="pdf-frame" style="width:100%; height:100%; border:none;"></iframe>
+    </div>
 </main>
 
 <div class="modal" id="universal-modal"><div class="modal-body" id="modal-content"></div></div>
@@ -99,24 +98,21 @@
     let ultimaLinhaFocada = 1;
     const LIMITE = 85;
 
-    // --- SISTEMA DE RADAR ---
+    // --- RADAR ---
     const escaneamentoElite = () => {
         const dna = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
         const topo = document.getElementById('identificador-peca');
         const status = document.getElementById('radar-status');
-        
         let p = {t: "CADERNO DE RESPOSTAS", c: "#64748b"};
         if(dna.includes("AGRAVO")) p = {t: "AGRAVO DE PETIÇÃO", c: "#f87171"};
         else if(dna.includes("ORDINÁRIO")) p = {t: "RECURSO ORDINÁRIO", c: "#3b82f6"};
         else if(dna.includes("CONTESTAÇÃO")) p = {t: "CONTESTAÇÃO", c: "#22c55e"};
-        else if(dna.includes("RECLAMAÇÃO")) p = {t: "RECLAMATÓRIA TRABALHISTA", c: "#a855f7"};
-
         topo.innerText = `${p.t} - EXAME ${activeEx}`;
         topo.style.color = p.c;
         status.innerHTML = `<span style="color:${p.c}">RADAR</span><br>${p.t}`;
     };
 
-    // --- MONTAGEM DA FOLHA ---
+    // --- FOLHA ---
     window.montarFolha = () => {
         const container = document.getElementById('folha-total');
         container.innerHTML = "";
@@ -127,19 +123,10 @@
             input.className = 'linha-folha';
             input.id = `L${i}`;
             input.maxLength = LIMITE;
-
-            // Auto-pulo (Translineação)
             input.oninput = () => { 
                 if(input.value.length >= LIMITE) document.getElementById(`L${i+1}`)?.focus();
                 verificarEspacos();
             };
-            
-            // Atalhos de teclado
-            input.onkeydown = (e) => {
-                if(e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
-                if(e.key === "Backspace" && input.value === "") document.getElementById(`L${i-1}`)?.focus();
-            }
-
             input.onfocus = () => ultimaLinhaFocada = i;
             row.innerHTML = `<div class="linha-num">${i}</div>`;
             row.appendChild(input);
@@ -149,7 +136,6 @@
         escaneamentoElite();
     };
 
-    // --- FIREBASE INTEGRATION ---
     const carregarDados = () => {
         onValue(ref(db, `estudos/${activeEx}`), (snap) => {
             const data = snap.val();
@@ -159,97 +145,28 @@
                     if(el) el.value = txt;
                 });
             }
-            verificarEspacos();
         }, { onlyOnce: true });
     };
 
-    window.salvarManual = () => {
-        const linhas = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, `estudos/${activeEx}`), { linhas, ts: Date.now() })
-            .then(() => alert("☁️ SINCRONIZADO COM SUCESSO!"));
+    const verificarEspacos = () => {
+        const lines = document.querySelectorAll('.linha-folha');
+        lines.forEach((l, idx) => {
+            if(idx > 5 && l.value === "" && lines[idx-1]?.value === "" && lines[idx-2]?.value === "") 
+                l.parentElement.classList.add('linha-proibida');
+            else l.parentElement.classList.remove('linha-proibida');
+        });
     };
 
-    // --- MODAIS GLOBAIS ---
+    // --- EXPOSIÇÃO GLOBAL (FIX DOS CLIQUES) ---
     window.abrirModalExames = () => {
-        const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3 style="text-align:center;margin-bottom:15px">SELECIONAR EXAME</h3><div id="grid-ex" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>`;
-        
+        content.innerHTML = `<h3 style="text-align:center;margin-bottom:15px">SELECIONAR EXAME</h3><div id="grid-ex" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>`;
         for(let i=44; i>=35; i--) {
             const b = document.createElement('button');
-            b.className = 'opt-btn';
-            b.innerText = `Exame ${i}`;
-            b.onclick = () => {
-                activeEx = i.toString();
-                localStorage.setItem('activeEx', activeEx);
-                window.montarFolha();
-                modal.style.display = 'none';
-            };
+            b.className = 'opt-btn'; b.innerText = `Exame ${i}`;
+            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', i); window.montarFolha(); window.fecharModal(); };
             content.querySelector('#grid-ex').appendChild(b);
         }
-        content.innerHTML += `<button onclick="window.fecharModal()" class="opt-btn" style="background:#000;color:#fff;margin-top:10px;">FECHAR</button>`;
-        modal.style.display = 'flex';
+        content.innerHTML += `<button onclick="window.fecharModal()" class="opt-btn" style="background:#000;color:#fff;margin-top:10px;">CANCELAR</button>`; // BOTAO 12
+        document.getElementById('universal-modal').style.display='flex';
     };
-
-    window.abrirModalPecas = () => {
-        const modal = document.getElementById('universal-modal');
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3 style="text-align:center;margin-bottom:10px">ESTRUTURAS</h3><div id="list-p" style="max-height:300px;overflow-y:auto"></div>`;
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('button'); b.className = 'opt-btn'; b.innerText = k;
-            b.onclick = () => {
-                pecas[k].split('\n').forEach((t, idx) => {
-                    const el = document.getElementById(`L${ultimaLinhaFocada + idx}`);
-                    if(el) el.value = t.substring(0, LIMITE);
-                });
-                modal.style.display = 'none';
-                verificarEspacos();
-            };
-            content.querySelector('#list-p').appendChild(b);
-        });
-        modal.style.display = 'flex';
-    };
-
-    // --- UTILITÁRIOS ---
-    const verificarEspacos = () => {
-        const inputs = document.querySelectorAll('.linha-folha');
-        inputs.forEach((l, idx) => {
-            if(idx > 5 && l.value.trim() === "" && inputs[idx-1]?.value.trim() === "" && inputs[idx-2]?.value.trim() === ""){
-                l.parentElement.classList.add('linha-proibida');
-            } else {
-                l.parentElement.classList.remove('linha-proibida');
-            }
-        });
-    };
-
-    window.injetarJustica = () => {
-        const dna = BANCO_ESPELHOS[activeEx] || "";
-        const frases = dna.split('\n').filter(f => f.trim().length > 5);
-        frases.forEach((f, i) => {
-            const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-            if(el) el.value = "➤ " + f.trim().substring(0, LIMITE - 2);
-        });
-        verificarEspacos();
-    };
-
-    window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
-    window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
-    window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(l => l.value=""); };
-    window.abrirMentoria = () => window.open('mentoria.html', 'Mentoria', 'width=500,height=800');
-
-    // Cronômetro simples
-    let segundos = 18000;
-    setInterval(() => {
-        segundos--;
-        let h = Math.floor(segundos / 3600);
-        let m = Math.floor((segundos % 3600) / 60);
-        let s = segundos % 60;
-        document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }, 1000);
-
-    // Start
-    window.montarFolha();
-
-</script>
-</body>
-</html>
