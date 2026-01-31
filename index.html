@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - COCKPIT</title>
+    <title>JOAQUIM ELITE 2026 - HOME</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #0f172a; --gold: #fbbf24; --bg-paper: #cbd5e1;
             --paper-color: #ffffff; --text-color: #1e293b; --line-color: #d1d5db;
             --mentoria: #a855f7; --header-h: 60px; --sidebar-w: 80px;
+            --danger: #ef4444;
         }
         body.dark-mode { 
             --primary: #020617; --gold: #f59e0b; --bg-paper: #0f172a; 
@@ -24,7 +25,7 @@
 
         .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
         
-        #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; transition: 0.3s; }
+        #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
         .radar-blink { animation: blink 1.5s infinite; color: var(--gold); }
         @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
@@ -33,7 +34,7 @@
             width: 100%; padding: 15px; background: #f8fafc;
             border-bottom: 3px double var(--line-color); text-align: center;
             font-weight: 900; font-size: 1.3rem; color: #64748b;
-            text-transform: uppercase; letter-spacing: 3px; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 3px;
         }
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
@@ -92,16 +93,18 @@
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
         
-        <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
-        <button class="btn-side" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:var(--gold); color:black;" title="Trocar Exame" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
+        <button class="btn-side" style="background:#0ea5e9;" title="Salvar" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" style="background:#334155; color:var(--gold);" title="Estruturas" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6;" title="Injetar Espelho" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
         
-        <button class="btn-side" style="background:var(--mentoria);" onclick="abrirMentoria()">
+        <button class="btn-side" style="background:var(--danger);" title="Limpar Tudo" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
+
+        <button class="btn-side" style="background:var(--mentoria);" title="Mentoria" onclick="abrirMentoria()">
             <i class="fas fa-robot"></i>
         </button>
 
-        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()">
+        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" title="Concluir" onclick="concluirEEnviarAoRobo()">
             <i class="fas fa-check-double"></i>
         </button>
         
@@ -133,7 +136,7 @@
 <div class="modal" id="universal-modal">
     <div class="modal-body">
         <div id="modal-content"></div>
-        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR AO COCKPIT</button>
+        <button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold; cursor:pointer;">VOLTAR À HOME</button>
     </div>
 </div>
 
@@ -143,7 +146,6 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // CONFIGURAÇÃO DIRETA PARA EVITAR ERROS DE IMPORTAÇÃO
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
         authDomain: "masteroab-db5e1.firebaseapp.com",
@@ -211,10 +213,21 @@
                 escaneamentoElite();
                 if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); 
             };
+            
             input.onkeydown = (e) => { 
-                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
-                if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
+                if (e.ctrlKey && e.key === "Delete") {
+                    input.value = "";
+                    escaneamentoElite();
+                }
+                if (e.key === "Enter") { 
+                    e.preventDefault(); 
+                    document.getElementById(`L${i + 1}`)?.focus(); 
+                } 
+                if (e.key === "Backspace" && input.value.length === 0) {
+                    document.getElementById(`L${i - 1}`)?.focus();
+                }
             };
+            
             input.onfocus = () => { ultimaLinhaFocada = i; };
             row.innerHTML = `<div class="linha-num">${i}</div>`;
             row.appendChild(input);
@@ -237,9 +250,16 @@
         }, { onlyOnce: true });
     };
 
+    window.limparTudo = () => {
+        if(confirm("Deseja apagar TODO o caderno na HOME?")) {
+            document.querySelectorAll('.linha-folha').forEach(inp => inp.value = "");
+            escaneamentoElite();
+        }
+    };
+
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO NA HOME!"));
     };
 
     window.concluirEEnviarAoRobo = () => {
@@ -277,6 +297,7 @@
                     if(el) el.value = t.substring(0, LIMITE_LINHA);
                 });
                 fecharModal();
+                escaneamentoElite();
             };
             content.appendChild(b);
         });
@@ -290,6 +311,7 @@
             const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
             if(el) el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2);
         });
+        escaneamentoElite();
     };
 
     window.abrirSplitPdf = (t) => {
@@ -303,7 +325,7 @@
     window.abrirMentoria = () => window.location.href='mentoria.html';
 
     window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, abrirMentoria, concluirEEnviarAoRobo });
+    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, abrirMentoria, concluirEEnviarAoRobo, limparTudo });
 </script>
 </body>
 </html>
