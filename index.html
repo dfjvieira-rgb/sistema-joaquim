@@ -17,53 +17,40 @@
             --paper-color: #1e293b; --text-color: #f8fafc; --line-color: #334155; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; }
         
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
         
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding-bottom: 40px; position: relative; }
         
-        /* FOLHA COM MARGEM DIREITA ATIVA */
-        .paper { 
-            background: var(--paper-color); 
-            width: 100%; 
-            max-width: 850px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            padding-bottom: 40px; 
-            position: relative;
-            overflow: hidden;
-        }
-        .paper::after {
-            content: ""; position: absolute; top: 0; right: 45px;
-            width: 2px; height: 100%; background: var(--margem-cor);
-            opacity: 0.4; pointer-events: none; z-index: 10;
-        }
+        /* Margem OAB Direita - Conforme solicitado */
+        .paper::after { content: ""; position: absolute; top: 0; right: 40px; width: 2px; height: 100%; background: var(--margem-cor); opacity: 0.5; pointer-events: none; }
 
-        .header-secao { background: #1e293b; color: var(--gold); padding: 12px; text-align: center; font-size: 0.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--gold); }
-        .sub-secao { background: #f1f5f9; color: #475569; padding: 5px 15px; font-size: 0.7rem; font-weight: 800; border-bottom: 1px solid var(--line-color); border-left: 5px solid var(--gold); }
+        .header-secao { background: #1e293b; color: var(--gold); padding: 15px; text-align: center; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; }
+        .sub-secao { background: #f1f5f9; color: #64748b; padding: 6px 15px; font-size: 0.7rem; font-weight: bold; border-bottom: 1px solid var(--line-color); text-transform: uppercase; }
 
-        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); position: relative; }
-        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
+        .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
+        .linha-num { width: 45px; font-size: 0.75rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
         
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
-            padding: 0 55px 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
+            padding: 0 50px 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%; letter-spacing: 0.5px;
         }
 
-        #sync-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); }
+        #sync-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; color: var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="sync-overlay">
     <i class="fas fa-sync fa-spin fa-3x"></i>
-    <p style="margin-top:15px; font-weight:900; letter-spacing:2px;">SINCRONIZANDO CADERNO OAB...</p>
 </div>
 
 <header>
@@ -75,17 +62,17 @@
 </header>
 
 <main>
-    <aside class="sidebar" id="sidebar-home">
+    <aside class="sidebar">
         <button class="btn-side" style="background:#0ea5e9;" title="Salvar" onclick="salvarManual()"><i class="fas fa-save"></i></button>
         <button class="btn-side" style="background:var(--mentoria);" title="Mentoria" onclick="window.location.href='mentoria.html'"><i class="fas fa-robot"></i></button>
-        <button class="btn-side" style="background:var(--danger);" title="Limpar Tudo" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
+        <button class="btn-side" style="background:var(--danger);" title="Limpar" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
         <hr style="opacity:0.1; margin:5px 0;">
-        <button class="btn-side" style="background:#475569;" title="Início" onclick="irPara(1)"><i class="fas fa-chevron-up"></i></button>
-        <button class="btn-side" style="background:#475569;" title="Questões" onclick="irPara(151)"><i class="fas fa-chevron-down"></i></button>
+        <button class="btn-side" style="background:#334155;" title="Topo" onclick="document.querySelector('.editor-container').scrollTop = 0"><i class="fas fa-chevron-up"></i></button>
+        <button class="btn-side" style="background:#334155;" title="Questões" onclick="irPara(151)"><i class="fas fa-chevron-down"></i></button>
     </aside>
 
     <section class="editor-container">
-        <div class="paper" id="folha-oab">
+        <div class="paper" id="folha-dinamica">
             </div>
     </section>
 </main>
@@ -109,82 +96,78 @@
     let activeEx = localStorage.getItem('activeEx') || "41";
     const LIMITE = 85;
 
-    const layout = [
-        { nome: "Peça Profissional", de: 1, ate: 150 },
-        { nome: "Questão 1", de: 151, ate: 160, subs: { 151: "A", 156: "B" } },
-        { nome: "Questão 2", de: 161, ate: 170, subs: { 161: "A", 166: "B" } },
-        { nome: "Questão 3", de: 171, ate: 180, subs: { 171: "A", 176: "B" } },
-        { nome: "Questão 4", de: 181, ate: 190, subs: { 181: "A", 186: "B" } }
+    const secoes = [
+        { nome: "Peça Profissional", inicio: 1, fim: 150 },
+        { nome: "Questão 1", inicio: 151, fim: 160, sub: { 151: "ITEM A)", 156: "ITEM B)" } },
+        { nome: "Questão 2", inicio: 161, fim: 170, sub: { 161: "ITEM A)", 166: "ITEM B)" } },
+        { nome: "Questão 3", inicio: 171, fim: 180, sub: { 171: "ITEM A)", 176: "ITEM B)" } },
+        { nome: "Questão 4", inicio: 181, fim: 190, sub: { 181: "ITEM A)", 186: "ITEM B)" } }
     ];
 
-    const montarFolha = () => {
-        const papel = document.getElementById('folha-oab');
-        layout.forEach(sec => {
+    const montar = () => {
+        const f = document.getElementById('folha-dinamica');
+        secoes.forEach(s => {
             const h = document.createElement('div');
             h.className = 'header-secao';
-            h.innerText = sec.nome;
-            papel.appendChild(h);
+            h.innerText = s.nome;
+            f.appendChild(h);
 
-            for(let i=sec.de; i<=sec.ate; i++) {
-                if(sec.subs && sec.subs[i]) {
+            for(let i=s.inicio; i<=s.fim; i++) {
+                if(s.sub && s.sub[i]) {
                     const sub = document.createElement('div');
                     sub.className = 'sub-secao';
-                    sub.innerText = `ITEM ${sec.subs[i]}`;
-                    papel.appendChild(sub);
+                    sub.innerText = s.sub[i];
+                    f.appendChild(sub);
                 }
-
                 const row = document.createElement('div');
                 row.className = 'linha-wrapper';
                 row.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" spellcheck="false">`;
-                papel.appendChild(row);
+                f.appendChild(row);
 
                 const inp = row.querySelector('input');
-
-                // --- AJUSTES DE TECLADO MANTIDOS ---
+                
+                // Navegação Inteligente por Setas e Enter
                 inp.onkeydown = (e) => {
                     const pos = inp.selectionStart;
-                    if (e.key === "Enter") {
+                    if(e.key === "Enter") {
                         e.preventDefault();
                         let sobra = inp.value.substring(pos).trim();
                         inp.value = inp.value.substring(0, pos).trim();
                         const prox = document.getElementById(`L${i+1}`);
                         if(prox) { prox.value = sobra + (prox.value ? " " + prox.value : ""); prox.focus(); prox.setSelectionRange(0,0); }
                     }
-                    if (e.key === "ArrowDown") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
-                    if (e.key === "ArrowUp") { e.preventDefault(); document.getElementById(`L${i-1}`)?.focus(); }
-                    if (e.key === "ArrowRight" && pos === inp.value.length) { document.getElementById(`L${i+1}`)?.focus(); }
-                    if (e.key === "ArrowLeft" && pos === 0) { document.getElementById(`L${i-1}`)?.focus(); }
+                    if(e.key === "ArrowDown") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
+                    if(e.key === "ArrowUp") { e.preventDefault(); document.getElementById(`L${i-1}`)?.focus(); }
+                    if(e.key === "ArrowRight" && pos === inp.value.length) { document.getElementById(`L${i+1}`)?.focus(); }
+                    if(e.key === "ArrowLeft" && pos === 0) { 
+                        const ant = document.getElementById(`L${i-1}`);
+                        if(ant) { ant.focus(); ant.setSelectionRange(ant.value.length, ant.value.length); }
+                    }
                 };
 
-                // --- AUTO-BREAK MANTIDO ---
+                // Auto-Break na Margem
                 inp.oninput = () => {
-                    if (inp.value.length > LIMITE) {
-                        let txt = inp.value;
-                        let lastSpace = txt.lastIndexOf(" ");
-                        let corte = (lastSpace > LIMITE - 15) ? lastSpace : LIMITE;
-                        let atual = txt.substring(0, corte);
-                        let sobra = txt.substring(corte).trim();
-                        inp.value = atual;
+                    if(inp.value.length > LIMITE) {
                         const prox = document.getElementById(`L${i+1}`);
                         if(prox) {
-                            prox.value = sobra + " " + (prox.value || "");
+                            prox.value = inp.value.substring(LIMITE) + " " + prox.value;
+                            inp.value = inp.value.substring(0, LIMITE);
                             prox.focus();
-                            prox.setSelectionRange(sobra.length, sobra.length);
                         }
                     }
                 };
             }
         });
-        carregarDados();
+        carregar();
     };
 
-    const carregarDados = () => {
+    const carregar = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
-            const data = snap.val();
-            if(data && data.linhas) {
-                data.linhas.forEach((txt, idx) => {
+            const d = snap.val();
+            if(d && d.linhas) {
+                d.linhas.forEach((t, idx) => {
                     const el = document.getElementById(`L${idx+1}`);
-                    if(el && document.activeElement !== el) el.value = txt || "";
+                    if(el && document.activeElement !== el) el.value = t || "";
                 });
             }
             document.getElementById('sync-overlay').style.display = 'none';
@@ -193,13 +176,13 @@
 
     window.salvarManual = () => {
         const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("☁️ SINCRONIZADO!"));
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("✅ HOME ATUALIZADA!"));
     };
 
-    window.limparTudo = () => { if(confirm("Limpar todo o caderno?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
+    window.limparTudo = () => { if(confirm("Apagar tudo?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
 
-    window.onload = montarFolha;
+    window.onload = montar;
 </script>
 </body>
 </html>
