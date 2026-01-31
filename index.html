@@ -23,48 +23,43 @@
         #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
 
-        /* EDITOR - MARGENS FGV */
-        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 10px; background: var(--bg-paper); }
+        /* EDITOR - FOCO NA MARGEM DIREITA */
+        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
         .paper { 
             background: var(--paper-color); 
             width: 100%; 
-            max-width: 780px; 
+            max-width: 850px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            padding: 40px 30px; 
+            padding: 0 0 40px 0; 
             margin-bottom: 50px; 
             position: relative;
         }
 
         #identificador-peca {
-            width: 100%; padding: 10px; margin-bottom: 20px; border: 2px solid var(--line-color);
-            text-align: center; font-weight: 900; font-size: 1.1rem; color: #64748b; text-transform: uppercase;
+            width: 100%; padding: 15px; background: #f8fafc;
+            border-bottom: 3px double var(--line-color); text-align: center;
+            font-weight: 900; font-size: 1.3rem; color: #64748b;
+            text-transform: uppercase; letter-spacing: 3px;
         }
 
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
-        .linha-num { width: 35px; font-size: 0.75rem; color: #94a3b8; padding-top: 10px; flex-shrink: 0; }
+        .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); flex-shrink: 0; }
         .linha-folha { 
-            flex: 1; height: 32px; border: none; outline: none; background: transparent; 
-            padding: 0 5px; font-size: 17px; font-family: 'Courier New', Courier, monospace;
+            flex: 1; height: 35px; border: none; outline: none; background: transparent; 
+            padding: 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%;
         }
 
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; }
 
-        /* PDF & MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
-        #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
-        #pdf-split-view.active { display: block; }
-
-        /* IMPRESSÃO CORRIGIDA */
         @media print {
-            @page { size: A4; margin: 10mm 15mm; }
-            body { background: white !important; overflow: visible !important; }
-            header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; }
-            .editor-container { padding: 0 !important; }
-            .paper { box-shadow: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
-            .linha-folha { color: black !important; border-bottom: 1px solid black !important; }
-            #identificador-peca { border: 2px solid black !important; color: black !important; }
+            @page { size: A4; margin: 0; }
+            header, .sidebar, .modal, #pdf-split-view { display: none !important; }
+            .editor-container { padding: 0 !important; background: white !important; overflow: visible !important; }
+            .paper { box-shadow: none !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+            .linha-folha { color: black !important; }
+            /* Garante que a margem direita não corte no papel */
+            .linha-wrapper { width: 100% !important; padding-right: 20px !important; }
         }
     </style>
 </head>
@@ -101,11 +96,6 @@
             <div id="folha-total"></div>
         </div>
     </section>
-
-    <div id="pdf-split-view">
-        <button class="btn-close-pdf" onclick="fecharSplitPdf()"><i class="fas fa-times"></i></button>
-        <iframe id="pdf-frame" style="width:100%; height:100%; border:none;"></iframe>
-    </div>
 </main>
 
 <div class="modal" id="universal-modal">
@@ -155,20 +145,37 @@
         }, { onlyOnce: true });
     };
 
-    window.salvarManual = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("SALVO!"));
-    };
-
     window.injetarJustica = () => {
         const dna = BANCO_ESPELHOS[activeEx] || "";
         const frases = dna.replace(/<[^>]*>/g, '').split('\n').filter(f => f.trim().length > 5);
-        let currentPos = ultimaLinhaFocada;
+        let linhaAtual = ultimaLinhaFocada;
         frases.forEach((f) => {
-            const el = document.getElementById(`L${currentPos}`);
-            if(el) { el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2); currentPos++; }
+            const el = document.getElementById(`L${linhaAtual}`);
+            if(el) { el.value = "➤ " + f.trim().substring(0, LIMITE_LINHA - 2); linhaAtual++; }
         });
-        salvarManual();
+    };
+
+    window.abrirModalPecas = () => {
+        const content = document.getElementById('modal-content');
+        content.innerHTML = `<h3>ESTRUTURAS</h3>`;
+        Object.keys(pecas).forEach(k => {
+            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
+            b.onclick = () => {
+                let linhaAtual = ultimaLinhaFocada;
+                pecas[k].split('\n').forEach(t => {
+                    const el = document.getElementById(`L${linhaAtual}`);
+                    if(el) { el.value = t.substring(0, LIMITE_LINHA); linhaAtual++; }
+                });
+                fecharModal();
+            };
+            content.appendChild(b);
+        });
+        document.getElementById('universal-modal').style.display='flex';
+    };
+
+    window.salvarManual = () => {
+        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
+        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => alert("SALVO!"));
     };
 
     window.abrirModalExames = () => {
@@ -182,36 +189,11 @@
         document.getElementById('universal-modal').style.display='flex';
     };
 
-    window.abrirModalPecas = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h3>PEÇAS</h3>`;
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
-            b.onclick = () => {
-                let currentPos = ultimaLinhaFocada;
-                pecas[k].split('\n').forEach(t => {
-                    const el = document.getElementById(`L${currentPos}`);
-                    if(el) { el.value = t.substring(0, LIMITE_LINHA); currentPos++; }
-                });
-                fecharModal();
-            };
-            content.appendChild(b);
-        });
-        document.getElementById('universal-modal').style.display='flex';
-    };
-
-    window.abrirSplitPdf = (t) => {
-        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
-        document.getElementById('pdf-split-view').classList.add('active');
-    };
-
-    window.fecharSplitPdf = () => document.getElementById('pdf-split-view').classList.remove('active');
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
     window.resetarFolha = () => { if(confirm("Limpar?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
-
     window.onload = () => montarFolha();
-    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, abrirSplitPdf, salvarManual, injetarJustica, irPara, resetarFolha });
+    Object.assign(window, { abrirModalExames, abrirModalPecas, fecharModal, salvarManual, injetarJustica, irPara, resetarFolha });
 </script>
 </body>
 </html>
