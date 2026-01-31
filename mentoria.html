@@ -1,20 +1,49 @@
-<main class="dashboard">
-    <section class="panel" style="border-top: 6px solid #000; grid-column: 1 / -1;">
-        <div class="panel-header" style="background: #000; color: var(--gold);"><i class="fas fa-box"></i> Black Box: Peças no Radar</div>
-        <div class="panel-body">
-            <div id="black-box-feed" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
-                <p style="font-size: 0.7rem; opacity: 0.5;">Aguardando telemetria...</p>
-            </div>
-        </div>
-    </section>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ARYANNA 2026 | ESTRUTURA ORDENADA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg: #f1f5f9; --text: #000; --primary: #1d4ed8; --border: #94a3b8; --purple: #5b21b6; --success: #065f46; --danger: #991b1b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+        header { background: #fff; border-bottom: 2px solid var(--border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .btn-voltar { text-decoration: none; color: #000; font-weight: 800; border: 2px solid #000; padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; }
+        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        .panel { background: #fff; border-radius: 12px; border: 2px solid var(--border); display: flex; flex-direction: column; margin-bottom: 15px; height: fit-content; }
+        .panel-header { padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; text-align: center; }
+        .panel-body { padding: 15px; }
+        label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; color: #475569; }
+        input, textarea { width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 12px; font-size: 1rem; margin-bottom: 10px; font-family: inherit; }
+        .btn-save { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: #fff; text-transform: uppercase; }
+        .feed { margin-top: 15px; max-height: 550px; overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; border: 2px solid var(--border); margin-bottom: 10px; position: relative; }
+        .card-pre { border-left: 8px solid var(--success); }
+        .btn-edit-tool { position: absolute; top: 10px; right: 10px; display: flex; gap: 12px; }
+        .btn-edit-tool i { cursor: pointer; opacity: 0.4; font-size: 1rem; }
+        .btn-reveal { background: #000; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
+        .hidden-content { display: none; margin-top: 10px; padding: 12px; background: #dcfce7; border: 1px solid var(--success); border-radius: 6px; font-weight: 700; }
+        @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
 
+<header>
+    <div class="btn-voltar" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> VOLTAR</div>
+    <div style="font-weight: 800; font-size: 0.9rem;">ARYANNA 2026 | ORDEM TÉCNICA</div>
+</header>
+
+<main class="dashboard">
     <section class="panel" style="border-top: 6px solid var(--success);">
         <div class="panel-header">Preliminares (Ordem Alfabética/Numérica)</div>
         <div class="panel-body">
             <input type="hidden" id="id-pre">
             <label>Título (ex: 01. Incompetência)</label><input type="text" id="pre-t">
             <label>Fundamentação</label><textarea id="pre-c"></textarea>
-            <button class="btn-save" style="background: var(--success);" onclick="window.salvar('pre')">Salvar/Atualizar</button>
+            <button class="btn-save" style="background: var(--success);" onclick="salvar('pre')">Salvar/Atualizar</button>
             <div class="feed" id="feed-pre"></div>
         </div>
     </section>
@@ -25,7 +54,7 @@
             <input type="hidden" id="id-peca">
             <label>Enunciado</label><textarea id="peca-t"></textarea>
             <label>Gabarito</label><input type="text" id="peca-c">
-            <button class="btn-save" style="background: var(--purple);" onclick="window.salvar('peca')">Salvar Desafio</button>
+            <button class="btn-save" style="background: var(--purple);" onclick="salvar('peca')">Salvar Desafio</button>
             <div class="feed" id="feed-peca"></div>
         </div>
     </section>
@@ -36,7 +65,7 @@
             <input type="hidden" id="id-nc">
             <label>Conceito</label><input type="text" id="nc-t">
             <label>Diferença</label><textarea id="nc-c"></textarea>
-            <button class="btn-save" style="background: var(--danger);" onclick="window.salvar('nc')">Salvar Radar</button>
+            <button class="btn-save" style="background: var(--danger);" onclick="salvar('nc')">Salvar Radar</button>
             <div class="feed" id="feed-nc"></div>
         </div>
     </section>
@@ -47,7 +76,7 @@
             <input type="hidden" id="id-tese">
             <label>Título</label><input type="text" id="tese-t">
             <label>Conteúdo</label><textarea id="tese-c"></textarea>
-            <button class="btn-save" style="background: var(--primary);" onclick="window.salvar('tese')">Arquivar Tese</button>
+            <button class="btn-save" style="background: var(--primary);" onclick="salvar('tese')">Arquivar Tese</button>
             <div class="feed" id="feed-tese"></div>
         </div>
     </section>
@@ -57,18 +86,27 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, set, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const config = { 
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
-        authDomain: "masteroab-db5e1.firebaseapp.com", 
-        projectId: "masteroab-db5e1", 
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" 
-    };
-    
+    const config = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", projectId: "masteroab-db5e1", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com" };
     const app = initializeApp(config);
     const db = getDatabase(app);
+
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese' };
 
-    // FUNÇÕES GLOBAIS
+    const DADOS_OFICIAIS = [
+        { t: "01. Incompetência da JT", c: "Art. 114 CF. Ex: Relação estatutária, acidente INSS puro." },
+        { t: "02. Ilegitimidade de Parte", c: "Art. 485, VI, CPC. Ex: Tomador não integra formação do vínculo." },
+        { t: "03. Inépcia da Inicial", c: "Art. 330, §1º, CPC. Ex: Pedido sem causa de pedir ou valor ilíquido." },
+        { t: "04. Prescrição", c: "Bienal (2 anos) e Quinquenal (5 anos) - Art. 7º, XXIX, CF." },
+        { t: "05. Litigância de Má-Fé", c: "Arts. 79-81 CPC e CLT. Pedidos falsos ou alteração da verdade." },
+        { t: "06. Julgamento Extra/Ultra Petita", c: "Art. 492 CPC. O juiz deve decidir nos limites do pedido." },
+        { t: "07. Preclusão", c: "Perda do direito de agir por decurso de prazo." },
+        { t: "08. Falta de Interesse de Agir", c: "Art. 485, VI, CPC. Ação desnecessária ou inútil." },
+        { t: "09. Impossibilidade Jurídica", c: "Argumento subsidiário (absorvida pelo mérito no CPC/15)." },
+        { t: "10. Preliminar de Nulidade", c: "Art. 5º, LV CF / Art. 794 CLT. Cerceamento de defesa." },
+        { t: "11. Impugnação ao Valor", c: "Art. 292 e 293 CPC. Valor incompatível com pedidos." },
+        { t: "12. Preliminar de Representação", c: "Súmula 383 TST. Procuração ou mandato irregular." }
+    ];
+
     window.toggleR = (btn) => { const div = btn.nextElementSibling; div.style.display = (div.style.display === "block" ? "none" : "block"); };
 
     window.salvar = (type) => {
@@ -79,7 +117,6 @@
         const data = { t, c, ts: serverTimestamp() };
         if(id) set(ref(db, `${paths[type]}/${id}`), data);
         else push(ref(db, paths[type]), data);
-        
         document.getElementById(`id-${type}`).value = '';
         document.getElementById(`${type}-t`).value = '';
         document.getElementById(`${type}-c`).value = '';
@@ -89,54 +126,34 @@
         document.getElementById(`id-${type}`).value = id;
         document.getElementById(`${type}-t`).value = t;
         document.getElementById(`${type}-c`).value = c;
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo(0,0);
     };
 
-    window.excluir = (p, id) => { if(confirm("Apagar registro?")) remove(ref(db, `${paths[p]}/${id}`)); };
+    window.excluir = (p, id) => { if(confirm("Apagar?")) remove(ref(db, `${paths[p]}/${id}`)); };
 
-    // ESCUTA BLACK BOX (ESTUDOS)
-    onValue(ref(db, 'estudos'), (snap) => {
-        const feedBB = document.getElementById('black-box-feed');
-        const voos = snap.val();
-        if(!voos) { feedBB.innerHTML = "<p style='font-size:0.7rem; opacity:0.5;'>Nenhum dado no radar.</p>"; return; }
-        
-        feedBB.innerHTML = "";
-        Object.keys(voos).sort((a,b) => b-a).forEach(exId => {
-            const voo = voos[exId];
-            const dataFmt = voo.ts ? new Date(voo.ts).toLocaleDateString('pt-BR') : "--/--/--";
-            const textoPreview = voo['editor-peca'] ? voo['editor-peca'].substring(0, 60) + "..." : "Sem conteúdo...";
-            
-            const div = document.createElement('div');
-            div.className = 'black-box-item';
-            div.innerHTML = `
-                <div class="bb-meta"><span>EXAME E${exId}</span><span>${dataFmt}</span></div>
-                <div class="bb-content">${textoPreview}</div>
-            `;
-            div.onclick = () => { location.href = 'index.html'; };
-            feedBB.appendChild(div);
-        });
-    });
-
-    // ESCUTA DADOS TÉCNICOS
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
+        if(!v[paths.pre]) {
+            DADOS_OFICIAIS.forEach(d => push(ref(db, paths.pre), { t: d.t, c: d.c, ts: serverTimestamp() }));
+            return;
+        }
+
         const render = (type, target) => {
             const f = document.getElementById(target); f.innerHTML = "";
             const obj = v[paths[type]] || {};
+           
+            // TRANSFORMA OBJETO EM ARRAY E ORDENA PELO TÍTULO (01, 02...)
             const itensOrdenados = Object.keys(obj).map(id => ({ id, ...obj[id] }))
-                                         .sort((a, b) => a.t.localeCompare(b.t, undefined, {numeric: true}));
+                                        .sort((a, b) => a.t.localeCompare(b.t));
 
             itensOrdenados.forEach(item => {
                 f.innerHTML += `<div class="card ${type==='pre'?'card-pre':''}">
-                    <div class="btn-edit-tool">
-                        <i class="fas fa-pen" onclick="window.editar('${type}','${item.id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\")}')"></i>
-                        <i class="fas fa-trash" onclick="window.excluir('${type}','${item.id}')"></i>
-                    </div>
-                    ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="window.toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
+                    <div class="btn-edit-tool"><i class="fas fa-pen" onclick="editar('${type}','${item.id}','${item.t.replace(/'/g, "\\'")}','${item.c.replace(/'/g, "\\'")}')"></i><i class="fas fa-trash" onclick="excluir('${type}','${item.id}')"></i></div>
+                    ${type==='peca' ? `<p>${item.t}</p><button class="btn-reveal" onclick="toggleR(this)">VER GABARITO</button><div class="hidden-content">${item.c}</div>` : `<strong>${item.t}</strong><p>${item.c}</p>`}
                 </div>`;
             });
         };
-        ['pre', 'peca', 'nc', 'tese'].forEach(p => render(p, `feed-${p}`));
+        render('pre', 'feed-pre'); render('peca', 'feed-peca'); render('nc', 'feed-nc'); render('tese', 'feed-tese');
     });
 </script>
 </body>
