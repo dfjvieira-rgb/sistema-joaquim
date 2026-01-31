@@ -134,7 +134,7 @@
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese' };
 
-    // VISUALIZAR PEÇA - LENDO DE 'simulados'
+    // FUNÇÕES GLOBAIS
     window.visualizarPeca = async (id) => {
         const snap = await get(ref(db, `simulados/${id}`));
         const data = snap.val();
@@ -152,17 +152,24 @@
 
     window.toggleR = (btn) => {
         const div = btn.nextElementSibling;
-        div.style.display = (div.style.display === "block" ? "none" : "block");
-        btn.innerText = (div.style.display === "block" ? "OCULTAR" : "VER GABARITO");
+        const isVisible = div.style.display === "block";
+        div.style.display = isVisible ? "none" : "block";
+        btn.innerText = isVisible ? "VER GABARITO" : "OCULTAR";
     };
 
     window.salvar = (type) => {
         const t = document.getElementById(`${type}-t`).value;
         const c = document.getElementById(`${type}-c`).value;
-        if(!t || !c) return;
-        push(ref(db, paths[type]), { t, c, ts: serverTimestamp() });
-        document.getElementById(`${type}-t`).value = '';
-        document.getElementById(`${type}-c`).value = '';
+        if(!t || !c) return alert("Preencha todos os campos!");
+        
+        push(ref(db, paths[type]), { 
+            t: t, 
+            c: c, 
+            ts: serverTimestamp() 
+        }).then(() => {
+            document.getElementById(`${type}-t`).value = '';
+            document.getElementById(`${type}-c`).value = '';
+        });
     };
 
     window.excluir = (type, id) => { 
@@ -194,7 +201,7 @@
             });
         });
 
-        // HISTÓRICO - LENDO DA NOVA PASTA 'simulados'
+        // HISTÓRICO
         const feedPdf = document.getElementById('feed-pdf');
         feedPdf.innerHTML = "";
         const hist = v['simulados'] || {};
@@ -216,5 +223,6 @@
             });
         }
     });
-
-    Object.
+</script>
+</body>
+</html>
