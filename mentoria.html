@@ -38,6 +38,17 @@
         .btn-reveal { background: var(--gold); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 5px; }
         .hidden-content { display: none; margin-top: 10px; padding: 12px; background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); border-radius: 6px; font-weight: 700; color: #4ade80; }
 
+        /* NOVO: Estilos para o Modal de Impressão */
+        #modal-leitura { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; padding: 20px; }
+        .area-impressao { max-width: 800px; margin: auto; background: white; color: black; padding: 40px; border-radius: 8px; height: 90vh; overflow-y: auto; position: relative; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            .area-impressao, .area-impressao * { visibility: visible; }
+            .area-impressao { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; height: auto; }
+            .no-print { display: none !important; }
+        }
+
         @media (max-width: 900px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -99,9 +110,19 @@
     </section>
 </main>
 
+<div id="modal-leitura">
+    <div class="area-impressao" id="area-impressao">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;" class="no-print">
+            <button onclick="window.print()" style="background:#16a34a; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;"><i class="fas fa-print"></i> IMPRIMIR</button>
+            <button onclick="document.getElementById('modal-leitura').style.display='none'" style="background:#000; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">FECHAR</button>
+        </div>
+        <div id="visor-texto" style="font-family:'Courier New', monospace; line-height:1.6; white-space:pre-wrap; color: black;"></div>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const config = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
@@ -113,6 +134,22 @@
     const db = getDatabase(app);
 
     const paths = { pre: 'v13_pre', peca: 'v13_peca', nc: 'v13_nc', tese: 'v13_tese', pdf: 'mentoria/historico' };
+
+    // FUNÇÃO PARA VISUALIZAR A PEÇA SALVA
+    window.visualizarPeca = async (idEnvio) => {
+        const snap = await get(ref(db, `${paths.pdf}/${idEnvio}`));
+        const data = snap.val();
+        if(!data || !data.linhas) return alert("Conteúdo textual não encontrado neste registro.");
+
+        const visor = document.getElementById('visor-texto');
+        const textoFinal = data.linhas
+            .map((txt, i) => txt.trim() ? `${(i + 1).toString().padStart(3, '0')} | ${txt}` : null)
+            .filter(l => l !== null)
+            .join('\n');
+
+        visor.innerText = `FOLHA DE RESPOSTAS - EXAME OAB ${data.exame}\nDATA DE ENVIO: ${data.data}\n${'='.repeat(40)}\n\n${textoFinal || "Nenhum texto escrito."}`;
+        document.getElementById('modal-leitura').style.display = 'block';
+    };
 
     window.toggleR = (btn) => {
         const div = btn.nextElementSibling;
@@ -134,7 +171,6 @@
     onValue(ref(db), (snap) => {
         const v = snap.val() || {};
         
-        // Renderizar Seções de Texto
         ['pre', 'peca', 'nc', 'tese'].forEach(type => {
             const feed = document.getElementById(`feed-${type}`);
             feed.innerHTML = "";
@@ -151,7 +187,6 @@
             });
         });
 
-        // Renderizar Histórico (Conversão com Index)
         const feedPdf = document.getElementById('feed-pdf');
         feedPdf.innerHTML = "";
         const hist = v[paths.pdf] || {};
@@ -161,7 +196,8 @@
                 <div class="card card-pdf">
                     <div><strong>OAB ${item.exame}</strong><br><small style="opacity:0.6">${item.data}</small></div>
                     <div class="pdf-actions">
-                        <i class="fas fa-play-circle" style="color:var(--gold)" onclick="location.href='index.html?exame=${item.exame}'"></i>
+                        <i class="fas fa-eye" title="Ver e Imprimir" style="color:var(--gold)" onclick="visualizarPeca('${id}')"></i>
+                        <i class="fas fa-play-circle" title="Retomar" style="color:#4ade80" onclick="location.href='index.html?exame=${item.exame}'"></i>
                         <i class="fas fa-trash-alt" style="color:var(--danger)" onclick="excluir('pdf','${id}')"></i>
                     </div>
                 </div>`;
