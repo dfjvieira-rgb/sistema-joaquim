@@ -3,75 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ARYANNA 2026 | SIMULADOR 180 LINHAS</title>
+    <title>ARYANNA 2026 | TREINO ELITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0f172a; --gold: #fbbf24; --purple: #a855f7; --border: #94a3b8; }
+        :root { --primary: #0f172a; --gold: #fbbf24; --purple: #a855f7; --border: #94a3b8; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #1e293b; }
 
+        /* HEADER E NAVEGAÇÃO */
         header { 
-            background: var(--primary); color: white; padding: 15px; 
+            background: var(--primary); color: white; padding: 12px 20px; 
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
+            position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--gold);
         }
-
-        .nav-buttons { display: flex; gap: 10px; }
+        .logo { font-weight: 800; font-size: 1.2rem; color: var(--gold); }
+        .nav-tools { display: flex; gap: 12px; align-items: center; }
         
-        /* Botões de Referência Estilizados */
         .btn-ref { 
-            width: 45px; height: 45px; border-radius: 10px; 
+            width: 42px; height: 42px; border-radius: 8px; border: none;
             display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; border: none; font-size: 1.2rem; transition: 0.3s;
+            cursor: pointer; font-size: 1.1rem; transition: 0.3s;
         }
-        .btn-ref:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        .btn-ref:hover { transform: scale(1.1); }
 
-        .folha-container { 
-            max-width: 850px; margin: 20px auto; background: white; 
-            padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border);
+        /* LAYOUT PRINCIPAL */
+        .main-grid { display: grid; grid-template-columns: 1fr 400px; gap: 20px; padding: 20px; max-width: 1600px; margin: 0 auto; }
+
+        /* FOLHA DE RESPOSTA */
+        .folha-caderno { 
+            background: white; padding: 50px; border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 1200px;
+        }
+        .linha-oab {
+            width: 100%; border: none; border-bottom: 1px solid #e2e8f0;
+            line-height: 30px; font-size: 17px; font-family: 'Courier New', Courier, monospace;
+            resize: none; outline: none; background: repeating-linear-gradient(white, white 29px, #e2e8f0 30px);
+            padding: 0 10px;
         }
 
-        .linha-texto { 
-            width: 100%; border: none; border-bottom: 1px solid #cbd5e1; 
-            line-height: 30px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
-            resize: none; outline: none; background: transparent; display: block;
-        }
+        /* RADAR LATERAL */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .panel { background: white; border-radius: 12px; border: 2px solid var(--border); overflow: hidden; }
+        .panel-header { background: #f1f5f9; padding: 10px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; }
+        .panel-body { padding: 15px; }
 
-        .exame-selector { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        textarea.mini-editor { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 0.9rem; margin-bottom: 10px; resize: vertical; }
+
+        /* CRONÔMETRO */
+        .timer-box { font-family: monospace; font-size: 1.5rem; font-weight: 800; color: var(--gold); background: #1e293b; padding: 5px 15px; border-radius: 6px; }
+
+        @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } .sidebar { display: none; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: 800; font-size: 1.1rem; color: var(--gold);">ARYANNA 2026</div>
-    
-    <select id="exame-atual" class="exame-selector" onchange="trocarExame()">
-        <option value="44">EXAME 44</option>
-        <option value="43">EXAME 43</option>
-        <option value="42">EXAME 42</option>
-        <option value="41">EXAME 41</option>
-    </select>
+    <div class="logo">ARYANNA 2026</div>
 
-    <div class="nav-buttons">
-        <button class="btn-ref" onclick="abrirConsultor()" style="background: var(--purple); color: white;" title="Consultor de Peças">
+    <div class="nav-tools">
+        <div id="cronometro" class="timer-box">05:00:00</div>
+        
+        <button class="btn-ref" onclick="abrirConsultor()" style="background: var(--purple); color: white;" title="Consultar Minhas Peças">
             <i class="fas fa-robot"></i>
         </button>
 
-        <button class="btn-ref" onclick="irParaMentoria()" style="background: var(--gold); color: black;" title="Mentoria e Teses">
+        <button class="btn-ref" onclick="irParaMentoria()" style="background: var(--gold); color: black;" title="Meu Banco de Inteligência">
             <i class="fas fa-trophy"></i>
         </button>
+
+        <select id="exame-select" style="padding: 8px; border-radius: 6px; font-weight: bold;" onchange="trocarExame()">
+            <option value="44">Exame 44</option>
+            <option value="43">Exame 43</option>
+            <option value="42">Exame 42</option>
+        </select>
     </div>
 </header>
 
-<main class="folha-container">
-    <div style="text-align: center; font-weight: 800; margin-bottom: 20px; text-decoration: underline;">CADERNO DE RESPOSTA - PEÇA PROFISSIONAL</div>
-    <textarea id="area-escrita" class="linha-texto" rows="30" placeholder="Comece sua peça aqui..."></textarea>
-    
-    <button onclick="finalizarESalvar()" style="margin-top: 20px; width: 100%; padding: 15px; background: #065f46; color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">
-        <i class="fas fa-save"></i> FINALIZAR E ARQUIVAR NO HISTÓRICO
-    </button>
-</main>
+<div class="main-grid">
+    <section class="folha-caderno">
+        <div style="text-align:center; font-weight: 800; margin-bottom: 30px; border-bottom: 2px solid black; padding-bottom: 10px;">
+            CADERNO DE RESPOSTAS - PEÇA PROFISSIONAL
+        </div>
+        <textarea id="texto-peca" class="linha-oab" rows="60" placeholder="Desenvolva sua peça respeitando os limites das linhas..."></textarea>
+        
+        <button onclick="salvarEArquivar()" style="width: 100%; padding: 20px; background: #065f46; color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 30px; font-size: 1rem;">
+            <i class="fas fa-cloud-upload-alt"></i> FINALIZAR E ARQUIVAR NO HISTÓRICO
+        </button>
+    </section>
+
+    <aside class="sidebar">
+        <div class="panel" style="border-top: 5px solid var(--purple);">
+            <div class="panel-header"><span>Radar de Teses</span> <i class="fas fa-brain"></i></div>
+            <div class="panel-body">
+                <label style="font-size: 0.7rem; font-weight: 800;">RASCUNHO DE MÉRITO</label>
+                <textarea id="radar-teses" class="mini-editor" rows="5" placeholder="Anote aqui os artigos e súmulas..."></textarea>
+                <button onclick="gerarPDFSimulado()" style="width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                    <i class="fas fa-file-pdf"></i> GERAR PDF DE TREINO
+                </button>
+            </div>
+        </div>
+
+        <div class="panel" style="border-top: 5px solid #10b981;">
+            <div class="panel-header"><span>Questões Discursivas</span> <i class="fas fa-list-ol"></i></div>
+            <div class="panel-body">
+                <textarea id="questoes-texto" class="mini-editor" rows="10" placeholder="Resolva as questões 1 a 4 aqui..."></textarea>
+            </div>
+        </div>
+    </aside>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -86,60 +126,75 @@
     const app = initializeApp(config);
     const db = getDatabase(app);
 
-    // Lógica para detectar se a Mentoria pediu para abrir um exame específico
+    // Carregamento de URL (Caso venha da Mentoria)
     const urlParams = new URLSearchParams(window.location.search);
     const exameUrl = urlParams.get('exame');
-    if(exameUrl) {
-        document.getElementById('exame-atual').value = exameUrl;
-    }
+    if(exameUrl) document.getElementById('exame-select').value = exameUrl;
 
-    // Carregar texto salvo automaticamente
-    const carregarConteudo = () => {
-        const exame = document.getElementById('exame-atual').value;
+    // Sincronização em tempo real com Firebase
+    const carregarDados = () => {
+        const exame = document.getElementById('exame-select').value;
         onValue(ref(db, `estudos/${exame}`), (snap) => {
             if(snap.exists()) {
-                document.getElementById('area-escrita').value = snap.val().texto;
-            } else {
-                document.getElementById('area-escrita').value = "";
+                document.getElementById('texto-peca').value = snap.val().texto || "";
+                document.getElementById('radar-teses').value = snap.val().radar || "";
+                document.getElementById('questoes-texto').value = snap.val().questoes || "";
             }
         });
     };
 
-    // Salvar no histórico de simulados (O que aparece no Disquete da Mentoria)
-    window.finalizarESalvar = () => {
-        const exame = document.getElementById('exame-atual').value;
-        const texto = document.getElementById('area-escrita').value;
-        const dataAtual = new Date().toLocaleDateString('pt-BR');
+    // Função de Salvar e Arquivar no histórico da Mentoria (O Troféu vai ler isso)
+    window.salvarEArquivar = () => {
+        const exame = document.getElementById('exame-select').value;
+        const texto = document.getElementById('texto-peca').value;
+        const radar = document.getElementById('radar-teses').value;
+        const questoes = document.getElementById('questoes-texto').value;
+        const dataStr = new Date().toLocaleDateString('pt-BR');
 
-        if(!texto) return alert("Escreva algo antes de salvar!");
+        if(!texto) return alert("A folha está vazia!");
 
-        // Salva na pasta de treino
-        set(ref(db, `estudos/${exame}`), { texto, data: dataAtual });
+        // Salva na pasta de trabalho
+        set(ref(db, `estudos/${exame}`), { texto, radar, questoes, data: dataStr, ts: serverTimestamp() });
 
-        // Salva no histórico da Mentoria (O Disquete)
+        // Arquiva no histórico da Mentoria
         set(ref(db, `mentoria/historico/${exame}`), {
             exame: exame,
-            data: dataAtual,
+            data: dataStr,
             preview: texto.substring(0, 100)
         }).then(() => {
-            alert("Simulado arquivado com sucesso! Confira no seu histórico.");
+            alert("Sucesso! Peça arquivada no Histórico (Troféu).");
         });
     };
 
-    window.trocarExame = () => carregarConteudo();
-    carregarConteudo();
+    window.trocarExame = () => carregarDados();
+    carregarDados();
 </script>
 
 <script>
-    // Funções de Navegação
+    // CRONÔMETRO OAB
+    let tempo = 18000; // 5 horas
+    setInterval(() => {
+        if(tempo > 0) {
+            tempo--;
+            let h = Math.floor(tempo / 3600);
+            let m = Math.floor((tempo % 3600) / 60);
+            let s = tempo % 60;
+            document.getElementById('cronometro').innerText = 
+                `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+    }, 1000);
+
+    // NAVEGAÇÃO
     function abrirConsultor() {
-        // Abre a mentoria em nova aba focada no histórico (Consultor)
         window.open('mentoria.html?mode=consultor', '_blank');
     }
 
     function irParaMentoria() {
-        // Vai para a mentoria na mesma aba (Fluxo de estudo)
         window.location.href = 'mentoria.html';
+    }
+
+    function gerarPDFSimulado() {
+        window.print();
     }
 </script>
 
