@@ -47,7 +47,7 @@
         .linha-folha { 
             flex: 1; height: 35px; border: none; outline: none; background: transparent; 
             padding: 0 15px; font-size: 18px; 
-            font-family: 'Courier New', Courier, monospace; /* FONTE DE PROVA */
+            font-family: 'Courier New', Courier, monospace;
             color: var(--text-color); width: 100%; 
             letter-spacing: 0.5px;
         }
@@ -62,12 +62,15 @@
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
 
-        /* PRINT SETTINGS */
+        /* AJUSTE DE IMPRESSÃO CIRÚRGICO */
         @media print {
+            @page { size: A4; margin: 0; }
+            body { background: white !important; overflow: visible !important; height: auto !important; }
             header, .sidebar, .btn-close-pdf, #pdf-split-view, .modal { display: none !important; }
-            .editor-container { padding: 0; background: white; overflow: visible; }
-            .paper { box-shadow: none; max-width: 100%; width: 100%; margin: 0; }
-            body { overflow: visible; height: auto; }
+            .editor-container { padding: 0 !important; margin: 0 !important; background: white !important; overflow: visible !important; width: 100% !important; }
+            .paper { box-shadow: none !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+            .linha-folha { color: black !important; border-bottom: 1px solid #ddd !important; }
+            #identificador-peca { background: white !important; border-bottom: 2px solid black !important; }
         }
     </style>
 </head>
@@ -135,7 +138,7 @@
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
     let mentoriaJanelaRef = null;
-    const LIMITE_LINHA = 85; 
+    const LIMITE_LINHA = 85;
 
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
@@ -186,22 +189,11 @@
             input.setAttribute('spellcheck', 'false');
             input.setAttribute('maxlength', LIMITE_LINHA);
 
-            input.oninput = () => {
-                if (input.value.length >= LIMITE_LINHA) {
-                    document.getElementById(`L${i + 1}`)?.focus();
-                }
-            };
-
+            input.oninput = () => { if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); };
             input.onkeydown = (e) => { 
-                if (e.key === "Enter") { 
-                    e.preventDefault(); 
-                    document.getElementById(`L${i + 1}`)?.focus(); 
-                } 
-                if (e.key === "Backspace" && input.value.length === 0) {
-                    document.getElementById(`L${i - 1}`)?.focus();
-                }
+                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
+                if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
             };
-
             input.onfocus = () => { ultimaLinhaFocada = i; };
             row.innerHTML = `<div class="linha-num">${i}</div>`;
             row.appendChild(input);
@@ -224,15 +216,10 @@
     };
 
     window.abrirMentoria = () => {
-        const width = 500;
-        const height = window.screen.height;
-        const left = window.screen.width - width;
+        const width = 500, height = window.screen.height, left = window.screen.width - width;
         const config = `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`;
-        if (mentoriaJanelaRef === null || mentoriaJanelaRef.closed) {
-            mentoriaJanelaRef = window.open('mentoria.html', 'MentoriaElite', config);
-        } else {
-            mentoriaJanelaRef.focus();
-        }
+        if (mentoriaJanelaRef === null || mentoriaJanelaRef.closed) mentoriaJanelaRef = window.open('mentoria.html', 'MentoriaElite', config);
+        else mentoriaJanelaRef.focus();
     };
 
     window.abrirModalExames = () => {
@@ -241,13 +228,7 @@
         const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            b.onclick = () => { 
-                activeEx = i.toString(); 
-                localStorage.setItem('activeEx', activeEx); 
-                montarFolha(); 
-                escaneamentoElite();
-                fecharModal(); 
-            };
+            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); escaneamentoElite(); fecharModal(); };
             grid.appendChild(b);
         }
         content.appendChild(grid);
@@ -289,8 +270,7 @@
     };
 
     window.abrirSplitPdf = (t) => {
-        const url = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
-        document.getElementById('pdf-frame').src = url;
+        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
         document.getElementById('pdf-split-view').classList.add('active');
     };
 
