@@ -42,7 +42,7 @@
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); flex-shrink: 0; }
         .linha-folha { flex: 1; height: 35px; border: none; outline: none; background: transparent; padding: 0 15px; font-size: 18px; font-family: 'Courier New', monospace; color: var(--text-color); width: 100%; }
 
-        #sync-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); }
+        #sync-overlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); }
 
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; z-index: 1002; }
         #pdf-split-view.active { display: block; }
@@ -111,7 +111,7 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // CREDENCIAIS REAIS DA SUA IMAGEM (620234160245)
+    // CONFIGURAÇÃO REAL EXTRAÍDA DA SUA IMAGEM
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
         authDomain: "masteroab-db5e1.firebaseapp.com",
@@ -175,7 +175,13 @@
         const overlay = document.getElementById('sync-overlay');
         overlay.style.display = 'flex';
         
+        // SEGURANÇA: Se o Firebase travar, solta a tela em 5 segundos
+        const safetyTimeout = setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 5000);
+
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
+            clearTimeout(safetyTimeout);
             const data = snap.val();
             if(data && data.linhas) {
                 data.linhas.forEach((txt, idx) => {
