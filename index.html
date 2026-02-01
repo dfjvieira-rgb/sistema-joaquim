@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JOAQUIM ELITE 2026 - HOME</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,7 +16,7 @@
             background: var(--bg-paper); 
             font-family: 'Inter', sans-serif; 
             display: flex; 
-            height: 100dvh; /* Usa dynamic viewport height para mobile */
+            height: 100vh; 
             overflow: hidden; 
         }
 
@@ -30,7 +29,6 @@
             gap: 12px; 
             padding: 10px; 
             z-index: 100;
-            flex-shrink: 0;
         }
         
         .btn-side { 
@@ -39,31 +37,29 @@
             justify-content: center; font-size: 1.1rem; 
         }
 
-        /* ÁREA DE PROVA - Ajustada para permitir scroll lateral no mobile sem cortar */
+        /* ÁREA DE PROVA */
         .viewport { 
             flex: 1; 
-            overflow: auto; 
+            overflow-y: auto; 
             display: flex; 
-            justify-content: flex-start; /* Alinha à esquerda para o scroll lateral fluir */
+            justify-content: center; 
             padding: 20px; 
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
         }
 
         .paper { 
             background: var(--paper-color); 
-            width: 850px; /* Largura fixa real da folha FGV */
-            min-height: fit-content;
+            width: 850px; 
+            min-height: 100%;
             display: flex; 
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative;
-            flex-shrink: 0; /* Impede a folha de ser "esmagada" */
         }
 
         /* RÉGUA LATERAL */
         .regua { 
             width: 45px; 
-            background: #f8fafc; 
+            background: #f1f5f9; 
             border-right: 1px solid var(--line-color);
             flex-shrink: 0;
             display: flex;
@@ -101,8 +97,6 @@
             color: var(--text-color);
             outline: none;
             vertical-align: middle;
-            white-space: nowrap; /* Evita quebra de linha que desalinhue a régua */
-            overflow: hidden;
         }
 
         /* DIVISÓRIAS OAB */
@@ -118,6 +112,7 @@
             font-size: 0.6rem; height: 25px !important; 
             font-weight: bold; padding-left: 15px !important;
         }
+
     </style>
 </head>
 <body>
@@ -125,7 +120,7 @@
     <aside class="sidebar">
         <button class="btn-side" style="background:var(--gold); color:#000" onclick="alert('Escolher Exame')"><i class="fas fa-list"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="window.injetarJustica()"><i class="fas fa-bolt"></i></button>
-        <button class="btn-side" style="background:#ef4444;" onclick="location.reload()"><i class="fas fa-trash"></i></button>
+        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
         <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(1)">P</button>
         <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(51)">Q</button>
     </aside>
@@ -152,18 +147,19 @@
         const folha = document.getElementById('FOLHA');
         const regua = document.getElementById('REGUA');
         
-        // Loop para 180 linhas padrão
         for (let i = 1; i <= 180; i++) {
-            // Títulos de seção oficiais
+            // Títulos de seção
             if (i === 1) criarTitulo(folha, regua, "PEÇA PROFISSIONAL", "divisoria-box");
-            
-            // Injeção automática das Questões 1 a 4 conforme solicitado
-            if ([51, 81, 111, 141].includes(i)) {
-                const numQ = (i === 51) ? 1 : (i === 81) ? 2 : (i === 111) ? 3 : 4;
-                criarTitulo(folha, regua, `QUESTÃO ${numQ}`, "divisoria-box");
+            if (i === 51) { 
+                criarTitulo(folha, regua, "QUESTÃO 1", "divisoria-box");
+                criarTitulo(folha, regua, "ITENS A e B", "item-box");
+            }
+            if (i === 81) { 
+                criarTitulo(folha, regua, "QUESTÃO 2", "divisoria-box");
                 criarTitulo(folha, regua, "ITENS A e B", "item-box");
             }
 
+            // Linha normal
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.id = `L${i}`;
@@ -171,6 +167,7 @@
             tr.appendChild(td);
             folha.appendChild(tr);
 
+            // Número na régua
             const num = document.createElement('div');
             num.className = "regua-num";
             num.innerText = i;
@@ -187,6 +184,7 @@
         tr.appendChild(td);
         folha.appendChild(tr);
 
+        // Espaço na régua para alinhar
         const espaco = document.createElement('div');
         espaco.className = "regua-espaco";
         espaco.style.height = (classe === "divisoria-box" ? "30px" : "25px");
@@ -210,10 +208,11 @@
 
     window.irPara = (n) => {
         const el = document.getElementById(`L${n}`);
-        if(el) { el.scrollIntoView({behavior: "smooth", block: "center"}); el.focus(); }
+        if(el) { el.scrollIntoView({block: "center"}); el.focus(); }
     };
 
     window.onload = gerarFolha;
+    window.irPara = window.irPara; 
 </script>
 </body>
 </html>
