@@ -29,6 +29,7 @@
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding-bottom: 40px; position: relative; }
+        /* MARGEM DIREITA */
         .paper::after { content: ""; position: absolute; top: 0; right: 40px; width: 2px; height: 100%; background: var(--margem-cor); opacity: 0.3; pointer-events: none; }
         .linha-wrapper { display: flex; width: 100%; border-bottom: 1px solid var(--line-color); }
         .linha-num { width: 45px; font-size: 0.7rem; color: #64748b; text-align: center; padding-top: 10px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); }
@@ -43,7 +44,7 @@
 </head>
 <body>
 
-<div id="sync-overlay"><i class="fas fa-circle-notch fa-spin fa-3x"></i><p style="margin-top:15px; font-weight:900;">SINCRO-ELITE ATIVA...</p></div>
+<div id="sync-overlay"><i class="fas fa-circle-notch fa-spin fa-3x"></i><p style="margin-top:15px; font-weight:900;">INICIALIZANDO HOME ELITE...</p></div>
 
 <header>
     <div style="color:white; font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
@@ -109,43 +110,39 @@
 
             const row = document.createElement('div');
             row.className = 'linha-wrapper';
-            const input = document.createElement('input');
-            input.className = 'linha-folha';
-            input.id = `L${i}`;
-            input.setAttribute('spellcheck', 'false');
-
-            input.oninput = () => {
-                escaneamentoElite();
-                if (input.value.length > LIMITE_LINHA) {
-                    let sobra = input.value.substring(LIMITE_LINHA);
-                    input.value = input.value.substring(0, LIMITE_LINHA);
-                    const prox = document.getElementById(`L${i+1}`);
-                    if(prox) { prox.value = sobra + (prox.value || ""); prox.focus(); prox.setSelectionRange(sobra.length, sobra.length); }
-                }
-            };
-
-            input.onkeydown = (e) => {
-                const pos = input.selectionStart;
-                const total = input.value.length;
-
-                if (e.key === "Tab") { e.preventDefault(); input.value = input.value.substring(0, pos) + "    " + input.value.substring(input.selectionEnd); input.setSelectionRange(pos + 4, pos + 4); }
-                if (e.key === "Enter" || e.key === "ArrowDown") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
-                if (e.key === "ArrowUp") { e.preventDefault(); document.getElementById(`L${i-1}`)?.focus(); }
-                if (e.key === "ArrowRight" && pos === total) { e.preventDefault(); const p = document.getElementById(`L${i+1}`); if(p) { p.focus(); p.setSelectionRange(0,0); } }
-                if (e.key === "ArrowLeft" && pos === 0) { e.preventDefault(); const a = document.getElementById(`L${i-1}`); if(a) { a.focus(); a.setSelectionRange(a.value.length, a.value.length); } }
-                if (e.key === "Backspace" && pos === 0 && i > 1) {
-                    e.preventDefault();
-                    const ant = document.getElementById(`L${i-1}`);
-                    if (ant) { let l = ant.value.length; ant.value += input.value; input.value = ""; ant.focus(); ant.setSelectionRange(l, l); }
-                }
-            };
-            input.onfocus = () => { ultimaLinhaFocada = i; };
-            row.innerHTML = `<div class="linha-num">${i}</div>`;
-            row.appendChild(input);
+            row.innerHTML = `<div class="linha-num">${i}</div><input class="linha-folha" id="L${i}" data-num="${i}" spellcheck="false" autocomplete="off">`;
             container.appendChild(row);
         }
         carregarDados();
     };
+
+    // NAVEGAÇÃO E TECLADO ELITE (BLINDADO)
+    document.addEventListener('keydown', (e) => {
+        const el = e.target;
+        if (!el.classList.contains('linha-folha')) return;
+        const i = parseInt(el.getAttribute('data-num'));
+        const pos = el.selectionStart;
+
+        if (e.key === "Enter" || e.key === "ArrowDown") { e.preventDefault(); document.getElementById(`L${i+1}`)?.focus(); }
+        if (e.key === "ArrowUp") { e.preventDefault(); document.getElementById(`L${i-1}`)?.focus(); }
+        if (e.key === "ArrowRight" && pos === el.value.length) { const p = document.getElementById(`L${i+1}`); if(p) { e.preventDefault(); p.focus(); p.setSelectionRange(0,0); } }
+        if (e.key === "ArrowLeft" && pos === 0) { const a = document.getElementById(`L${i-1}`); if(a) { e.preventDefault(); a.focus(); a.setSelectionRange(a.value.length, a.value.length); } }
+        if (e.key === "Tab") { e.preventDefault(); el.value = el.value.substring(0, pos) + "    " + el.value.substring(el.selectionEnd); el.setSelectionRange(pos + 4, pos + 4); }
+        if (e.key === "Backspace" && pos === 0 && i > 1) { e.preventDefault(); const ant = document.getElementById(`L${i-1}`); if(ant) { let l = ant.value.length; ant.value += el.value; el.value = ""; ant.focus(); ant.setSelectionRange(l, l); } }
+    });
+
+    document.addEventListener('input', (e) => {
+        const el = e.target;
+        if (!el.classList.contains('linha-folha')) return;
+        const i = parseInt(el.getAttribute('data-num'));
+        escaneamentoElite();
+        if (el.value.length > LIMITE_LINHA) {
+            let sobra = el.value.substring(LIMITE_LINHA);
+            el.value = el.value.substring(0, LIMITE_LINHA);
+            const prox = document.getElementById(`L${i+1}`);
+            if (prox) { prox.value = sobra + (prox.value || ""); prox.focus(); prox.setSelectionRange(sobra.length, sobra.length); }
+        }
+    });
 
     const escaneamentoElite = () => {
         const sidebarStatus = document.getElementById('radar-status');
