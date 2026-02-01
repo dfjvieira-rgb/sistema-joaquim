@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JOAQUIM ELITE 2026 - HOME</title>
+    <title>HOME - JOAQUIM ELITE 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -14,39 +14,34 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg-paper); display: flex; height: 100dvh; overflow: hidden; font-family: 'Inter', sans-serif; }
 
-        /* SIDEBAR - 12 BOTÕES */
-        .sidebar { 
-            width: var(--sidebar-w); background: var(--primary); 
-            display: flex; flex-direction: column; gap: 8px; 
-            padding: 10px 5px; z-index: 100; overflow-y: auto; flex-shrink: 0;
-        }
-        .btn-side { 
-            width: 100%; min-height: 42px; border-radius: 6px; border: none; 
-            cursor: pointer; color: white; display: flex; align-items: center; 
-            justify-content: center; font-size: 0.9rem; transition: 0.2s;
-        }
-        .btn-side:active { transform: scale(0.9); }
+        /* SIDEBAR */
+        .sidebar { width: var(--sidebar-w); background: var(--primary); display: flex; flex-direction: column; gap: 8px; padding: 10px 5px; z-index: 100; flex-shrink: 0; }
+        .btn-side { width: 100%; min-height: 42px; border-radius: 6px; border: none; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: 0.2s; }
 
-        /* DELIMITAÇÃO DE LINHAS E VIEWPORT */
+        /* VIEWPORT E FOLHA */
         .viewport { flex: 1; overflow: auto; padding: 20px; display: flex; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
-        .paper { 
-            background: white; width: 850px; display: flex; 
-            box-shadow: 0 0 25px rgba(0,0,0,0.2); flex-shrink: 0; position: relative; 
-        }
-
+        .paper { background: white; width: 850px; display: flex; box-shadow: 0 0 25px rgba(0,0,0,0.2); flex-shrink: 0; position: relative; }
         .regua { width: 45px; background: #f8fafc; border-right: 1px solid var(--line-color); flex-shrink: 0; }
         .regua-num, .regua-espaco { height: 35px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8; }
-        
         .conteudo { flex: 1; position: relative; }
         .margem-v { position: absolute; top: 0; right: 60px; width: 1.5px; height: 100%; background: var(--margem-cor); opacity: 0.4; pointer-events: none; }
-
         .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        .grid-oab td { 
-            height: 35px; border-bottom: 1px solid #eee; 
-            padding: 0 75px 0 15px; /* Delimita o fim da linha antes da margem vermelha */
-            font-family: 'Courier New', monospace; font-size: 18px; 
-            white-space: nowrap; overflow: hidden; text-overflow: clip; outline: none;
+        .grid-oab td { height: 35px; border-bottom: 1px solid #eee; padding: 0 75px 0 15px; font-family: 'Courier New', monospace; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: clip; outline: none; }
+
+        /* MODAL DA LISTA DE EXAMES */
+        #modalExames {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;
         }
+        .lista-container {
+            background: white; width: 300px; border-radius: 12px; padding: 20px;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .exame-item {
+            padding: 12px; border-bottom: 1px solid #eee; cursor: pointer;
+            font-weight: bold; color: var(--primary); display: flex; justify-content: space-between;
+        }
+        .exame-item:hover { background: #f1f5f9; }
 
         .divisoria-box { background: var(--primary); color: var(--gold); text-align: center; font-size: 10px; height: 30px !important; font-weight: 900; }
         .item-box { background: #f8fafc; color: #64748b; font-size: 9px; height: 25px !important; padding-left: 15px !important; font-weight: bold; }
@@ -55,25 +50,28 @@
 <body>
 
     <aside class="sidebar">
-        <button class="btn-side" style="background:#22c55e;" onclick="injetarJustica()"><i class="fas fa-bolt"></i></button>
-        <button class="btn-side" style="background:var(--gold); color:#000;" onclick="alert('Lista de Exames')"><i class="fas fa-list"></i></button>
+        <button class="btn-side" style="background:#22c55e;" onclick="injetarDireto()"><i class="fas fa-bolt"></i></button>
+        <button class="btn-side" style="background:var(--gold); color:#000;" onclick="abrirExames()"><i class="fas fa-list"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="window.print()"><i class="fas fa-print"></i></button>
-        
         <hr style="opacity:0.2">
-
         <button class="btn-side" style="background:#6366f1;" onclick="irPara(1)">PEÇA</button>
         <button class="btn-side" style="background:#8b5cf6;" onclick="irPara(51)">Q1</button>
         <button class="btn-side" style="background:#8b5cf6;" onclick="irPara(81)">Q2</button>
         <button class="btn-side" style="background:#8b5cf6;" onclick="irPara(111)">Q3</button>
         <button class="btn-side" style="background:#8b5cf6;" onclick="irPara(141)">Q4</button>
-
         <hr style="opacity:0.2">
-
         <button class="btn-side" style="background:#06b6d4;" onclick="irPara(ultimaLinhaFocada)"><i class="fas fa-eye"></i></button>
         <button class="btn-side" style="background:#f97316;" onclick="limparFolha()"><i class="fas fa-eraser"></i></button>
         <button class="btn-side" style="background:#64748b;" onclick="irPara(1)"><i class="fas fa-arrow-up"></i></button>
         <button class="btn-side" style="background:#ef4444;" onclick="location.reload()"><i class="fas fa-sync"></i></button>
     </aside>
+
+    <div id="modalExames" onclick="fecharExames()">
+        <div class="lista-container" onclick="event.stopPropagation()">
+            <h3 style="margin-bottom:15px; text-align:center">Escolha o Exame</h3>
+            <div id="listaItens"></div>
+        </div>
+    </div>
 
     <div class="viewport">
         <div class="paper">
@@ -86,90 +84,86 @@
     </div>
 
 <script>
-    /* BANCO DE DADOS LOCAL (Exemplo para teste imediato) */
-    const BANCO_INTERNO = {
-        "44": "QUESTÃO 1\na) O fundamento legal encontra-se no Art. 895 da CLT.\nb) A pretensão não prospera conforme Súmula do TST."
-    };
-
-    /* LÓGICA DO RADAR INCORPORADA (Sem "beber" de arquivo externo) */
-    const RadarElite = {
-        analisar: (dna) => {
-            const t = dna.toUpperCase();
-            const q = [
-                {re: /QUESTÃO\s*1/i, alvo: 51},
-                {re: /QUESTÃO\s*2/i, alvo: 81},
-                {re: /QUESTÃO\s*3/i, alvo: 111},
-                {re: /QUESTÃO\s*4/i, alvo: 141}
-            ];
-            return { questao: q.find(x => x.re.test(t)) };
-        },
-        formatar: (dna) => {
-            const LIMITE = 65;
-            return dna.replace(/<[^>]*>/g, '').split('\n').filter(l => l.length > 2).map(l => {
-                let s = l.trim();
-                if (/^[A-B][\)\.]/i.test(s)) {
-                    return "● " + s.substring(0, LIMITE - 2).toUpperCase();
-                }
-                return "  " + s.substring(0, LIMITE);
-            });
-        }
+    // BANCO DE DADOS INTEGRADO
+    const BANCO = {
+        "Exame 44": "QUESTÃO 1\na) Conforme Art. 840 da CLT.\nb) A prescrição é bienal.",
+        "Exame 43": "QUESTÃO 2\na) Súmula 212 do TST.\nb) Princípio da Continuidade.",
+        "Peca Teste": "CONTESTAÇÃO\nPreliminar de Inépcia..."
     };
 
     let ultimaLinhaFocada = 1;
+    let exameSelecionado = "Exame 44";
+
+    const RadarElite = {
+        analisar: (dna) => {
+            const t = dna.toUpperCase();
+            const q = [{re:/QUESTÃO\s*1/i,a:51},{re:/QUESTÃO\s*2/i,a:81},{re:/QUESTÃO\s*3/i,a:111},{re:/QUESTÃO\s*4/i,a:141}];
+            return { questao: q.find(x => x.re.test(t)) };
+        },
+        formatar: (dna) => {
+            return dna.split('\n').filter(l => l.length > 2).map(l => {
+                let s = l.trim();
+                return /^[A-B][\)\.]/i.test(s) ? "● " + s.toUpperCase() : "  " + s;
+            });
+        }
+    };
 
     const gerarFolha = () => {
         const f = document.getElementById('FOLHA');
         const r = document.getElementById('REGUA');
         for (let i = 1; i <= 180; i++) {
-            if (i === 1) addTitulo(f, r, "PEÇA PROFISSIONAL", "divisoria-box", 30);
+            if (i === 1) addT(f, r, "PEÇA PROFISSIONAL", "divisoria-box", 30);
             if ([51, 81, 111, 141].includes(i)) {
                 const n = i==51?1:i==81?2:i==111?3:4;
-                addTitulo(f, r, `QUESTÃO ${n}`, "divisoria-box", 30);
-                addTitulo(f, r, "RESPOSTA ITENS A e B", "item-box", 25);
+                addT(f, r, `QUESTÃO ${n}`, "divisoria-box", 30);
+                addT(f, r, "RESPOSTA ITENS A e B", "item-box", 25);
             }
             const tr = f.insertRow();
             const td = tr.insertCell(); td.id = `L${i}`;
             td.onfocus = () => ultimaLinhaFocada = i;
-            const num = document.createElement('div');
-            num.className = "regua-num"; num.innerText = i;
-            r.appendChild(num);
+            const n = document.createElement('div'); n.className = "regua-num"; n.innerText = i; r.appendChild(n);
         }
     };
 
-    const addTitulo = (f, r, t, c, h) => {
+    const addT = (f, r, t, c, h) => {
         const tr = f.insertRow(); tr.contentEditable = "false";
         tr.innerHTML = `<td class="${c}">${t}</td>`;
-        const s = document.createElement('div');
-        s.className = "regua-espaco"; s.style.height = h + "px";
-        r.appendChild(s);
+        const s = document.createElement('div'); s.className = "regua-espaco"; s.style.height = h + "px"; r.appendChild(s);
     };
 
+    // FUNÇÕES DA LISTA
+    function abrirExames() {
+        const container = document.getElementById('listaItens');
+        container.innerHTML = "";
+        Object.keys(BANCO).forEach(key => {
+            const div = document.createElement('div');
+            div.className = "exame-item";
+            div.innerHTML = `<span>${key}</span> <i class="fas fa-chevron-right"></i>`;
+            div.onclick = () => { exameSelecionado = key; injetarJustica(); fecharExames(); };
+            container.appendChild(div);
+        });
+        document.getElementById('modalExames').style.display = "flex";
+    }
+
+    function fecharExames() { document.getElementById('modalExames').style.display = "none"; }
+
     function injetarJustica() {
-        const dna = BANCO_INTERNO["44"]; // Exemplo fixo para teste
+        const dna = BANCO[exameSelecionado];
         const analise = RadarElite.analisar(dna);
         const linhas = RadarElite.formatar(dna);
-        let alvo = analise.questao ? analise.questao.alvo : ultimaLinhaFocada;
-
-        linhas.forEach((txt, i) => {
-            const el = document.getElementById(`L${alvo + i}`);
-            if (el) el.innerText = txt;
-        });
+        let alvo = analise.questao ? analise.questao.a : ultimaLinhaFocada;
+        linhas.forEach((txt, i) => { const el = document.getElementById(`L${alvo + i}`); if (el) el.innerText = txt; });
         irPara(alvo);
     }
 
+    function injetarDireto() { injetarJustica(); }
+
     function irPara(n) {
         const el = document.getElementById(`L${n}`);
-        if(el) {
-            el.scrollIntoView({behavior: "smooth", block: "center"});
-            el.focus();
-        }
+        if(el) { el.scrollIntoView({behavior: "smooth", block: "center"}); el.focus(); }
     }
 
-    function limparFolha() {
-        if(confirm("Deseja limpar as linhas da folha?")) {
-            document.querySelectorAll('#FOLHA td:not([class])').forEach(td => td.innerText = "");
-        }
-    }
+    function limparFolha() { if(confirm("Limpar folha?")) document.querySelectorAll('#FOLHA td:not([class])').forEach(td => td.innerText = ""); }
 
     window.onload = gerarFolha;
 </script>
