@@ -2,22 +2,29 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>JOAQUIM ELITE 2026 - HOME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HOME - JOAQUIM ELITE 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-paper: #cbd5e1; --paper-color: #ffffff; --line-color: #d1d5db;
-            --text-color: #1e293b; --margem-cor: #f87171; --gold: #fbbf24;
-            --primary: #0f172a; --sidebar-w: 70px;
+            --bg-paper: #cbd5e1;
+            --paper-color: #ffffff;
+            --line-color: #d1d5db;
+            --text-color: #1e293b;
+            --margem-cor: #f87171;
+            --gold: #fbbf24;
+            --primary: #0f172a;
+            --sidebar-w: 65px;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
         body { 
             background: var(--bg-paper); 
-            font-family: 'Inter', sans-serif; 
             display: flex; 
-            height: 100vh; 
+            height: 100dvh; 
             overflow: hidden; 
+            font-family: 'Inter', sans-serif;
         }
 
         /* SIDEBAR FIXA */
@@ -28,110 +35,153 @@
             flex-direction: column; 
             gap: 12px; 
             padding: 10px; 
-            z-index: 100;
-        }
-        
-        .btn-side { 
-            width: 100%; height: 45px; border-radius: 8px; border: none; 
-            cursor: pointer; color: white; display: flex; align-items: center; 
-            justify-content: center; font-size: 1.1rem; 
+            z-index: 100; 
+            flex-shrink: 0; 
+            border-right: 2px solid var(--gold);
         }
 
-        /* ÁREA DE PROVA */
+        .btn-side { 
+            width: 100%; 
+            height: 48px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.2rem; 
+            transition: 0.2s;
+        }
+        .btn-side:active { transform: scale(0.9); }
+
+        /* ÁREA DA FOLHA COM SCROLL PROTEGIDO */
         .viewport { 
             flex: 1; 
-            overflow-y: auto; 
-            display: flex; 
-            justify-content: center; 
+            overflow: auto; 
             padding: 20px; 
-            scroll-behavior: smooth;
+            display: flex; 
+            justify-content: flex-start; 
+            -webkit-overflow-scrolling: touch;
         }
 
         .paper { 
             background: var(--paper-color); 
-            width: 850px; 
-            min-height: 100%;
+            width: 850px; /* Largura fixa para simular papel real e não cortar letra */
+            min-height: fit-content; 
             display: flex; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative;
+            box-shadow: 0 0 25px rgba(0,0,0,0.2); 
+            flex-shrink: 0;
         }
 
-        /* RÉGUA LATERAL */
+        /* RÉGUA DE NUMERAÇÃO */
         .regua { 
             width: 45px; 
-            background: #f1f5f9; 
-            border-right: 1px solid var(--line-color);
-            flex-shrink: 0;
+            background: #f8fafc; 
+            border-right: 1px solid var(--line-color); 
+            flex-shrink: 0; 
             display: flex;
             flex-direction: column;
             user-select: none;
         }
 
-        .regua-num, .regua-espaco { 
+        .regua-num { 
             height: 35px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-size: 0.7rem; 
-            color: #94a3b8;
+            font-size: 0.75rem; 
+            color: #94a3b8; 
+            font-weight: bold;
         }
 
-        /* ÁREA DE TEXTO */
+        .regua-espaco { display: flex; align-items: center; justify-content: center; }
+
+        /* CONTEÚDO DA FOLHA */
         .conteudo { flex: 1; position: relative; }
         
         .margem-vermelha { 
-            position: absolute; top: 0; right: 60px; 
-            width: 1px; height: 100%; 
-            background: var(--margem-cor); opacity: 0.5; 
+            position: absolute; 
+            top: 0; 
+            right: 60px; 
+            width: 1.5px; 
+            height: 100%; 
+            background: var(--margem-cor); 
+            opacity: 0.5; 
             pointer-events: none; 
         }
 
-        .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        
+        .grid-oab { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: fixed; 
+        }
+
         .grid-oab td { 
             height: 35px; 
             border-bottom: 1px solid var(--line-color);
-            padding: 0 70px 0 15px; 
+            padding: 0 75px 0 15px; 
             font-family: 'Courier New', monospace; 
-            font-size: 18px; 
-            color: var(--text-color);
+            font-size: 19px; 
+            color: var(--text-color); 
             outline: none;
+            overflow: hidden; 
+            white-space: nowrap; /* Impede que a letra quebre a linha e desalinhue a régua */
             vertical-align: middle;
         }
 
-        /* DIVISÓRIAS OAB */
+        /* CABEÇALHOS DE QUESTÃO */
         .divisoria-box { 
-            background: var(--primary); color: var(--gold); 
-            font-weight: bold; font-size: 0.7rem; text-align: center; 
-            height: 30px !important; padding: 0 !important;
+            background: var(--primary); 
+            color: var(--gold); 
+            font-weight: bold; 
+            font-size: 0.75rem; 
+            text-align: center; 
+            height: 30px !important; 
             text-transform: uppercase;
-        }
-        
-        .item-box { 
-            background: #f8fafc; color: #64748b; 
-            font-size: 0.6rem; height: 25px !important; 
-            font-weight: bold; padding-left: 15px !important;
+            letter-spacing: 1px;
         }
 
+        .item-box { 
+            background: #f1f5f9; 
+            color: #475569; 
+            font-size: 0.65rem; 
+            height: 25px !important; 
+            font-weight: bold; 
+            padding-left: 15px !important; 
+        }
+
+        #identificador-topo {
+            padding: 15px;
+            text-align: center;
+            font-weight: 900;
+            background: #fff;
+            color: var(--primary);
+            border-bottom: 2px solid var(--line-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <button class="btn-side" style="background:var(--gold); color:#000" onclick="alert('Escolher Exame')"><i class="fas fa-list"></i></button>
-        <button class="btn-side" style="background:#3b82f6;" onclick="window.injetarJustica()"><i class="fas fa-bolt"></i></button>
-        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
-        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(1)">P</button>
-        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(51)">Q</button>
+        <button class="btn-side" style="background:var(--gold); color:#000" title="Exames"><i class="fas fa-list"></i></button>
+        <button class="btn-side" style="background:#3b82f6;" onclick="window.injetarJustica()" title="Injetar Radar"><i class="fas fa-bolt"></i></button>
+        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(1)" title="Ir para Peça">P</button>
+        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(51)" title="Ir para Questões">Q</button>
+        <button class="btn-side" style="background:#ef4444;" onclick="location.reload()" title="Limpar"><i class="fas fa-trash-alt"></i></button>
     </aside>
 
     <div class="viewport">
         <div class="paper">
-            <div class="regua" id="REGUA"></div>
+            <div class="regua" id="REGUA_LATERAL"></div>
             <div class="conteudo">
                 <div class="margem-vermelha"></div>
+                <div id="identificador-topo">Folha de Respostas - Joaquim Elite</div>
                 <table class="grid-oab">
-                    <tbody id="FOLHA" contenteditable="true" spellcheck="false"></tbody>
+                    <tbody id="CORPO_TABELA" contenteditable="true" spellcheck="false"></tbody>
                 </table>
             </div>
         </div>
@@ -141,50 +191,48 @@
     import { RadarElite } from './modulo-radar.js';
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
 
-    let ultimaLinha = 1;
+    let linhaFocadaAtual = 1;
 
-    const gerarFolha = () => {
-        const folha = document.getElementById('FOLHA');
-        const regua = document.getElementById('REGUA');
+    const inicializarEstrutura = () => {
+        const corpo = document.getElementById('CORPO_TABELA');
+        const regua = document.getElementById('REGUA_LATERAL');
         
-        for (let i = 1; i <= 180; i++) {
-            // Títulos de seção
-            if (i === 1) criarTitulo(folha, regua, "PEÇA PROFISSIONAL", "divisoria-box");
-            if (i === 51) { 
-                criarTitulo(folha, regua, "QUESTÃO 1", "divisoria-box");
-                criarTitulo(folha, regua, "ITENS A e B", "item-box");
-            }
-            if (i === 81) { 
-                criarTitulo(folha, regua, "QUESTÃO 2", "divisoria-box");
-                criarTitulo(folha, regua, "ITENS A e B", "item-box");
-            }
+        // Gera as 190 linhas com os divisores oficiais
+        for (let i = 1; i <= 190; i++) {
+            
+            // Injeção de Títulos de Questão (Padrão FGV)
+            if (i === 1) addTitulo(corpo, regua, "PEÇA PROFISSIONAL", "divisoria-box");
+            if (i === 51) { addTitulo(corpo, regua, "QUESTÃO 1", "divisoria-box"); addTitulo(corpo, regua, "RESPOSTA ITEM A E B", "item-box"); }
+            if (i === 81) { addTitulo(corpo, regua, "QUESTÃO 2", "divisoria-box"); addTitulo(corpo, regua, "RESPOSTA ITEM A E B", "item-box"); }
+            if (i === 111) { addTitulo(corpo, regua, "QUESTÃO 3", "divisoria-box"); addTitulo(corpo, regua, "RESPOSTA ITEM A E B", "item-box"); }
+            if (i === 141) { addTitulo(corpo, regua, "QUESTÃO 4", "divisoria-box"); addTitulo(corpo, regua, "RESPOSTA ITEM A E B", "item-box"); }
 
-            // Linha normal
+            // Criação da Linha de Texto
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.id = `L${i}`;
-            td.onfocus = () => ultimaLinha = i;
+            td.onfocus = () => { linhaFocadaAtual = i; };
             tr.appendChild(td);
-            folha.appendChild(tr);
+            corpo.appendChild(tr);
 
-            // Número na régua
-            const num = document.createElement('div');
-            num.className = "regua-num";
-            num.innerText = i;
-            regua.appendChild(num);
+            // Criação do Número na Régua
+            const numDiv = document.createElement('div');
+            numDiv.className = "regua-num";
+            numDiv.innerText = i;
+            regua.appendChild(numDiv);
         }
     };
 
-    const criarTitulo = (folha, regua, texto, classe) => {
+    const addTitulo = (corpo, regua, texto, classe) => {
         const tr = document.createElement('tr');
         tr.contentEditable = "false";
         const td = document.createElement('td');
         td.className = classe;
         td.innerText = texto;
         tr.appendChild(td);
-        folha.appendChild(tr);
+        corpo.appendChild(tr);
 
-        // Espaço na régua para alinhar
+        // Compensação na Régua para manter o alinhamento
         const espaco = document.createElement('div');
         espaco.className = "regua-espaco";
         espaco.style.height = (classe === "divisoria-box" ? "30px" : "25px");
@@ -192,27 +240,41 @@
     };
 
     window.injetarJustica = () => {
-        const ex = localStorage.getItem('activeEx') || "44";
-        const dna = BANCO_ESPELHOS[ex] || "";
-        const analise = RadarElite.analisarGabarito(dna);
-        const frases = RadarElite.prepararLinhas(dna);
+        const exameAtivo = localStorage.getItem('activeEx') || "44";
+        const dnaGabarito = BANCO_ESPELHOS[exameAtivo] || "";
         
-        let alvo = analise.questao ? analise.questao.linhaAlvo : ultimaLinha;
+        const analise = RadarElite.analisarGabarito(dnaGabarito);
+        const linhasFormatadas = RadarElite.prepararLinhas(dnaGabarito);
+        
+        // Se o Radar achou "Questão", pula para a linha alvo dela. Senão, usa onde o utilizador clicou.
+        let alvoInicial = analise.questao ? analise.questao.linhaAlvo : linhaFocadaAtual;
 
-        frases.forEach((txt, index) => {
-            const linha = document.getElementById(`L${alvo + index}`);
-            if (linha) linha.innerText = txt;
+        linhasFormatadas.forEach((texto, index) => {
+            const celula = document.getElementById(`L${alvoInicial + index}`);
+            if (celula) {
+                celula.innerText = texto;
+            }
         });
-        window.irPara(alvo);
+
+        window.irPara(alvoInicial);
+        console.log("Radar Elite: Justiça Injetada com sucesso.");
     };
 
-    window.irPara = (n) => {
-        const el = document.getElementById(`L${n}`);
-        if(el) { el.scrollIntoView({block: "center"}); el.focus(); }
+    window.irPara = (numeroLinha) => {
+        const elemento = document.getElementById(`L${numeroLinha}`);
+        if (elemento) {
+            elemento.scrollIntoView({ behavior: "smooth", block: "center" });
+            elemento.focus();
+        }
     };
 
-    window.onload = gerarFolha;
-    window.irPara = window.irPara; 
+    // Inicializa ao carregar a página
+    window.onload = inicializarEstrutura;
+    
+    // Exporta funções para o escopo global (botões HTML)
+    window.injetarJustica = window.injetarJustica;
+    window.irPara = window.irPara;
+
 </script>
 </body>
 </html>
