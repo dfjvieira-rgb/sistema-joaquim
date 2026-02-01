@@ -2,99 +2,63 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>RADAR ELITE - SCANNER</title>
     <style>
-        :root { --gold: #fbbf24; --bg: #000; }
+        :root { --gold: #fbbf24; --primary: #0f172a; }
         body { 
-            background: var(--bg); color: white; font-family: 'Courier New', monospace;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; overflow: hidden; border: 4px solid var(--gold);
+            margin: 0; padding: 0; background: #000; 
+            font-family: 'Courier New', monospace; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
-        #radar-circle {
-            width: 150px; height: 150px; border: 2px solid var(--gold);
-            border-radius: 50%; position: relative; display: flex;
-            align-items: center; justify-content: center; text-align: center;
-            transition: 0.5s;
+        #radar-container {
+            width: 100%; height: 50px; border: 1px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
         }
-        .sweep {
-            position: absolute; width: 50%; height: 2px; 
-            background: linear-gradient(to right, transparent, var(--gold));
-            top: 50%; left: 50%; transform-origin: left;
-            animation: rotate 2s linear infinite;
+        #radar-status {
+            color: var(--gold); font-weight: 900; font-size: 0.9rem;
+            letter-spacing: 3px; z-index: 2; text-shadow: 0 0 10px var(--gold);
         }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        #info-box { margin-top: 15px; text-align: center; width: 90%; }
-        #status-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gold); }
-        #peca-detectada { font-size: 0.9rem; font-weight: 900; margin-top: 5px; text-transform: uppercase; }
-        
-        .radar-blink { animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        /* Efeito de Varredura (Scanner) */
+        .scan-line {
+            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.2), transparent);
+            animation: scan 2s linear infinite; z-index: 1;
+        }
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
     </style>
 </head>
 <body>
-
-    <div id="radar-circle">
-        <div class="sweep" id="ponteiro"></div>
-        <div id="peca-detectada">BUSCANDO...</div>
-    </div>
-    <div id="info-box">
-        <div id="status-label">SCANNER ATIVO</div>
+    <div id="radar-container">
+        <div class="scan-line"></div>
+        <div id="radar-status">AGUARDANDO INPUT...</div>
     </div>
 
-    <script type="module">
-        import { BANCO_ESPELHOS } from './banco-espelhos.js';
-
-        // A INTELIGÊNCIA QUE VOCÊ QUERIA:
-        const DICIONARIO = [
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
-            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
-        ];
-
-        const realizarEscaneamento = () => {
-            const activeEx = localStorage.getItem('activeEx') || "44";
-            const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+    <script>
+        // Esta função será chamada pelo componente pai (Home)
+        function atualizar(texto) {
+            const status = document.getElementById('radar-status');
+            const t = texto.toUpperCase();
             
-            const pDetectada = document.getElementById('peca-detectada');
-            const circle = document.getElementById('radar-circle');
-            const ponteiro = document.getElementById('ponteiro');
-
-            // Busca no dicionário conforme a lógica do seu código original
-            let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
-
-            if (encontrado) {
-                // Alvo Identificado
-                pDetectada.innerText = encontrado.id;
-                pDetectada.style.color = encontrado.cor;
-                circle.style.borderColor = encontrado.cor;
-                circle.style.boxShadow = `0 0 20px ${encontrado.cor}`;
-                ponteiro.style.background = `linear-gradient(to right, transparent, ${encontrado.cor})`;
-                
-                // Envia para a Home
-                localStorage.setItem('radar_peca_id', encontrado.display);
+            if (t.includes("RECURSO ORDINÁRIO")) {
+                status.innerText = "ALVO: RECURSO ORDINÁRIO [OK]";
+                status.style.color = "#fbbf24";
+            } else if (t.includes("CONTESTAÇÃO")) {
+                status.innerText = "ALVO: CONTESTAÇÃO [OK]";
+                status.style.color = "#3498db";
+            } else if (t.includes("RECLAMAÇÃO TRABALHISTA")) {
+                status.innerText = "ALVO: RECLAMAÇÃO TRABALHISTA [OK]";
+                status.style.color = "#2ecc71";
+            } else if (t.includes("AGRAVO DE PETIÇÃO")) {
+                status.innerText = "ALVO: AGRAVO DE PETIÇÃO [OK]";
+                status.style.color = "#e74c3c";
             } else {
-                // Modo de Busca
-                pDetectada.innerText = "VARRENDO...";
-                pDetectada.style.color = "var(--gold)";
-                circle.style.borderColor = "var(--gold)";
-                circle.style.boxShadow = "none";
-                ponteiro.style.background = `linear-gradient(to right, transparent, var(--gold))`;
-                
-                localStorage.setItem('radar_peca_id', "CADERNO DE RESPOSTAS");
+                status.innerText = "SCANNER ATIVO: ANALISANDO...";
+                status.style.color = "#94a3b8";
             }
-        };
-
-        // Monitora se você trocar o exame na Home
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'activeEx') realizarEscaneamento();
-        });
-
-        // Inicia o radar
-        window.onload = realizarEscaneamento;
-        // Atualiza a cada 2 segundos para garantir sincronia
-        setInterval(realizarEscaneamento, 2000);
+        }
     </script>
 </body>
 </html>
