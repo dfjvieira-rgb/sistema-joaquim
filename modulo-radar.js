@@ -1,18 +1,14 @@
 // modulo-radar.js - Inteligência de Escaneamento JOAQUIM ELITE 2026
 
 export const RadarElite = {
+    /**
+     * Identifica se o DNA é uma Peça ou uma das 4 Questões.
+     * Mapeia para as linhas oficiais: Q1(51), Q2(81), Q3(111), Q4(141).
+     */
     analisarGabarito: (textoGabarito) => {
         if (!textoGabarito) return { peca: null, questao: null };
         const texto = textoGabarito.toUpperCase();
         
-        const PECAS = [
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO" },
-            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA" }
-        ];
-
-        // Mapeamento das linhas alvo para as Questões 1 a 4
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
@@ -20,25 +16,30 @@ export const RadarElite = {
             { id: "QUESTÃO 4", regex: /QUESTÃO\s*4/i, linhaAlvo: 141 }
         ];
 
-        let pecaAchada = PECAS.find(p => texto.includes(p.id));
         let questaoAchada = QUESTOES.find(q => q.regex.test(texto));
-
-        return { peca: pecaAchada, questao: questaoAchada };
+        return { questao: questaoAchada };
     },
 
-    // Nome corrigido para Preparation (compatível com seu index.html)
+    /**
+     * Formata o texto para a folha.
+     * Identifica "a)" e "b)", aplica o marcador ● e limita para mobile.
+     */
     prepararLinhas: (textoBruto) => {
-        const LIMITE_MOBILE = 65; // Evita corte no mobile
+        const LIMITE_MOBILE = 65; // Segurança para o texto não sumir no celular
+        
         return textoBruto
-            .replace(/<[^>]*>/g, '') 
+            .replace(/<[^>]*>/g, '') // Remove HTML
             .split('\n')
             .filter(f => f.trim().length > 2)
             .map(f => {
                 let txt = f.trim();
-                // Identifica letras a e b e adiciona o marcador ●
+
+                // Lógica das letras a e b solicitadas
                 if (/^[A-B][\)\.]/i.test(txt)) {
                     return "● " + txt.substring(0, LIMITE_MOBILE).toUpperCase();
                 }
+                
+                // Fundamentação com recuo
                 return "  " + txt.substring(0, LIMITE_MOBILE);
             });
     }
