@@ -1,178 +1,232 @@
-<script type="module">
-    import { db } from './firebase-config.js';
-    import { ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-    import { pecas } from './estruturas.js';
-    import { RadarElite } from './modulo-radar.js';
-
-    let activeEx = localStorage.getItem('activeEx') || "44";
-    let ultimaLinhaFocada = 1;
-    let mentoriaJanelaRef = null;
-    const LIMITE_LINHA = 85;
-
-    // --- FUNÇÃO DE SCANNER (RADAR) ---
-    const escaneamentoElite = () => {
-        const dna = (BANCO_ESPELHOS[activeEx] || "");
-        const analise = RadarElite.analisarGabarito(dna);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JOAQUIM ELITE 2026 - HOME</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-paper: #cbd5e1; --paper-color: #ffffff; --line-color: #d1d5db;
+            --text-color: #1e293b; --margem-cor: #f87171; --gold: #fbbf24;
+            --primary: #0f172a; --sidebar-w: 70px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        const sidebarStatus = document.getElementById('radar-status');
-        const boxSidebar = document.getElementById('radar-container');
-        const topoFolha = document.getElementById('identificador-peca');
+        body { 
+            background: var(--bg-paper); 
+            font-family: 'Inter', sans-serif; 
+            display: flex; 
+            height: 100dvh; 
+            overflow: hidden; 
+        }
 
-        if (analise.peca) {
-            sidebarStatus.innerHTML = `<span style="color:${analise.peca.cor}">RADAR</span><br>${analise.peca.id}`;
-            boxSidebar.style.borderColor = analise.peca.cor;
-            boxSidebar.classList.remove('radar-blink');
-            topoFolha.innerText = analise.peca.display;
-            topoFolha.style.color = analise.peca.cor;
-            topoFolha.style.borderBottomColor = analise.peca.cor;
-        } else if (analise.questao) {
-            sidebarStatus.innerHTML = `<span style="color:var(--gold)">RADAR</span><br>${analise.questao.id}`;
-            boxSidebar.style.borderColor = "var(--gold)";
-            boxSidebar.classList.remove('radar-blink');
-            topoFolha.innerText = `RESPOSTA: ${analise.questao.id}`;
-            topoFolha.style.color = "var(--gold)";
-            topoFolha.style.borderBottomColor = "var(--gold)";
-        } else {
-            sidebarStatus.innerHTML = `<span>RADAR</span><br><span class="radar-blink">BUSCANDO...</span>`;
-            boxSidebar.style.borderColor = "var(--gold)";
-            topoFolha.innerText = "CADERNO DE RESPOSTAS";
-            topoFolha.style.color = "#64748b";
-            topoFolha.style.borderBottomColor = "var(--line-color)";
+        /* SIDEBAR FIXA */
+        .sidebar { 
+            width: var(--sidebar-w); 
+            background: var(--primary); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            padding: 10px; 
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .btn-side { 
+            width: 100%; height: 45px; border-radius: 8px; border: none; 
+            cursor: pointer; color: white; display: flex; align-items: center; 
+            justify-content: center; font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-side:active { transform: scale(0.95); opacity: 0.8; }
+
+        /* VIEWPORT (O segredo para não cortar no mobile) */
+        .viewport { 
+            flex: 1; 
+            overflow: auto; /* Permite scroll horizontal e vertical */
+            display: flex; 
+            justify-content: flex-start; 
+            padding: 20px; 
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .paper { 
+            background: var(--paper-color); 
+            width: 850px; /* Mantém a largura real da folha OAB */
+            min-height: fit-content;
+            display: flex; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            position: relative;
+            flex-shrink: 0; /* Impede o navegador de achatar a folha */
+        }
+
+        /* RÉGUA LATERAL */
+        .regua { 
+            width: 45px; 
+            background: #f8fafc; 
+            border-right: 1px solid var(--line-color);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        .regua-num, .regua-espaco { 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.7rem; 
+            color: #94a3b8;
+        }
+
+        /* ÁREA DE TEXTO */
+        .conteudo { flex: 1; position: relative; }
+        
+        .margem-vermelha { 
+            position: absolute; top: 0; right: 60px; 
+            width: 1px; height: 100%; 
+            background: var(--margem-cor); opacity: 0.5; 
+            pointer-events: none; 
+        }
+
+        .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        
+        .grid-oab td { 
+            height: 35px; 
+            border-bottom: 1px solid var(--line-color);
+            padding: 0 70px 0 15px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 18px; 
+            color: var(--text-color);
+            outline: none;
+            vertical-align: middle;
+            /* Proteção contra quebras que desalinhariam a régua */
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: clip;
+        }
+
+        /* CABEÇALHOS ESTILO OAB */
+        .divisoria-box { 
+            background: var(--primary); color: var(--gold); 
+            font-weight: bold; font-size: 0.7rem; text-align: center; 
+            height: 30px !important; padding: 0 !important;
+            text-transform: uppercase;
+        }
+        
+        .item-box { 
+            background: #f8fafc; color: #64748b; 
+            font-size: 0.6rem; height: 25px !important; 
+            font-weight: bold; padding-left: 15px !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <button class="btn-side" style="background:var(--gold); color:#000" onclick="alert('Escolher Exame')"><i class="fas fa-list"></i></button>
+        <button class="btn-side" style="background:#3b82f6;" onclick="window.injetarJustica()"><i class="fas fa-bolt"></i></button>
+        <button class="btn-side" style="background:#ef4444;" onclick="location.reload()"><i class="fas fa-trash"></i></button>
+        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(1)">P</button>
+        <button class="btn-side" style="background:#6366f1;" onclick="window.irPara(51)">Q</button>
+    </aside>
+
+    <div class="viewport">
+        <div class="paper">
+            <div class="regua" id="REGUA"></div>
+            <div class="conteudo">
+                <div class="margem-vermelha"></div>
+                <table class="grid-oab">
+                    <tbody id="FOLHA" contenteditable="true" spellcheck="false"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+    import { RadarElite } from './modulo-radar.js';
+    import { BANCO_ESPELHOS } from './banco-espelhos.js';
+
+    let ultimaLinhaFocada = 1;
+
+    // Função que gera as 190 linhas e organiza as seções
+    const inicializarFolha = () => {
+        const folha = document.getElementById('FOLHA');
+        const regua = document.getElementById('REGUA');
+        
+        for (let i = 1; i <= 180; i++) {
+            // Injeção dos cabeçalhos oficiais da FGV
+            if (i === 1) criarTitulo(folha, regua, "PEÇA PROFISSIONAL", "divisoria-box");
+            
+            // Questões 1 a 4 automáticas
+            if ([51, 81, 111, 141].includes(i)) {
+                const nQuestao = (i === 51) ? 1 : (i === 81) ? 2 : (i === 111) ? 3 : 4;
+                criarTitulo(folha, regua, `QUESTÃO ${nQuestao}`, "divisoria-box");
+                criarTitulo(folha, regua, "ITENS A e B", "item-box");
+            }
+
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.id = `L${i}`;
+            td.onfocus = () => ultimaLinhaFocada = i;
+            tr.appendChild(td);
+            folha.appendChild(tr);
+
+            const num = document.createElement('div');
+            num.className = "regua-num";
+            num.innerText = i;
+            regua.appendChild(num);
         }
     };
 
-    // --- INJETAR JUSTIÇA (GABARITO -> FOLHA) ---
+    const criarTitulo = (folha, regua, texto, classe) => {
+        const tr = document.createElement('tr');
+        tr.contentEditable = "false";
+        const td = document.createElement('td');
+        td.className = classe;
+        td.innerText = texto;
+        tr.appendChild(td);
+        folha.appendChild(tr);
+
+        // Compensa a altura exata do cabeçalho na régua lateral
+        const espaco = document.createElement('div');
+        espaco.className = "regua-espaco";
+        espaco.style.height = (classe === "divisoria-box" ? "30px" : "25px");
+        regua.appendChild(espaco);
+    };
+
     window.injetarJustica = () => {
-        const dna = BANCO_ESPELHOS[activeEx] || "";
-        const linhasFormatadas = RadarElite.formatarParaInjecao(dna, LIMITE_LINHA);
+        const exAtivo = localStorage.getItem('activeEx') || "44";
+        const dna = BANCO_ESPELHOS[exAtivo] || "";
+        
+        // O RadarElite analisa o gabarito
+        const analise = RadarElite.analisarGabarito(dna);
+        const frases = RadarElite.prepararLinhas(dna);
+        
+        // Define o ponto de partida (Questão ou onde o usuário clicou)
+        let alvo = analise.questao ? analise.questao.linhaAlvo : ultimaLinhaFocada;
 
-        if(linhasFormatadas.length > 0) {
-            linhasFormatadas.forEach((texto, i) => {
-                const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-                if(el) el.value = texto;
-            });
-            salvarManual();
-            alert("⚖️ JUSTIÇA INJETADA COM SUCESSO!");
-        }
-    };
-
-    // --- MONTAGEM DA FOLHA ---
-    const montarFolha = () => {
-        const container = document.getElementById('folha-total');
-        container.innerHTML = "";
-        for(let i=1; i<=180; i++) {
-            if(i === 1 || i === 51) {
-                const h = document.createElement('div');
-                h.style.cssText = "background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold;";
-                h.innerText = i === 1 ? 'CADERNO DE RESPOSTAS - PEÇA' : 'CADERNO DE RESPOSTAS - QUESTÕES';
-                container.appendChild(h);
-            }
-            const row = document.createElement('div');
-            row.className = 'linha-wrapper';
-            const input = document.createElement('input');
-            input.className = 'linha-folha';
-            input.id = `L${i}`;
-            input.setAttribute('spellcheck', 'false');
-            input.setAttribute('maxlength', LIMITE_LINHA);
-
-            input.oninput = () => { if (input.value.length >= LIMITE_LINHA) document.getElementById(`L${i + 1}`)?.focus(); };
-            input.onkeydown = (e) => { 
-                if (e.key === "Enter") { e.preventDefault(); document.getElementById(`L${i + 1}`)?.focus(); } 
-                if (e.key === "Backspace" && input.value.length === 0) document.getElementById(`L${i - 1}`)?.focus();
-            };
-            input.onfocus = () => { ultimaLinhaFocada = i; };
-            row.innerHTML = `<div class="linha-num">${i}</div>`;
-            row.appendChild(input);
-            container.appendChild(row);
-        }
-        carregarDados();
-    };
-
-    const carregarDados = () => {
-        onValue(ref(db, 'estudos/' + activeEx), (snap) => {
-            const data = snap.val();
-            if (data && data.linhas) {
-                data.linhas.forEach((txt, idx) => {
-                    const el = document.getElementById(`L${idx + 1}`);
-                    if (el) el.value = txt;
-                });
-            }
-            escaneamentoElite();
-        }, { onlyOnce: true });
-    };
-
-    // --- MENTORIA E HISTÓRICO ---
-    window.abrirMentoria = () => {
-        const width = 550, height = window.screen.availHeight, left = window.screen.availWidth - width;
-        const config = `width=${width},height=${height},top=0,left=${left},resizable=yes,scrollbars=yes`;
-        mentoriaJanelaRef = window.open('mentoria.html?mode=consultor', 'ConsultorElite', config);
-        if (mentoriaJanelaRef) mentoriaJanelaRef.focus();
-    };
-
-    window.concluirEEnviarAoRobo = () => {
-        if(!confirm(`Deseja enviar o Exame ${activeEx} para o Cofre do Robô?`)) return;
-        push(ref(db, 'mentoria/historico'), {
-            exame: activeEx,
-            data: new Date().toLocaleDateString('pt-BR') + ", " + new Date().toLocaleTimeString('pt-BR'),
-            ts: Date.now()
-        }).then(() => {
-            alert("🚀 EXAME ARQUIVADO NO COFRE!");
-            abrirMentoria();
-        }).catch(err => alert("Erro ao enviar: " + err));
-    };
-
-    // --- MODAIS E UTILITÁRIOS ---
-    window.abrirModalExames = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
-        const grid = document.createElement('div'); grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
-        for(let i=44; i>=35; i--) {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            b.onclick = () => { activeEx = i.toString(); localStorage.setItem('activeEx', activeEx); montarFolha(); fecharModal(); };
-            grid.appendChild(b);
-        }
-        content.appendChild(grid);
-        document.getElementById('universal-modal').style.display='flex';
-    };
-
-    window.salvarManual = () => {
-        const dados = Array.from(document.querySelectorAll('.linha-folha')).map(i => i.value);
-        set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() }).then(() => console.log("☁️ SINCRONIZADO!"));
-    };
-
-    window.abrirModalPecas = () => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">ESTRUTURAS</h2>`;
-        Object.keys(pecas).forEach(k => {
-            const b = document.createElement('div'); b.className='opt-btn'; b.innerText=k;
-            b.onclick = () => {
-                pecas[k].split('\n').forEach((t, i) => {
-                    const el = document.getElementById(`L${ultimaLinhaFocada + i}`);
-                    if(el) el.value = t.substring(0, LIMITE_LINHA);
-                });
-                fecharModal(); salvarManual();
-            };
-            content.appendChild(b);
+        frases.forEach((txt, index) => {
+            const celula = document.getElementById(`L${alvo + index}`);
+            if (celula) celula.innerText = txt;
         });
-        document.getElementById('universal-modal').style.display='flex';
+
+        window.irPara(alvo);
     };
 
-    window.abrirSplitPdf = (t) => {
-        document.getElementById('pdf-frame').src = t === 'v' ? 'vade.pdf' : `ro${activeEx}${t === 'g' ? '-gabarito' : ''}.pdf`;
-        document.getElementById('pdf-split-view').classList.add('active');
+    window.irPara = (n) => {
+        const el = document.getElementById(`L${n}`);
+        if(el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            el.focus();
+        }
     };
 
-    window.fecharSplitPdf = () => { document.getElementById('pdf-split-view').classList.remove('active'); document.getElementById('pdf-frame').src = ""; };
-    window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
-    window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    window.resetarFolha = () => { if(confirm("Limpar folha?")) document.querySelectorAll('.linha-folha').forEach(i => i.value=""); };
-
-    window.onload = () => montarFolha();
-
-    Object.assign(window, { 
-        abrirModalExames, abrirModalPecas, fecharModal, fecharSplitPdf, 
-        abrirSplitPdf, salvarManual, injetarJustica, irPara, 
-        resetarFolha, abrirMentoria, concluirEEnviarAoRobo 
-    });
+    window.onload = inicializarFolha;
+    window.injetarJustica = window.injetarJustica;
+    window.irPara = window.irPara;
 </script>
+</body>
+</html>
