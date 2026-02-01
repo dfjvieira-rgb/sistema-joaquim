@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HOME - JOAQUIM ELITE 2026</title>
+    <title>JOAQUIM ELITE 2026 - HOME</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -27,27 +27,27 @@
         }
         .btn-side:active { transform: scale(0.9); }
 
-        /* VIEWPORT ANTI-CORTE */
+        /* DELIMITAÇÃO DE LINHAS E VIEWPORT */
         .viewport { flex: 1; overflow: auto; padding: 20px; display: flex; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
         .paper { 
             background: white; width: 850px; display: flex; 
             box-shadow: 0 0 25px rgba(0,0,0,0.2); flex-shrink: 0; position: relative; 
         }
 
-        /* RÉGUA E CONTEÚDO */
         .regua { width: 45px; background: #f8fafc; border-right: 1px solid var(--line-color); flex-shrink: 0; }
         .regua-num, .regua-espaco { height: 35px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8; }
+        
         .conteudo { flex: 1; position: relative; }
-        .margem-v { position: absolute; top: 0; right: 60px; width: 1.5px; height: 100%; background: var(--margem-cor); opacity: 0.4; }
+        .margem-v { position: absolute; top: 0; right: 60px; width: 1.5px; height: 100%; background: var(--margem-cor); opacity: 0.4; pointer-events: none; }
 
         .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .grid-oab td { 
-            height: 35px; border-bottom: 1px solid #eee; padding: 0 75px 0 15px; 
+            height: 35px; border-bottom: 1px solid #eee; 
+            padding: 0 75px 0 15px; /* Delimita o fim da linha antes da margem */
             font-family: 'Courier New', monospace; font-size: 18px; 
-            white-space: nowrap; overflow: hidden; outline: none;
+            white-space: nowrap; overflow: hidden; text-overflow: clip; outline: none;
         }
 
-        /* TÍTULOS OAB */
         .divisoria-box { background: var(--primary); color: var(--gold); text-align: center; font-size: 10px; height: 30px !important; font-weight: 900; }
         .item-box { background: #f8fafc; color: #64748b; font-size: 9px; height: 25px !important; padding-left: 15px !important; font-weight: bold; }
     </style>
@@ -55,7 +55,7 @@
 <body>
 
     <aside class="sidebar">
-        <button class="btn-side" style="background:#22c55e;" onclick="window.injetarJustica()" title="Injetar Radar"><i class="fas fa-bolt"></i></button>
+        <button class="btn-side" style="background:#22c55e;" onclick="window.injetarJustica()"><i class="fas fa-bolt"></i></button>
         <button class="btn-side" style="background:var(--gold); color:#000;" onclick="alert('Exames')"><i class="fas fa-list"></i></button>
         <button class="btn-side" style="background:#3b82f6;" onclick="window.print()"><i class="fas fa-print"></i></button>
         <hr style="opacity:0.2">
@@ -66,14 +66,14 @@
         <button class="btn-side" style="background:#8b5cf6;" onclick="irPara(141)">Q4</button>
         <hr style="opacity:0.2">
         <button class="btn-side" style="background:#06b6d4;" onclick="irPara(ultimaLinha)"><i class="fas fa-eye"></i></button>
-        <button class="btn-side" style="background:#f97316;" onclick="limpar()"><i class="fas fa-eraser"></i></button>
+        <button class="btn-side" style="background:#f97316;" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
         <button class="btn-side" style="background:#64748b;" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></button>
         <button class="btn-side" style="background:#ef4444;" onclick="location.reload()"><i class="fas fa-sync"></i></button>
     </aside>
 
     <div class="viewport">
         <div class="paper">
-            <div class="regua" id="REGUA"></div>
+            <div id="REGUA" class="regua"></div>
             <div class="conteudo">
                 <div class="margem-v"></div>
                 <table class="grid-oab"><tbody id="FOLHA" contenteditable="true" spellcheck="false"></tbody></table>
@@ -90,7 +90,7 @@
     const gerar = () => {
         const f = document.getElementById('FOLHA');
         const r = document.getElementById('REGUA');
-        for (let i = 1; i <= 190; i++) {
+        for (let i = 1; i <= 180; i++) {
             if (i === 1) addT(f, r, "PEÇA PROFISSIONAL", "divisoria-box", 30);
             if ([51, 81, 111, 141].includes(i)) {
                 const n = i==51?1:i==81?2:i==111?3:4;
@@ -115,7 +115,8 @@
     };
 
     window.injetarJustica = () => {
-        const dna = BANCO_ESPELHOS[localStorage.getItem('activeEx') || "44"] || "";
+        const ex = localStorage.getItem('activeEx') || "44";
+        const dna = BANCO_ESPELHOS[ex] || "";
         const analise = RadarElite.analisarGabarito(dna);
         const linhas = RadarElite.prepararLinhas(dna);
         let alvo = analise.questao ? analise.questao.linhaAlvo : window.ultimaLinha;
@@ -133,7 +134,9 @@
     };
 
     window.limpar = () => {
-        if(confirm("Limpar folha?")) document.querySelectorAll('#FOLHA td:not([class])').forEach(td => td.innerText = "");
+        if(confirm("Deseja limpar as linhas da folha?")) {
+            document.querySelectorAll('#FOLHA td:not([class])').forEach(td => td.innerText = "");
+        }
     };
 
     window.onload = gerar;
