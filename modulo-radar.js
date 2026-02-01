@@ -1,4 +1,4 @@
-// modulo-radar.js - Padrão FGV/OAB 2026 (Foco em Itens A e B)
+// modulo-radar.js - Padrão FGV Elite 2026
 export const RadarElite = {
     analisarGabarito: (textoGabarito) => {
         if (!textoGabarito) return { peca: null, questao: null };
@@ -11,7 +11,7 @@ export const RadarElite = {
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Mapeamento Oficial FGV: 30 linhas por questão
+        // Mapeamento Oficial FGV: Peça (1-50), Q1(51), Q2(81), Q3(111), Q4(141)
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
@@ -26,23 +26,18 @@ export const RadarElite = {
     },
 
     prepararLinhas: (textoBruto) => {
-        const LIMITE_FGV = 75; // Garante que não passe da margem vermelha
-        
+        const LIMITE_FGV = 75; 
         return textoBruto
-            .replace(/<[^>]*>/g, '') // Remove HTML
+            .replace(/<[^>]*>/g, '') 
             .split('\n')
             .filter(f => f.trim().length > 2)
             .map(f => {
-                let linha = f.trim();
-
-                // REGEX PARA IDENTIFICAR A) OU B) (Independente de ser maiúsculo ou minúsculo)
-                if (/^([A-B])[\)\.]/i.test(linha)) {
-                    // Se for item A ou B, coloca o marcador ● e força CAIXA ALTA
-                    return "● " + linha.substring(0, LIMITE_FGV).toUpperCase();
+                let txt = f.trim();
+                // Identifica subitens a) e b) e destaca
+                if (/^[A-D][\)\.]/i.test(txt)) {
+                    return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
                 }
-                
-                // Para o restante do texto (fundamentação), mantém o recuo normal
-                return "  " + linha.substring(0, LIMITE_FGV);
+                return "  " + txt.substring(0, LIMITE_FGV);
             });
     }
 };
