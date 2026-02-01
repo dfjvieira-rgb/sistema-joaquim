@@ -2,76 +2,99 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>SCANNER ELITE - RADAR</title>
+    <title>RADAR ELITE - SCANNER</title>
     <style>
-        :root { --gold: #fbbf24; --bg: #000; --success: #22c55e; }
+        :root { --gold: #fbbf24; --bg: #000; }
         body { 
             background: var(--bg); color: white; font-family: 'Courier New', monospace;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; border: 4px solid var(--gold);
+            height: 100vh; margin: 0; overflow: hidden; border: 4px solid var(--gold);
         }
         #radar-circle {
-            width: 180px; height: 180px; border: 2px solid var(--gold);
+            width: 150px; height: 150px; border: 2px solid var(--gold);
             border-radius: 50%; position: relative; display: flex;
-            align-items: center; justify-content: center; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            transition: 0.5s;
         }
         .sweep {
             position: absolute; width: 50%; height: 2px; 
             background: linear-gradient(to right, transparent, var(--gold));
             top: 50%; left: 50%; transform-origin: left;
-            animation: rotate 2s linear infinite; opacity: 0.6;
+            animation: rotate 2s linear infinite;
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        #peca-alvo { font-size: 0.85rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; text-transform: uppercase; }
-        .detectado { border-color: var(--success) !important; box-shadow: 0 0 30px var(--success) !important; }
+        
+        #info-box { margin-top: 15px; text-align: center; width: 90%; }
+        #status-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gold); }
+        #peca-detectada { font-size: 0.9rem; font-weight: 900; margin-top: 5px; text-transform: uppercase; }
+        
+        .radar-blink { animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
     <div id="radar-circle">
-        <div class="sweep"></div>
-        <div id="peca-alvo">SCANNING...</div>
+        <div class="sweep" id="ponteiro"></div>
+        <div id="peca-detectada">BUSCANDO...</div>
+    </div>
+    <div id="info-box">
+        <div id="status-label">SCANNER ATIVO</div>
     </div>
 
     <script type="module">
         import { BANCO_ESPELHOS } from './banco-espelhos.js';
-        import { pecas } from './estruturas.js';
+
+        // A INTELIGÊNCIA QUE VOCÊ QUERIA:
+        const DICIONARIO = [
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
+            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
+        ];
 
         const realizarEscaneamento = () => {
-            const activeEx = localStorage.getItem('activeEx') || "41";
-            const display = document.getElementById('peca-alvo');
+            const activeEx = localStorage.getItem('activeEx') || "44";
+            const textoBanco = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+            
+            const pDetectada = document.getElementById('peca-detectada');
             const circle = document.getElementById('radar-circle');
+            const ponteiro = document.getElementById('ponteiro');
 
-            // 1. O DICIONÁRIO (Em vez de if/else manual, usamos as chaves do seu estruturas.js)
-            const catalogo = Object.keys(pecas).map(nome => nome.toUpperCase());
+            // Busca no dicionário conforme a lógica do seu código original
+            let encontrado = DICIONARIO.find(p => textoBanco.includes(p.id));
 
-            // 2. O BANCO (Texto bruto do espelho selecionado)
-            const espelhoTxt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-
-            // 3. A IDENTIFICAÇÃO (Procura qualquer peça do seu catálogo dentro do espelho)
-            const pecaEncontrada = catalogo.find(peca => espelhoTxt.includes(peca));
-
-            if (pecaEncontrada) {
-                // Se achou, atualiza o Radar
-                display.innerText = pecaEncontrada;
-                circle.classList.add('detectado');
+            if (encontrado) {
+                // Alvo Identificado
+                pDetectada.innerText = encontrado.id;
+                pDetectada.style.color = encontrado.cor;
+                circle.style.borderColor = encontrado.cor;
+                circle.style.boxShadow = `0 0 20px ${encontrado.cor}`;
+                ponteiro.style.background = `linear-gradient(to right, transparent, ${encontrado.cor})`;
                 
-                // GRAVAÇÃO AUTOMÁTICA NA HOME
-                localStorage.setItem('radar_peca_id', pecaEncontrada);
+                // Envia para a Home
+                localStorage.setItem('radar_peca_id', encontrado.display);
             } else {
-                // Se não achou nenhuma peça conhecida no espelho
-                display.innerText = "PEÇA NÃO LOCALIZADA";
-                circle.classList.remove('detectado');
-                localStorage.setItem('radar_peca_id', "PEÇA PROFISSIONAL");
+                // Modo de Busca
+                pDetectada.innerText = "VARRENDO...";
+                pDetectada.style.color = "var(--gold)";
+                circle.style.borderColor = "var(--gold)";
+                circle.style.boxShadow = "none";
+                ponteiro.style.background = `linear-gradient(to right, transparent, var(--gold))`;
+                
+                localStorage.setItem('radar_peca_id', "CADERNO DE RESPOSTAS");
             }
         };
 
-        // Escuta a troca de exame na Home
+        // Monitora se você trocar o exame na Home
         window.addEventListener('storage', (e) => {
             if (e.key === 'activeEx') realizarEscaneamento();
         });
 
+        // Inicia o radar
         window.onload = realizarEscaneamento;
+        // Atualiza a cada 2 segundos para garantir sincronia
+        setInterval(realizarEscaneamento, 2000);
     </script>
 </body>
 </html>
