@@ -4,106 +4,68 @@
     <meta charset="UTF-8">
     <title>SCANNER ELITE - RADAR</title>
     <style>
-        :root { --gold: #fbbf24; --bg: #000; --danger: #ef4444; --success: #22c55e; --blue: #3b82f6; }
+        :root { --gold: #fbbf24; --bg: #000; --success: #22c55e; }
         body { 
             background: var(--bg); color: white; font-family: 'Courier New', monospace;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100vh; margin: 0; overflow: hidden; border: 2px solid var(--gold);
         }
-        #btn-close {
-            position: fixed; top: 10px; right: 10px; background: var(--danger);
-            color: white; border: none; border-radius: 50%; width: 25px; height: 25px;
-            cursor: pointer; font-weight: bold; z-index: 100;
-        }
         #radar-circle {
-            width: 220px; height: 220px; border: 2px solid var(--gold);
+            width: 180px; height: 180px; border: 2px solid var(--gold);
             border-radius: 50%; position: relative; display: flex;
-            align-items: center; justify-content: center; flex-direction: column;
-            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            align-items: center; justify-content: center;
+            transition: 0.5s;
         }
         .sweep {
             position: absolute; width: 50%; height: 2px; background: var(--gold);
             top: 50%; left: 50%; transform-origin: left;
-            animation: rotate 1.5s linear infinite; opacity: 0.4;
+            animation: rotate 1.5s linear infinite;
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        #peca-alvo { font-size: 0.9rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        #info-exame { font-size: 0.65rem; color: #64748b; margin-top: 5px; font-weight: bold; }
-        #status-missao { font-size: 0.5rem; color: var(--blue); margin-top: 2px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        /* ESTADOS DO RADAR */
-        .detectado { border-color: var(--blue) !important; box-shadow: 0 0 30px rgba(59, 130, 246, 0.5) !important; }
-        .match-perfeito { border-color: var(--success) !important; box-shadow: 0 0 40px var(--success) !important; }
-        .texto-sucesso { color: var(--success) !important; }
+        #peca-label { font-size: 0.8rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; text-transform: uppercase; }
+        .detectado { border-color: var(--success) !important; box-shadow: 0 0 30px var(--success) !important; }
     </style>
 </head>
 <body>
 
-    <button id="btn-close" onclick="window.close()">X</button>
-
     <div id="radar-circle">
         <div class="sweep"></div>
-        <div id="peca-alvo">LOCALIZANDO...</div>
-        <div id="info-exame">EXAME --</div>
-        <div id="status-missao">SCAN ATIVO</div>
+        <div id="peca-label">BUSCANDO...</div>
     </div>
 
     <script type="module">
         import { BANCO_ESPELHOS } from './banco-espelhos.js';
         import { pecas } from './estruturas.js';
 
-        const realizarVarredura = () => {
-            // Pega o Exame e o Texto da Home
+        const processarGravacao = () => {
             const activeEx = localStorage.getItem('activeEx') || "41";
-            const textoHome = (localStorage.getItem('radar_input') || "").toUpperCase();
-            
-            const displayPeca = document.getElementById('peca-alvo');
-            const displayExame = document.getElementById('info-exame');
-            const displayStatus = document.getElementById('status-missao');
+            const display = document.getElementById('peca-label');
             const circle = document.getElementById('radar-circle');
 
-            // 1. DICIONÁRIO DE REFINO (Vem das suas Estruturas)
-            const dicionario = Object.keys(pecas).map(k => k.toUpperCase());
+            // 1. Dicionário de busca (Nomes das Peças conhecidas)
+            const catalogo = Object.keys(pecas).map(k => k.toUpperCase());
 
-            // 2. BUSCA IMEDIATA NO ESPELHO (Independente do que o usuário digitou)
-            const espelhoConteudo = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-            const alvoReal = dicionario.find(termo => espelhoConteudo.includes(termo));
+            // 2. DNA do Espelho (Onde a busca real acontece)
+            const espelhoTxt = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
 
-            displayExame.innerText = `EXAME ${activeEx}`;
+            // 3. Identificação Soberana
+            const alvoConfirmado = catalogo.find(nome => espelhoTxt.includes(nome));
 
-            if (alvoReal) {
-                // FASE 1: PEÇA IDENTIFICADA NO ESPELHO (Logo ao escolher o exame)
-                displayPeca.innerText = alvoReal;
-                displayStatus.innerText = "ALVO BLOQUEADO";
+            if (alvoConfirmado && espelhoTxt !== "") {
+                display.innerText = alvoConfirmado;
                 circle.classList.add('detectado');
-
-                // FASE 2: VALIDAÇÃO COM A ESCRITA NA HOME
-                if (textoHome.includes(alvoReal)) {
-                    circle.classList.add('match-perfeito');
-                    displayPeca.classList.add('texto-sucesso');
-                    displayStatus.innerText = "DNA COMPATÍVEL";
-                } else {
-                    circle.classList.remove('match-perfeito');
-                    displayPeca.classList.remove('texto-sucesso');
-                }
+                
+                // GRAVA NA FOLHA DA HOME
+                localStorage.setItem('radar_peca_id', alvoConfirmado);
             } else {
-                // CASO NÃO ACHE NO ESPELHO
-                displayPeca.innerText = "NÃO IDENTIFICADO";
-                displayStatus.innerText = "BUSCANDO DNA";
-                circle.classList.remove('detectado', 'match-perfeito');
-                displayPeca.classList.remove('texto-sucesso');
+                display.innerText = "PEÇA NÃO LOCALIZADA";
+                circle.classList.remove('detectado');
+                localStorage.setItem('radar_peca_id', "PEÇA PROFISSIONAL");
             }
         };
 
-        // Escuta mudanças de exame e de escrita simultaneamente
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'activeEx' || e.key === 'radar_input') {
-                realizarVarredura();
-            }
-        });
-        
-        window.onload = realizarVarredura;
+        window.addEventListener('storage', (e) => { if(e.key === 'activeEx') processarGravacao(); });
+        window.onload = processarGravacao;
     </script>
 </body>
 </html>
