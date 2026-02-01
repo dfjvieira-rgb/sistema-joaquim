@@ -1,4 +1,4 @@
-// modulo-radar.js - Versão Seleção Fluida FGV
+// modulo-radar.js - Padrão FGV Elite 2026
 export const RadarElite = {
     analisarGabarito: (textoGabarito) => {
         if (!textoGabarito) return { peca: null, questao: null };
@@ -11,7 +11,7 @@ export const RadarElite = {
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Mapeamento FGV: Questões começam na 51, 81, 111, 141
+        // Mapeamento Oficial FGV: Peça (1-50), Q1(51), Q2(81), Q3(111), Q4(141)
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
@@ -25,16 +25,18 @@ export const RadarElite = {
         return { peca: pecaAchada, questao: questaoAchada };
     },
 
-    // Prepara o array de strings para serem distribuídas nas células
     prepararLinhas: (textoBruto) => {
-        const LIMITE_FGV = 75; // Margem de segurança
+        const LIMITE_FGV = 75; 
         return textoBruto
             .replace(/<[^>]*>/g, '') 
             .split('\n')
             .filter(f => f.trim().length > 2)
             .map(f => {
                 let txt = f.trim();
-                if (/^[A-D][\)\.]/i.test(txt)) return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
+                // Identifica subitens a) e b) e destaca
+                if (/^[A-D][\)\.]/i.test(txt)) {
+                    return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
+                }
                 return "  " + txt.substring(0, LIMITE_FGV);
             });
     }
