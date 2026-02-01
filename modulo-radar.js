@@ -1,17 +1,19 @@
-// modulo-radar.js - Inteligência JOAQUIM ELITE 2026
+// modulo-radar.js - Inteligência de Escaneamento Elite 2026
+
 export const RadarElite = {
+    // Analisa o gabarito e define se é Peça ou Questão com alvo de linha exato
     analisarGabarito: (textoGabarito) => {
         if (!textoGabarito) return { peca: null, questao: null };
         const texto = textoGabarito.toUpperCase();
         
         const PECAS = [
-            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO" },
-            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO" },
-            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA" },
-            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA" }
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
+            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Mapeamento Oficial FGV: Peça(1), Q1(51), Q2(81), Q3(111), Q4(141)
+        // Mapeamento Oficial: Cada questão tem 30 linhas reservadas
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
@@ -25,18 +27,20 @@ export const RadarElite = {
         return { peca: pecaAchada, questao: questaoAchada };
     },
 
+    // Formata o texto para a Seleção Fluida (limite seguro de 68 caracteres para mobile)
     prepararLinhas: (textoBruto) => {
-        const LIMITE_FGV = 65; // Margem de segurança para NÃO CORTAR no mobile
+        const LIMITE_FGV = 68; 
         return textoBruto
-            .replace(/<[^>]*>/g, '') 
+            .replace(/<[^>]*>/g, '') // Limpa HTML
             .split('\n')
             .filter(f => f.trim().length > 2)
             .map(f => {
                 let txt = f.trim();
-                // Identifica especificamente itens A) e B)
+                // Se a linha começar com A) ou B), coloca o marcador destacado
                 if (/^[A-B][\)\.]/i.test(txt)) {
                     return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
                 }
+                // Linhas normais de fundamentação
                 return "  " + txt.substring(0, LIMITE_FGV);
             });
     }
