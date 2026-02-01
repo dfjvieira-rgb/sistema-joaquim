@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>SCANNER ELITE - RADAR</title>
     <style>
-        :root { --gold: #fbbf24; --bg: #000; --danger: #ef4444; --success: #22c55e; }
+        :root { --gold: #fbbf24; --bg: #000; --danger: #ef4444; --success: #22c55e; --blue: #3b82f6; }
         body { 
             background: var(--bg); color: white; font-family: 'Courier New', monospace;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -19,22 +19,23 @@
             width: 220px; height: 220px; border: 2px solid var(--gold);
             border-radius: 50%; position: relative; display: flex;
             align-items: center; justify-content: center; flex-direction: column;
-            transition: 0.5s;
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .sweep {
             position: absolute; width: 50%; height: 2px; background: var(--gold);
             top: 50%; left: 50%; transform-origin: left;
-            animation: rotate 2s linear infinite; opacity: 0.4;
+            animation: rotate 1.5s linear infinite; opacity: 0.4;
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        #peca-detectada { font-size: 0.85rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; padding: 0 10px; text-transform: uppercase; }
-        #info-exame { font-size: 0.6rem; color: #64748b; margin-top: 5px; }
-        #status-espelho { font-size: 0.5rem; color: var(--danger); margin-top: 2px; font-weight: bold; }
+        #peca-alvo { font-size: 0.9rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        #info-exame { font-size: 0.65rem; color: #64748b; margin-top: 5px; font-weight: bold; }
+        #status-missao { font-size: 0.5rem; color: var(--blue); margin-top: 2px; text-transform: uppercase; letter-spacing: 2px; }
         
-        .match-active { border-color: var(--success) !important; box-shadow: 0 0 30px var(--success) !important; }
-        .success-text { color: var(--success) !important; }
-        .espelho-ok { color: var(--success) !important; }
+        /* ESTADOS DO RADAR */
+        .detectado { border-color: var(--blue) !important; box-shadow: 0 0 30px rgba(59, 130, 246, 0.5) !important; }
+        .match-perfeito { border-color: var(--success) !important; box-shadow: 0 0 40px var(--success) !important; }
+        .texto-sucesso { color: var(--success) !important; }
     </style>
 </head>
 <body>
@@ -43,9 +44,9 @@
 
     <div id="radar-circle">
         <div class="sweep"></div>
-        <div id="peca-detectada">AGUARDANDO...</div>
-        <div id="info-exame">SISTEMA ATIVO</div>
-        <div id="status-espelho">SEM DNA NO ESPELHO</div>
+        <div id="peca-alvo">LOCALIZANDO...</div>
+        <div id="info-exame">EXAME --</div>
+        <div id="status-missao">SCAN ATIVO</div>
     </div>
 
     <script type="module">
@@ -53,51 +54,53 @@
         import { pecas } from './estruturas.js';
 
         const realizarVarredura = () => {
+            // Pega o Exame e o Texto da Home
             const activeEx = localStorage.getItem('activeEx') || "41";
             const textoHome = (localStorage.getItem('radar_input') || "").toUpperCase();
             
-            const displayPeca = document.getElementById('peca-detectada');
+            const displayPeca = document.getElementById('peca-alvo');
             const displayExame = document.getElementById('info-exame');
-            const displayEspelho = document.getElementById('status-espelho');
+            const displayStatus = document.getElementById('status-missao');
             const circle = document.getElementById('radar-circle');
 
-            // 1. CRIA O DICIONÁRIO A PARTIR DAS ESTRUTURAS (Para refinar a busca)
-            const dicionarioPecas = Object.keys(pecas).map(k => k.toUpperCase());
+            // 1. DICIONÁRIO DE REFINO (Vem das suas Estruturas)
+            const dicionario = Object.keys(pecas).map(k => k.toUpperCase());
 
-            // 2. BUSCA NO ESPELHO REAL
-            const espelhoReal = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-            
-            // O Radar só aceita a peça se o termo do dicionário existir DENTRO do espelho real
-            const pecaValidadaNoEspelho = dicionarioPecas.find(termo => espelhoReal.includes(termo));
+            // 2. BUSCA IMEDIATA NO ESPELHO (Independente do que o usuário digitou)
+            const espelhoConteudo = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+            const alvoReal = dicionario.find(termo => espelhoConteudo.includes(termo));
 
-            if (pecaValidadaNoEspelho) {
-                displayExame.innerText = `EXAME ${activeEx}`;
-                displayEspelho.innerText = "DNA CONFIRMADO NO ESPELHO";
-                displayEspelho.className = "espelho-ok";
+            displayExame.innerText = `EXAME ${activeEx}`;
 
-                // 3. CRUZAMENTO COM A HOME: O usuário está escrevendo a peça que o espelho exige?
-                if (textoHome.includes(pecaValidadaNoEspelho)) {
-                    displayPeca.innerText = pecaValidadaNoEspelho;
-                    displayPeca.classList.add('success-text');
-                    circle.classList.add('match-active');
+            if (alvoReal) {
+                // FASE 1: PEÇA IDENTIFICADA NO ESPELHO (Logo ao escolher o exame)
+                displayPeca.innerText = alvoReal;
+                displayStatus.innerText = "ALVO BLOQUEADO";
+                circle.classList.add('detectado');
+
+                // FASE 2: VALIDAÇÃO COM A ESCRITA NA HOME
+                if (textoHome.includes(alvoReal)) {
+                    circle.classList.add('match-perfeito');
+                    displayPeca.classList.add('texto-sucesso');
+                    displayStatus.innerText = "DNA COMPATÍVEL";
                 } else {
-                    displayPeca.innerText = "ALVO LOCALIZADO";
-                    displayPeca.classList.remove('success-text');
-                    circle.classList.remove('match-active');
+                    circle.classList.remove('match-perfeito');
+                    displayPeca.classList.remove('texto-sucesso');
                 }
             } else {
-                // Caso o espelho não contenha nenhuma das peças do seu dicionário
-                displayPeca.innerText = "PEÇA NÃO ENCONTRADA";
-                displayExame.innerText = `EXAME ${activeEx}`;
-                displayEspelho.innerText = "DIVERGÊNCIA NO ESPELHO";
-                displayEspelho.className = "";
-                circle.classList.remove('match-active');
+                // CASO NÃO ACHE NO ESPELHO
+                displayPeca.innerText = "NÃO IDENTIFICADO";
+                displayStatus.innerText = "BUSCANDO DNA";
+                circle.classList.remove('detectado', 'match-perfeito');
+                displayPeca.classList.remove('texto-sucesso');
             }
         };
 
-        // Escuta a Home
+        // Escuta mudanças de exame e de escrita simultaneamente
         window.addEventListener('storage', (e) => {
-            if (e.key === 'radar_input' || e.key === 'activeEx') realizarVarredura();
+            if (e.key === 'activeEx' || e.key === 'radar_input') {
+                realizarVarredura();
+            }
         });
         
         window.onload = realizarVarredura;
