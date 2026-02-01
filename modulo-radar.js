@@ -1,9 +1,11 @@
-// modulo-radar.js - Padrão FGV Elite 2026
+// modulo-radar.js
+
 export const RadarElite = {
+    // Analisa o gabarito e define o que o sistema está lendo
     analisarGabarito: (textoGabarito) => {
-        if (!textoGabarito) return { peca: null, questao: null };
         const texto = textoGabarito.toUpperCase();
         
+        // Dicionário de Peças
         const PECAS = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
@@ -11,12 +13,12 @@ export const RadarElite = {
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Mapeamento Oficial FGV: Peça (1-50), Q1(51), Q2(81), Q3(111), Q4(141)
+        // Dicionário de Questões (1 a 4 e letras a/b)
         const QUESTOES = [
-            { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
-            { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
-            { id: "QUESTÃO 3", regex: /QUESTÃO\s*3/i, linhaAlvo: 111 },
-            { id: "QUESTÃO 4", regex: /QUESTÃO\s*4/i, linhaAlvo: 141 }
+            { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i },
+            { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i },
+            { id: "QUESTÃO 3", regex: /QUESTÃO\s*3/i },
+            { id: "QUESTÃO 4", regex: /QUESTÃO\s*4/i }
         ];
 
         let pecaAchada = PECAS.find(p => texto.includes(p.id));
@@ -25,19 +27,12 @@ export const RadarElite = {
         return { peca: pecaAchada, questao: questaoAchada };
     },
 
-    prepararLinhas: (textoBruto) => {
-        const LIMITE_FGV = 75; 
+    // Limpa o texto e prepara para as linhas da folha
+    formatarParaInjecao: (textoBruto, limiteChar) => {
         return textoBruto
-            .replace(/<[^>]*>/g, '') 
+            .replace(/<[^>]*>/g, '') // Remove HTML
             .split('\n')
-            .filter(f => f.trim().length > 2)
-            .map(f => {
-                let txt = f.trim();
-                // Identifica subitens a) e b) e destaca
-                if (/^[A-D][\)\.]/i.test(txt)) {
-                    return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
-                }
-                return "  " + txt.substring(0, LIMITE_FGV);
-            });
+            .filter(f => f.trim().length > 5)
+            .map(f => "➤ " + f.trim().substring(0, limiteChar - 2));
     }
 };
