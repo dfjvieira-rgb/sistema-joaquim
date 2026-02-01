@@ -1,28 +1,31 @@
-// modulo-radar.js (Ajuste para o novo banco)
+// modulo-radar.js
 export const RadarElite = {
-    // ... (manter analisarDNA anterior)
+    // Identifica o setor e a linha de partida (Questões 1 a 4 ou Peça)
+    analisarSetor: (texto) => {
+        const t = texto.toUpperCase();
+        if (t.includes("QUESTÃO 1")) return { linha: 51, nome: "QUESTÃO 1" };
+        if (t.includes("QUESTÃO 2")) return { linha: 81, nome: "QUESTÃO 2" };
+        if (t.includes("QUESTÃO 3")) return { linha: 111, nome: "QUESTÃO 3" };
+        if (t.includes("QUESTÃO 4")) return { linha: 141, nome: "QUESTÃO 4" };
+        return { linha: 1, nome: "PEÇA" };
+    },
 
-    prepararLinhas: (htmlBruto) => {
-        const LIMITE = 75;
-        // Cria um elemento temporário para converter HTML em texto puro
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = htmlBruto;
+    // Formata o texto para a folha (Letras a e b com ● e CAIXA ALTA)
+    formatarParaFolha: (htmlBruto) => {
+        const temp = document.createElement("div");
+        temp.innerHTML = htmlBruto;
         
-        // Pega apenas o texto dos itens do espelho (classe .espelho-txt)
-        const itens = Array.from(tempDiv.querySelectorAll('.espelho-txt')).map(el => el.innerText);
+        // Se houver a classe .espelho-txt (do seu banco), usa ela. Se não, limpa o HTML.
+        const itens = Array.from(temp.querySelectorAll('.espelho-txt')).map(el => el.innerText);
+        const base = itens.length > 0 ? itens : htmlBruto.replace(/<[^>]*>/g, '').split('\n');
 
-        // Se o banco não tiver a classe .espelho-txt, tenta limpar o HTML direto
-        const listaFinal = itens.length > 0 ? itens : htmlBruto.replace(/<[^>]*>/g, '').split('\n');
-
-        return listaFinal
-            .filter(linha => linha.trim().length > 3)
-            .map(linha => {
-                let s = linha.trim();
-                // Regra das Letras A e B para questões (se houver no texto)
-                if (/^[A-B][\)\.]/i.test(s)) {
-                    return "● " + s.toUpperCase().substring(0, LIMITE - 2);
-                }
-                return "  " + s.substring(0, LIMITE);
-            });
+        return base.filter(l => l.trim().length > 2).map(l => {
+            let s = l.trim();
+            // Regra: Identifica letras a) ou b) no início
+            if (/^[A-B][\)\.]/i.test(s)) {
+                return "● " + s.toUpperCase().substring(0, 75);
+            }
+            return "  " + s.substring(0, 75);
+        });
     }
 };
