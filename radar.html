@@ -8,7 +8,7 @@
         body { 
             background: var(--bg); color: white; font-family: 'Courier New', monospace;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; overflow: hidden; border: 4px solid var(--gold);
+            height: 100vh; margin: 0; overflow: hidden; border: 2px solid var(--gold);
         }
         #btn-close {
             position: fixed; top: 10px; right: 10px; background: var(--danger);
@@ -28,12 +28,13 @@
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        #peca-detectada { font-size: 1rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; padding: 0 10px; text-transform: uppercase; }
+        #peca-detectada { font-size: 0.85rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; padding: 0 10px; text-transform: uppercase; }
         #info-exame { font-size: 0.6rem; color: #64748b; margin-top: 5px; }
-        #fonte-status { font-size: 0.5rem; color: var(--gold); opacity: 0.6; margin-top: 2px; font-style: italic; }
+        #status-espelho { font-size: 0.5rem; color: var(--danger); margin-top: 2px; font-weight: bold; }
         
         .match-active { border-color: var(--success) !important; box-shadow: 0 0 30px var(--success) !important; }
         .success-text { color: var(--success) !important; }
+        .espelho-ok { color: var(--success) !important; }
     </style>
 </head>
 <body>
@@ -42,67 +43,63 @@
 
     <div id="radar-circle">
         <div class="sweep"></div>
-        <div id="peca-detectada">SINCRO...</div>
-        <div id="info-exame">AGUARDANDO</div>
-        <div id="fonte-status">SISTEMA OFF</div>
+        <div id="peca-detectada">AGUARDANDO...</div>
+        <div id="info-exame">SISTEMA ATIVO</div>
+        <div id="status-espelho">SEM DNA NO ESPELHO</div>
     </div>
 
     <script type="module">
         import { BANCO_ESPELHOS } from './banco-espelhos.js';
         import { pecas } from './estruturas.js';
 
-        // Termos técnicos reais para cruzamento
-        const TERMOS_TECNICOS = ["CONTESTAÇÃO", "RECURSO ORDINÁRIO", "RECLAMAÇÃO", "AGRAVO DE PETIÇÃO", "MANDADO DE SEGURANÇA", "AÇÃO DE CONSIGNAÇÃO", "RECURSO DE REVISTA"];
-
         const realizarVarredura = () => {
-            const activeEx = localStorage.getItem('activeEx') || "44";
+            const activeEx = localStorage.getItem('activeEx') || "41";
             const textoHome = (localStorage.getItem('radar_input') || "").toUpperCase();
             
             const displayPeca = document.getElementById('peca-detectada');
             const displayExame = document.getElementById('info-exame');
-            const displayFonte = document.getElementById('fonte-status');
+            const displayEspelho = document.getElementById('status-espelho');
             const circle = document.getElementById('radar-circle');
 
-            let alvoReal = null;
-            let fonteIdentificada = "";
+            // 1. CRIA O DICIONÁRIO A PARTIR DAS ESTRUTURAS (Para refinar a busca)
+            const dicionarioPecas = Object.keys(pecas).map(k => k.toUpperCase());
 
-            // 1. BUSCA DADO REAL NO ESPELHO (Conteúdo)
-            const conteudoEspelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-            alvoReal = TERMOS_TECNICOS.find(termo => conteudoEspelho.includes(termo));
+            // 2. BUSCA NO ESPELHO REAL
+            const espelhoReal = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+            
+            // O Radar só aceita a peça se o termo do dicionário existir DENTRO do espelho real
+            const pecaValidadaNoEspelho = dicionarioPecas.find(termo => espelhoReal.includes(termo));
 
-            if (alvoReal) {
-                fonteIdentificada = "DB: ESPELHO FGV";
-            } else {
-                // 2. BUSCA DADO REAL NO BANCO DE ESTRUTURAS (Nomes das Peças)
-                const listaEstruturas = Object.keys(pecas).map(k => k.toUpperCase());
-                alvoReal = TERMOS_TECNICOS.find(termo => listaEstruturas.some(nome => nome.includes(termo)));
-                
-                if (alvoReal) fonteIdentificada = "DB: ESTRUTURAS";
-            }
-
-            // ATUALIZAÇÃO DO RADAR
-            if (alvoReal) {
+            if (pecaValidadaNoEspelho) {
                 displayExame.innerText = `EXAME ${activeEx}`;
-                displayFonte.innerText = fonteIdentificada;
+                displayEspelho.innerText = "DNA CONFIRMADO NO ESPELHO";
+                displayEspelho.className = "espelho-ok";
 
-                // Valida se o que foi escrito na Home "bate" com o dado real encontrado
-                if (textoHome.includes(alvoReal)) {
-                    displayPeca.innerText = alvoReal;
+                // 3. CRUZAMENTO COM A HOME: O usuário está escrevendo a peça que o espelho exige?
+                if (textoHome.includes(pecaValidadaNoEspelho)) {
+                    displayPeca.innerText = pecaValidadaNoEspelho;
                     displayPeca.classList.add('success-text');
                     circle.classList.add('match-active');
                 } else {
-                    displayPeca.innerText = "ALVO PENDENTE";
+                    displayPeca.innerText = "ALVO LOCALIZADO";
                     displayPeca.classList.remove('success-text');
                     circle.classList.remove('match-active');
                 }
             } else {
-                displayPeca.innerText = "SEM ALVO";
+                // Caso o espelho não contenha nenhuma das peças do seu dicionário
+                displayPeca.innerText = "PEÇA NÃO ENCONTRADA";
                 displayExame.innerText = `EXAME ${activeEx}`;
-                displayFonte.innerText = "DADO NÃO LOCALIZADO";
+                displayEspelho.innerText = "DIVERGÊNCIA NO ESPELHO";
+                displayEspelho.className = "";
+                circle.classList.remove('match-active');
             }
         };
 
-        window.addEventListener('storage', realizarVarredura);
+        // Escuta a Home
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'radar_input' || e.key === 'activeEx') realizarVarredura();
+        });
+        
         window.onload = realizarVarredura;
     </script>
 </body>
