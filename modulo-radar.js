@@ -1,7 +1,5 @@
-// modulo-radar.js - Inteligência de Escaneamento Elite 2026
-
+// modulo-radar.js - Versão Seleção Fluida FGV
 export const RadarElite = {
-    // Analisa o gabarito e define se é Peça ou Questão com alvo de linha exato
     analisarGabarito: (textoGabarito) => {
         if (!textoGabarito) return { peca: null, questao: null };
         const texto = textoGabarito.toUpperCase();
@@ -13,7 +11,7 @@ export const RadarElite = {
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Mapeamento Oficial: Cada questão tem 30 linhas reservadas
+        // Mapeamento FGV: Questões começam na 51, 81, 111, 141
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i, linhaAlvo: 51 },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i, linhaAlvo: 81 },
@@ -27,20 +25,16 @@ export const RadarElite = {
         return { peca: pecaAchada, questao: questaoAchada };
     },
 
-    // Formata o texto para a Seleção Fluida (limite seguro de 68 caracteres para mobile)
+    // Prepara o array de strings para serem distribuídas nas células
     prepararLinhas: (textoBruto) => {
-        const LIMITE_FGV = 68; 
+        const LIMITE_FGV = 75; // Margem de segurança
         return textoBruto
-            .replace(/<[^>]*>/g, '') // Limpa HTML
+            .replace(/<[^>]*>/g, '') 
             .split('\n')
             .filter(f => f.trim().length > 2)
             .map(f => {
                 let txt = f.trim();
-                // Se a linha começar com A) ou B), coloca o marcador destacado
-                if (/^[A-B][\)\.]/i.test(txt)) {
-                    return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
-                }
-                // Linhas normais de fundamentação
+                if (/^[A-D][\)\.]/i.test(txt)) return "● " + txt.substring(0, LIMITE_FGV).toUpperCase();
                 return "  " + txt.substring(0, LIMITE_FGV);
             });
     }
