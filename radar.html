@@ -1,50 +1,109 @@
-<script type="module">
-    import { BANCO_ESPELHOS } from './banco-espelhos.js';
-
-    const radarScanner = () => {
-        // 1. Ele descobre qual exame você selecionou na Home
-        const activeEx = localStorage.getItem('activeEx') || "44";
-        
-        // 2. Ele "bebe" a resposta oficial do Banco
-        const dnaOficial = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-        
-        // 3. Ele pega o que você está escrevendo agora
-        const seuTexto = (localStorage.getItem('radar_input') || "").toUpperCase();
-
-        const label = document.getElementById('peca-nome');
-        const info = document.getElementById('detalhes');
-        const box = document.getElementById('visual-scanner');
-
-        // DICIONÁRIO DE IDENTIFICAÇÃO
-        const PECAS = [
-            { id: "CONTESTAÇÃO", nome: "Contestação", cor: "#22c55e" },
-            { id: "RECURSO ORDINÁRIO", nome: "Recurso Ordinário", cor: "#3b82f6" },
-            { id: "RECLAMAÇÃO", nome: "Reclamatória", cor: "#a855f7" },
-            { id: "AGRAVO DE PETIÇÃO", nome: "Agravo de Petição", cor: "#ef4444" }
-        ];
-
-        // LOGICA DE CRUZAMENTO:
-        // Ele prioriza o que está no Banco (Gabarito), mas confirma com o seu texto
-        let pecaGabarito = PECAS.find(p => dnaOficial.includes(p.id));
-        let pecaEscrita = PECAS.find(p => seuTexto.includes(p.id));
-
-        if (pecaGabarito) {
-            box.style.borderColor = pecaGabarito.cor;
-            label.innerText = pecaGabarito.nome;
-            label.style.color = pecaGabarito.cor;
-            
-            // Validação em tempo real
-            if (pecaEscrita && pecaEscrita.id === pecaGabarito.id) {
-                info.innerText = "SINCRO-ELITE: PEÇA CORRETA IDENTIFICADA!";
-                box.style.boxShadow = `0 0 30px ${pecaGabarito.cor}`;
-            } else {
-                info.innerText = `EXAME ${activeEx}: AGUARDANDO NOME DA PEÇA...`;
-                box.style.boxShadow = "none";
-            }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SCANNER ELITE - RADAR</title>
+    <style>
+        :root { --gold: #fbbf24; --bg: #000; --danger: #ef4444; --success: #22c55e; }
+        body { 
+            background: var(--bg); color: white; font-family: 'Courier New', monospace;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden; border: 2px solid var(--gold);
         }
-    };
+        
+        /* BOTÃO DE FECHAR - PARA O RADAR NÃO FICAR PRESO */
+        #btn-close {
+            position: fixed; top: 10px; right: 10px; background: var(--danger);
+            color: white; border: none; border-radius: 50%; width: 25px; height: 25px;
+            cursor: pointer; font-weight: bold; z-index: 100;
+        }
 
-    // Fica vigiando tanto a troca de exame quanto a digitação
-    window.addEventListener('storage', radarScanner);
-    window.onload = radarScanner;
-</script>
+        #radar-circle {
+            width: 200px; height: 200px; border: 2px solid var(--gold);
+            border-radius: 50%; position: relative; display: flex;
+            align-items: center; justify-content: center; flex-direction: column;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2); transition: 0.5s;
+        }
+        .sweep {
+            position: absolute; width: 50%; height: 2px; background: var(--gold);
+            top: 50%; left: 50%; transform-origin: left;
+            animation: rotate 2s linear infinite; opacity: 0.5;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        #peca-nome { font-size: 1rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; z-index: 10; }
+        #status-missao { font-size: 0.6rem; color: #64748b; margin-top: 5px; text-transform: uppercase; }
+        #match-info { font-size: 0.6rem; color: var(--success); margin-top: 10px; visibility: hidden; text-align: center; padding: 0 10px; }
+        
+        .detectado { border-color: var(--success) !important; box-shadow: 0 0 40px var(--success) !important; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <button id="btn-close" onclick="window.close()">X</button>
+
+    <div id="radar-circle">
+        <div class="sweep"></div>
+        <div id="peca-nome">IDENTIFICANDO...</div>
+        <div id="status-missao">SCANNER ATIVO</div>
+    </div>
+    
+    <div id="match-info" class="blink">DNA COMPATÍVEL<br>PEÇA IDENTIFICADA NO BANCO</div>
+
+    <script type="module">
+        import { BANCO_ESPELHOS } from './banco-espelhos.js';
+
+        const processarRadar = () => {
+            const activeEx = localStorage.getItem('activeEx') || "44";
+            const textoEscrito = (localStorage.getItem('radar_input') || "").toUpperCase();
+            
+            // Bebe a informação do Banco de Espelhos baseado no Exame da Home
+            const gabaritoOficial = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+
+            const displayNome = document.getElementById('peca-nome');
+            const displayStatus = document.getElementById('status-missao');
+            const displayMatch = document.getElementById('match-info');
+            const circle = document.getElementById('radar-circle');
+
+            const PECAS_VALIDAS = [
+                { id: "CONTESTAÇÃO", nome: "CONTESTAÇÃO" },
+                { id: "RECURSO ORDINÁRIO", nome: "REC. ORDINÁRIO" },
+                { id: "RECLAMAÇÃO", nome: "RECLAMATÓRIA" },
+                { id: "AGRAVO DE PETIÇÃO", nome: "AGRAVO DE PETIÇÃO" }
+            ];
+
+            // Busca qual peça o Banco de Espelhos diz que é a correta
+            const pecaDoBanco = PECAS_VALIDAS.find(p => gabaritoOficial.includes(p.id));
+
+            if (pecaDoBanco) {
+                displayStatus.innerText = `EXAME ${activeEx} EM FOCO`;
+                
+                // Valida se o usuário escreveu a peça certa na Home
+                if (textoEscrito.includes(pecaDoBanco.id)) {
+                    displayNome.innerText = pecaDoBanco.nome;
+                    displayNome.style.color = "var(--success)";
+                    circle.classList.add('detectado');
+                    displayMatch.style.visibility = "visible";
+                } else {
+                    displayNome.innerText = "ALVO ERRADO";
+                    displayNome.style.color = "var(--gold)";
+                    circle.classList.remove('detectado');
+                    displayMatch.style.visibility = "hidden";
+                }
+            } else {
+                displayNome.innerText = "SEM DNA";
+                displayStatus.innerText = `BANCO VAZIO: EX ${activeEx}`;
+            }
+        };
+
+        // Escuta a Home em tempo real
+        window.addEventListener('storage', (e) => {
+            if(e.key === 'radar_input' || e.key === 'activeEx') processarRadar();
+        });
+        
+        window.onload = processarRadar;
+    </script>
+</body>
+</html>
