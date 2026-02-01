@@ -22,7 +22,6 @@
             overflow: hidden; transition: 0.3s; 
         }
         
-        /* HEADER */
         header { 
             background: var(--primary); height: var(--header-h); 
             padding: 0 20px; display: flex; justify-content: space-between; 
@@ -31,7 +30,6 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR DIRETA */
         .sidebar { 
             width: var(--sidebar-w); background: #1e293b; 
             display: flex; flex-direction: column; gap: 10px; padding: 10px; 
@@ -39,7 +37,6 @@
             overflow-y: auto; scrollbar-width: none; 
         }
         
-        /* CONTAINER DO RADAR (IFRAME) */
         #radar-frame-box { 
             width: 100%; height: 80px; background: #000; 
             border: 2px solid var(--gold); border-radius: 8px; 
@@ -54,7 +51,6 @@
         }
         .btn-side:hover { filter: brightness(1.2); transform: scale(1.05); }
 
-        /* ÁREA DO EDITOR */
         .editor-container { 
             flex: 1; overflow-y: auto; display: flex; 
             flex-direction: column; align-items: center; 
@@ -64,13 +60,11 @@
         .paper-wrapper { 
             background: var(--paper-color); width: 100%; max-width: 900px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
-            height: 2500px; /* Espaço para as 190 linhas da folhafgv */
-            border-radius: 4px; overflow: hidden;
+            height: 2500px; border-radius: 4px; overflow: hidden;
         }
 
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* MODAIS */
         .modal { 
             display: none; position: fixed; inset: 0; 
             background: rgba(0,0,0,0.9); z-index: 3000; 
@@ -86,21 +80,9 @@
             font-weight: 800; cursor: pointer; background: #f1f5f9; 
             text-align: center; color: #334155; 
         }
-
-        /* OVERLAY DE CARREGAMENTO */
-        #sync-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
-            z-index: 9999; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; color: var(--gold); 
-        }
     </style>
 </head>
 <body>
-
-<div id="sync-overlay">
-    <i class="fas fa-microchip fa-spin fa-3x"></i>
-    <p style="margin-top:15px; font-weight:900; letter-spacing:2px;">SINCRO-ELITE ATIVA...</p>
-</div>
 
 <header>
     <div style="color:white; font-weight:900; font-size:1.2rem;">JOAQUIM <span style="color:var(--gold)">ELITE 2026</span></div>
@@ -144,7 +126,6 @@
     import { BANCO_ESPELHOS } from './banco-espelhos.js';
     import { pecas } from './estruturas.js';
 
-    // CONFIGURAÇÃO FIREBASE
     const firebaseConfig = { 
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", 
         authDomain: "masteroab-db5e1.firebaseapp.com", 
@@ -158,23 +139,18 @@
     const frameFolha = document.getElementById('frame-folha');
     const frameRadar = document.getElementById('frame-radar');
 
-    // 1. ESCANEAMENTO E COMUNICAÇÃO ENTRE FRAMES
     const escaneamentoElite = () => {
         const folhaDoc = frameFolha.contentDocument;
         const radarWin = frameRadar.contentWindow;
-        
         if (!folhaDoc || !radarWin) return;
 
-        // Captura o texto de todas as linhas da folhafgv.html
         const inputs = Array.from(folhaDoc.querySelectorAll('.linha-folha'));
         const textoCompleto = inputs.map(i => i.value).join(' ').toUpperCase();
         
-        // Aciona a função atualizar() dentro do radar.html
         if (typeof radarWin.atualizar === 'function') {
             radarWin.atualizar(textoCompleto);
         }
 
-        // Atualiza o Título dentro da folhafgv.html se existir o identificador-peca
         const topoFolha = folhaDoc.getElementById('identificador-peca');
         if (topoFolha) {
             const pecasDetectadas = [
@@ -194,7 +170,6 @@
         }
     };
 
-    // 2. SINCRONIZAÇÃO COM FIREBASE
     const carregarDadosNuvem = () => {
         onValue(ref(db, 'estudos/' + activeEx), (snap) => {
             const data = snap.val();
@@ -205,7 +180,6 @@
                     if (el) el.value = txt || "";
                 });
             }
-            document.getElementById('sync-overlay').style.display = 'none';
             escaneamentoElite();
         }, { onlyOnce: true });
     };
@@ -214,12 +188,11 @@
         const inputs = Array.from(frameFolha.contentDocument.querySelectorAll('.linha-folha'));
         const dados = inputs.map(i => i.value);
         set(ref(db, 'estudos/' + activeEx), { linhas: dados, ts: Date.now() })
-            .then(() => alert("✅ SINCRONIZADO COM SUCESSO!"));
+            .then(() => alert("✅ SINCRONIZADO!"));
     };
 
-    // 3. FUNÇÕES DE APOIO
     window.limparTudo = () => {
-        if(confirm("Deseja resetar todo o caderno de respostas?")) {
+        if(confirm("Resetar caderno?")) {
             frameFolha.contentDocument.querySelectorAll('.linha-folha').forEach(inp => inp.value = "");
             escaneamentoElite();
         }
@@ -238,17 +211,13 @@
 
     window.abrirModalExames = () => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px; color:#1e293b">SELECIONAR EXAME</h2>`;
+        content.innerHTML = `<h2 style="text-align:center; margin-bottom:15px;">EXAMES</h2>`;
         const grid = document.createElement('div');
         grid.style.display="grid"; grid.style.gridTemplateColumns="1fr 1fr"; grid.style.gap="10px";
         for(let i=44; i>=35; i--) {
             const b = document.createElement('div');
             b.className='opt-btn'; b.innerText=`Exame ${i}`;
-            if(activeEx == i) b.style.borderColor = "var(--gold)";
-            b.onclick = () => { 
-                localStorage.setItem('activeEx', i); 
-                location.reload(); 
-            };
+            b.onclick = () => { localStorage.setItem('activeEx', i); location.reload(); };
             grid.appendChild(b);
         }
         content.appendChild(grid);
@@ -258,30 +227,24 @@
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
 
     window.concluirEEnviarAoRobo = () => {
-        if(!confirm("Deseja enviar esta peça para o histórico de mentoria?")) return;
+        if(!confirm("Enviar para mentoria?")) return;
         const inputs = Array.from(frameFolha.contentDocument.querySelectorAll('.linha-folha'));
         const conteudo = inputs.map(i => i.value).join('\n');
         push(ref(db, 'mentoria/historico'), {
-            exame: activeEx,
-            texto: conteudo,
-            data: new Date().toLocaleString(),
-            ts: Date.now()
+            exame: activeEx, texto: conteudo, data: new Date().toLocaleString(), ts: Date.now()
         }).then(() => {
-            alert("🚀 ENVIADO PARA O HISTÓRICO!");
+            alert("🚀 ARQUIVADO!");
             window.location.href = 'mentoria.html';
         });
     };
 
-    // 4. INICIALIZAÇÃO
     window.onload = () => {
-        // Aguarda a folhafgv carregar para vincular os eventos
         frameFolha.onload = () => {
             carregarDadosNuvem();
             frameFolha.contentDocument.addEventListener('input', escaneamentoElite);
         };
     };
 
-    // Expor funções para o escopo global do HTML
     Object.assign(window, { abrirModalExames, fecharModal, salvarManual, injetarJustica, limparTudo, concluirEEnviarAoRobo });
 </script>
 </body>
