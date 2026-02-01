@@ -1,37 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        #status { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; line-height: 1.2; }
-        .blink { animation: b 1.5s infinite; color: #fbbf24; }
-        @keyframes b { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-    </style>
-</head>
-<body>
-    <div id="status">SCANNER<br><span class="blink">BUSCANDO...</span></div>
+// modulo-radar.js
 
-    <script>
-        window.atualizar = function(texto, exame) {
-            const status = document.getElementById('status');
-            const t = texto.toUpperCase();
-            
-            const DICIONARIO = [
-                { id: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
-                { id: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
-                { id: "CONTESTAÇÃO", cor: "#22c55e" },
-                { id: "RECLAMAÇÃO", cor: "#a855f7" }
-            ];
+export const RadarElite = {
+    // Analisa o gabarito e define o que o sistema está lendo
+    analisarGabarito: (textoGabarito) => {
+        const texto = textoGabarito.toUpperCase();
+        
+        // Dicionário de Peças
+        const PECAS = [
+            { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
+            { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
+            { id: "CONTESTAÇÃO", display: "CONTESTAÇÃO TRABALHISTA", cor: "#22c55e" },
+            { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
+        ];
 
-            let encontrado = DICIONARIO.find(p => t.includes(p.id));
-            if (encontrado) {
-                status.innerHTML = `<span style="color:${encontrado.cor}">ALVO IDENTIFICADO</span><br>${encontrado.id}`;
-                document.body.style.border = `1px solid ${encontrado.cor}`;
-            } else {
-                status.innerHTML = `SCANNER EX${exame}<br><span class="blink">BUSCANDO...</span>`;
-                document.body.style.border = "none";
-            }
-        };
-    </script>
-</body>
-</html>
+        // Dicionário de Questões (1 a 4 e letras a/b)
+        const QUESTOES = [
+            { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i },
+            { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i },
+            { id: "QUESTÃO 3", regex: /QUESTÃO\s*3/i },
+            { id: "QUESTÃO 4", regex: /QUESTÃO\s*4/i }
+        ];
+
+        let pecaAchada = PECAS.find(p => texto.includes(p.id));
+        let questaoAchada = QUESTOES.find(q => q.regex.test(texto));
+
+        return { peca: pecaAchada, questao: questaoAchada };
+    },
+
+    // Limpa o texto e prepara para as linhas da folha
+    formatarParaInjecao: (textoBruto, limiteChar) => {
+        return textoBruto
+            .replace(/<[^>]*>/g, '') // Remove HTML
+            .split('\n')
+            .filter(f => f.trim().length > 5)
+            .map(f => "➤ " + f.trim().substring(0, limiteChar - 2));
+    }
+};
