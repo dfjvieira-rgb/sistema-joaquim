@@ -1,49 +1,27 @@
-// modulo-radar.js - O CÉREBRO DO HOME
-
+// modulo-radar.js (Ajuste para o novo banco)
 export const RadarElite = {
-    /**
-     * Analisa o texto para descobrir onde ele deve começar na folha OAB
-     * Peça = Linha 1 | Q1 = 51 | Q2 = 81 | Q3 = 111 | Q4 = 141
-     */
-    analisarDNA: (texto) => {
-        const t = texto.toUpperCase();
+    // ... (manter analisarDNA anterior)
+
+    prepararLinhas: (htmlBruto) => {
+        const LIMITE = 75;
+        // Cria um elemento temporário para converter HTML em texto puro
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlBruto;
         
-        const mapeamento = [
-            { alvo: "QUESTÃO 1", linha: 51 },
-            { alvo: "QUESTÃO 2", linha: 81 },
-            { alvo: "QUESTÃO 3", linha: 111 },
-            { alvo: "QUESTÃO 4", linha: 141 }
-        ];
+        // Pega apenas o texto dos itens do espelho (classe .espelho-txt)
+        const itens = Array.from(tempDiv.querySelectorAll('.espelho-txt')).map(el => el.innerText);
 
-        const achado = mapeamento.find(item => t.includes(item.alvo));
-        
-        return {
-            linhaInicial: achado ? achado.linha : 1, // Se não achar questão, vai para a Peça
-            nomeSetor: achado ? achado.alvo : "PEÇA PROFISSIONAL"
-        };
-    },
+        // Se o banco não tiver a classe .espelho-txt, tenta limpar o HTML direto
+        const listaFinal = itens.length > 0 ? itens : htmlBruto.replace(/<[^>]*>/g, '').split('\n');
 
-    /**
-     * Limpa o texto de tags HTML e aplica as regras de formatação:
-     * 1. Itens A e B ganham ● e CAIXA ALTA
-     * 2. Limita a 70 caracteres para não vazar da folha
-     */
-    prepararLinhas: (textoBruto) => {
-        const LIMITE = 70;
-
-        return textoBruto
-            .replace(/<[^>]*>/g, '') // Remove qualquer HTML vindo do banco
-            .split('\n')
-            .filter(linha => linha.trim().length > 3) // Ignora linhas vazias
+        return listaFinal
+            .filter(linha => linha.trim().length > 3)
             .map(linha => {
                 let s = linha.trim();
-
-                // Identifica se a linha é o início de um item (a) ou (b)
+                // Regra das Letras A e B para questões (se houver no texto)
                 if (/^[A-B][\)\.]/i.test(s)) {
                     return "● " + s.toUpperCase().substring(0, LIMITE - 2);
                 }
-
-                // Texto normal com recuo de parágrafo
                 return "  " + s.substring(0, LIMITE);
             });
     }
