@@ -24,38 +24,47 @@
         
         .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
         #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
-        #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
-        .radar-blink { animation: blink 1.5s infinite; color: var(--gold); }
-        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); scroll-behavior: smooth; }
+        #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; text-transform: uppercase; }
+        
+        .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
         
         .paper { 
             background: var(--paper-color); 
             width: 100%; 
             max-width: 850px; 
-            min-height: 2500px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
             position: relative;
             display: flex;
         }
 
-        .regua { width: 45px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); padding-top: 10px; user-select: none; }
+        .regua { width: 45px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); padding-top: 50px; user-select: none; }
         .regua div { height: 35px; font-size: 0.7rem; color: #64748b; display: flex; align-items: center; justify-content: center; }
-        .paper::after { content: ""; position: absolute; top: 0; right: 40px; width: 2px; height: 100%; background: var(--margem-cor); opacity: 0.3; pointer-events: none; }
 
-        .conteudo-total { flex: 1; display: flex; flex-direction: column; }
+        .conteudo-total { flex: 1; display: flex; flex-direction: column; position: relative; }
+        
+        /* LINHA DA MARGEM OAB */
+        .margem-oab { position: absolute; top: 0; right: 40px; width: 2px; height: 100%; background: var(--margem-cor); opacity: 0.3; pointer-events: none; z-index: 10; }
+
         .area-escrita {
-            outline: none; padding: 0 50px 0 15px; font-size: 18px; font-family: 'Courier New', Courier, monospace;
-            color: var(--text-color); line-height: 35px; background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-            background-size: 100% 35px; white-space: pre-wrap; word-wrap: break-word;
+            outline: none;
+            padding: 0 50px 0 15px; /* Padding direito maior para o texto não encostar na margem */
+            font-size: 18px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-color);
+            line-height: 35px;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+            background-size: 100% 35px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: hidden;
+            min-height: 150 * 35px;
         }
 
         .divisoria-oab { background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.7rem; font-weight:bold; text-transform:uppercase; border-bottom: 1px solid var(--gold); }
         .sub-divisoria { background:#f1f5f9; color:#64748b; padding:4px; text-align:center; font-size:0.6rem; font-weight:bold; text-transform:uppercase; border-bottom: 1px solid var(--line-color); }
         
         #identificador-peca { width: 100%; padding: 15px; background: #f8fafc; border-bottom: 3px double var(--line-color); text-align: center; font-weight: 900; font-size: 1.3rem; color: #64748b; text-transform: uppercase; }
-        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 3px solid var(--gold); }
@@ -74,97 +83,111 @@
 <main>
     <aside class="sidebar">
         <div id="radar-container"><div id="radar-status">SCANNER</div></div>
-        <button class="btn-side" title="Exames" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
-        <button class="btn-side" title="Salvar" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" title="Estruturas" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
-        <button class="btn-side" title="Justiça" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" title="Limpar" style="background:var(--danger);" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
-        <button class="btn-side" title="Robô" style="background:var(--mentoria);" onclick="window.location.href='mentoria.html'"><i class="fas fa-robot"></i></button>
-        <button class="btn-side" title="Concluir" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()"><i class="fas fa-check-double"></i></button>
+        <button class="btn-side" style="background:var(--gold); color:black;" onclick="abrirModalExames()"><i class="fas fa-bullseye"></i></button>
+        <button class="btn-side" style="background:#0ea5e9;" onclick="salvarManual()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" style="background:#334155; color:var(--gold);" onclick="abrirModalPecas()"><i class="fas fa-scroll"></i></button>
+        <button class="btn-side" style="background:#3b82f6;" onclick="injetarJustica()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:var(--danger);" onclick="limparTudo()"><i class="fas fa-broom"></i></button>
+        <button class="btn-side" style="background:var(--mentoria);" onclick="window.location.href='mentoria.html'"><i class="fas fa-robot"></i></button>
+        <button class="btn-side" style="background:#059669; border: 2px solid #fff;" onclick="concluirEEnviarAoRobo()"><i class="fas fa-check-double"></i></button>
         <hr style="opacity:0.1; margin:5px 0;">
-        <button class="btn-side" title="Imprimir" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
-        <button class="btn-side" title="Subir" style="background:#475569;" onclick="document.querySelector('.editor-container').scrollTo(0,0)"><i class="fas fa-chevron-up"></i></button>
-        <button class="btn-side" title="Descer" style="background:#475569;" onclick="irParaQuestoes()"><i class="fas fa-chevron-down"></i></button>
-        <button class="btn-side" title="Recarregar" style="background:#1e293b; color:var(--gold);" onclick="location.reload()"><i class="fas fa-redo"></i></button>
+        <button class="btn-side" style="background:#10b981;" onclick="window.print()"><i class="fas fa-print"></i></button>
+        <button class="btn-side" style="background:#475569;" onclick="document.querySelector('.editor-container').scrollTo(0,0)"><i class="fas fa-chevron-up"></i></button>
+        <button class="btn-side" style="background:#475569;" onclick="irParaQuestoes()"><i class="fas fa-chevron-down"></i></button>
+        <button class="btn-side" style="background:#1e293b; color:var(--gold);" onclick="location.reload()"><i class="fas fa-redo"></i></button>
     </aside>
 
     <section class="editor-container">
         <div class="paper">
             <div class="regua" id="regua-oab"></div>
             <div class="conteudo-total">
+                <div class="margem-oab"></div>
                 <div id="identificador-peca">CADERNO DE RESPOSTAS</div>
-                <div class="divisoria-oab">PEÇA PROFISSIONAL (LINHAS 1-150)</div>
-                <div id="editor-peca" class="area-escrita" contenteditable="true" style="min-height:5250px;"></div>
+                
+                <div class="divisoria-oab">PEÇA PROFISSIONAL</div>
+                <div id="editor-peca" class="area-escrita" contenteditable="true" spellcheck="false"></div>
                 
                 <div id="ancora-questoes" class="divisoria-oab">QUESTÕES DISCURSIVAS</div>
                 <div class="sub-divisoria">QUESTÃO 1 (A e B)</div>
-                <div id="editor-q1" class="area-escrita" contenteditable="true" style="min-height:350px;"></div>
+                <div id="editor-q1" class="area-escrita" contenteditable="true" spellcheck="false"></div>
+                
                 <div class="sub-divisoria">QUESTÃO 2 (A e B)</div>
-                <div id="editor-q2" class="area-escrita" contenteditable="true" style="min-height:350px;"></div>
+                <div id="editor-q2" class="area-escrita" contenteditable="true" spellcheck="false"></div>
+                
                 <div class="sub-divisoria">QUESTÃO 3 (A e B)</div>
-                <div id="editor-q3" class="area-escrita" contenteditable="true" style="min-height:350px;"></div>
+                <div id="editor-q3" class="area-escrita" contenteditable="true" spellcheck="false"></div>
+                
                 <div class="sub-divisoria">QUESTÃO 4 (A e B)</div>
-                <div id="editor-q4" class="area-escrita" contenteditable="true" style="min-height:350px;"></div>
+                <div id="editor-q4" class="area-escrita" contenteditable="true" spellcheck="false"></div>
             </div>
         </div>
     </section>
 </main>
 
-<div class="modal" id="universal-modal"><div class="modal-body"><div id="modal-content"></div><button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px;">VOLTAR</button></div></div>
+<div class="modal" id="universal-modal"><div class="modal-body"><div id="modal-content"></div><button onclick="fecharModal()" style="width:100%; margin-top:15px; padding:12px; background:black; color:white; border-radius:10px; font-weight:bold;">VOLTAR</button></div></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { pecas } from './estruturas.js';
 
     const firebaseConfig = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com", projectId: "masteroab-db5e1" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let activeEx = localStorage.getItem('activeEx') || "44";
 
-    // Réguas OAB
+    const IDs = ['editor-peca', 'editor-q1', 'editor-q2', 'editor-q3', 'editor-q4'];
+
+    // Gerar réguas
     const regua = document.getElementById('regua-oab');
     for(let i=1; i<=190; i++) {
         regua.innerHTML += `<div>${i}</div>`;
-        if(i === 150) regua.innerHTML += `<div style="height:35px; background:var(--gold)"></div>`; // Espaço da divisória
+        if(i === 150) regua.innerHTML += `<div style="height:35px;"></div>`; 
     }
 
-    const IDs = ['editor-peca', 'editor-q1', 'editor-q2', 'editor-q3', 'editor-q4'];
-
-    // Lógica do Scanner e Radar
     const escanear = () => {
         const txt = document.getElementById('editor-peca').innerText.toUpperCase();
         const status = document.getElementById('radar-status');
         const topo = document.getElementById('identificador-peca');
-        
         if(txt.includes("CONTESTAÇÃO")) { status.innerHTML = `<span style="color:#22c55e">RADAR</span><br>CONTESTAÇÃO`; topo.innerText = "CONTESTAÇÃO TRABALHISTA"; topo.style.color = "#22c55e"; }
         else if(txt.includes("RECURSO ORDINÁRIO")) { status.innerHTML = `<span style="color:#3b82f6">RADAR</span><br>R.O.`; topo.innerText = "RECURSO ORDINÁRIO"; topo.style.color = "#3b82f6"; }
-        else { status.innerHTML = `RADAR<br><span class="radar-blink">BUSCANDO...</span>`; topo.innerText = "CADERNO DE RESPOSTAS"; topo.style.color = "#64748b"; }
+        else { status.innerHTML = `RADAR<br><span style="color:var(--gold)">BUSCANDO...</span>`; topo.innerText = "CADERNO DE RESPOSTAS"; topo.style.color = "#64748b"; }
     };
-
     IDs.forEach(id => document.getElementById(id).addEventListener('input', escanear));
 
-    // Firebase Sync
     window.salvarManual = () => {
-        const snapshot = {};
-        IDs.forEach(id => snapshot[id] = document.getElementById(id).innerHTML);
-        set(ref(db, 'estudos/' + activeEx), snapshot).then(() => alert("☁️ HOME SINCRONIZADA!"));
+        const snap = {};
+        IDs.forEach(id => snap[id] = document.getElementById(id).innerHTML);
+        set(ref(db, 'estudos/' + activeEx), snap).then(() => alert("☁️ SINCRONIZADO!"));
     };
 
-    onValue(ref(db, 'estudos/' + activeEx), (snap) => {
-        const data = snap.val();
-        if(data) IDs.forEach(id => document.getElementById(id).innerHTML = data[id] || "");
+    onValue(ref(db, 'estudos/' + activeEx), (s) => {
+        const d = s.val();
+        if(d) IDs.forEach(id => document.getElementById(id).innerHTML = d[id] || "");
         escanear();
     }, { onlyOnce: true });
 
-    // Funções dos 12 Botões
+    window.abrirModalPecas = () => {
+        const c = document.getElementById('modal-content');
+        c.innerHTML = `<h2>PERGAMINHO</h2>`;
+        Object.keys(pecas).forEach(n => {
+            const b = document.createElement('div'); b.className = 'opt-btn'; b.innerText = n;
+            b.onclick = () => { document.getElementById('editor-peca').innerText = pecas[n]; fecharModal(); escanear(); };
+            c.appendChild(b);
+        });
+        document.getElementById('universal-modal').style.display = 'flex';
+    };
+
+    window.injetarJustica = () => { 
+        document.getElementById('editor-peca').focus(); 
+        document.execCommand('insertText', false, "➤ AO DOUTO JUÍZO DA ... VARA DO TRABALHO..."); 
+    };
+
     window.limparTudo = () => { if(confirm("Limpar?")) IDs.forEach(id => document.getElementById(id).innerHTML = ""); };
-    window.injetarJustica = () => { document.getElementById('editor-peca').focus(); document.execCommand('insertText', false, "➤ AO DOUTO JUÍZO DA ... VARA DO TRABALHO..."); };
     window.irParaQuestoes = () => document.getElementById('ancora-questoes').scrollIntoView({behavior:'smooth'});
-    window.abrirModalExames = () => { /* Sua lógica de modal aqui */ document.getElementById('universal-modal').style.display='flex'; };
-    window.concluirEEnviarAoRobo = () => { if(confirm("Enviar para o Robô?")) window.location.href='mentoria.html'; };
     window.fecharModal = () => document.getElementById('universal-modal').style.display='none';
 
-    Object.assign(window, { salvarManual, limparTudo, injetarJustica, irParaQuestoes, abrirModalExames, concluirEEnviarAoRobo, fecharModal });
+    Object.assign(window, { salvarManual, limparTudo, injetarJustica, irParaQuestoes, abrirModalPecas, fecharModal });
 </script>
 </body>
 </html>
