@@ -8,36 +8,32 @@
         body { 
             background: var(--bg); color: white; font-family: 'Courier New', monospace;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; overflow: hidden; border: 2px solid var(--gold);
+            height: 100vh; margin: 0; overflow: hidden; border: 4px solid var(--gold);
         }
-        
-        /* BOTÃO DE FECHAR - PARA O RADAR NÃO FICAR PRESO */
         #btn-close {
             position: fixed; top: 10px; right: 10px; background: var(--danger);
             color: white; border: none; border-radius: 50%; width: 25px; height: 25px;
             cursor: pointer; font-weight: bold; z-index: 100;
         }
-
         #radar-circle {
-            width: 200px; height: 200px; border: 2px solid var(--gold);
+            width: 220px; height: 220px; border: 2px solid var(--gold);
             border-radius: 50%; position: relative; display: flex;
             align-items: center; justify-content: center; flex-direction: column;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2); transition: 0.5s;
+            transition: 0.5s;
         }
         .sweep {
             position: absolute; width: 50%; height: 2px; background: var(--gold);
             top: 50%; left: 50%; transform-origin: left;
-            animation: rotate 2s linear infinite; opacity: 0.5;
+            animation: rotate 2s linear infinite; opacity: 0.4;
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        #peca-nome { font-size: 1rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; z-index: 10; }
-        #status-missao { font-size: 0.6rem; color: #64748b; margin-top: 5px; text-transform: uppercase; }
-        #match-info { font-size: 0.6rem; color: var(--success); margin-top: 10px; visibility: hidden; text-align: center; padding: 0 10px; }
+        #peca-detectada { font-size: 1rem; font-weight: 900; color: var(--gold); text-align: center; margin-top: 15px; padding: 0 10px; text-transform: uppercase; }
+        #info-exame { font-size: 0.6rem; color: #64748b; margin-top: 5px; }
+        #fonte-status { font-size: 0.5rem; color: var(--gold); opacity: 0.6; margin-top: 2px; font-style: italic; }
         
-        .detectado { border-color: var(--success) !important; box-shadow: 0 0 40px var(--success) !important; }
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        .match-active { border-color: var(--success) !important; box-shadow: 0 0 30px var(--success) !important; }
+        .success-text { color: var(--success) !important; }
     </style>
 </head>
 <body>
@@ -46,64 +42,68 @@
 
     <div id="radar-circle">
         <div class="sweep"></div>
-        <div id="peca-nome">IDENTIFICANDO...</div>
-        <div id="status-missao">SCANNER ATIVO</div>
+        <div id="peca-detectada">SINCRO...</div>
+        <div id="info-exame">AGUARDANDO</div>
+        <div id="fonte-status">SISTEMA OFF</div>
     </div>
-    
-    <div id="match-info" class="blink">DNA COMPATÍVEL<br>PEÇA IDENTIFICADA NO BANCO</div>
 
     <script type="module">
         import { BANCO_ESPELHOS } from './banco-espelhos.js';
+        import { pecas } from './estruturas.js';
 
-        const processarRadar = () => {
+        // Termos técnicos reais para cruzamento
+        const TERMOS_TECNICOS = ["CONTESTAÇÃO", "RECURSO ORDINÁRIO", "RECLAMAÇÃO", "AGRAVO DE PETIÇÃO", "MANDADO DE SEGURANÇA", "AÇÃO DE CONSIGNAÇÃO", "RECURSO DE REVISTA"];
+
+        const realizarVarredura = () => {
             const activeEx = localStorage.getItem('activeEx') || "44";
-            const textoEscrito = (localStorage.getItem('radar_input') || "").toUpperCase();
+            const textoHome = (localStorage.getItem('radar_input') || "").toUpperCase();
             
-            // Bebe a informação do Banco de Espelhos baseado no Exame da Home
-            const gabaritoOficial = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
-
-            const displayNome = document.getElementById('peca-nome');
-            const displayStatus = document.getElementById('status-missao');
-            const displayMatch = document.getElementById('match-info');
+            const displayPeca = document.getElementById('peca-detectada');
+            const displayExame = document.getElementById('info-exame');
+            const displayFonte = document.getElementById('fonte-status');
             const circle = document.getElementById('radar-circle');
 
-            const PECAS_VALIDAS = [
-                { id: "CONTESTAÇÃO", nome: "CONTESTAÇÃO" },
-                { id: "RECURSO ORDINÁRIO", nome: "REC. ORDINÁRIO" },
-                { id: "RECLAMAÇÃO", nome: "RECLAMATÓRIA" },
-                { id: "AGRAVO DE PETIÇÃO", nome: "AGRAVO DE PETIÇÃO" }
-            ];
+            let alvoReal = null;
+            let fonteIdentificada = "";
 
-            // Busca qual peça o Banco de Espelhos diz que é a correta
-            const pecaDoBanco = PECAS_VALIDAS.find(p => gabaritoOficial.includes(p.id));
+            // 1. BUSCA DADO REAL NO ESPELHO (Conteúdo)
+            const conteudoEspelho = (BANCO_ESPELHOS[activeEx] || "").toUpperCase();
+            alvoReal = TERMOS_TECNICOS.find(termo => conteudoEspelho.includes(termo));
 
-            if (pecaDoBanco) {
-                displayStatus.innerText = `EXAME ${activeEx} EM FOCO`;
+            if (alvoReal) {
+                fonteIdentificada = "DB: ESPELHO FGV";
+            } else {
+                // 2. BUSCA DADO REAL NO BANCO DE ESTRUTURAS (Nomes das Peças)
+                const listaEstruturas = Object.keys(pecas).map(k => k.toUpperCase());
+                alvoReal = TERMOS_TECNICOS.find(termo => listaEstruturas.some(nome => nome.includes(termo)));
                 
-                // Valida se o usuário escreveu a peça certa na Home
-                if (textoEscrito.includes(pecaDoBanco.id)) {
-                    displayNome.innerText = pecaDoBanco.nome;
-                    displayNome.style.color = "var(--success)";
-                    circle.classList.add('detectado');
-                    displayMatch.style.visibility = "visible";
+                if (alvoReal) fonteIdentificada = "DB: ESTRUTURAS";
+            }
+
+            // ATUALIZAÇÃO DO RADAR
+            if (alvoReal) {
+                displayExame.innerText = `EXAME ${activeEx}`;
+                displayFonte.innerText = fonteIdentificada;
+
+                // Valida se o que foi escrito na Home "bate" com o dado real encontrado
+                if (textoHome.includes(alvoReal)) {
+                    displayPeca.innerText = alvoReal;
+                    displayPeca.classList.add('success-text');
+                    circle.classList.add('match-active');
                 } else {
-                    displayNome.innerText = "ALVO ERRADO";
-                    displayNome.style.color = "var(--gold)";
-                    circle.classList.remove('detectado');
-                    displayMatch.style.visibility = "hidden";
+                    displayPeca.innerText = "ALVO PENDENTE";
+                    displayPeca.classList.remove('success-text');
+                    circle.classList.remove('match-active');
                 }
             } else {
-                displayNome.innerText = "SEM DNA";
-                displayStatus.innerText = `BANCO VAZIO: EX ${activeEx}`;
+                displayPeca.innerText = "SEM ALVO";
+                displayExame.innerText = `EXAME ${activeEx}`;
+                displayFonte.innerText = "DADO NÃO LOCALIZADO";
             }
         };
 
-        // Escuta a Home em tempo real
-        window.addEventListener('storage', (e) => {
-            if(e.key === 'radar_input' || e.key === 'activeEx') processarRadar();
-        });
-        
-        window.onload = processarRadar;
+        window.addEventListener('storage', realizarVarredura);
+        window.onload = realizarVarredura;
     </script>
 </body>
 </html>
