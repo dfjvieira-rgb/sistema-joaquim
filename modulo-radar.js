@@ -1,11 +1,12 @@
-// modulo-radar.js
+// modulo-radar.js - Inteligência de Escaneamento JOAQUIM ELITE 2026
 
 export const RadarElite = {
-    // Analisa o gabarito e define o que o sistema está lendo
+    // Analisa o gabarito e define se é Peça ou Questão (1 a 4, a e b)
     analisarGabarito: (textoGabarito) => {
+        if (!textoGabarito) return { peca: null, questao: null };
         const texto = textoGabarito.toUpperCase();
         
-        // Dicionário de Peças
+        // Dicionário de Peças Processuais
         const PECAS = [
             { id: "AGRAVO DE PETIÇÃO", display: "AGRAVO DE PETIÇÃO", cor: "#f87171" },
             { id: "RECURSO ORDINÁRIO", display: "RECURSO ORDINÁRIO", cor: "#3b82f6" },
@@ -13,7 +14,7 @@ export const RadarElite = {
             { id: "RECLAMAÇÃO", display: "RECLAMATÓRIA TRABALHISTA", cor: "#a855f7" }
         ];
 
-        // Dicionário de Questões (1 a 4 e letras a/b)
+        // Dicionário de Questões e Subitens
         const QUESTOES = [
             { id: "QUESTÃO 1", regex: /QUESTÃO\s*1/i },
             { id: "QUESTÃO 2", regex: /QUESTÃO\s*2/i },
@@ -27,12 +28,12 @@ export const RadarElite = {
         return { peca: pecaAchada, questao: questaoAchada };
     },
 
-    // Limpa o texto e prepara para as linhas da folha
+    // Formata o texto para caber nas linhas (limite de 85 caracteres)
     formatarParaInjecao: (textoBruto, limiteChar) => {
         return textoBruto
-            .replace(/<[^>]*>/g, '') // Remove HTML
+            .replace(/<[^>]*>/g, '') // Remove tags HTML
             .split('\n')
-            .filter(f => f.trim().length > 5)
-            .map(f => "➤ " + f.trim().substring(0, limiteChar - 2));
+            .filter(f => f.trim().length > 3) // Remove linhas muito curtas
+            .map(f => "➤ " + f.trim().substring(0, limiteChar - 4)); // Adiciona marcador e corta no limite
     }
 };
