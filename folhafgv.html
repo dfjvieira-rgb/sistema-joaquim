@@ -1,39 +1,133 @@
-// TÉCNICA DA FOLHA ELITE ISOLADA
-const inicializarFolhaElite = (containerId, reguaId) => {
-    const corpo = document.getElementById(containerId);
-    const regua = document.getElementById(reguaId);
-    
-    // Limpa antes de gerar
-    corpo.innerHTML = ""; 
-    regua.innerHTML = "";
-    
-    for(let i = 1; i <= 190; i++) {
-        // 1. Alimenta a Régua
-        regua.innerHTML += `<div>${i}</div>`;
-        
-        // 2. Insere as Divisórias Fixas (não editáveis)
-        if(i === 1)   gerarDivisoria(corpo, "PEÇA PROFISSIONAL", "header-separador");
-        if(i === 151) { gerarDivisoria(corpo, "QUESTÃO 1", "header-separador"); gerarDivisoria(corpo, "ITEM A)", "item-separador"); }
-        if(i === 156) gerarDivisoria(corpo, "ITEM B)", "item-separador");
-        if(i === 161) { gerarDivisoria(corpo, "QUESTÃO 2", "header-separador"); gerarDivisoria(corpo, "ITEM A)", "item-separador"); }
-        if(i === 166) gerarDivisoria(corpo, "ITEM B)", "item-separador");
-        if(i === 171) { gerarDivisoria(corpo, "QUESTÃO 3", "header-separador"); gerarDivisoria(corpo, "ITEM A)", "item-separador"); }
-        if(i === 176) gerarDivisoria(corpo, "ITEM B)", "item-separador");
-        if(i === 181) { gerarDivisoria(corpo, "QUESTÃO 4", "header-separador"); gerarDivisoria(corpo, "ITEM A)", "item-separador"); }
-        if(i === 186) gerarDivisoria(corpo, "ITEM B)", "item-separador");
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>TÉCNICA FOLHA FGV - SELEÇÃO FLUIDA</title>
+    <style>
+        :root {
+            --bg-paper: #cbd5e1;
+            --paper-color: #ffffff;
+            --line-color: #d1d5db;
+            --text-color: #1e293b;
+            --margem-cor: #f87171;
+            --gold: #fbbf24;
+            --primary: #1e293b;
+        }
 
-        // 3. Cria a linha de escrita com ID único para o "Justiça" e "Radar"
+        body { background: var(--bg-paper); padding: 20px; font-family: sans-serif; display: flex; justify-content: center; }
+
+        /* CONTAINER DA FOLHA */
+        .paper { 
+            background: var(--paper-color); 
+            width: 100%; 
+            max-width: 850px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            display: flex; 
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* RÉGUA DE NÚMEROS (FORA DA ÁREA DE EDIÇÃO) */
+        .regua { 
+            width: 45px; 
+            border-right: 1px solid var(--line-color); 
+            background: #f8fafc; 
+            user-select: none; 
+            padding-top: 50px; /* Alinhamento com o topo da tabela */
+        }
+        .regua div { 
+            height: 35px; 
+            font-size: 0.7rem; 
+            color: #64748b; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .conteudo-total { flex: 1; position: relative; }
+
+        /* MARGEM DIREITA FGV */
+        .margem-oab { 
+            position: absolute; top: 0; right: 40px; width: 2px; 
+            height: 100%; background: var(--margem-cor); opacity: 0.3; pointer-events: none; z-index: 10; 
+        }
+
+        /* A GRADE QUE PERMITE SELEÇÃO TOTAL */
+        .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; outline: none; }
+        
+        .grid-oab td { 
+            height: 35px; 
+            padding: 0 50px 0 15px; /* 50px de padding direito protege a margem */
+            border-bottom: 1px solid var(--line-color);
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 18px; 
+            color: var(--text-color);
+            word-break: break-all;
+        }
+
+        /* ESTILO DAS DIVISÓRIAS (IMORTAIS) */
+        .header-separador { background: var(--primary); color: var(--gold); padding: 8px; text-align: center; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .item-separador { background: #f1f5f9; color: #64748b; padding: 4px 15px; font-size: 0.65rem; font-weight: bold; border-bottom: 1px solid var(--line-color); text-transform: uppercase; }
+
+        #identificador { padding: 15px; text-align: center; font-weight: bold; border-bottom: 1px solid #ddd; background: #fafafa; }
+    </style>
+</head>
+<body>
+
+    <div class="paper">
+        <div class="regua" id="regua-oab"></div>
+        
+        <div class="conteudo-total">
+            <div class="margem-oab"></div>
+            <div id="identificador">CADERNO FGV - TÉCNICA DE SELEÇÃO FLUIDA</div>
+            
+            <table class="grid-oab">
+                <tbody id="CORPO_FOLHA_ELITE" contenteditable="true" spellcheck="false">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+    const inicializarFolha = () => {
+        const corpo = document.getElementById('CORPO_FOLHA_ELITE');
+        const regua = document.getElementById('regua-oab');
+        
+        for(let i = 1; i <= 190; i++) {
+            // Adiciona número na régua
+            const numDiv = document.createElement('div');
+            numDiv.innerText = i;
+            regua.appendChild(numDiv);
+            
+            // Inserção das divisórias fixas
+            if(i === 1) addDiv("PEÇA PROFISSIONAL", "header-separador");
+            if(i === 151) { addDiv("QUESTÃO 1", "header-separador"); addDiv("ITEM A)", "item-separador"); }
+            if(i === 156) addDiv("ITEM B)", "item-separador");
+            if(i === 161) { addDiv("QUESTÃO 2", "header-separador"); addDiv("ITEM A)", "item-separador"); }
+            if(i === 166) addDiv("ITEM B)", "item-separador");
+            if(i === 171) { addDiv("QUESTÃO 3", "header-separador"); addDiv("ITEM A)", "item-separador"); }
+            if(i === 176) addDiv("ITEM B)", "item-separador");
+            if(i === 181) { addDiv("QUESTÃO 4", "header-separador"); addDiv("ITEM A)", "item-separador"); }
+            if(i === 186) addDiv("ITEM B)", "item-separador");
+
+            // Cria a linha de texto
+            const row = corpo.insertRow();
+            const cell = row.insertCell();
+            cell.id = `L${i}`;
+        }
+    };
+
+    const addDiv = (texto, classe) => {
+        const corpo = document.getElementById('CORPO_FOLHA_ELITE');
         const row = corpo.insertRow();
         const cell = row.insertCell();
-        cell.id = `L${i}`;
-    }
-};
+        cell.contentEditable = "false"; // Impede que o título seja apagado
+        cell.className = classe;
+        cell.innerText = texto;
+    };
 
-// Auxiliar para as divisórias
-const gerarDivisoria = (parent, texto, classe) => {
-    const row = parent.insertRow();
-    const cell = row.insertCell();
-    cell.contentEditable = "false";
-    cell.className = classe;
-    cell.innerText = texto;
-};
+    window.onload = inicializarFolha;
+</script>
+
+</body>
+</html>
