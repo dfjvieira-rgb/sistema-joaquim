@@ -18,34 +18,36 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        
         header { background: var(--primary); height: var(--header-h); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 2000; }
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR ESTRUTURAL */
+        /* SIDEBAR 12 BOTÕES */
         .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
         #radar-container { background: #000; border: 2px solid var(--gold); border-radius: 6px; padding: 5px; text-align: center; min-height: 65px; display: flex; flex-direction: column; justify-content: center; }
         #radar-status { font-size: 0.55rem; color: #fff; font-weight: 900; text-transform: uppercase; }
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
         
-        /* EDITOR CONTAINER */
+        /* ÁREA DA FOLHA */
         .editor-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg-paper); }
-        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; display: flex; }
-        .regua { width: 45px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); padding-top: 105px; user-select: none; flex-shrink: 0; }
+        .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; display: flex; min-height: 100%; }
+        
+        .regua { width: 45px; border-right: 1px solid var(--line-color); background: rgba(0,0,0,0.02); padding-top: 100px; user-select: none; flex-shrink: 0; }
         .regua div { height: 35px; font-size: 0.7rem; color: #64748b; display: flex; align-items: center; justify-content: center; }
+
         .conteudo-total { flex: 1; position: relative; }
         .margem-oab { position: absolute; top: 0; right: 40px; width: 2px; height: 100%; background: var(--margem-cor); opacity: 0.3; pointer-events: none; z-index: 10; }
-        
-        /* TÉCNICA DA GRADE FLUIDA */
+
         .grid-oab { width: 100%; border-collapse: collapse; table-layout: fixed; outline: none; }
         .grid-oab td { height: 35px; padding: 0 50px 0 15px; border-bottom: 1px solid var(--line-color); font-family: 'Courier New', monospace; font-size: 18px; color: var(--text-color); word-break: break-all; }
+        
         #identificador-peca { width: 100%; padding: 15px; background: #f8fafc; border-bottom: 3px double var(--line-color); text-align: center; font-weight: 900; font-size: 1.3rem; color: #64748b; text-transform: uppercase; }
-        .header-separador { background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.75rem; font-weight:bold; text-transform:uppercase; }
+        .header-separador { background:#1e293b; color:#fbbf24; padding:8px; text-align:center; font-size:0.75rem; font-weight:bold; text-transform:uppercase; border-bottom: 1px solid var(--gold); }
         .item-separador { background:#f1f5f9; color:#64748b; padding:4px 15px; font-size:0.65rem; font-weight:bold; border-bottom:1px solid var(--line-color); text-transform:uppercase; }
 
-        /* MODAIS E OVERLAY */
         #sync-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 20px; border-radius: 15px; border: 2px solid var(--gold); }
+        .modal-body { background: white; width: 90%; max-width: 450px; padding: 20px; border-radius: 15px; border: 3px solid var(--gold); }
     </style>
 </head>
 <body class="dark-mode">
@@ -88,7 +90,7 @@
     </section>
 </main>
 
-<div class="modal" id="universal-modal"><div class="modal-body"><div id="modal-content"></div><button onclick="fecharModal()" style="width:100%; margin-top:10px; padding:10px; background:#000; color:#fff; border-radius:8px;">FECHAR</button></div></div>
+<div class="modal" id="universal-modal"><div class="modal-body"><div id="modal-content"></div><button onclick="fecharModal()" style="width:100%; margin-top:10px; padding:10px; background:#000; color:#fff; border-radius:8px;">VOLTAR</button></div></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -126,7 +128,7 @@
 
     const addDiv = (t, c) => {
         const r = document.getElementById('CORPO_FOLHA_ELITE').insertRow();
-        const cl = r.insertCell(); cl.contentEditable = "false"; cl.className = t.includes("ITEM") ? "item-separador" : "header-separador"; cl.innerText = t;
+        const cl = r.insertCell(); cl.contentEditable = "false"; cl.className = c; cl.innerText = t;
     };
 
     const carregarDados = () => {
@@ -161,6 +163,7 @@
         document.getElementById('universal-modal').style.display = 'flex';
     };
 
+    // Radar de Peças
     document.getElementById('CORPO_FOLHA_ELITE').addEventListener('input', () => {
         const txt = document.getElementById('CORPO_FOLHA_ELITE').innerText.toUpperCase();
         const rs = document.getElementById('radar-status');
@@ -171,7 +174,8 @@
 
     window.fecharModal = () => document.getElementById('universal-modal').style.display = 'none';
     window.irPara = (n) => document.getElementById(`L${n}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-    window.limparTudo = () => { if(confirm("Resetar?")) location.reload(); };
+    window.limparTudo = () => { if(confirm("Resetar folha?")) { document.getElementById('CORPO_FOLHA_ELITE').innerHTML = ""; desenharFolha(); } };
+    
     window.onload = desenharFolha;
     Object.assign(window, { salvarManual, abrirModalExames, fecharModal, injetarJustica, irPara, limparTudo });
 </script>
