@@ -25,26 +25,25 @@
         .paper { background: var(--paper-color); width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 100px; }
         #identificador-peca { width: 100%; padding: 15px; background: #f1f5f9; border-bottom: 2px solid var(--gold); text-align: center; font-weight: 900; color: #1e293b; font-size: 1.1rem; }
 
-        /* NOVO HUB MOBILE - ESTRUTURA BLINDADA */
+        /* REPARO DO HUB MOBILE */
         #mobile-hub { 
             display: none; position: fixed; bottom: 30px; right: 20px; z-index: 99999; 
-            flex-direction: column-reverse; gap: 15px; align-items: center;
+            flex-direction: column-reverse; gap: 12px; align-items: center;
         }
         .fab-main { 
             width: 70px; height: 70px; border-radius: 50%; background: var(--gold); border: 4px solid var(--primary); 
             box-shadow: 0 5px 25px rgba(0,0,0,0.5); font-size: 2.2rem; display: flex; 
             align-items: center; justify-content: center; color: #000; cursor: pointer; z-index: 10;
         }
-        /* Botões agora começam invisíveis e sem tamanho, mas sem display:none */
         .fab-sub { 
             width: 0; height: 0; opacity: 0; border-radius: 50%; border: 2px solid #fff; color: white; 
             display: flex; align-items: center; justify-content: center; font-size: 0; 
             cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            overflow: hidden;
+            overflow: hidden; pointer-events: none;
         }
-        /* Quando o hub estiver ativo, os botões "explodem" */
+        /* ESTADO ATIVO: REAPARECIMENTO DOS BOTÕES */
         #mobile-hub.active .fab-sub { 
-            width: 55px; height: 55px; opacity: 1; font-size: 1.3rem; margin-bottom: 2px;
+            width: 55px; height: 55px; opacity: 1; font-size: 1.3rem; pointer-events: auto;
         }
 
         @media (max-width: 768px) {
@@ -53,17 +52,14 @@
             .editor-container { padding: 5px; width: 100vw; }
         }
 
-        /* PDF VIEW */
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); position: relative; height: 100%; }
         #pdf-split-view.active { display: block; }
         #pdf-split-view.active-mob { position: fixed; inset: 0; width: 100%; z-index: 100000; display: block; }
 
-        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 110000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 95%; max-width: 500px; padding: 25px; border-radius: 20px; }
         .opt-btn { width: 100%; padding: 20px; margin-bottom: 10px; border-radius: 12px; border: 2px solid #ddd; background: #f1f5f9; font-weight: 800; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #1e293b; }
 
-        /* LINHA FGV */
         .linha-wrapper { display: flex; border-bottom: 1px solid var(--line-color); height: 35px; }
         .linha-num { width: 40px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #94a3b8; border-right: 1px solid var(--line-color); }
         .linha-folha { flex: 1; border: none; outline: none; background: transparent !important; padding: 0 10px; font-size: 18px; font-family: 'Courier New', monospace; color: var(--text-color); }
@@ -122,7 +118,7 @@
     <div class="modal-body">
         <h2 id="modal-title" style="margin-bottom:15px; border-bottom:3px solid var(--gold); color:#1e293b;"></h2>
         <div id="modal-content" style="max-height: 60vh; overflow-y: auto;"></div>
-        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:18px; background:#000; color:#fff; border-radius:10px; font-weight:900; margin-top:15px;">VOLTAR</button>
+        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:18px; background:#000; color:#fff; border-radius:10px; font-weight:900; margin-top:15px; cursor:pointer;">VOLTAR</button>
     </div>
 </div>
 
@@ -137,18 +133,14 @@
     window.activeEx = localStorage.getItem('activeEx') || "44";
     window.ultimaLinha = 1;
 
-    // --- PDF ENGINE ---
     window.verPDF = (tipo) => {
         const frame = document.getElementById('pdf-frame');
         const view = document.getElementById('pdf-split-view');
         const isMob = window.innerWidth <= 768;
-        
         let arquivo = (tipo === 'P') ? `ro${window.activeEx}.pdf` : (tipo === 'G') ? `ro${window.activeEx}-gabarito.pdf` : `vade.pdf`;
-        
         frame.src = arquivo;
         if(isMob) view.classList.add('active-mob');
         else view.classList.add('active');
-        
         document.getElementById('mobile-hub').classList.remove('active');
     };
 
@@ -156,7 +148,7 @@
         const dna = BANCO_ESPELHOS[window.activeEx];
         if (dna) {
             const analise = RadarEngine.analisar(dna);
-            RadarEngine.renderizar(analise);
+             RadarEngine.renderizar(analise);
             document.getElementById('identificador-peca').innerText = analise.peca.toUpperCase();
         }
     };
@@ -209,17 +201,15 @@
 
     window.abrirMentoria = () => window.open('mentoria.html', 'Mentoria', 'width=450,height=700');
 
-    // --- INICIALIZAÇÃO ---
     window.onload = () => {
+        // MANTENDO EXATAMENTE SUA LÓGICA DE FOLHA
         FolhaEngine.montar('folha-total', 85);
         window.forcarRadar();
 
-        // Salvar
         const saveFunc = () => engineSaveElite(db, window.activeEx);
         document.getElementById('btn-save-pc').onclick = saveFunc;
         document.getElementById('btn-save-mob').onclick = saveFunc;
 
-        // PARTIDA DO FOGUETE
         const fab = document.getElementById('main-fab');
         const hub = document.getElementById('mobile-hub');
         
@@ -227,9 +217,7 @@
             e.preventDefault();
             e.stopPropagation();
             hub.classList.toggle('active');
-            // Muda o ícone
             fab.innerHTML = hub.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-rocket"></i>';
-            // Muda a cor do círculo
             fab.style.background = hub.classList.contains('active') ? '#ef4444' : 'var(--gold)';
             fab.style.color = hub.classList.contains('active') ? '#fff' : '#000';
         };
@@ -237,7 +225,6 @@
         fab.addEventListener('click', handleRocket);
         fab.addEventListener('touchstart', handleRocket, {passive: false});
 
-        // Focus em linhas
         setTimeout(() => {
             document.querySelectorAll('.linha-folha').forEach(input => {
                 input.addEventListener('focus', () => { window.ultimaLinha = parseInt(input.getAttribute('data-index')); });
