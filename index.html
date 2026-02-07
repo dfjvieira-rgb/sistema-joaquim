@@ -22,7 +22,8 @@
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
         /* SIDEBAR */
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-right: 1px solid rgba(255,255,255,0.1); z-index: 1001; overflow-y: auto; scrollbar-width: none; transition: 0.3s; }
+        .sidebar.collapsed { width: 0; padding: 0; overflow: hidden; border: none; }
         .btn-side { width: 100%; min-height: 44px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .btn-side:active { transform: scale(0.9); }
 
@@ -47,6 +48,10 @@
         #pdf-split-view { display: none; width: 48%; background: #333; border-left: 4px solid var(--gold); height: 100%; position: relative; }
         #pdf-split-view.active { display: block; }
         .btn-close-pdf { position: absolute; top: 15px; left: -40px; background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 8px 0 0 8px; cursor: pointer; }
+
+        /* BOTÃO FLUTUANTE RECUO */
+        .btn-toggle-floating { position: fixed; bottom: 20px; left: 20px; width: 40px; height: 40px; background: var(--gold); color: #000; border: none; border-radius: 50%; z-index: 5000; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        @media (max-width: 768px) { .btn-toggle-floating { display: none; } }
     </style>
 </head>
 <body class="dark-mode">
@@ -58,6 +63,8 @@
         <button class="btn-side" style="width:40px; background:#ef4444;" onclick="resetarFolha()"><i class="fas fa-trash"></i></button>
     </div>
 </header>
+
+<button class="btn-toggle-floating" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
 <main>
     <aside class="sidebar">
@@ -107,6 +114,10 @@
     let activeEx = localStorage.getItem('activeEx') || "44";
     let ultimaLinhaFocada = 1;
     const LIMITE_LINHA = 85;
+
+    window.toggleSidebar = () => {
+        document.querySelector('.sidebar').classList.toggle('collapsed');
+    };
 
     window.montarFolha = () => {
         const container = document.getElementById('folha-total');
@@ -224,4 +235,3 @@
 </script>
 </body>
 </html>
-
