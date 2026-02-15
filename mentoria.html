@@ -9,11 +9,11 @@
         :root {
             --primary: #020617; --gold: #fbbf24; --card: #1e293b;
             --nc: #f472b6; --qp: #a855f7; --tese: #3b82f6; --arsenal: #22c55e;
-            --sumula: #f97316; --artigo: #10b981; --pre: #ef4444;
-            --oj: #06b6d4; --tema: #facc15; /* Nova cor Temas */
+            --sumula: #f97316; --artclt: #10b981; --artcpc: #0ea5e9; --pre: #ef4444;
+            --oj: #06b6d4; --tema: #facc15;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); color: white; margin: 0; padding-bottom: 120px; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); color: white; margin: 0; padding-bottom: 140px; }
 
         header {
             background: var(--card); padding: 15px 20px; border-bottom: 2px solid var(--gold);
@@ -53,6 +53,7 @@
         .tab { 
             color: #94a3b8; text-align: center; font-size: 9px; text-decoration: none; 
             font-weight: 700; min-width: 80px; cursor: pointer; flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .tab.active { color: var(--gold); }
         .tab i { display: block; font-size: 1.1rem; margin-bottom: 4px; }
@@ -70,9 +71,9 @@
 <div class="container">
     <div id="panel-editor" class="panel-input">
         <h4 id="editor-title" style="margin-top:0; color:var(--gold);">Adicionar à Mentoria</h4>
-        <input id="inp-t" placeholder="Título (Ex: Tema 1046 STF)">
-        <textarea id="inp-c" rows="3" placeholder="Tese fixada..."></textarea>
-        <textarea id="inp-r" rows="2" style="background:#0f172a; border-color:var(--gold)" placeholder="Rascunho/Como aplicar..."></textarea>
+        <input id="inp-t" placeholder="Título (Ex: Art. 467 CLT)">
+        <textarea id="inp-c" rows="3" placeholder="Conteúdo do artigo ou fundamento..."></textarea>
+        <textarea id="inp-r" rows="2" style="background:#0f172a; border-color:var(--gold)" placeholder="Rascunho/Como aplicar na peça..."></textarea>
         <button id="btn-salvar" class="btn-voltar" style="width:100%; background:var(--gold); margin-top:10px; font-weight: 900;">GRAVAR NA MEMÓRIA IA</button>
     </div>
 
@@ -92,7 +93,8 @@
     <a class="tab" onclick="showTab('tema')"><i class="fas fa-lightbulb"></i>TEMAS</a>
     <a class="tab" onclick="showTab('sumula')"><i class="fas fa-balance-scale"></i>SÚMULAS</a>
     <a class="tab" onclick="showTab('oj')"><i class="fas fa-shield-halved"></i>OJ's</a>
-    <a class="tab" onclick="showTab('artigo')"><i class="fas fa-book"></i>ARTIGOS</a>
+    <a class="tab" onclick="showTab('artclt')"><i class="fas fa-book"></i>ART. CLT</a>
+    <a class="tab" onclick="showTab('artcpc')"><i class="fas fa-file-code"></i>ART. CPC</a>
     <a class="tab" onclick="showTab('arsenal')"><i class="fas fa-bolt"></i>50Q</a>
 </nav>
 
@@ -124,7 +126,7 @@
         const titulos = { 
             qp: 'Qual a Peça?', nc: 'Não Confunda', pre: 'Preliminares/Prejudiciais', 
             tese: 'Banco de Teses', tema: 'Temas STF/TST', sumula: 'Súmulas TST', oj: 'Orientações Jurisprudenciais',
-            artigo: 'Artigos CLT', arsenal: '50 Questões' 
+            artclt: 'Artigos CLT', artcpc: 'Artigos CPC', arsenal: '50 Questões' 
         };
         
         const header = document.getElementById('intel-head');
@@ -168,7 +170,7 @@
         const cores = { 
             qp: 'var(--qp)', nc: 'var(--nc)', pre: 'var(--pre)', 
             tese: 'var(--tese)', tema: 'var(--tema)', arsenal: 'var(--arsenal)', 
-            sumula: 'var(--sumula)', oj: 'var(--oj)', artigo: 'var(--artigo)' 
+            sumula: 'var(--sumula)', oj: 'var(--oj)', artclt: 'var(--artclt)', artcpc: 'var(--artcpc)'
         };
         
         const itens = Object.keys(cache).reverse();
@@ -208,12 +210,12 @@
     window.injetorMestre = () => {
         if(!confirm("Injetar Temas, OJs e base de dados completa?")) return;
         const q = [
-            { t: "Tema 1046 STF", c: "Validade de norma coletiva que limita ou restringe direito trabalhista, desde que respeitados os direitos indisponíveis.", r: "Argumento chave para defesa em Contestação sobre acordos coletivos.", cat: "tema" },
-            { t: "Tema 1191 STF", c: "Incidência de contribuição previdenciária sobre o terço constitucional de férias gozadas.", r: "Tema tributário-trabalhista recorrente.", cat: "tema" },
-            { t: "OJ 394 SDI-1 TST", c: "RSR sobre horas extras: A majoração do RSR não gera reflexos em outras parcelas.", r: "Evita o bis in idem.", cat: "oj" }
+            { t: "Art. 840, §1º CLT", c: "Requisitos da Petição Inicial: Pedidos devem ser certos, determinados e com indicação de valor.", r: "Fundamental para preliminar de inépcia se faltar valor.", cat: "artclt" },
+            { t: "Art. 337 CPC", c: "Incumbe ao réu, antes de discutir o mérito, alegar as preliminares (Inexistência, Inépcia, etc).", r: "Base para estruturar a Contestação.", cat: "artcpc" },
+            { t: "Tema 1046 STF", c: "Validade de norma coletiva que limita direito trabalhista disponível.", r: "Defesa de prevalência do negociado sobre o legislado.", cat: "tema" }
         ];
         q.forEach(i => push(ref(db, 'v13_master'), { ...i, ts: serverTimestamp() }));
-        showTab('tema');
+        showTab('artclt');
     };
 
     window.onload = () => showTab('qp');
