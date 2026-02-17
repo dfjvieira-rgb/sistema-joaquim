@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MENTORIA ELITE V13 - INTELIGÊNCIA</title>
+    <title>MENTORIA ELITE V13 - 12 INTELIGÊNCIAS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --card: #1e293b;
             --nc: #f472b6; --qp: #a855f7; --tese: #3b82f6; --arsenal: #22c55e;
             --sumula: #f97316; --artclt: #10b981; --artcpc: #0ea5e9; --pre: #ef4444;
-            --oj: #06b6d4; --tema: #facc15;
+            --oj: #06b6d4; --tema: #facc15; --artcc: #6366f1; /* Cor Indigo para o Código Civil */
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); color: white; margin: 0; padding-bottom: 140px; }
@@ -71,155 +71,7 @@
 <div class="container">
     <div id="panel-editor" class="panel-input">
         <h4 id="editor-title" style="margin-top:0; color:var(--gold);">Adicionar à Mentoria</h4>
-        <input id="inp-t" placeholder="Título (Ex: Art. 467 CLT)">
+        <input id="inp-t" placeholder="Título (Ex: Art. 186 CC)">
         <textarea id="inp-c" rows="3" placeholder="Conteúdo do artigo ou fundamento..."></textarea>
         <textarea id="inp-r" rows="2" style="background:#0f172a; border-color:var(--gold)" placeholder="Rascunho/Como aplicar na peça..."></textarea>
-        <button id="btn-salvar" class="btn-voltar" style="width:100%; background:var(--gold); margin-top:10px; font-weight: 900;">GRAVAR NA MEMÓRIA IA</button>
-    </div>
-
-    <div id="sec-inteligencia">
-        <h3 id="intel-head" style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">
-            <i class="fas fa-brain"></i> SELECIONE UMA CATEGORIA
-        </h3>
-        <div id="feed-v13"></div>
-    </div>
-</div>
-
-<nav class="nav-tabs">
-    <a class="tab active" onclick="showTab('qp')"><i class="fas fa-search"></i>PEÇA?</a>
-    <a class="tab" onclick="showTab('nc')"><i class="fas fa-brain"></i>N.C</a>
-    <a class="tab" onclick="showTab('pre')"><i class="fas fa-exclamation-triangle"></i>PRELIMINAR</a>
-    <a class="tab" onclick="showTab('tese')"><i class="fas fa-gavel"></i>TESES</a>
-    <a class="tab" onclick="showTab('tema')"><i class="fas fa-lightbulb"></i>TEMAS</a>
-    <a class="tab" onclick="showTab('sumula')"><i class="fas fa-balance-scale"></i>SÚMULAS</a>
-    <a class="tab" onclick="showTab('oj')"><i class="fas fa-shield-halved"></i>OJ's</a>
-    <a class="tab" onclick="showTab('artclt')"><i class="fas fa-book"></i>ART. CLT</a>
-    <a class="tab" onclick="showTab('artcpc')"><i class="fas fa-file-code"></i>ART. CPC</a>
-    <a class="tab" onclick="showTab('arsenal')"><i class="fas fa-bolt"></i>50Q</a>
-</nav>
-
-<button id="fab-injetor" onclick="injetorMestre()" title="Carga Rápida Arsenal"><i class="fas fa-rocket"></i></button>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, push, remove, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const config = {
-        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
-        authDomain: "masteroab-db5e1.firebaseapp.com",
-        projectId: "masteroab-db5e1",
-        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com"
-    };
-    const app = initializeApp(config);
-    const db = getDatabase(app);
-
-    let currentTab = 'qp';
-    let editId = null;
-    let cache = {};
-
-    window.showTab = (tab) => {
-        currentTab = tab;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        const activeTab = document.querySelector(`.tab[onclick*='${tab}']`);
-        if(activeTab) activeTab.classList.add('active');
-        
-        const titulos = { 
-            qp: 'Qual a Peça?', nc: 'Não Confunda', pre: 'Preliminares/Prejudiciais', 
-            tese: 'Banco de Teses', tema: 'Temas STF/TST', sumula: 'Súmulas TST', oj: 'Orientações Jurisprudenciais',
-            artclt: 'Artigos CLT', artcpc: 'Artigos CPC', arsenal: '50 Questões' 
-        };
-        
-        const header = document.getElementById('intel-head');
-        header.innerText = titulos[tab].toUpperCase();
-        header.style.color = `var(--${tab})`;
-        
-        document.getElementById('btn-salvar').style.background = `var(--${tab})`;
-        document.getElementById('editor-title').innerText = "Adicionar em: " + titulos[tab];
-        
-        render();
-    };
-
-    document.getElementById('btn-salvar').onclick = () => {
-        const t = document.getElementById('inp-t').value;
-        const c = document.getElementById('inp-c').value;
-        const r = document.getElementById('inp-r').value;
-        if(!t || !c) return alert("Preencha título e conteúdo.");
-
-        const dados = { t, c, r: r || "", cat: currentTab, ts: serverTimestamp() };
-
-        if(editId) {
-            set(ref(db, `v13_master/${editId}`), dados);
-            editId = null;
-            document.getElementById('btn-salvar').innerText = "GRAVAR NA MEMÓRIA IA";
-        } else {
-            push(ref(db, 'v13_master'), dados);
-        }
-        document.getElementById('inp-t').value = "";
-        document.getElementById('inp-c').value = "";
-        document.getElementById('inp-r').value = "";
-    };
-
-    onValue(ref(db, 'v13_master'), (snap) => {
-        cache = snap.val() || {};
-        render();
-    });
-
-    function render() {
-        const f = document.getElementById('feed-v13');
-        f.innerHTML = "";
-        const cores = { 
-            qp: 'var(--qp)', nc: 'var(--nc)', pre: 'var(--pre)', 
-            tese: 'var(--tese)', tema: 'var(--tema)', arsenal: 'var(--arsenal)', 
-            sumula: 'var(--sumula)', oj: 'var(--oj)', artclt: 'var(--artclt)', artcpc: 'var(--artcpc)'
-        };
-        
-        const itens = Object.keys(cache).reverse();
-        let encontrou = false;
-
-        itens.forEach(id => {
-            const it = cache[id];
-            if(it.cat === currentTab) {
-                encontrou = true;
-                const rascunhoHtml = it.r ? `<div class="rascunho-box"><strong>Rascunho:</strong><br>${it.r}</div>` : "";
-                f.innerHTML += `
-                    <div class="post-it" style="background:${cores[it.cat]}">
-                        <strong>${it.t}</strong>
-                        <p>${it.c}</p>
-                        ${rascunhoHtml}
-                        <div class="actions">
-                            <button class="btn-circle" style="background:rgba(255,255,255,0.3); color:black" onclick="editar('${id}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn-circle" style="background:rgba(0,0,0,0.2)" onclick="apagar('${id}')"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>`;
-            }
-        });
-        if(!encontrou) f.innerHTML = `<p style="text-align:center; opacity:0.5; margin-top:40px;">Nenhum card aqui.</p>`;
-    }
-
-    window.apagar = (id) => { if(confirm("Deletar este conhecimento?")) remove(ref(db, `v13_master/${id}`)); };
-
-    window.editar = (id) => {
-        const it = cache[id]; editId = id;
-        document.getElementById('inp-t').value = it.t;
-        document.getElementById('inp-c').value = it.c;
-        document.getElementById('inp-r').value = it.r || "";
-        document.getElementById('btn-salvar').innerText = "ATUALIZAR CONHECIMENTO";
-        window.scrollTo({top:0, behavior:'smooth'});
-    };
-
-    window.injetorMestre = () => {
-        if(!confirm("Injetar Temas, OJs e base de dados completa?")) return;
-        const q = [
-            { t: "Art. 840, §1º CLT", c: "Requisitos da Petição Inicial: Pedidos devem ser certos, determinados e com indicação de valor.", r: "Fundamental para preliminar de inépcia se faltar valor.", cat: "artclt" },
-            { t: "Art. 337 CPC", c: "Incumbe ao réu, antes de discutir o mérito, alegar as preliminares (Inexistência, Inépcia, etc).", r: "Base para estruturar a Contestação.", cat: "artcpc" },
-            { t: "Tema 1046 STF", c: "Validade de norma coletiva que limita direito trabalhista disponível.", r: "Defesa de prevalência do negociado sobre o legislado.", cat: "tema" }
-        ];
-        q.forEach(i => push(ref(db, 'v13_master'), { ...i, ts: serverTimestamp() }));
-        showTab('artclt');
-    };
-
-    window.onload = () => showTab('qp');
-</script>
-</body>
-</html>
-
+        <button id="btn-salvar" class="
