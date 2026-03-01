@@ -197,20 +197,14 @@
     import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { FolhaEngine } from './folha-engine.js';
 
-    // ================================================================
-    // CONFIGURAÇÃO BLINDADA: SISTEMA SENADO FEDERAL (TRABALHO/PREV)
-    // ================================================================
     const PROJETO_ID = "SISTEMA_SENADO_FEDERAL"; 
-    
-    window.pecaAtualNome = localStorage.getItem('senado_peca_nome') || "NOVO PARECER TÉCNICO";
-    window.modoQuestoes = localStorage.getItem('senado_modoQuestoes') === "true";
+    window.pecaAtualNome = localStorage.getItem('senado_peca_nome') || "NOVO ESTUDO";
 
-    // BIBLIOTECA DE LINKS (PLANALTO/SENADO)
-    window.LISTA_PDF_BIBLIOTECA = [
-        { nome: "REGIMENTO INTERNO (SENADO)", url: "https://www25.senado.leg.br/web/atividade/regimento-interno" },
-        { nome: "CLT - CONSOLIDADA (PLANALTO)", url: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" },
-        { nome: "CONSTITUIÇÃO FEDERAL", url: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
-        { nome: "LEI 8.112/90 (ESTATUTO)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" }
+    // --- BANCO DE DADOS DE PROVAS (LINKS DIRETOS) ---
+    const BANCO_PROVAS = [
+        { ano: "2022", cargo: "Consultor (Trabalho/Prev)", tipo: "Discursiva (Padrão FGV)", url: "https://conhecimento.fgv.br/concursos/senado22" },
+        { ano: "2022", cargo: "Consultor (Trabalho/Prev)", tipo: "Objetiva (Gabarito)", url: "https://conhecimento.fgv.br/concursos/senado22" },
+        { ano: "2012", cargo: "Analista Legislativo", tipo: "Prova Completa", url: "https://www12.senado.leg.br/institucional/concursos/concurso-2012" }
     ];
 
     window.onload = async () => {
@@ -220,92 +214,120 @@
         setInterval(salvarAutomatico, 30000);
     };
 
-    // --- FUNÇÃO PERGAMINHO (MODELOS TÉCNICOS) ---
-    window.abrirPergaminho = () => {
+    // --- NOVO BOTÃO: ACESSAR PROVAS ANTERIORES ---
+    window.abrirProvasFGV = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📜 MODELOS: TRABALHO & PREVIDÊNCIA";
-        content.innerHTML = `
-            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER')">PARECER DE MÉRITO (CAS)</div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('CONST')">PARECER CONSTITUCIONALIDADE (CCJ)</div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('PL')">MINUTA DE PROJETO DE LEI</div>
-        `;
+        document.getElementById('modal-title').innerText = "📝 PROVAS ANTERIORES FGV";
+        
+        let html = `<p style="font-size:11px; color:gray; margin-bottom:10px;">Selecione para abrir a prova oficial e treinar no editor ao lado:</p>`;
+        BANCO_PROVAS.forEach(p => {
+            html += `
+                <div class="opt-btn" onclick="window.open('${p.url}', '_blank'); window.prepararAmbienteTreino('${p.cargo} - ${p.ano}')">
+                    <div style="flex:1">
+                        <strong>${p.ano} - ${p.cargo}</strong><br>
+                        <small>${p.tipo}</small>
+                    </div>
+                    <i class="fas fa-file-pdf"></i>
+                </div>`;
+        });
+        content.innerHTML = html;
         modal.style.display = 'flex';
     };
 
-    window.injetarEstrutura = (tipo) => {
-        const ed = document.getElementById('editor-principal');
-        if(tipo === 'PARECER') ed.innerHTML = `<h2>PARECER Nº __, DE 2026</h2><p><strong>COMISSÃO DE ASSUNTOS SOCIAIS</strong></p><p><strong>I - RELATÓRIO</strong></p><p>...</p><p><strong>II - ANÁLISE</strong></p><p>...</p>`;
-        document.getElementById('universal-modal').style.display='none';
+    window.prepararAmbienteTreino = (nome) => {
+        window.pecaAtualNome = "TREINO: " + nome;
+        document.getElementById('identificador-peca').querySelector('span').innerText = window.pecaAtualNome;
+        document.getElementById('pdf-viewer').classList.add('active');
+        document.getElementById('editor-container').classList.add('collapsed');
+        document.getElementById('pdf-title').innerText = "MODO TREINO ATIVO";
+        document.getElementById('universal-modal').style.display = 'none';
     };
 
-    // --- GESTÃO DE GAVETAS (PARA PROVAS E ESTUDOS ANTERIORES) ---
+    // --- GESTÃO DE GAVETAS (PASTAS) ---
     window.gerenciadorPasta = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS DE ESTUDO";
+        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.abrirSubGaveta('PROVAS')"><span>PROVAS ANTERIORES FGV</span> <i class="fas fa-file-pdf"></i></div>
-            <div class="opt-btn" onclick="window.abrirSubGaveta('PARECERES')"><span>MEUS PARECERES SALVOS</span> <i class="fas fa-file-alt"></i></div>
-            <div class="opt-btn" onclick="window.abrirSubGaveta('RESUMOS')"><span>RESUMOS LEGISLATIVOS</span> <i class="fas fa-book-open"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PROVAS')"><span>SIMULADOS DE PROVAS</span> <i class="fas fa-edit"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PARECERES')"><span>PARECERES TÉCNICOS</span> <i class="fas fa-file-contract"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('RESUMOS')"><span>RESUMOS E TESES</span> <i class="fas fa-book"></i></div>
+            <div class="opt-btn" style="margin-top:10px; border-color:var(--gold-senado)" onclick="window.abrirProvasFGV()"><span>ACESSAR PROVAS OFICIAIS</span> <i class="fas fa-external-link-alt"></i></div>
         `;
         modal.style.display = 'flex';
     };
 
-    window.abrirSubGaveta = async (tipo) => {
+    window.abrirSubGaveta = async (cat) => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = "Carregando arquivos...";
-        try {
-            const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
-            content.innerHTML = `<div style="margin-bottom:10px; font-weight:bold;">${tipo}:</div>`;
-            if (snap.exists()) {
-                const itens = Object.keys(snap.val()).map(k => ({id: k, ...snap.val()[k]}));
-                const filtrados = itens.filter(i => i.categoria === tipo);
-                if(filtrados.length === 0) content.innerHTML += "Nenhum arquivo nesta gaveta.";
-                filtrados.forEach(item => {
+        content.innerHTML = "Carregando...";
+        const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
+        content.innerHTML = `<strong>GAVETA: ${cat}</strong><br><br>`;
+        if (snap.exists()) {
+            Object.keys(snap.val()).forEach(id => {
+                const item = snap.val()[id];
+                if(item.categoria === cat) {
                     const d = document.createElement('div');
                     d.className = 'opt-btn';
                     d.innerHTML = `<span>${item.peca}</span>`;
                     d.onclick = () => { document.getElementById('editor-principal').innerHTML = item.conteudo; document.getElementById('universal-modal').style.display='none'; };
                     content.appendChild(d);
-                });
-            }
-        } catch (e) { content.innerHTML = "Erro ao carregar."; }
-    };
-
-    // --- FINALIZAR E SALVAR (COM SELEÇÃO DE CATEGORIA) ---
-    window.finalizarPeca = async () => {
-        const ed = document.getElementById('editor-principal');
-        const cat = prompt("Onde deseja salvar? (PROVAS / PARECERES / RESUMOS)", "PARECERES");
-        if(!cat) return;
-        try {
-            const id = Date.now().toString();
-            await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
-                categoria: cat.toUpperCase(),
-                peca: window.pecaAtualNome + " (" + new Date().toLocaleDateString() + ")",
-                conteudo: ed.innerHTML
+                }
             });
-            alert("ARQUIVO ORGANIZADO NA GAVETA " + cat);
-        } catch (e) { alert("Erro ao salvar."); }
+        }
     };
 
-    // --- ESTUDO EM TELA (BIBLIOTECA) ---
+    // --- MODELOS PERGAMINHO (ESTRUTURAS) ---
+    window.abrirPergaminho = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "📜 ESTRUTURAS LEGISLATIVAS";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.injetar('PARECER')">PARECER DE MÉRITO (CAS)</div>
+            <div class="opt-btn" onclick="window.injetar('CONST')">PARECER CCJ (CONSTITUCIONALIDADE)</div>
+            <div class="opt-btn" onclick="window.injetar('QUESTAO')">QUESTÃO DISCURSIVA (FGV)</div>
+        `;
+        modal.style.display = 'flex';
+    };
+
+    window.injetar = (t) => {
+        const ed = document.getElementById('editor-principal');
+        if(t === 'QUESTAO') ed.innerHTML = `<h3>QUESTÃO DISCURSIVA Nº __</h3><p><strong>ENUNCIADO:</strong> [Cole aqui o enunciado da prova anterior]</p><hr><p><strong>RESPOSTA TÉCNICA:</strong></p>`;
+        else if(t === 'PARECER') ed.innerHTML = `<h2>PARECER Nº __</h2><p><strong>RELATÓRIO:</strong> ...</p><p><strong>ANÁLISE:</strong> ...</p><p><strong>VOTO:</strong> ...</p>`;
+        document.getElementById('universal-modal').style.display='none';
+    };
+
+    // --- BIBLIOTECA VIVA ---
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📚 BIBLIOTECA VIVA";
+        document.getElementById('modal-title').innerText = "📚 BIBLIOTECA";
         content.innerHTML = "";
-        window.LISTA_PDF_BIBLIOTECA.forEach(item => {
-            const d = document.createElement('div');
-            d.className = 'opt-btn';
-            d.innerHTML = `<span>${item.nome}</span> <i class="fas fa-external-link-alt"></i>`;
-            d.onclick = () => { window.open(item.url, '_blank'); document.getElementById('pdf-viewer').classList.add('active'); document.getElementById('editor-container').classList.add('collapsed'); modal.style.display = 'none'; };
+        [
+            {n: "REGIMENTO SENADO", u: "https://www25.senado.leg.br/web/atividade/regimento-interno"},
+            {n: "CLT ATUALIZADA", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm"},
+            {n: "CONSTITUIÇÃO FEDERAL", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"}
+        ].forEach(i => {
+            const d = document.createElement('div'); d.className = 'opt-btn'; d.innerHTML = `<span>${i.n}</span>`;
+            d.onclick = () => { window.open(i.u, '_blank'); modal.style.display='none'; document.getElementById('pdf-viewer').classList.add('active'); };
             content.appendChild(d);
         });
         modal.style.display = 'flex';
     };
 
-    // --- UTILITÁRIOS ---
+    // --- SISTEMA ---
+    window.finalizarPeca = async () => {
+        const cat = prompt("Gaveta (PROVAS / PARECERES / RESUMOS):", "PARECERES")?.toUpperCase();
+        if(!cat) return;
+        const id = Date.now().toString();
+        await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
+            categoria: cat,
+            peca: window.pecaAtualNome + " (" + new Date().toLocaleDateString() + ")",
+            conteudo: document.getElementById('editor-principal').innerHTML
+        });
+        alert("Salvo na Gaveta " + cat);
+    };
+
     window.toggleRecolherEditor = () => { document.getElementById('editor-container').classList.toggle('collapsed'); document.getElementById('pdf-viewer').classList.toggle('active'); };
     window.fecharPDF = () => { document.getElementById('pdf-viewer').classList.remove('active'); document.getElementById('editor-container').classList.remove('collapsed'); };
     window.renomearTreino = () => { const n = prompt("Nome:", window.pecaAtualNome); if(n) { window.pecaAtualNome = n; document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
