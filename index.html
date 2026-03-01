@@ -198,185 +198,118 @@
     import { FolhaEngine } from './folha-engine.js';
 
     // ================================================================
-    // CONFIGURAÇÃO BLINDADA: PROJETO SENADO FEDERAL
+    // CONFIGURAÇÃO BLINDADA: SISTEMA SENADO FEDERAL (TRABALHO/PREV)
     // ================================================================
     const PROJETO_ID = "SISTEMA_SENADO_FEDERAL"; 
     
-    // Chaves de memória exclusivas para o Senado (não chocam com a OAB)
     window.pecaAtualNome = localStorage.getItem('senado_peca_nome') || "NOVO PARECER TÉCNICO";
+    window.modoQuestoes = localStorage.getItem('senado_modoQuestoes') === "true";
 
-    // BIBLIOTECA VIVA (LINKS DIRETOS DO PLANALTO/SENADO)
+    // BIBLIOTECA DE LINKS (PLANALTO/SENADO)
     window.LISTA_PDF_BIBLIOTECA = [
-        { nome: "REGIMENTO INTERNO (SENADO)", url: "https://legis.senado.leg.br/norma/561237/publicacao/15759100" },
-        { nome: "CLT - CONSOLIDADA", url: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" },
+        { nome: "REGIMENTO INTERNO (SENADO)", url: "https://www25.senado.leg.br/web/atividade/regimento-interno" },
+        { nome: "CLT - CONSOLIDADA (PLANALTO)", url: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" },
         { nome: "CONSTITUIÇÃO FEDERAL", url: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
-        { nome: "LEI 8.112/90 (ESTATUTO)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" },
-        { nome: "MANUAL DE REDAÇÃO LEGISLATIVA", url: "https://www12.senado.leg.br/manualderedacao" }
+        { nome: "LEI 8.112/90 (ESTATUTO)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" }
     ];
 
     window.onload = async () => {
-        // Inicializa o motor da folha
         FolhaEngine.montar('folha-total');
-        
-        // Atualiza Interface
         document.getElementById('identificador-peca').querySelector('span').innerText = window.pecaAtualNome;
-        
-        // Recupera último trabalho do Firebase
         await carregarRascunho();
-        
-        // Auto-save a cada 30 segundos
         setInterval(salvarAutomatico, 30000);
     };
 
-    // --- FUNÇÃO PERGAMINHO: MODELOS PARA CONSULTOR ---
+    // --- FUNÇÃO PERGAMINHO (MODELOS TÉCNICOS) ---
     window.abrirPergaminho = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📜 ESTRUTURAS: TRABALHO & PREV";
-        
+        document.getElementById('modal-title').innerText = "📜 MODELOS: TRABALHO & PREVIDÊNCIA";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_MÉRITO')"><span>PARECER DE MÉRITO (CLT)</span> <i class="fas fa-file-contract"></i></div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_CONST')"><span>PARECER CONSTITUCIONALIDADE</span> <i class="fas fa-shield-alt"></i></div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('MINUTA_PL')"><span>MINUTA DE PROJETO DE LEI</span> <i class="fas fa-pen-nib"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER')">PARECER DE MÉRITO (CAS)</div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('CONST')">PARECER CONSTITUCIONALIDADE (CCJ)</div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('PL')">MINUTA DE PROJETO DE LEI</div>
         `;
         modal.style.display = 'flex';
     };
 
     window.injetarEstrutura = (tipo) => {
         const ed = document.getElementById('editor-principal');
-        let html = "";
-        const ano = new Date().getFullYear();
+        if(tipo === 'PARECER') ed.innerHTML = `<h2>PARECER Nº __, DE 2026</h2><p><strong>COMISSÃO DE ASSUNTOS SOCIAIS</strong></p><p><strong>I - RELATÓRIO</strong></p><p>...</p><p><strong>II - ANÁLISE</strong></p><p>...</p>`;
+        document.getElementById('universal-modal').style.display='none';
+    };
 
-        if(tipo === 'PARECER_MÉRITO') {
-            html = `<h2>PARECER Nº ____, DE ${ano}</h2><p><strong>COMISSÃO DE ASSUNTOS SOCIAIS</strong></p><p><strong>I – RELATÓRIO:</strong> [Descreva a proposta de alteração trabalhista/previdenciária]</p><p><strong>II – ANÁLISE:</strong> [Avalie a conveniência, oportunidade e impacto social]</p><p><strong>III – VOTO:</strong> Pela Aprovação...</p>`;
-        } else if(tipo === 'PARECER_CONST') {
-            html = `<h2>PARECER Nº ____, DE ${ano} (CCJ)</h2><p><strong>ASSUNTO:</strong> Juridicidade e Constitucionalidade.</p><p><strong>ANÁLISE:</strong> A proposição não fere cláusulas pétreas...</p><p><strong>CONCLUSÃO:</strong> Voto pela constitucionalidade.</p>`;
-        } else if(tipo === 'MINUTA_PL') {
-            html = `<h2>PROJETO DE LEI Nº ____, DE ${ano}</h2><p><em>Altera a CLT para dispor sobre...</em></p><p>O CONGRESSO NACIONAL decreta:</p><p>Art. 1º ...</p><p><strong>JUSTIFICAÇÃO:</strong> [Argumentação técnica]</p>`;
-        }
+    // --- GESTÃO DE GAVETAS (PARA PROVAS E ESTUDOS ANTERIORES) ---
+    window.gerenciadorPasta = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS DE ESTUDO";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PROVAS')"><span>PROVAS ANTERIORES FGV</span> <i class="fas fa-file-pdf"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PARECERES')"><span>MEUS PARECERES SALVOS</span> <i class="fas fa-file-alt"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('RESUMOS')"><span>RESUMOS LEGISLATIVOS</span> <i class="fas fa-book-open"></i></div>
+        `;
+        modal.style.display = 'flex';
+    };
 
-        ed.innerHTML = html;
-        document.getElementById('universal-modal').style.display = 'none';
-        salvarAutomatico();
+    window.abrirSubGaveta = async (tipo) => {
+        const content = document.getElementById('modal-content');
+        content.innerHTML = "Carregando arquivos...";
+        try {
+            const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
+            content.innerHTML = `<div style="margin-bottom:10px; font-weight:bold;">${tipo}:</div>`;
+            if (snap.exists()) {
+                const itens = Object.keys(snap.val()).map(k => ({id: k, ...snap.val()[k]}));
+                const filtrados = itens.filter(i => i.categoria === tipo);
+                if(filtrados.length === 0) content.innerHTML += "Nenhum arquivo nesta gaveta.";
+                filtrados.forEach(item => {
+                    const d = document.createElement('div');
+                    d.className = 'opt-btn';
+                    d.innerHTML = `<span>${item.peca}</span>`;
+                    d.onclick = () => { document.getElementById('editor-principal').innerHTML = item.conteudo; document.getElementById('universal-modal').style.display='none'; };
+                    content.appendChild(d);
+                });
+            }
+        } catch (e) { content.innerHTML = "Erro ao carregar."; }
+    };
+
+    // --- FINALIZAR E SALVAR (COM SELEÇÃO DE CATEGORIA) ---
+    window.finalizarPeca = async () => {
+        const ed = document.getElementById('editor-principal');
+        const cat = prompt("Onde deseja salvar? (PROVAS / PARECERES / RESUMOS)", "PARECERES");
+        if(!cat) return;
+        try {
+            const id = Date.now().toString();
+            await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
+                categoria: cat.toUpperCase(),
+                peca: window.pecaAtualNome + " (" + new Date().toLocaleDateString() + ")",
+                conteudo: ed.innerHTML
+            });
+            alert("ARQUIVO ORGANIZADO NA GAVETA " + cat);
+        } catch (e) { alert("Erro ao salvar."); }
     };
 
     // --- ESTUDO EM TELA (BIBLIOTECA) ---
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📚 ESTUDO EM TELA (DIVIDIDA)";
+        document.getElementById('modal-title').innerText = "📚 BIBLIOTECA VIVA";
         content.innerHTML = "";
-        
         window.LISTA_PDF_BIBLIOTECA.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'opt-btn';
-            div.innerHTML = `<span>${item.nome}</span> <i class="fas fa-external-link-alt"></i>`;
-            div.onclick = () => {
-                document.getElementById('pdf-frame').src = item.url;
-                document.getElementById('pdf-title').innerText = item.nome;
-                document.getElementById('pdf-viewer').classList.add('active');
-                document.getElementById('editor-container').classList.add('collapsed');
-                modal.style.display = 'none';
-            };
-            content.appendChild(div);
+            const d = document.createElement('div');
+            d.className = 'opt-btn';
+            d.innerHTML = `<span>${item.nome}</span> <i class="fas fa-external-link-alt"></i>`;
+            d.onclick = () => { window.open(item.url, '_blank'); document.getElementById('pdf-viewer').classList.add('active'); document.getElementById('editor-container').classList.add('collapsed'); modal.style.display = 'none'; };
+            content.appendChild(d);
         });
         modal.style.display = 'flex';
     };
 
-    // --- GESTÃO DE ARQUIVOS (GAVETAS) ---
-    window.finalizarPeca = async () => {
-        const ed = document.getElementById('editor-principal');
-        if(!ed) return;
-        if(!confirm("Deseja salvar este Parecer na base do Senado?")) return;
-
-        try {
-            const id = Date.now().toString();
-            await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
-                peca: `${window.pecaAtualNome} (${new Date().toLocaleDateString()})`,
-                conteudo: ed.innerHTML
-            });
-            alert("✅ DOCUMENTO SALVO NAS GAVETAS DO SENADO!");
-        } catch (e) { alert("Erro ao salvar no Firebase."); }
-    };
-
-    window.gerenciadorPasta = async () => {
-        const modal = document.getElementById('universal-modal');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📂 GAVETA DE ESTUDOS";
-        content.innerHTML = "Buscando arquivos...";
-        
-        try {
-            const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
-            content.innerHTML = "";
-            if (snap.exists()) {
-                Object.keys(snap.val()).reverse().forEach(id => {
-                    const item = snap.val()[id];
-                    const div = document.createElement('div');
-                    div.className = 'opt-btn';
-                    div.innerHTML = `<span>${item.peca}</span>`;
-                    div.onclick = () => {
-                        document.getElementById('editor-principal').innerHTML = item.conteudo;
-                        modal.style.display = 'none';
-                    };
-                    content.appendChild(div);
-                });
-            } else { content.innerHTML = "Nenhum parecer salvo."; }
-        } catch (e) { content.innerHTML = "Erro ao carregar gaveta."; }
-        modal.style.display = 'flex';
-    };
-
     // --- UTILITÁRIOS ---
-    window.toggleRecolherEditor = () => {
-        document.getElementById('editor-container').classList.toggle('collapsed');
-        document.getElementById('pdf-viewer').classList.toggle('active');
-    };
-
-    window.fecharPDF = () => {
-        document.getElementById('pdf-viewer').classList.remove('active');
-        document.getElementById('editor-container').classList.remove('collapsed');
-        document.getElementById('pdf-frame').src = "about:blank";
-    };
-
-    window.renomearTreino = () => {
-        const novo = prompt("Nome do Parecer/Estudo:", window.pecaAtualNome);
-        if(novo) {
-            window.pecaAtualNome = novo;
-            localStorage.setItem('senado_peca_nome', novo);
-            document.getElementById('identificador-peca').querySelector('span').innerText = novo;
-        }
-    };
-
-    window.limparFolha = () => {
-        if(confirm("Limpar toda a tela de estudo?")) {
-            document.getElementById('editor-principal').innerHTML = "";
-            salvarAutomatico();
-        }
-    };
-
-    async function salvarAutomatico() {
-        const ed = document.getElementById('editor-principal');
-        if(ed) await set(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`), { conteudo: ed.innerHTML });
-    }
-
-    async function carregarRascunho() {
-        const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`));
-        if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo;
-    }
+    window.toggleRecolherEditor = () => { document.getElementById('editor-container').classList.toggle('collapsed'); document.getElementById('pdf-viewer').classList.toggle('active'); };
+    window.fecharPDF = () => { document.getElementById('pdf-viewer').classList.remove('active'); document.getElementById('editor-container').classList.remove('collapsed'); };
+    window.renomearTreino = () => { const n = prompt("Nome:", window.pecaAtualNome); if(n) { window.pecaAtualNome = n; document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
+    window.limparFolha = () => confirm("Limpar?") && (document.getElementById('editor-principal').innerHTML = "");
+    async function salvarAutomatico() { const ed = document.getElementById('editor-principal'); if(ed) set(ref(db, `${PROJETO_ID}/RASCUNHO`), { conteudo: ed.innerHTML }); }
+    async function carregarRascunho() { const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO`)); if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo; }
 </script>
-
-<style>
-    /* Ajustes finais de scroll e editor */
-    #editor-principal { 
-        outline: none; 
-        min-height: 800px; 
-        font-size: 16px; 
-        line-height: 1.8; 
-        color: #1a1a1a;
-        text-align: justify;
-    }
-    #editor-principal h2 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #eee; }
-    .opt-btn span { flex: 1; }
-</style>
-
-</body>
-</html>
