@@ -6,27 +6,28 @@
     <title>SISTEMA LEGISLATIVO - SENADO FEDERAL</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
-            /* NOVA PALETA SENADO FEDERAL */
-            --primary: #00274d; /* Azul Marinho Senado */
+            /* PALETA OFICIAL SENADO FEDERAL */
+            --primary: #00274d; 
             --secondary: #1e3a8a;
-            --accent: #e5e7eb; /* Prata/Cinza Claro */
-            --gold-senado: #c5a059; /* Dourado Brasão */
+            --accent: #e5e7eb; 
+            --gold-senado: #c5a059; 
             --bg-paper: #f1f5f9; 
             --paper-color: #ffffff; 
             --sidebar-w: 260px;
             --perigo: #991b1b;
             --sucesso: #166534;
-            --questoes: #0369a1;
             --legislativo: #1e40af;
         }
 
         body.dark-mode { --bg-paper: #0f172a; }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: 'Inter', system-ui, sans-serif; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
             background: var(--primary); 
             height: 100vh; 
             display: flex; 
@@ -53,21 +54,20 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
+        /* BARRA LATERAL */
         .sidebar { 
             width: var(--sidebar-w); 
             background: #001f3d; 
             display: flex; 
             flex-direction: column; 
-            gap: 6px; 
+            gap: 8px; 
             padding: 15px; 
             border-right: 1px solid rgba(255,255,255,0.1); 
             overflow-y: auto; 
-            transition: all 0.3s ease;
         }
 
-        /* BOTÕES LATERAIS ESTILO INSTITUCIONAL */
         .btn-side { 
-            width: 100%; min-height: 42px; border: none; border-radius: 6px; 
+            width: 100%; min-height: 45px; border: none; border-radius: 6px; 
             display: flex; align-items: center; padding: 0 15px; color: white; 
             font-weight: 600; cursor: pointer; gap: 12px; font-size: 0.75rem; 
             text-transform: uppercase; transition: 0.2s; background: rgba(255,255,255,0.05);
@@ -76,10 +76,11 @@
         .btn-side:hover { background: rgba(255,255,255,0.12); border-left-color: var(--gold-senado); }
         .btn-side i { width: 18px; font-size: 0.9rem; color: var(--gold-senado); }
 
+        /* ÁREA DO EDITOR */
         .editor-container { 
             flex: 1; display: flex; flex-direction: column; 
             background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px 10px;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .editor-container.collapsed { flex: 0.2; opacity: 0.4; pointer-events: none; }
@@ -96,43 +97,42 @@
             font-weight: 800; color: var(--primary); border-bottom: 2px solid #e2e8f0;
             cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
         }
-        
-        .toolbar-liberdade { display: flex; background: #fff; flex-wrap: wrap; align-items: center; padding: 5px; }
-        .btn-lib { 
-            padding: 10px 15px; border: none; background: transparent; 
-            cursor: pointer; font-weight: 700; font-size: 0.65rem; 
-            text-transform: uppercase; color: #475569; border-radius: 4px;
-        }
-        .btn-lib:hover { background: #f1f5f9; }
-
-        .highlight-box { display: flex; align-items: center; background: #f8fafc; padding: 5px 12px; gap: 8px; border-radius: 20px; margin: 0 10px; border: 1px solid #e2e8f0; }
-        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .color-dot.active { border-color: var(--primary); transform: scale(1.2); }
 
         .paper { 
             width: 100%; max-width: 900px; background: white; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
-            min-height: 29.7cm; /* Padrão A4 aproximado */
-            position: relative; padding: 40px !important;
+            min-height: 29.7cm; position: relative; padding: 40px !important;
         }
 
+        /* VISUALIZADOR DE PDF / LEGISLAÇÃO */
         #pdf-viewer { width: 0; background: #1e293b; transition: 0.4s; display: flex; flex-direction: column; overflow: hidden; }
         #pdf-viewer.active { width: 50%; border-left: 4px solid var(--gold-senado); }
-        #pdf-viewer.full-view { width: 100% !important; }
+        #pdf-viewer iframe { flex: 1; border: none; background: white; }
 
-        .pdf-controls { background: var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);}
-        
-        #mobile-hub { display: none; position: fixed; bottom: 30px; right: 25px; z-index: 99999; flex-direction: column-reverse; gap: 12px; }
-        .fab-main { width: 60px; height: 60px; border-radius: 50%; background: var(--gold-senado); border: none; font-size: 1.5rem; box-shadow: 0 8px 25px rgba(0,0,0,0.4); cursor: pointer; color: white; }
-        
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,39,77,0.85); z-index: 110000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-body { background: white; width: 95%; max-width: 450px; padding: 30px; border-radius: 12px; color: #0f172a; border-top: 8px solid var(--gold-senado); }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; align-items: center; color: var(--primary); }
+        .pdf-controls { 
+            background: var(--primary); padding: 12px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* MODAIS */
+        .modal { 
+            display: none; position: fixed; inset: 0; background: rgba(0,39,77,0.9); 
+            z-index: 110000; align-items: center; justify-content: center; backdrop-filter: blur(4px); 
+        }
+        .modal-body { 
+            background: white; width: 95%; max-width: 500px; padding: 30px; 
+            border-radius: 12px; color: #0f172a; border-top: 8px solid var(--gold-senado); 
+        }
+        .opt-btn { 
+            width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; 
+            border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700; 
+            display: flex; justify-content: space-between; cursor: pointer; color: var(--primary); 
+        }
         .opt-btn:hover { background: var(--primary); color: white; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            #mobile-hub { display: flex; }
             #pdf-viewer.active { width: 100%; position: absolute; z-index: 8000; height: 100%; }
         }
     </style>
@@ -141,33 +141,23 @@
 
 <header>
     <div class="logo"><i class="fas fa-landmark"></i> SENADO <span>FEDERAL</span></div>
-    <div style="background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 1px;">
-        SISTEMA DE APOIO LEGISLATIVO: <span id="ex-display" style="color:var(--gold-senado)">MODO SENADO</span>
+    <div style="background: rgba(255,255,255,0.1); padding: 6px 15px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+        ÁREA TÉCNICA: <span id="ex-display" style="color:var(--gold-senado)">TRABALHO & PREVIDÊNCIA</span>
     </div>
 </header>
 
 <main>
     <aside class="sidebar" id="sidebar-main">
-        <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; opacity: 0.7;">MENU ADMINISTRATIVO</div>
+        <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; opacity: 0.8; letter-spacing: 1px;">CONSULTORIA LEGISLATIVA</div>
         
-        <button class="btn-side" style="background:var(--secondary);" onclick="window.ativarModoQuestoes()"><i class="fas fa-tasks"></i> QUESTÕES FGV</button>
-        <button class="btn-side" style="background:#0f172a;" onclick="window.ativarTreinoLivre()"><i class="fas fa-file-alt"></i> NOVO PARECER</button>
-        <button class="btn-side" style="background:var(--legislativo);" onclick="window.ativarModoTeses()"><i class="fas fa-gavel"></i> REGIMENTO INTERNO</button>
+        <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i> MODELOS DE PARECER</button>
+        <button class="btn-side" style="background:var(--legislativo);" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> ESTUDO EM TELA (LEIS)</button>
+        <button class="btn-side" onclick="window.gerenciadorPasta()"><i class="fas fa-folder-open"></i> GAVETAS DE ARQUIVOS</button>
         
-        <hr style="opacity:0.1; margin:10px 0">
+        <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         
-        <button class="btn-side" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> VADE MECUM SENADO</button>
-        <button class="btn-side" onclick="window.gerenciadorPasta()"><i class="fas fa-archive"></i> GAVETAS DE ARQUIVOS</button>
-        <button class="btn-side" style="background:var(--sucesso);" onclick="window.finalizarPeca()"><i class="fas fa-check-double"></i> FINALIZAR E SALVAR</button>
-        
-        <hr style="opacity:0.1; margin:10px 0">
-        
-        <button class="btn-side" style="background:#334155;" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i> MODELOS TÉCNICOS</button>
-        <button class="btn-side" style="background:#475569;" onclick="window.abrirMentoria()"><i class="fas fa-robot"></i> CONSULTOR IA</button>
-        
-        <div style="margin-top: auto; padding: 10px; font-size: 9px; opacity: 0.5; text-align: center;">
-            SISTEMA JOAQUIM ELITE v2.0<br>SENADO FEDERAL 2026
-        </div>
+        <button class="btn-side" style="background:var(--sucesso);" onclick="window.finalizarPeca()"><i class="fas fa-save"></i> FINALIZAR E SALVAR</button>
+        <button class="btn-side" style="background:#334155;" onclick="window.limparFolha()"><i class="fas fa-eraser"></i> LIMPAR TELA</button>
     </aside>
 
     <section class="editor-container" id="editor-container">
@@ -175,24 +165,9 @@
             <div id="identificador-peca" onclick="window.renomearTreino()">
                 <i class="fas fa-file-signature"></i> <span>CARREGANDO DOCUMENTO...</span>
             </div>
-            <div class="toolbar-liberdade">
-                <button class="btn-lib" onclick="window.desfazer()"><i class="fas fa-undo"></i> Desfazer</button>
-                
-                <div class="highlight-box">
-                    <button class="btn-lib" id="btn-highlight" onclick="window.toggleMarcaTexto()" style="padding: 5px;">
-                        <i class="fas fa-highlighter"></i>
-                    </button>
-                    <div class="color-dot active" id="dot-yellow" style="background:#fef08a;" onclick="window.setHighlightColor('#fef08a', 'dot-yellow')"></div>
-                    <div class="color-dot" id="dot-green" style="background:#bbf7d0;" onclick="window.setHighlightColor('#bbf7d0', 'dot-green')"></div>
-                    <div class="color-dot" id="dot-orange" style="background:#fed7aa;" onclick="window.setHighlightColor('#fed7aa', 'dot-orange')"></div>
-                    <div class="color-dot none" id="dot-none" style="background:#fff; border:1px solid #ddd; position:relative" onclick="window.setHighlightColor('transparent', 'dot-none')">
-                        <div style="width: 100%; height: 1px; background: red; transform: rotate(45deg); position: absolute; top: 8px;"></div>
-                    </div>
-                </div>
-
-                <button class="btn-lib" onclick="window.limparFolha()"><i class="fas fa-eraser"></i> Limpar</button>
-                <button class="btn-lib" id="btn-foco" onclick="window.toggleRecolherEditor()"><i class="fas fa-columns"></i> DIVIDIR TELA</button>
-                <button class="btn-lib" style="background:var(--primary); color:white; margin-left: auto;" onclick="window.print()"><i class="fas fa-print"></i> EXPORTAR PDF</button>
+            <div style="padding: 8px; display: flex; gap: 10px; background: #fff; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                <button class="btn-side" style="color:var(--primary); width: auto; background: #f1f5f9;" onclick="window.toggleRecolherEditor()"><i class="fas fa-columns"></i> DIVIDIR TELA</button>
+                <button class="btn-side" style="color:var(--primary); width: auto; background: #f1f5f9;" onclick="window.print()"><i class="fas fa-print"></i> EXPORTAR PDF</button>
             </div>
         </div>
         <div class="paper">
@@ -202,82 +177,67 @@
 
     <section id="pdf-viewer">
         <div class="pdf-controls">
-            <div>
-                <button onclick="window.toggleRecolherEditor()" style="background:none; border:1px solid var(--gold-senado); color:var(--gold-senado); padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">
-                    <i class="fas fa-expand-alt"></i> EDITOR FULL
-                </button>
-                <span id="pdf-title" style="margin-left:15px; font-size:11px; font-weight:800; color:white">REFERÊNCIA TÉCNICA</span>
-            </div>
+            <span id="pdf-title" style="color:white; font-size:11px; font-weight:800; text-transform: uppercase;">REFERÊNCIA TÉCNICA</span>
             <button onclick="window.fecharPDF()" style="background:var(--gold-senado); border:none; padding:5px 12px; border-radius:4px; font-weight:bold; cursor:pointer; color:var(--primary)">FECHAR X</button>
         </div>
-        <iframe id="pdf-frame"></iframe>
+        <iframe id="pdf-frame" src="about:blank"></iframe>
     </section>
-
-    <div id="mobile-hub">
-        <button class="fab-main" onclick="window.toggleFoguete()"><i class="fas fa-briefcase"></i></button>
-        <button class="fab-sub" style="background:var(--primary);" onclick="window.gerenciadorPasta()"><i class="fas fa-folder"></i></button>
-        <button class="fab-sub" style="background:var(--legislativo);" onclick="window.ativarModoTeses()"><i class="fas fa-book"></i></button>
-        <button class="fab-sub" style="background:var(--questoes);" onclick="window.ativarModoQuestoes()"><i class="fas fa-pencil-alt"></i></button>
-        <button class="fab-sub" style="background:var(--gold-senado);" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i></button>
-    </div>
 </main>
 
 <div class="modal" id="universal-modal">
     <div class="modal-body">
         <div id="modal-back-btn" style="display:none; margin-bottom:15px; cursor:pointer; font-weight:bold; color:var(--primary)" onclick="window.gerenciadorPasta()">← VOLTAR</div>
-        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold-senado); padding-bottom:10px; font-size:1.2rem; color:var(--primary)"></h2>
+        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold-senado); padding-bottom:10px; font-size:1.1rem; color:var(--primary)"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:15px; background:#001f3d; color:#fff; border-radius:8px; margin-top:15px; font-weight:bold; cursor:pointer; border:none;">CONCLUÍDO</button>
+        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:15px; background:var(--primary); color:#fff; border-radius:8px; margin-top:15px; font-weight:bold; cursor:pointer; border:none;">CONCLUÍDO</button>
     </div>
 </div>
-
 <script type="module">
     import { db } from './firebase-config.js';
-    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { FolhaEngine } from './folha-engine.js';
 
     // ================================================================
-    // CONFIGURAÇÃO ELITE: SENADO FEDERAL (TRABALHO E PREVIDÊNCIA)
+    // CONFIGURAÇÃO BLINDADA: PROJETO SENADO FEDERAL
     // ================================================================
     const PROJETO_ID = "SISTEMA_SENADO_FEDERAL"; 
-    const PASTA_RAIZ = "C:/SistemaJoaquim/"; 
+    
+    // Chaves de memória exclusivas para o Senado (não chocam com a OAB)
+    window.pecaAtualNome = localStorage.getItem('senado_peca_nome') || "NOVO PARECER TÉCNICO";
 
-    window.db = db;
-    window.activeEx = localStorage.getItem('senado_activeEx') || "OFICIAL";
-    window.modoQuestoes = localStorage.getItem('senado_modoQuestoes') === "true";
-    window.modoTeses = localStorage.getItem('senado_modoTeses') === "true"; 
-    window.pecaAtualNome = localStorage.getItem('senado_pecaAtualNome') || "NOVO PARECER TRABALHISTA";
-
-    window.historicoUndo = [];
-    window.marcaTextoAtivo = false;
-    window.currentColor = '#fef08a';
-
+    // BIBLIOTECA VIVA (LINKS DIRETOS DO PLANALTO/SENADO)
     window.LISTA_PDF_BIBLIOTECA = [
-        { nome: "CLT ATUALIZADA (REFORMA)", url: PASTA_RAIZ + "clt_trabalho.pdf" },
-        { nome: "LEGISLAÇÃO PREVIDENCIÁRIA", url: PASTA_RAIZ + "previdencia_social.pdf" },
-        { nome: "REGIMENTO INTERNO SENADO", url: PASTA_RAIZ + "regimento_senao.pdf" },
-        { nome: "CONSTITUIÇÃO FEDERAL (CF/88)", url: PASTA_RAIZ + "cf88.pdf" },
-        { nome: "LEI 8.112/90 (ESTATUTO)", url: PASTA_RAIZ + "lei8112.pdf" },
-        { nome: "MANUAL DE TÉCNICA LEGISLATIVA", url: PASTA_RAIZ + "tecnica_legislativa.pdf" }
+        { nome: "REGIMENTO INTERNO (SENADO)", url: "https://legis.senado.leg.br/norma/561237/publicacao/15759100" },
+        { nome: "CLT - CONSOLIDADA", url: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" },
+        { nome: "CONSTITUIÇÃO FEDERAL", url: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
+        { nome: "LEI 8.112/90 (ESTATUTO)", url: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" },
+        { nome: "MANUAL DE REDAÇÃO LEGISLATIVA", url: "https://www12.senado.leg.br/manualderedacao" }
     ];
 
     window.onload = async () => {
-        atualizarDisplayModo();
+        // Inicializa o motor da folha
         FolhaEngine.montar('folha-total');
+        
+        // Atualiza Interface
+        document.getElementById('identificador-peca').querySelector('span').innerText = window.pecaAtualNome;
+        
+        // Recupera último trabalho do Firebase
         await carregarRascunho();
+        
+        // Auto-save a cada 30 segundos
         setInterval(salvarAutomatico, 30000);
     };
 
-    // --- O NOVO PERGAMINHO (MODELOS PARA CONSULTOR TRABALHISTA) ---
+    // --- FUNÇÃO PERGAMINHO: MODELOS PARA CONSULTOR ---
     window.abrirPergaminho = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📜 MODELOS: TRABALHO & PREVIDÊNCIA";
+        document.getElementById('modal-title').innerText = "📜 ESTRUTURAS: TRABALHO & PREV";
+        
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_MÉRITO')"><span>PARECER DE MÉRITO (REFORMA CLT)</span> <i class="fas fa-balance-scale"></i></div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_CONST')"><span>PARECER DE CONSTITUCIONALIDADE</span> <i class="fas fa-shield-alt"></i></div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('MINUTA_PL')"><span>MINUTA DE PROJETO DE LEI (PL)</span> <i class="fas fa-pen-nib"></i></div>
-            <div class="opt-btn" onclick="window.injetarEstrutura('NOTA_TECNICA')"><span>NOTA TÉCNICA (PREVIDENCIÁRIO)</span> <i class="fas fa-file-invoice"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_MÉRITO')"><span>PARECER DE MÉRITO (CLT)</span> <i class="fas fa-file-contract"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_CONST')"><span>PARECER CONSTITUCIONALIDADE</span> <i class="fas fa-shield-alt"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('MINUTA_PL')"><span>MINUTA DE PROJETO DE LEI</span> <i class="fas fa-pen-nib"></i></div>
         `;
         modal.style.display = 'flex';
     };
@@ -285,130 +245,138 @@
     window.injetarEstrutura = (tipo) => {
         const ed = document.getElementById('editor-principal');
         let html = "";
-        const dataH = new Date().getFullYear();
+        const ano = new Date().getFullYear();
 
         if(tipo === 'PARECER_MÉRITO') {
-            html = `<h2>PARECER Nº ____, DE ${dataH}</h2>
-                    <p><strong>COMISSÃO DE ASSUNTOS SOCIAIS (CAS)</strong></p>
-                    <p>Relatório sobre o Projeto de Lei nº ____, que altera a CLT.</p>
-                    <p><strong>I - RELATÓRIO:</strong> [Descrever a proposta trabalhista]</p>
-                    <p><strong>II - ANÁLISE:</strong> [Avaliar impacto econômico e social no Direito do Trabalho]</p>
-                    <p><strong>III - VOTO:</strong> Pela aprovação, nos termos do substitutivo...</p>`;
+            html = `<h2>PARECER Nº ____, DE ${ano}</h2><p><strong>COMISSÃO DE ASSUNTOS SOCIAIS</strong></p><p><strong>I – RELATÓRIO:</strong> [Descreva a proposta de alteração trabalhista/previdenciária]</p><p><strong>II – ANÁLISE:</strong> [Avalie a conveniência, oportunidade e impacto social]</p><p><strong>III – VOTO:</strong> Pela Aprovação...</p>`;
         } else if(tipo === 'PARECER_CONST') {
-            html = `<h2>PARECER (CCJ) Nº ____, DE ${dataH}</h2>
-                    <p><strong>ASSUNTO:</strong> Constitucionalidade de Emenda Previdenciária.</p>
-                    <p><strong>ANÁLISE JURÍDICA:</strong> A proposição atende aos requisitos do Art. 60 da CF/88...</p>
-                    <p><strong>TÉCNICA LEGISLATIVA:</strong> Observância da LC nº 95/98.</p>
-                    <p><strong>CONCLUSÃO:</strong> Pela constitucionalidade e juridicidade.</p>`;
+            html = `<h2>PARECER Nº ____, DE ${ano} (CCJ)</h2><p><strong>ASSUNTO:</strong> Juridicidade e Constitucionalidade.</p><p><strong>ANÁLISE:</strong> A proposição não fere cláusulas pétreas...</p><p><strong>CONCLUSÃO:</strong> Voto pela constitucionalidade.</p>`;
         } else if(tipo === 'MINUTA_PL') {
-            html = `<h2>PROJETO DE LEI Nº ____, DE ${dataH}</h2>
-                    <p><em>Altera a Consolidação das Leis do Trabalho (CLT) para dispor sobre...</em></p>
-                    <p>O CONGRESSO NACIONAL decreta:</p>
-                    <p>Art. 1º O Art. ___ da CLT passa a vigorar com a seguinte redação...</p>
-                    <p><strong>JUSTIFICAÇÃO:</strong> [Argumentação técnica e política]</p>`;
+            html = `<h2>PROJETO DE LEI Nº ____, DE ${ano}</h2><p><em>Altera a CLT para dispor sobre...</em></p><p>O CONGRESSO NACIONAL decreta:</p><p>Art. 1º ...</p><p><strong>JUSTIFICAÇÃO:</strong> [Argumentação técnica]</p>`;
         }
 
         ed.innerHTML = html;
         document.getElementById('universal-modal').style.display = 'none';
-        persistirMemoria();
+        salvarAutomatico();
     };
 
-    // --- GAVETAS INDEPENDENTES ---
-    window.gerenciadorPasta = () => {
+    // --- ESTUDO EM TELA (BIBLIOTECA) ---
+    window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-back-btn').style.display = "none";
-        document.getElementById('modal-title').innerText = "📂 GAVETAS: TRABALHO & PREVIDÊNCIA";
-        content.innerHTML = `
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('QUESTÕES')"><span>QUESTÕES FGV (DISCURSIVAS)</span> <i class="fas fa-question-circle"></i></div>
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('PARECERES')"><span>MEUS PARECERES</span> <i class="fas fa-file-signature"></i></div>
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('REGIMENTO')"><span>RESUMOS REGIMENTAIS</span> <i class="fas fa-scroll"></i></div>
-        `;
+        document.getElementById('modal-title').innerText = "📚 ESTUDO EM TELA (DIVIDIDA)";
+        content.innerHTML = "";
+        
+        window.LISTA_PDF_BIBLIOTECA.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'opt-btn';
+            div.innerHTML = `<span>${item.nome}</span> <i class="fas fa-external-link-alt"></i>`;
+            div.onclick = () => {
+                document.getElementById('pdf-frame').src = item.url;
+                document.getElementById('pdf-title').innerText = item.nome;
+                document.getElementById('pdf-viewer').classList.add('active');
+                document.getElementById('editor-container').classList.add('collapsed');
+                modal.style.display = 'none';
+            };
+            content.appendChild(div);
+        });
         modal.style.display = 'flex';
     };
 
-    window.abrirGavetaEspecifica = async (tipoGaveta) => {
+    // --- GESTÃO DE ARQUIVOS (GAVETAS) ---
+    window.finalizarPeca = async () => {
+        const ed = document.getElementById('editor-principal');
+        if(!ed) return;
+        if(!confirm("Deseja salvar este Parecer na base do Senado?")) return;
+
+        try {
+            const id = Date.now().toString();
+            await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
+                peca: `${window.pecaAtualNome} (${new Date().toLocaleDateString()})`,
+                conteudo: ed.innerHTML
+            });
+            alert("✅ DOCUMENTO SALVO NAS GAVETAS DO SENADO!");
+        } catch (e) { alert("Erro ao salvar no Firebase."); }
+    };
+
+    window.gerenciadorPasta = async () => {
+        const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-back-btn').style.display = "block";
-        document.getElementById('modal-title').innerText = `📂 GAVETA: ${tipoGaveta}`;
-        content.innerHTML = "<div style='text-align:center; padding:20px;'>Acessando Base de Dados...</div>";
+        document.getElementById('modal-title').innerText = "📂 GAVETA DE ESTUDOS";
+        content.innerHTML = "Buscando arquivos...";
+        
         try {
             const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
             content.innerHTML = "";
             if (snap.exists()) {
-                const dados = snap.val();
-                const filtrados = Object.keys(dados).map(k => ({ id: k, ...dados[k] }))
-                                   .filter(item => String(item.categoria) === String(tipoGaveta));
-                if(filtrados.length === 0) { content.innerHTML = "Gaveta vazia."; return; }
-                filtrados.reverse().forEach(item => {
+                Object.keys(snap.val()).reverse().forEach(id => {
+                    const item = snap.val()[id];
                     const div = document.createElement('div');
                     div.className = 'opt-btn';
-                    div.style.marginBottom = "8px";
-                    div.innerHTML = `<div onclick="window.carregarPecaPasta('${item.id}')" style="flex:1"><strong>${item.peca}</strong></div>
-                                     <i class="fas fa-trash" style="color:red" onclick="window.deletarPecaPasta('${item.id}', '${tipoGaveta}')"></i>`;
+                    div.innerHTML = `<span>${item.peca}</span>`;
+                    div.onclick = () => {
+                        document.getElementById('editor-principal').innerHTML = item.conteudo;
+                        modal.style.display = 'none';
+                    };
                     content.appendChild(div);
                 });
-            } else { content.innerHTML = "Vazio."; }
-        } catch (e) { content.innerHTML = "Erro de conexão."; }
+            } else { content.innerHTML = "Nenhum parecer salvo."; }
+        } catch (e) { content.innerHTML = "Erro ao carregar gaveta."; }
+        modal.style.display = 'flex';
     };
 
-    window.finalizarPeca = async () => {
-        const ed = document.getElementById('editor-principal');
-        if(!ed) return;
-        const categoria = window.modoQuestoes ? "QUESTÕES" : (window.modoTeses ? "REGIMENTO" : "PARECERES");
-        if(!confirm(`Salvar no Projeto SENADO (Área Trabalho/Prev)?`)) return;
-        try {
-            const idFinal = Date.now().toString();
-            await set(ref(db, `${PROJETO_ID}/HISTORICO/${idFinal}`), {
-                categoria: categoria,
-                peca: `${window.pecaAtualNome} (${new Date().toLocaleString('pt-BR')})`,
-                conteudo: ed.innerHTML
-            });
-            alert("✅ ARQUIVO BLINDADO NA GAVETA DO SENADO!");
-        } catch (e) { alert("Erro ao salvar."); }
+    // --- UTILITÁRIOS ---
+    window.toggleRecolherEditor = () => {
+        document.getElementById('editor-container').classList.toggle('collapsed');
+        document.getElementById('pdf-viewer').classList.toggle('active');
     };
 
-    // --- PERSISTÊNCIA E MEMÓRIA ---
-    function persistirMemoria() {
-        localStorage.setItem('senado_activeEx', window.activeEx);
-        localStorage.setItem('senado_modoQuestoes', window.modoQuestoes);
-        localStorage.setItem('senado_modoTeses', window.modoTeses);
-        localStorage.setItem('senado_pecaAtualNome', window.pecaAtualNome);
-    }
-
-    window.atualizarDisplayModo = () => {
-        document.getElementById('ex-display').innerText = "CONSULTOR: TRABALHO/PREV";
-        document.getElementById('identificador-peca').innerHTML = `${window.pecaAtualNome} <i class="fas fa-pen"></i>`;
+    window.fecharPDF = () => {
+        document.getElementById('pdf-viewer').classList.remove('active');
+        document.getElementById('editor-container').classList.remove('collapsed');
+        document.getElementById('pdf-frame').src = "about:blank";
     };
 
-    window.verPDF = (t) => {
-        const v = document.getElementById('pdf-viewer');
-        const f = document.getElementById('pdf-frame');
-        let arquivo = t === 'P' ? "discursiva_trabalho.pdf" : (t === 'G' ? "padrao_fgv.pdf" : "clt_senado.pdf");
-        f.src = PASTA_RAIZ + arquivo;
-        v.classList.add('active');
-        window.toggleRecolherEditor();
-    };
-
-    window.carregarPecaPasta = async (id) => {
-        const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO/${id}`));
-        if(snap.exists()){
-            document.getElementById('editor-principal').innerHTML = snap.val().conteudo;
-            window.pecaAtualNome = snap.val().peca.split(' (')[0];
-            document.getElementById('universal-modal').style.display='none';
-            persistirMemoria(); atualizarDisplayModo();
+    window.renomearTreino = () => {
+        const novo = prompt("Nome do Parecer/Estudo:", window.pecaAtualNome);
+        if(novo) {
+            window.pecaAtualNome = novo;
+            localStorage.setItem('senado_peca_nome', novo);
+            document.getElementById('identificador-peca').querySelector('span').innerText = novo;
         }
     };
 
-    // UI HELPER
-    window.renomearTreino = () => { const n = prompt("Nome do Estudo:", window.pecaAtualNome); if(n) { window.pecaAtualNome=n; persistirMemoria(); atualizarDisplayModo(); } };
-    async function salvarAutomatico() { const ed = document.getElementById('editor-principal'); if(ed) await set(ref(db, `${PROJETO_ID}/RASCUNHO_SENADO`), { conteudo: ed.innerHTML }); }
-    async function carregarRascunho() { const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO_SENADO`)); if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo; }
-    window.toggleRecolherEditor = () => { document.getElementById('editor-container').classList.toggle('collapsed'); document.getElementById('pdf-viewer').classList.toggle('full-view'); };
-    window.fecharPDF = () => { document.getElementById('pdf-viewer').classList.remove('active', 'full-view'); document.getElementById('editor-container').classList.remove('collapsed'); };
-    window.limparFolha = () => { if(confirm("Limpar?")) document.getElementById('editor-principal').innerHTML = ""; };
-    window.abrirBibliotecaPDF = () => { /* Carrega a lista window.LISTA_PDF_BIBLIOTECA no modal */ };
-    window.toggleFoguete = () => document.getElementById('mobile-hub').classList.toggle('active');
-    window.desfazer = () => { /* Lógica de Undo */ };
+    window.limparFolha = () => {
+        if(confirm("Limpar toda a tela de estudo?")) {
+            document.getElementById('editor-principal').innerHTML = "";
+            salvarAutomatico();
+        }
+    };
 
+    async function salvarAutomatico() {
+        const ed = document.getElementById('editor-principal');
+        if(ed) await set(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`), { conteudo: ed.innerHTML });
+    }
+
+    async function carregarRascunho() {
+        const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`));
+        if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo;
+    }
 </script>
+
+<style>
+    /* Ajustes finais de scroll e editor */
+    #editor-principal { 
+        outline: none; 
+        min-height: 800px; 
+        font-size: 16px; 
+        line-height: 1.8; 
+        color: #1a1a1a;
+        text-align: justify;
+    }
+    #editor-principal h2 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #eee; }
+    .opt-btn span { flex: 1; }
+</style>
+
+</body>
+</html>
