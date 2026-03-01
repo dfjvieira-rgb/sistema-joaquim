@@ -197,15 +197,17 @@
     import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { FolhaEngine } from './folha-engine.js';
 
-    const PROJETO_ID = "SISTEMA_POLICIA_CAMARA"; // Atualizado para seu novo foco
-    window.pecaAtualNome = localStorage.getItem('camara_peca_nome') || "ESTUDO POLÍCIA CÂMARA";
+    // ID Unificado: Mantém a blindagem de dados para ambos os concursos
+    const PROJETO_ID = "SISTEMA_MENTORIA_LEGISLATIVA"; 
+    window.pecaAtualNome = localStorage.getItem('mentoria_peca_nome') || "NOVO ESTUDO LEGISLATIVO";
 
-    // --- BANCO DE DADOS ATUALIZADO: CÂMARA, SENADO E JUDICIÁRIA (FGV) ---
+    // --- MEGA BANCO DE LINKS (PROVAS E FONTES OFICIAIS) ---
     const BANCO_PROVAS = [
-        { ano: "2023", cargo: "POLÍCIA DA CÂMARA", tipo: "Prova Objetiva/Discursiva", url: "https://conhecimento.fgv.br/concursos/cdeputados23" },
-        { ano: "2022", cargo: "POLÍCIA DO SENADO", tipo: "Foco Regimento/Direito", url: "https://conhecimento.fgv.br/concursos/senado22" },
-        { ano: "2024", cargo: "POLÍCIA JUDICIÁRIA (TJ)", tipo: "Foco Penal/Adm (FGV)", url: "https://conhecimento.fgv.br/concursos" },
-        { ano: "2014", cargo: "POLÍCIA DA CÂMARA", tipo: "Histórico (FCC)", url: "https://www.pciconcursos.com.br/provas/camara-dos-deputados" }
+        { cat: 'SENADO', ano: "2022", cargo: "Consultor (Trab/Prev)", url: "https://conhecimento.fgv.br/concursos/senado22" },
+        { cat: 'SENADO', ano: "2022", cargo: "Polícia Legislativa", url: "https://conhecimento.fgv.br/concursos/senado22" },
+        { cat: 'CAMARA', ano: "2023", cargo: "Polícia da Câmara", url: "https://conhecimento.fgv.br/concursos/cdeputados23" },
+        { cat: 'CAMARA', ano: "2023", cargo: "Consultor Legislativo", url: "https://conhecimento.fgv.br/concursos/cdeputados23" },
+        { cat: 'HISTORICO', ano: "2012/14", cargo: "Provas Anteriores (Diversos)", url: "https://www.pciconcursos.com.br/provas/camara-dos-deputados" }
     ];
 
     window.onload = async () => {
@@ -215,110 +217,126 @@
         setInterval(salvarAutomatico, 30000);
     };
 
-    // --- ACESSO A PROVAS DA CÂMARA E SEGURANÇA ---
-    window.abrirProvasFGV = () => {
-        const modal = document.getElementById('universal-modal');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "👮 ACERVO POLÍCIAL LEGISLATIVA";
-        
-        let html = `<p style="font-size:11px; color:gray; margin-bottom:10px;">Provas da Câmara e Carreiras de Segurança (FGV):</p>`;
-        BANCO_PROVAS.forEach(p => {
-            html += `
-                <div class="opt-btn" onclick="window.open('${p.url}', '_blank'); window.prepararAmbienteTreino('${p.cargo}')">
-                    <div style="flex:1">
-                        <strong>${p.ano} - ${p.cargo}</strong><br>
-                        <small>${p.tipo}</small>
-                    </div>
-                    <i class="fas fa-shield-halved"></i>
-                </div>`;
-        });
-        content.innerHTML = html;
-        modal.style.display = 'flex';
-    };
-
-    window.prepararAmbienteTreino = (nome) => {
-        window.pecaAtualNome = "TREINO: " + nome;
-        document.getElementById('identificador-peca').querySelector('span').innerText = window.pecaAtualNome;
-        document.getElementById('pdf-viewer').classList.add('active');
-        document.getElementById('pdf-title').innerText = "MODO TREINO: CÂMARA FEDERAL";
-        document.getElementById('universal-modal').style.display = 'none';
-    };
-
-    // --- GESTÃO DE GAVETAS (PASTAS) ---
+    // --- GESTÃO DE GAVETAS (APOSTILAS E ESTUDOS) ---
     window.gerenciadorPasta = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS";
+        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS DE ESTUDO";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.abrirSubGaveta('PROVAS')"><span>SIMULADOS POLICIAIS</span> <i class="fas fa-bullseye"></i></div>
-            <div class="opt-btn" onclick="window.abrirSubGaveta('DISCURSIVAS')"><span>REDAÇÕES E DISCURSIVAS</span> <i class="fas fa-pen-fancy"></i></div>
-            <div class="opt-btn" onclick="window.abrirSubGaveta('LEGISLATIVO')"><span>REGIMENTOS E NORMAS</span> <i class="fas fa-gavel"></i></div>
-            <div class="opt-btn" style="margin-top:10px; border-color:#007bff" onclick="window.abrirProvasFGV()"><span>BUSCAR NOVAS PROVAS</span> <i class="fas fa-search"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('APOSTILAS')"><span style="color:var(--gold-senado)">📚 MINHAS APOSTILAS / PDFs</span> <i class="fas fa-book"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PROVAS')"><span>SIMULADOS E QUESTÕES</span> <i class="fas fa-edit"></i></div>
+            <div class="opt-btn" onclick="window.abrirSubGaveta('PARECERES')"><span>PARECERES E RELATÓRIOS</span> <i class="fas fa-file-contract"></i></div>
+            <div style="margin:10px 0; border-top:1px solid #eee;"></div>
+            <div class="opt-btn" style="background:#e8f4fd" onclick="window.adicionarLinkApostila()"><span>+ VINCULAR NOVA APOSTILA (DRIVE)</span> <i class="fas fa-link"></i></div>
+            <div class="opt-btn" style="background:#00274d; color:white;" onclick="window.abrirProvasFGV()"><span>🔍 BUSCAR PROVAS (FGV/OFICIAL)</span> <i class="fas fa-search"></i></div>
         `;
         modal.style.display = 'flex';
     };
 
+    // Função para salvar os links das tuas apostilas/PDFs do Drive
+    window.adicionarLinkApostila = async () => {
+        const nome = prompt("Nome da Apostila/Material:");
+        const url = prompt("Cole o Link do PDF (Google Drive ou Web):");
+        if(nome && url) {
+            const id = Date.now().toString();
+            await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
+                categoria: "APOSTILAS",
+                peca: nome,
+                conteudo: url,
+                tipoLink: true
+            });
+            alert("Material guardado com sucesso!");
+            window.gerenciadorPasta();
+        }
+    };
+
     window.abrirSubGaveta = async (cat) => {
         const content = document.getElementById('modal-content');
-        content.innerHTML = "Acessando gaveta...";
+        content.innerHTML = "Acedendo à base...";
         const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
-        content.innerHTML = `<strong>PASTA: ${cat}</strong><br><br>`;
+        content.innerHTML = `<div onclick="window.gerenciadorPasta()" style="cursor:pointer; color:var(--primary); margin-bottom:15px; font-weight:bold;">← Voltar às Pastas</div><strong>GAVETA: ${cat}</strong><br><br>`;
+        
         if (snap.exists()) {
-            Object.keys(snap.val()).forEach(id => {
-                const item = snap.val()[id];
-                if(item.categoria === cat) {
-                    const d = document.createElement('div');
-                    d.className = 'opt-btn';
-                    d.innerHTML = `<span>${item.peca}</span>`;
-                    d.onclick = () => { document.getElementById('editor-principal').innerHTML = item.conteudo; document.getElementById('universal-modal').style.display='none'; };
-                    content.appendChild(d);
-                }
+            const itens = Object.keys(snap.val()).map(k => ({id: k, ...snap.val()[k]}));
+            const filtrados = itens.filter(i => i.categoria === cat);
+            if(filtrados.length === 0) content.innerHTML += "Esta pasta está vazia.";
+            filtrados.forEach(item => {
+                const d = document.createElement('div');
+                d.className = 'opt-btn';
+                d.innerHTML = `<span>${item.peca}</span>`;
+                d.onclick = () => {
+                    if(item.tipoLink) window.open(item.conteudo, '_blank');
+                    else document.getElementById('editor-principal').innerHTML = item.conteudo;
+                    document.getElementById('universal-modal').style.display='none';
+                };
+                content.appendChild(d);
             });
         }
     };
 
-    // --- MODELOS PARA POLÍCIA DA CÂMARA (PERGAMINHO) ---
+    // --- PERGAMINHO: MODELOS PARA CONSULTOR E POLÍCIA ---
     window.abrirPergaminho = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📜 ESTRUTURAS DE ESTUDO";
+        document.getElementById('modal-title').innerText = "📜 MODELOS DE ESCRITA";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.injetar('DISC_POL')">DISCURSIVA POLICIAL (TÓPICOS)</div>
-            <div class="opt-btn" onclick="window.injetar('RELAT')">RELATÓRIO DE OCORRÊNCIA (RICD)</div>
-            <div class="opt-btn" onclick="window.injetar('QUESTAO')">QUESTÃO OBJETIVA COMENTADA</div>
+            <div style="font-size:10px; color:var(--primary); font-weight:bold;">SENADO (CONSULTORIA)</div>
+            <div class="opt-btn" onclick="window.injetar('PARECER')">PARECER DE MÉRITO (TRABALHO)</div>
+            <div style="font-size:10px; color:var(--primary); font-weight:bold; margin-top:10px;">CÂMARA / POLÍCIA</div>
+            <div class="opt-btn" onclick="window.injetar('RELAT')">RELATÓRIO DE OCORRÊNCIA (DEPOL)</div>
+            <div class="opt-btn" onclick="window.injetar('DISC')">QUESTÃO DISCURSIVA (PADRÃO FGV)</div>
         `;
         modal.style.display = 'flex';
     };
 
     window.injetar = (t) => {
         const ed = document.getElementById('editor-principal');
-        if(t === 'DISC_POL') ed.innerHTML = `<h2>DISCURSIVA: SEGURANÇA LEGISLATIVA</h2><p><strong>TEMA:</strong> [Poder de Polícia da Câmara vs. Inviolabilidade Parlamentar]</p><hr><p><strong>PADRÃO DE RESPOSTA (FGV):</strong></p><ul><li>Aspecto Jurídico:</li><li>Aspecto Regimental:</li><li>Conclusão:</li></ul>`;
-        else if(t === 'RELAT') ed.innerHTML = `<h2>RELATÓRIO DE OCORRÊNCIA - DEPOL</h2><p><strong>HISTÓRICO:</strong> [Relate a infração penal nas dependências da Câmara]</p><p><strong>ENQUADRAMENTO:</strong> Art. 269 do RICD...</p>`;
+        if(t === 'PARECER') ed.innerHTML = `<h2>PARECER Nº __, DE 2026</h2><p><strong>COMISSÃO:</strong> Assuntos Sociais</p><hr><p><strong>I - RELATÓRIO...</strong></p>`;
+        else if(t === 'RELAT') ed.innerHTML = `<h2>RELATÓRIO DE INCIDENTE Nº __</h2><p><strong>DEPOL/CD</strong></p><p><strong>HISTÓRICO DOS FACTOS:</strong> ...</p>`;
+        else if(t === 'DISC') ed.innerHTML = `<h3>RESPOSTA DISCURSIVA - FGV</h3><p><strong>TEMA:</strong> ...</p><p><strong>FUNDAMENTAÇÃO:</strong> ...</p>`;
         document.getElementById('universal-modal').style.display='none';
     };
 
-    // --- BIBLIOTECA DA CÂMARA ---
+    // --- BIBLIOTECA VIVA (LINKS DIRETOS INCLUÍDOS) ---
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "📚 LEGISLAÇÃO FEDERAL";
-        content.innerHTML = "";
-        [
-            {n: "REGIMENTO DA CÂMARA (RICD)", u: "https://www2.camara.leg.br/atividade-legislativa/legislacao/regimento-interno-da-camara-dos-deputados"},
-            {n: "CONSTITUIÇÃO FEDERAL", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"},
-            {n: "CÓDIGO PENAL", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm"},
-            {n: "CÓDIGO PROCESSO PENAL", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689compilado.htm"}
-        ].forEach(i => {
-            const d = document.createElement('div'); d.className = 'opt-btn'; d.innerHTML = `<span>${i.n}</span>`;
-            d.onclick = () => { window.open(i.u, '_blank'); modal.style.display='none'; };
-            content.appendChild(d);
-        });
+        document.getElementById('modal-title').innerText = "📚 BIBLIOTECA LEGISLATIVA";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.open('https://www2.camara.leg.br/atividade-legislativa/legislacao/regimento-interno-da-camara-dos-deputados', '_blank')"><span>Regimento da Câmara (RICD)</span> <i class="fas fa-external-link-alt"></i></div>
+            <div class="opt-btn" onclick="window.open('https://www25.senado.leg.br/web/atividade/regimento-interno', '_blank')"><span>Regimento do Senado (RISF)</span> <i class="fas fa-external-link-alt"></i></div>
+            <div class="opt-btn" onclick="window.open('https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm', '_blank')"><span>Constituição Federal</span> <i class="fas fa-external-link-alt"></i></div>
+            <div class="opt-btn" onclick="window.open('https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm', '_blank')"><span>CLT (Trabalho)</span> <i class="fas fa-external-link-alt"></i></div>
+            <div class="opt-btn" onclick="window.open('https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm', '_blank')"><span>Código Penal (Polícia)</span> <i class="fas fa-external-link-alt"></i></div>
+        `;
         modal.style.display = 'flex';
     };
 
-    // --- SISTEMA DE SALVAMENTO ---
+    // --- SISTEMA DE PROVAS ---
+    window.abrirProvasFGV = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "📝 ACERVO DE PROVAS";
+        let html = "";
+        BANCO_PROVAS.forEach(p => {
+            html += `<div class="opt-btn" onclick="window.open('${p.url}', '_blank'); window.prepararAmbiente('${p.cargo}')">
+                <span>${p.ano} - ${p.cargo}</span> <i class="fas fa-file-pdf"></i>
+            </div>`;
+        });
+        content.innerHTML = html;
+        modal.style.display = 'flex';
+    };
+
+    // --- UTILITÁRIOS ---
+    window.prepararAmbiente = (n) => {
+        window.pecaAtualNome = "TREINO: " + n;
+        document.getElementById('identificador-peca').querySelector('span').innerText = window.pecaAtualNome;
+        document.getElementById('pdf-viewer').classList.add('active');
+        document.getElementById('universal-modal').style.display = 'none';
+    };
+
     window.finalizarPeca = async () => {
-        const cat = prompt("Gaveta (PROVAS / DISCURSIVAS / LEGISLATIVO):", "PROVAS")?.toUpperCase();
+        const cat = prompt("Guardar em: (APOSTILAS / PROVAS / PARECERES):", "PARECERES")?.toUpperCase();
         if(!cat) return;
         const id = Date.now().toString();
         await set(ref(db, `${PROJETO_ID}/HISTORICO/${id}`), {
@@ -326,13 +344,13 @@
             peca: window.pecaAtualNome + " (" + new Date().toLocaleDateString() + ")",
             conteudo: document.getElementById('editor-principal').innerHTML
         });
-        alert("Salvo com sucesso na Gaveta " + cat);
+        alert("Guardado com sucesso!");
     };
 
     window.toggleRecolherEditor = () => { document.getElementById('editor-container').classList.toggle('collapsed'); document.getElementById('pdf-viewer').classList.toggle('active'); };
     window.fecharPDF = () => { document.getElementById('pdf-viewer').classList.remove('active'); document.getElementById('editor-container').classList.remove('collapsed'); };
     window.renomearTreino = () => { const n = prompt("Nome do Estudo:", window.pecaAtualNome); if(n) { window.pecaAtualNome = n; document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
-    window.limparFolha = () => confirm("Deseja limpar a tela?") && (document.getElementById('editor-principal').innerHTML = "");
+    window.limparFolha = () => confirm("Limpar tela?") && (document.getElementById('editor-principal').innerHTML = "");
     async function salvarAutomatico() { const ed = document.getElementById('editor-principal'); if(ed) set(ref(db, `${PROJETO_ID}/RASCUNHO`), { conteudo: ed.innerHTML }); }
     async function carregarRascunho() { const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO`)); if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo; }
 </script>
