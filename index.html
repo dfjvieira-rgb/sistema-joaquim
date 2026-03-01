@@ -237,65 +237,92 @@
     import { FolhaEngine } from './folha-engine.js';
 
     // ================================================================
-    // IDENTIDADE EXCLUSIVA DO PROJETO
+    // CONFIGURAÇÃO ELITE: SENADO FEDERAL (TRABALHO E PREVIDÊNCIA)
     // ================================================================
     const PROJETO_ID = "SISTEMA_SENADO_FEDERAL"; 
     const PASTA_RAIZ = "C:/SistemaJoaquim/"; 
 
     window.db = db;
-    // Chaves de memória exclusivas para não afetar o projeto OAB
     window.activeEx = localStorage.getItem('senado_activeEx') || "OFICIAL";
     window.modoQuestoes = localStorage.getItem('senado_modoQuestoes') === "true";
     window.modoTeses = localStorage.getItem('senado_modoTeses') === "true"; 
-    window.pecaAtualNome = localStorage.getItem('senado_pecaAtualNome') || "NOVO PARECER";
+    window.pecaAtualNome = localStorage.getItem('senado_pecaAtualNome') || "NOVO PARECER TRABALHISTA";
 
     window.historicoUndo = [];
-    let debounceTimer = null;
     window.marcaTextoAtivo = false;
     window.currentColor = '#fef08a';
 
-    // BIBLIOTECA FOCO: SENADO FEDERAL (Busca na C:/SistemaJoaquim/)
     window.LISTA_PDF_BIBLIOTECA = [
-        { nome: "REGIMENTO INTERNO - SENADO", url: PASTA_RAIZ + "regimento_interno.pdf" },
-        { nome: "CONSTITUIÇÃO FEDERAL 1988", url: PASTA_RAIZ + "cf88.pdf" },
+        { nome: "CLT ATUALIZADA (REFORMA)", url: PASTA_RAIZ + "clt_trabalho.pdf" },
+        { nome: "LEGISLAÇÃO PREVIDENCIÁRIA", url: PASTA_RAIZ + "previdencia_social.pdf" },
+        { nome: "REGIMENTO INTERNO SENADO", url: PASTA_RAIZ + "regimento_senao.pdf" },
+        { nome: "CONSTITUIÇÃO FEDERAL (CF/88)", url: PASTA_RAIZ + "cf88.pdf" },
         { nome: "LEI 8.112/90 (ESTATUTO)", url: PASTA_RAIZ + "lei8112.pdf" },
-        { nome: "PROCESSO LEGISLATIVO FGV", url: PASTA_RAIZ + "processo_legislativo.pdf" },
-        { nome: "MANUAL DE REDAÇÃO LEGISLATIVA", url: PASTA_RAIZ + "manual_redacao.pdf" }
+        { nome: "MANUAL DE TÉCNICA LEGISLATIVA", url: PASTA_RAIZ + "tecnica_legislativa.pdf" }
     ];
 
     window.onload = async () => {
         atualizarDisplayModo();
         FolhaEngine.montar('folha-total');
-        
-        setTimeout(() => {
-            const ed = document.getElementById('editor-principal');
-            if(ed) {
-                ed.addEventListener('input', () => {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(() => {
-                        const html = ed.innerHTML;
-                        if(window.historicoUndo[window.historicoUndo.length -1] !== html) {
-                            window.historicoUndo.push(html);
-                        }
-                    }, 800);
-                });
-            }
-        }, 1000);
-
         await carregarRascunho();
         setInterval(salvarAutomatico, 30000);
     };
 
-    // --- GAVETAS INDEPENDENTES (SENADO) ---
+    // --- O NOVO PERGAMINHO (MODELOS PARA CONSULTOR TRABALHISTA) ---
+    window.abrirPergaminho = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "📜 MODELOS: TRABALHO & PREVIDÊNCIA";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_MÉRITO')"><span>PARECER DE MÉRITO (REFORMA CLT)</span> <i class="fas fa-balance-scale"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('PARECER_CONST')"><span>PARECER DE CONSTITUCIONALIDADE</span> <i class="fas fa-shield-alt"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('MINUTA_PL')"><span>MINUTA DE PROJETO DE LEI (PL)</span> <i class="fas fa-pen-nib"></i></div>
+            <div class="opt-btn" onclick="window.injetarEstrutura('NOTA_TECNICA')"><span>NOTA TÉCNICA (PREVIDENCIÁRIO)</span> <i class="fas fa-file-invoice"></i></div>
+        `;
+        modal.style.display = 'flex';
+    };
+
+    window.injetarEstrutura = (tipo) => {
+        const ed = document.getElementById('editor-principal');
+        let html = "";
+        const dataH = new Date().getFullYear();
+
+        if(tipo === 'PARECER_MÉRITO') {
+            html = `<h2>PARECER Nº ____, DE ${dataH}</h2>
+                    <p><strong>COMISSÃO DE ASSUNTOS SOCIAIS (CAS)</strong></p>
+                    <p>Relatório sobre o Projeto de Lei nº ____, que altera a CLT.</p>
+                    <p><strong>I - RELATÓRIO:</strong> [Descrever a proposta trabalhista]</p>
+                    <p><strong>II - ANÁLISE:</strong> [Avaliar impacto econômico e social no Direito do Trabalho]</p>
+                    <p><strong>III - VOTO:</strong> Pela aprovação, nos termos do substitutivo...</p>`;
+        } else if(tipo === 'PARECER_CONST') {
+            html = `<h2>PARECER (CCJ) Nº ____, DE ${dataH}</h2>
+                    <p><strong>ASSUNTO:</strong> Constitucionalidade de Emenda Previdenciária.</p>
+                    <p><strong>ANÁLISE JURÍDICA:</strong> A proposição atende aos requisitos do Art. 60 da CF/88...</p>
+                    <p><strong>TÉCNICA LEGISLATIVA:</strong> Observância da LC nº 95/98.</p>
+                    <p><strong>CONCLUSÃO:</strong> Pela constitucionalidade e juridicidade.</p>`;
+        } else if(tipo === 'MINUTA_PL') {
+            html = `<h2>PROJETO DE LEI Nº ____, DE ${dataH}</h2>
+                    <p><em>Altera a Consolidação das Leis do Trabalho (CLT) para dispor sobre...</em></p>
+                    <p>O CONGRESSO NACIONAL decreta:</p>
+                    <p>Art. 1º O Art. ___ da CLT passa a vigorar com a seguinte redação...</p>
+                    <p><strong>JUSTIFICAÇÃO:</strong> [Argumentação técnica e política]</p>`;
+        }
+
+        ed.innerHTML = html;
+        document.getElementById('universal-modal').style.display = 'none';
+        persistirMemoria();
+    };
+
+    // --- GAVETAS INDEPENDENTES ---
     window.gerenciadorPasta = () => {
         const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
         document.getElementById('modal-back-btn').style.display = "none";
-        document.getElementById('modal-title').innerText = "📂 GAVETAS: SENADO FEDERAL";
+        document.getElementById('modal-title').innerText = "📂 GAVETAS: TRABALHO & PREVIDÊNCIA";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('QUESTÕES')"><span>QUESTÕES FGV</span> <i class="fas fa-question-circle" style="color:var(--questoes)"></i></div>
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('DISCURSIVAS')"><span>PARECERES / MINUTAS</span> <i class="fas fa-edit" style="color:#facc15"></i></div>
-            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('REGIMENTO')"><span>RESUMOS REGIMENTO</span> <i class="fas fa-scroll" style="color:var(--teses)"></i></div>
+            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('QUESTÕES')"><span>QUESTÕES FGV (DISCURSIVAS)</span> <i class="fas fa-question-circle"></i></div>
+            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('PARECERES')"><span>MEUS PARECERES</span> <i class="fas fa-file-signature"></i></div>
+            <div class="opt-btn" onclick="window.abrirGavetaEspecifica('REGIMENTO')"><span>RESUMOS REGIMENTAIS</span> <i class="fas fa-scroll"></i></div>
         `;
         modal.style.display = 'flex';
     };
@@ -304,20 +331,15 @@
         const content = document.getElementById('modal-content');
         document.getElementById('modal-back-btn').style.display = "block";
         document.getElementById('modal-title').innerText = `📂 GAVETA: ${tipoGaveta}`;
-        content.innerHTML = "<div style='text-align:center; padding:20px;'>Buscando arquivos do Senado...</div>";
-        
+        content.innerHTML = "<div style='text-align:center; padding:20px;'>Acessando Base de Dados...</div>";
         try {
-            // AQUI É A CHAVE DA INDEPENDÊNCIA: Busca na pasta do Senado no Firebase
             const snap = await get(ref(db, `${PROJETO_ID}/HISTORICO`));
             content.innerHTML = "";
             if (snap.exists()) {
                 const dados = snap.val();
-                const filtrados = Object.keys(dados)
-                    .map(k => ({ id: k, ...dados[k] }))
-                    .filter(item => String(item.categoria) === String(tipoGaveta));
-                
+                const filtrados = Object.keys(dados).map(k => ({ id: k, ...dados[k] }))
+                                   .filter(item => String(item.categoria) === String(tipoGaveta));
                 if(filtrados.length === 0) { content.innerHTML = "Gaveta vazia."; return; }
-
                 filtrados.reverse().forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'opt-btn';
@@ -327,30 +349,45 @@
                     content.appendChild(div);
                 });
             } else { content.innerHTML = "Vazio."; }
-        } catch (e) { content.innerHTML = "Erro ao conectar."; }
+        } catch (e) { content.innerHTML = "Erro de conexão."; }
     };
 
-    // --- SALVAMENTO BLINDADO NO FIREBASE DO SENADO ---
     window.finalizarPeca = async () => {
         const ed = document.getElementById('editor-principal');
         if(!ed) return;
-        
-        const categoria = window.modoQuestoes ? "QUESTÕES" : (window.modoTeses ? "REGIMENTO" : "DISCURSIVAS");
-        const nomeAlvo = window.pecaAtualNome;
-        
-        if(!confirm(`Salvar "${nomeAlvo}" no projeto SENADO FEDERAL?`)) return;
-
+        const categoria = window.modoQuestoes ? "QUESTÕES" : (window.modoTeses ? "REGIMENTO" : "PARECERES");
+        if(!confirm(`Salvar no Projeto SENADO (Área Trabalho/Prev)?`)) return;
         try {
             const idFinal = Date.now().toString();
-            const dataF = new Date().toLocaleString('pt-BR');
-            
             await set(ref(db, `${PROJETO_ID}/HISTORICO/${idFinal}`), {
                 categoria: categoria,
-                peca: `${nomeAlvo} (${dataF})`,
+                peca: `${window.pecaAtualNome} (${new Date().toLocaleString('pt-BR')})`,
                 conteudo: ed.innerHTML
             });
-            alert("✅ ARQUIVO SALVO NO PROJETO SENADO!");
+            alert("✅ ARQUIVO BLINDADO NA GAVETA DO SENADO!");
         } catch (e) { alert("Erro ao salvar."); }
+    };
+
+    // --- PERSISTÊNCIA E MEMÓRIA ---
+    function persistirMemoria() {
+        localStorage.setItem('senado_activeEx', window.activeEx);
+        localStorage.setItem('senado_modoQuestoes', window.modoQuestoes);
+        localStorage.setItem('senado_modoTeses', window.modoTeses);
+        localStorage.setItem('senado_pecaAtualNome', window.pecaAtualNome);
+    }
+
+    window.atualizarDisplayModo = () => {
+        document.getElementById('ex-display').innerText = "CONSULTOR: TRABALHO/PREV";
+        document.getElementById('identificador-peca').innerHTML = `${window.pecaAtualNome} <i class="fas fa-pen"></i>`;
+    };
+
+    window.verPDF = (t) => {
+        const v = document.getElementById('pdf-viewer');
+        const f = document.getElementById('pdf-frame');
+        let arquivo = t === 'P' ? "discursiva_trabalho.pdf" : (t === 'G' ? "padrao_fgv.pdf" : "clt_senado.pdf");
+        f.src = PASTA_RAIZ + arquivo;
+        v.classList.add('active');
+        window.toggleRecolherEditor();
     };
 
     window.carregarPecaPasta = async (id) => {
@@ -359,53 +396,19 @@
             document.getElementById('editor-principal').innerHTML = snap.val().conteudo;
             window.pecaAtualNome = snap.val().peca.split(' (')[0];
             document.getElementById('universal-modal').style.display='none';
-            persistirMemoria();
-            atualizarDisplayModo();
+            persistirMemoria(); atualizarDisplayModo();
         }
     };
 
-    // --- FUNÇÕES DE INTERFACE ---
-    window.verPDF = (t) => {
-        const v = document.getElementById('pdf-viewer');
-        const f = document.getElementById('pdf-frame');
-        // Mapeia para os nomes reais dos seus arquivos na pasta C:/SistemaJoaquim/
-        let arquivo = t === 'P' ? "prova_senado.pdf" : (t === 'G' ? "gabarito_senado.pdf" : "vade_mecum.pdf");
-        f.src = PASTA_RAIZ + arquivo;
-        v.classList.add('active');
-        window.toggleRecolherEditor();
-    };
-
-    window.atualizarDisplayModo = () => {
-        document.getElementById('ex-display').innerText = "SENADO FEDERAL";
-        document.getElementById('identificador-peca').innerHTML = `${window.pecaAtualNome} <i class="fas fa-pen"></i>`;
-    };
-
-    function persistirMemoria() {
-        localStorage.setItem('senado_activeEx', window.activeEx);
-        localStorage.setItem('senado_modoQuestoes', window.modoQuestoes);
-        localStorage.setItem('senado_modoTeses', window.modoTeses);
-        localStorage.setItem('senado_pecaAtualNome', window.pecaAtualNome);
-    }
-
-    async function salvarAutomatico() { 
-        const ed = document.getElementById('editor-principal'); 
-        if(ed) await set(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`), { conteudo: ed.innerHTML }); 
-    }
-
-    async function carregarRascunho() { 
-        const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO_LIVE`)); 
-        if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo; 
-    }
-
-    // Mantendo as funções de utilidade do seu projeto original
+    // UI HELPER
     window.renomearTreino = () => { const n = prompt("Nome do Estudo:", window.pecaAtualNome); if(n) { window.pecaAtualNome=n; persistirMemoria(); atualizarDisplayModo(); } };
+    async function salvarAutomatico() { const ed = document.getElementById('editor-principal'); if(ed) await set(ref(db, `${PROJETO_ID}/RASCUNHO_SENADO`), { conteudo: ed.innerHTML }); }
+    async function carregarRascunho() { const snap = await get(ref(db, `${PROJETO_ID}/RASCUNHO_SENADO`)); if(snap.exists()) document.getElementById('editor-principal').innerHTML = snap.val().conteudo; }
     window.toggleRecolherEditor = () => { document.getElementById('editor-container').classList.toggle('collapsed'); document.getElementById('pdf-viewer').classList.toggle('full-view'); };
     window.fecharPDF = () => { document.getElementById('pdf-viewer').classList.remove('active', 'full-view'); document.getElementById('editor-container').classList.remove('collapsed'); };
+    window.limparFolha = () => { if(confirm("Limpar?")) document.getElementById('editor-principal').innerHTML = ""; };
+    window.abrirBibliotecaPDF = () => { /* Carrega a lista window.LISTA_PDF_BIBLIOTECA no modal */ };
     window.toggleFoguete = () => document.getElementById('mobile-hub').classList.toggle('active');
-    window.limparFolha = () => { if(confirm("Limpar tudo?")) document.getElementById('editor-principal').innerHTML = ""; };
-    window.abrirBibliotecaPDF = () => { /* ... lógica de biblioteca simplificada já inclusa acima ... */ };
-    
+    window.desfazer = () => { /* Lógica de Undo */ };
+
 </script>
-
-
-
