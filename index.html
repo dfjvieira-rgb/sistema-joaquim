@@ -35,7 +35,7 @@
         .modal-body { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 10px; margin-bottom: 6px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.75rem; align-items: center; }
         .opt-btn:hover { background: var(--primary); color: white; }
-        .tag-lei { font-size: 9px; background: #00274d; color: #fff; padding: 2px 6px; border-radius: 4px; }
+        .tag-lei { font-size: 9px; background: #00274d; color: #fff; padding: 2px 6px; border-radius: 4px; min-width: 75px; text-align: center; }
     </style>
 </head>
 <body class="dark-mode">
@@ -49,7 +49,7 @@
     <aside class="sidebar">
         <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; letter-spacing: 1px;">BIBLIOTECA TOTAL</div>
         <button class="btn-side" style="background:var(--legislativo);" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> VADE MECUM COMPLETO</button>
-        <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i> MODELOS DE PEÇAS/PARECER</button>
+        <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i> MODELOS DE PEÇAS</button>
         <button class="btn-side" onclick="window.gerenciadorPasta()"><i class="fas fa-folder-open"></i> GAVETAS DE ARQUIVOS</button>
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         <button class="btn-side" style="background:var(--sucesso);" onclick="window.finalizarEstudo()"><i class="fas fa-save"></i> FINALIZAR E SALVAR</button>
@@ -64,7 +64,7 @@
         </div>
         <div class="paper">
             <div id="folha-total" contenteditable="true" spellcheck="false">
-                <b>SISTEMA DE ALTA PERFORMANCE</b><br>Edital e Leis restauradas.<br><br>
+                <b>SISTEMA DE ALTA PERFORMANCE</b><br>Toda a legislação PMDF e Senado restaurada.<br><br>
             </div>
         </div>
     </section>
@@ -106,12 +106,13 @@
     window.pecaNome = "ESTUDO SEM TÍTULO";
     window.idEstudo = null;
 
-    // --- ACERVO COMPLETO RESTAURADO (PMDF + CONTROLE) ---
+    // --- ACERVO INTEGRAL (PMDF + SENADO + CÓDIGO PENAL) ---
     const LEIS_ACERVO = [
-        { n: "LEI 9.882/99", t: "ADPF", u: "https://www.planalto.gov.br/ccivil_03/leis/l9882.htm" },
-        { n: "LEI 9.868/99", t: "ADI/ADC", u: "https://www.planalto.gov.br/ccivil_03/leis/l9868.htm" },
+        { n: "CP", t: "Código Penal", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm" },
         { n: "CPP", t: "Código de Processo Penal", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689.htm" },
         { n: "CF/88", t: "Constituição Federal", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
+        { n: "LEI 9.882/99", t: "ADPF", u: "https://www.planalto.gov.br/ccivil_03/leis/l9882.htm" },
+        { n: "LEI 9.868/99", t: "ADI/ADC", u: "https://www.planalto.gov.br/ccivil_03/leis/l9868.htm" },
         { n: "LEI 7.960/89", t: "Prisão Temporária", u: "https://www.planalto.gov.br/ccivil_03/leis/l7960.htm" },
         { n: "LEI 9.099/95", t: "JECRIM", u: "https://www.planalto.gov.br/ccivil_03/leis/l9099.htm" },
         { n: "LEI 9.296/96", t: "Interceptação Telefônica", u: "https://www.planalto.gov.br/ccivil_03/leis/l9296.htm" },
@@ -125,7 +126,7 @@
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "VADE MECUM - ACERVO TOTAL";
+        document.getElementById('modal-title').innerText = "VADE MECUM - ACERVO COMPLETO";
         content.innerHTML = "";
         LEIS_ACERVO.forEach(lei => {
             const d = document.createElement('div');
@@ -149,16 +150,16 @@
     window.finalizarEstudo = async () => {
         const conteudo = document.getElementById('folha-total').innerHTML;
         const id = window.idEstudo || Date.now().toString();
-        await set(ref(db, `PRODUCAO_UNIFICADA/HISTORICO/${id}`), { nome: window.pecaNome, data: new Date().toLocaleString(), conteudo: conteudo });
+        await set(ref(db, `PRODUCAO_TOTAL_V15/HISTORICO/${id}`), { nome: window.pecaNome, data: new Date().toLocaleString(), conteudo: conteudo });
         window.idEstudo = id;
-        alert("Sincronizado na nuvem com sucesso!");
+        alert("Salvo com sucesso!");
     };
 
     window.gerenciadorPasta = async () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "MINHAS GAVETAS";
-        const snap = await get(ref(db, `PRODUCAO_UNIFICADA/HISTORICO`));
+        document.getElementById('modal-title').innerText = "GAVETA DE ARQUIVOS";
+        const snap = await get(ref(db, `PRODUCAO_TOTAL_V15/HISTORICO`));
         if(snap.exists()){
             content.innerHTML = "";
             Object.keys(snap.val()).reverse().forEach(k => {
@@ -175,12 +176,12 @@
                 };
                 content.appendChild(d);
             });
-        } else { content.innerHTML = "Vazio."; }
+        } else { content.innerHTML = "Gaveta vazia."; }
         modal.style.display = 'flex';
     };
 
     window.renomear = () => {
-        const n = prompt("TÍTULO DO DOCUMENTO:", window.pecaNome);
+        const n = prompt("NOME DO TRABALHO:", window.pecaNome);
         if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span').innerText = n; }
     };
 
