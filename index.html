@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA LEGISLATIVO | GAVETAS DE INTELIGÊNCIA</title>
+    <title>SISTEMA LEGISLATIVO | GAVETAS INTELIGENTES v2</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -33,20 +33,20 @@
         .modal-body { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
         .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.8rem; align-items: center; color: var(--primary); }
         .opt-btn:hover { background: var(--primary); color: white; }
-        .gaveta-icon { color: var(--gold-senado); font-size: 1.2rem; }
+        .status-save { font-size: 10px; font-weight: normal; color: #64748b; }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
-    <div class="logo"><i class="fas fa-folder-tree"></i> INTELIGÊNCIA <span>LEGISLATIVA</span></div>
+    <div class="logo"><i class="fas fa-microchip"></i> NÚCLEO <span>DE INTELIGÊNCIA</span></div>
     <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold-senado);"></div>
 </header>
 
 <main>
     <aside class="sidebar">
         <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; letter-spacing: 1px;">SISTEMA DE GAVETAS</div>
-        <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-download"></i> SALVAR NA GAVETA</button>
+        <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-sync"></i> SALVAR / ATUALIZAR</button>
         <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirGavetas()"><i class="fas fa-box-archive"></i> ABRIR GAVETAS</button>
         
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
@@ -57,12 +57,12 @@
     <section class="editor-container">
         <div class="sticky-tools">
             <div id="identificador-peca" onclick="window.renomear()">
-                <i class="fas fa-file-signature"></i> <span>NOVO ESTUDO</span>
+                <i class="fas fa-file-signature"></i> <span>ESTUDO SEM TÍTULO</span>
             </div>
         </div>
         <div class="paper">
             <div id="folha-total" contenteditable="true" spellcheck="false">
-                <b>INICIE SEU TRABALHO...</b><br><br>
+                <b>SISTEMA ATUALIZADO:</b> O salvamento agora detecta nomes existentes.<br><br>
             </div>
         </div>
     </section>
@@ -86,7 +86,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
@@ -102,7 +102,7 @@
     const db = getDatabase(app);
     const BASE_PATH = "SISTEMA_MENTORIA_LEGISLATIVA/GAVETAS";
 
-    window.pecaNome = "NOVO ESTUDO";
+    window.pecaNome = "ESTUDO SEM TÍTULO";
 
     const CATEGORIAS = [
         { id: "PARECERES", nome: "Peças e Pareceres", icon: "fa-file-contract" },
@@ -111,26 +111,39 @@
         { id: "SIMULADOS", nome: "Simulados e Provas", icon: "fa-list-check" }
     ];
 
-    // --- SISTEMA DE SALVAMENTO ---
+    // --- SALVAMENTO INTELIGENTE (SOBRESCREVE OU CRIA NOVO) ---
     window.salvarNasGavetas = () => {
         const modal = document.getElementById('modal-gaveta');
         const content = document.getElementById('modal-gaveta-content');
-        document.getElementById('modal-gaveta-title').innerText = "ESCOLHA A GAVETA PARA SALVAR";
-        content.innerHTML = "";
+        document.getElementById('modal-gaveta-title').innerText = "ESCOLHA A GAVETA PARA SINCRONIZAR";
+        content.innerHTML = `<p style="font-size:12px; margin-bottom:10px;">O arquivo será salvo com o nome: <b>${window.pecaNome}</b></p>`;
 
         CATEGORIAS.forEach(cat => {
             const btn = document.createElement('div');
             btn.className = 'opt-btn';
-            btn.innerHTML = `<span><i class="fas ${cat.icon} gaveta-icon"></i> &nbsp; ${cat.nome}</span>`;
+            btn.innerHTML = `<span><i class="fas ${cat.icon}"></i> &nbsp; ${cat.nome}</span>`;
             btn.onclick = async () => {
-                const id = Date.now().toString();
                 const conteudo = document.getElementById('folha-total').innerHTML;
-                await set(ref(db, `${BASE_PATH}/${cat.id}/${id}`), {
+                const path = `${BASE_PATH}/${cat.id}`;
+                
+                // Busca se já existe um arquivo com esse nome
+                const snap = await get(ref(db, path));
+                let keyEncontrada = null;
+                
+                if (snap.exists()) {
+                    const dados = snap.val();
+                    keyEncontrada = Object.keys(dados).find(key => dados[key].nome === window.pecaNome);
+                }
+
+                const finalKey = keyEncontrada || Date.now().toString();
+                
+                await set(ref(db, `${path}/${finalKey}`), {
                     nome: window.pecaNome,
                     data: new Date().toLocaleString(),
                     conteudo: conteudo
                 });
-                alert(`Salvo com sucesso em ${cat.nome}!`);
+
+                alert(keyEncontrada ? "Arquivo atualizado com sucesso!" : "Novo arquivo criado com sucesso!");
                 modal.style.display = 'none';
             };
             content.appendChild(btn);
@@ -138,17 +151,15 @@
         modal.style.display = 'flex';
     };
 
-    // --- SISTEMA DE ABERTURA ---
     window.abrirGavetas = () => {
         const modal = document.getElementById('modal-gaveta');
         const content = document.getElementById('modal-gaveta-content');
         document.getElementById('modal-gaveta-title').innerText = "ABRIR QUAL GAVETA?";
         content.innerHTML = "";
-
         CATEGORIAS.forEach(cat => {
             const btn = document.createElement('div');
             btn.className = 'opt-btn';
-            btn.innerHTML = `<span><i class="fas ${cat.icon} gaveta-icon"></i> &nbsp; ${cat.nome}</span>`;
+            btn.innerHTML = `<span><i class="fas ${cat.icon}"></i> &nbsp; ${cat.nome}</span>`;
             btn.onclick = () => window.listarArquivosGaveta(cat.id, cat.nome);
             content.appendChild(btn);
         });
@@ -157,17 +168,15 @@
 
     window.listarArquivosGaveta = async (catId, catNome) => {
         const content = document.getElementById('modal-gaveta-content');
-        content.innerHTML = "Carregando arquivos...";
+        content.innerHTML = "Carregando...";
         const snap = await get(ref(db, `${BASE_PATH}/${catId}`));
-        
         content.innerHTML = `<div onclick="window.abrirGavetas()" style="cursor:pointer; color:var(--secondary); margin-bottom:10px; font-weight:bold;">← Voltar</div>`;
-        
         if (snap.exists()) {
             Object.keys(snap.val()).reverse().forEach(k => {
                 const item = snap.val()[k];
                 const d = document.createElement('div');
                 d.className = 'opt-btn';
-                d.innerHTML = `<span>${item.nome} <br><small>${item.data}</small></span>`;
+                d.innerHTML = `<span>${item.nome} <br><span class="status-save">Última edição: ${item.data}</span></span>`;
                 d.onclick = () => {
                     document.getElementById('folha-total').innerHTML = item.conteudo;
                     window.pecaNome = item.nome;
@@ -176,22 +185,19 @@
                 };
                 content.appendChild(d);
             });
-        } else {
-            content.innerHTML += "<p>Nenhum arquivo nesta gaveta.</p>";
-        }
+        } else { content.innerHTML += "<p>Vazio.</p>"; }
     };
 
-    // --- BIBLIOTECA (SEM SUPRESSÃO) ---
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('modal-gaveta');
         const content = document.getElementById('modal-gaveta-content');
-        document.getElementById('modal-gaveta-title').innerText = "VADE MECUM";
+        document.getElementById('modal-gaveta-title').innerText = "VADE MECUM COMPLETO";
         content.innerHTML = `
-            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm', 'CP')">CP</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm', 'CP')">CÓDIGO PENAL</div>
             <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689.htm', 'CPP')">CPP</div>
-            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm', 'CF')">CF/88</div>
-            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9882.htm', 'ADPF')">ADPF</div>
-            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9868.htm', 'ADI')">ADI/ADC</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm', 'CF88')">CONSTITUIÇÃO FEDERAL</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9882.htm', 'ADPF')">LEI ADPF (9.882)</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9868.htm', 'ADI')">LEI ADI/ADC (9.868)</div>
         `;
         modal.style.display = 'flex';
     };
@@ -203,8 +209,8 @@
     };
 
     window.fecharPDF = () => document.getElementById('pdf-viewer').classList.remove('active');
-    window.renomear = () => { const n = prompt("TÍTULO:", window.pecaNome); if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
-    window.limparTela = () => confirm("Limpar?") && (document.getElementById('folha-total').innerHTML = "");
+    window.renomear = () => { const n = prompt("NOME DO ARQUIVO:", window.pecaNome); if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
+    window.limparTela = () => confirm("Limpar tela?") && (document.getElementById('folha-total').innerHTML = "");
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
