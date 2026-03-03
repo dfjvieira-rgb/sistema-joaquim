@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA JURÍDICO | MPU ANALISTA (DIVIDIDA)</title>
+    <title>SISTEMA JURÍDICO | MPU ARSENAL v8 (NÚCLEO DURO)</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -12,7 +12,7 @@
             --mpu-green: #064e3b; --mpu-blue: #0c4a6e; --mpu-gold: #b45309;
             --bg-paper: #f1f5f9; --sidebar-w: 260px; --sucesso: #166534; --perigo: #991b1b;
             --juris: #4338ca; --redacao: #c2410c; --provas: #5b21b6; --plano: #0891b2;
-            --pdf-split: #be185d;
+            --split-bg: #1e293b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--mpu-blue); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
@@ -27,7 +27,7 @@
         
         .sidebar { 
             width: var(--sidebar-w); background: #020617; display: flex; flex-direction: column; gap: 8px; 
-            padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; 
+            padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; z-index: 10;
         }
         
         .btn-side { 
@@ -39,26 +39,30 @@
         }
         .btn-side:hover { background: rgba(255,255,255,0.12); border-left: 4px solid var(--mpu-gold); }
 
-        /* AREA DE TRABALHO COM DIVISÃO */
-        .workspace { flex: 1; display: flex; overflow: hidden; background: var(--bg-paper); }
-
+        /* WORKSPACE COM TELA DIVIDIDA */
+        .workspace { flex: 1; display: flex; background: var(--bg-paper); overflow: hidden; }
+        
         .editor-container { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; 
-            overflow-y: auto; transition: 0.3s ease;
+            flex: 1; display: flex; flex-direction: column; align-items: center; 
+            padding: 20px 10px; overflow-y: auto; transition: 0.4s ease;
         }
         
-        /* PAINEL PDF LATERAL (INTELIGÊNCIA OAB) */
+        .paper { 
+            width: 100%; max-width: 850px; background: white; min-height: 1000px; 
+            padding: 70px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border-radius: 4px;
+        }
+        
+        #folha-total { outline: none; min-height: 900px; line-height: 1.6; font-size: 16px; text-align: justify; }
+
+        /* PAINEL DE LEITURA (NÚCLEO DURO) */
         #pdf-split-panel { 
-            width: 0; background: #1e293b; display: flex; flex-direction: column; 
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 0 solid var(--mpu-gold);
+            width: 0; background: var(--split-bg); display: flex; flex-direction: column; 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 0px solid var(--mpu-gold);
         }
         #pdf-split-panel.active { width: 50%; border-left-width: 3px; }
 
-        .pdf-toolbar { 
-            padding: 10px; background: #0f172a; display: flex; justify-content: space-between; 
-            align-items: center; color: white; font-size: 11px; font-weight: bold;
-        }
-        #pdf-frame { flex: 1; border: none; background: white; }
+        .pdf-toolbar { padding: 12px; background: #0f172a; display: flex; justify-content: space-between; align-items: center; }
+        #pdf-frame { width: 100%; flex: 1; border: none; background: white; }
 
         .sticky-tools { 
             position: sticky; top: -20px; z-index: 1000; background: #fff; width: 100%; max-width: 850px; 
@@ -68,22 +72,16 @@
         #identificador-peca { 
             padding: 12px; background: #f8fafc; font-weight: 800; color: var(--mpu-blue); 
             border-bottom: 2px solid var(--mpu-gold); cursor: pointer; font-size: 0.85rem; 
-            display: flex; justify-content: space-between;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        
-        .paper { 
-            width: 100%; max-width: 850px; background: white; min-height: 1000px; 
-            padding: 70px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        #folha-total { outline: none; min-height: 900px; line-height: 1.6; font-size: 16px; text-align: justify; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 110000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-body { background: white; width: 100%; max-width: 550px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
+        .modal-body { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
         
         .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.8rem; align-items: center; color: var(--mpu-blue); }
         .opt-btn:hover { background: var(--mpu-blue); color: white; }
 
+        .tag-lei { font-size: 9px; background: var(--mpu-green); color: #fff; padding: 2px 6px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.75rem; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--mpu-blue); color: white; }
@@ -92,24 +90,25 @@
 <body>
 
 <header>
-    <div class="logo"><i class="fas fa-columns"></i> MPU | <span>STUDY SPLIT MODE</span></div>
+    <div class="logo"><i class="fas fa-shield-alt"></i> MPU | <span>NÚCLEO DURO v8</span></div>
     <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--mpu-gold);"></div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div style="font-size: 9px; color: var(--mpu-gold); font-weight: 900; margin: 10px 0; letter-spacing: 1px; text-align:center;">MENU ANALISTA</div>
+        <div style="font-size: 9px; color: var(--mpu-gold); font-weight: 900; margin: 10px 0; letter-spacing: 1px; text-align:center;">MENU TÁTICO</div>
         
-        <button class="btn-side" style="background:var(--pdf-split);" onclick="window.abrirPastaLocal()"><i class="fas fa-file-pdf"></i> PASTA DE PDFs (ESTUDO)</button>
-        
+        <button class="btn-side" style="background:var(--mpu-green); border: 1px solid var(--mpu-gold);" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> NÚCLEO DURO (LEIS)</button>
         <button class="btn-side" style="background:var(--plano);" onclick="window.abrirPlanoVoo()"><i class="fas fa-map-marked-alt"></i> PLANO DE VOO</button>
-        <button class="btn-side" style="background:var(--provas);" onclick="window.abrirProvasAnteriores()"><i class="fas fa-file-invoice"></i> PROVAS WEB</button>
-        <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-save"></i> SALVAR PROGRESSO</button>
+        <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-cloud-upload-alt"></i> SALVAR PROGRESSO</button>
         
         <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         
-        <button class="btn-side" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-balance-scale"></i> NÚCLEO DURO (LEIS)</button>
-        <button class="btn-side" onclick="window.abrirGavetas()"><i class="fas fa-box"></i> MEUS ARQUIVOS</button>
+        <button class="btn-side" style="background:var(--provas);" onclick="window.abrirProvasAnteriores()"><i class="fas fa-paste"></i> PASTA DE PROVAS</button>
+        <button class="btn-side" style="background:var(--redacao);" onclick="window.abrirRedacao()"><i class="fas fa-pen-nib"></i> TREINO DISCURSIVO</button>
+        <button class="btn-side" style="background:var(--juris);" onclick="window.abrirJurisprudencia()"><i class="fas fa-gavel"></i> JURIS / TRIBUNAIS</button>
+        <button class="btn-side" style="background:#4b5563;" onclick="window.inteligenciaNaoConfunda()"><i class="fas fa-lightbulb"></i> NÃO CONFUNDA</button>
+        <button class="btn-side" onclick="window.abrirGavetas()"><i class="fas fa-archive"></i> MEUS ARQUIVOS</button>
 
         <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         <button class="btn-side" style="background:var(--perigo);" onclick="window.limparTela()"><i class="fas fa-eraser"></i> LIMPAR TELA</button>
@@ -119,23 +118,23 @@
         <section class="editor-container">
             <div class="sticky-tools">
                 <div id="identificador-peca" onclick="window.renomear()">
-                    <span><i class="fas fa-gavel"></i> <span>MPU DIREITO: ESTUDO TÉCNICO</span></span>
+                    <span><i class="fas fa-pen-fancy"></i> <span id="txt-nome-peca">MPU: NOVO ARQUIVO</span></span>
                     <span style="font-size: 10px; opacity: 0.6;">RENOMEAR</span>
                 </div>
             </div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <p style="text-align: center; color: var(--mpu-blue); font-size: 18px;"><b>CADERNO TÉCNICO - ANALISTA DO MPU (DIREITO)</b></p>
+                    <p style="text-align: center; color: var(--mpu-blue); font-size: 18px;"><b>DIÁRIO DE ESTUDOS - MPU 2026</b></p>
                     <hr style="margin: 20px 0;">
-                    <p><i>Use a pasta de PDFs para abrir o Caderno de 2010 ou o Gabarito Oficial ao lado.</i></p>
+                    <p><i>Bem-vindo. Utilize o "Núcleo Duro" para abrir as leis ao lado e começar seu estudo técnico.</i></p>
                 </div>
             </div>
         </section>
 
         <section id="pdf-split-panel">
             <div class="pdf-toolbar">
-                <span id="pdf-nome-atual">CONSULTA TÉCNICA</span>
-                <button onclick="window.fecharSplit()" style="background:var(--mpu-gold); border:none; padding:4px 10px; color:white; border-radius:4px; cursor:pointer;">FECHAR X</button>
+                <span id="pdf-nome-lei" style="color:white; font-size:10px; font-weight:bold;">CONSULTA TÉCNICA</span>
+                <button onclick="window.fecharSplit()" style="background:var(--mpu-gold); border:none; padding:5px 15px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">FECHAR X</button>
             </div>
             <iframe id="pdf-frame" src=""></iframe>
         </section>
@@ -146,7 +145,7 @@
     <div class="modal-body">
         <h2 id="modal-title" style="margin-bottom:15px; border-bottom:3px solid var(--mpu-blue); padding-bottom:10px; font-size:1rem; color:var(--mpu-blue)"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; padding:10px; background:var(--mpu-blue); color:white; border-radius:6px; margin-top:15px; cursor:pointer; border:none; font-weight:bold;">VOLTAR</button>
+        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; padding:10px; background:var(--mpu-blue); color:white; border-radius:6px; margin-top:15px; cursor:pointer; border:none; font-weight:bold;">VOLTAR AO SISTEMA</button>
     </div>
 </div>
 
@@ -166,29 +165,31 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    window.pecaNome = "MPU DIREITO: ESTUDO TÉCNICO";
+    const BASE_PATH = "MPU_ESTUDOS_ELITE/GAVETAS";
+    window.pecaNome = "MPU: NOVO ARQUIVO";
 
-    // --- INTELIGENCIA DE TELA DIVIDIDA PARA PDFs ---
-    window.abrirPastaLocal = () => {
+    // --- FUNÇÕES DO NÚCLEO DURO (LEI SECA EM TELA DIVIDIDA) ---
+    window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "MINHA GAVETA DE PDFs (MPU 2010)";
+        document.getElementById('modal-title').innerText = "NÚCLEO DURO: CONSULTA IMEDIATA";
         
-        const arquivos = [
-            { n: "CADERNO DE PROVAS 2010", file: "mpu10_045.pdf" },
-            { n: "GABARITO OFICIAL 2010", file: "gabaritos_mpu45.pdf" }
+        const leis = [
+            { n: "LC 75/93", t: "Lei Orgânica do MPU", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" },
+            { n: "CF/88", t: "Constituição (Art. 127 a 130-A)", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
+            { n: "LIA", t: "Improbidade Administrativa", u: "https://www.planalto.gov.br/ccivil_03/leis/l8429.htm" },
+            { n: "ACP", t: "Ação Civil Pública", u: "https://www.planalto.gov.br/ccivil_03/leis/l7347orig.htm" }
         ];
 
-        content.innerHTML = "<p style='font-size:11px; margin-bottom:10px;'>Selecione para abrir em tela dividida:</p>";
-        arquivos.forEach(arq => {
+        content.innerHTML = "<p style='font-size:11px; margin-bottom:10px;'>Clique para abrir em tela dividida ao lado do editor:</p>";
+        leis.forEach(l => {
             const btn = document.createElement('div');
             btn.className = 'opt-btn';
-            btn.innerHTML = `<span><i class="fas fa-file-pdf"></i> ${arq.n}</span> <i class="fas fa-columns"></i>`;
+            btn.innerHTML = `<span><span class="tag-lei">${l.n}</span> ${l.t}</span> <i class="fas fa-columns"></i>`;
             btn.onclick = () => {
-                document.getElementById('pdf-nome-atual').innerText = arq.n;
+                document.getElementById('pdf-nome-lei').innerText = l.n + " - " + l.t;
+                document.getElementById('pdf-frame').src = l.u;
                 document.getElementById('pdf-split-panel').classList.add('active');
-                // Simulação de carregamento (em produção seria o blob/url do arquivo)
-                document.getElementById('pdf-frame').src = "about:blank"; 
                 modal.style.display = 'none';
             };
             content.appendChild(btn);
@@ -198,22 +199,40 @@
 
     window.fecharSplit = () => {
         document.getElementById('pdf-split-panel').classList.remove('active');
+        document.getElementById('pdf-frame').src = "";
     };
 
-    // --- MANUTENÇÃO DAS FUNÇÕES ORIGINAIS (INTEGRIDADE) ---
-    window.abrirProvasAnteriores = () => {
+    // --- MANUTENÇÃO DAS FUNÇÕES DE SALVAMENTO E CRONOGRAMA ---
+    window.salvarNasGavetas = async () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "BUSCA EXTERNA DE PROVAS";
-        content.innerHTML = "<div class='opt-btn' onclick='window.open(\"https://www.pciconcursos.com.br/provas/mpu/\", \"_blank\")'>ACESSAR ACERVO PCI</div>";
+        document.getElementById('modal-title').innerText = "SINCRONIZAR NA NUVEM";
+        content.innerHTML = "";
+        
+        const cats = [
+            { id: "PECAS", nome: "Peças e Pareceres", icon: "fa-file-signature" },
+            { id: "NAO_CONFUNDA", nome: "Dicas/Não Confunda", icon: "fa-lightbulb" }
+        ];
+
+        cats.forEach(cat => {
+            const btn = document.createElement('div'); btn.className = 'opt-btn';
+            btn.innerHTML = `<span><i class="fas ${cat.icon}"></i> ${cat.nome}</span>`;
+            btn.onclick = async () => {
+                const html = document.getElementById('folha-total').innerHTML;
+                await set(ref(db, `${BASE_PATH}/${cat.id}/${Date.now()}`), { nome: window.pecaNome, data: new Date().toLocaleString(), conteudo: html });
+                alert("💾 Sincronizado com Sucesso!");
+                modal.style.display = 'none';
+            };
+            content.appendChild(btn);
+        });
         modal.style.display = 'flex';
     };
 
     window.abrirPlanoVoo = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "PLANO DE VOO: ANALISTA 2026";
-        content.innerHTML = `<table><tr><th>Semana</th><th>Foco Analista</th></tr><tr><td>1</td><td>LOMPU (Especializada)</td></tr></table>`;
+        document.getElementById('modal-title').innerText = "CRONOGRAMA DE ELITE MPU";
+        content.innerHTML = `<table><tr><th>Sem</th><th>Tópico</th></tr><tr><td>1</td><td>LC 75 (Org/Atribuições)</td></tr><tr><td>2</td><td>Arts 127-130A CF</td></tr></table>`;
         modal.style.display = 'flex';
     };
 
@@ -221,13 +240,12 @@
         const n = prompt("TÍTULO:", window.pecaNome); 
         if(n) { 
             window.pecaNome = n.toUpperCase(); 
-            document.getElementById('identificador-peca').querySelector('span span').innerText = n; 
+            document.getElementById('txt-nome-peca').innerText = window.pecaNome; 
         } 
     };
 
-    window.limparTela = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
-    window.salvarNasGavetas = () => alert("Sincronizando com nuvem MPU...");
-
+    window.limparTela = () => confirm("Limpar tela de estudos?") && (document.getElementById('folha-total').innerHTML = "");
+    
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
