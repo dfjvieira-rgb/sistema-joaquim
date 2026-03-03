@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA LEGISLATIVO | PMDF & SENADO</title>
+    <title>SISTEMA LEGISLATIVO | GAVETAS DE INTELIGÊNCIA</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -17,7 +17,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
         header { background: linear-gradient(90deg, var(--primary) 0%, #004080 100%); height: 60px; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold-senado); z-index: 5000; }
-        .logo { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         .sidebar { width: var(--sidebar-w); background: #001f3d; display: flex; flex-direction: column; gap: 8px; padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
         .btn-side { width: 100%; min-height: 42px; border: none; border-radius: 6px; display: flex; align-items: center; padding: 0 15px; color: white; font-weight: 600; cursor: pointer; gap: 12px; font-size: 0.7rem; text-transform: uppercase; transition: 0.2s; background: rgba(255,255,255,0.05); }
@@ -30,59 +29,58 @@
         #pdf-viewer { width: 0; background: #1e293b; transition: 0.4s; display: flex; flex-direction: column; overflow: hidden; visibility: hidden; }
         #pdf-viewer.active { width: 50%; visibility: visible; border-left: 4px solid var(--gold-senado); }
         #pdf-viewer iframe { flex: 1; border: none; background: white; }
-        .pdf-controls { background: var(--primary); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 110000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-body { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 10px; margin-bottom: 6px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.75rem; align-items: center; }
+        .modal-body { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.8rem; align-items: center; color: var(--primary); }
         .opt-btn:hover { background: var(--primary); color: white; }
-        .tag-lei { font-size: 9px; background: #00274d; color: #fff; padding: 2px 6px; border-radius: 4px; min-width: 75px; text-align: center; }
+        .gaveta-icon { color: var(--gold-senado); font-size: 1.2rem; }
     </style>
 </head>
 <body class="dark-mode">
 
 <header>
-    <div class="logo"><i class="fas fa-shield-alt"></i> MASTER <span>LEGISLATIVO & ELITE PMDF</span></div>
+    <div class="logo"><i class="fas fa-folder-tree"></i> INTELIGÊNCIA <span>LEGISLATIVA</span></div>
     <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold-senado);"></div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; letter-spacing: 1px;">BIBLIOTECA TOTAL</div>
-        <button class="btn-side" style="background:var(--legislativo);" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> VADE MECUM COMPLETO</button>
-        <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i> MODELOS DE PEÇAS</button>
-        <button class="btn-side" onclick="window.gerenciadorPasta()"><i class="fas fa-folder-open"></i> GAVETAS DE ARQUIVOS</button>
+        <div style="font-size: 10px; color: var(--gold-senado); font-weight: 900; margin-bottom: 10px; letter-spacing: 1px;">SISTEMA DE GAVETAS</div>
+        <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-download"></i> SALVAR NA GAVETA</button>
+        <button class="btn-side" style="background:var(--secondary);" onclick="window.abrirGavetas()"><i class="fas fa-box-archive"></i> ABRIR GAVETAS</button>
+        
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
-        <button class="btn-side" style="background:var(--sucesso);" onclick="window.finalizarEstudo()"><i class="fas fa-save"></i> FINALIZAR E SALVAR</button>
+        <button class="btn-side" style="background:var(--legislativo);" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book"></i> VADE MECUM</button>
         <button class="btn-side" style="background:var(--perigo);" onclick="window.limparTela()"><i class="fas fa-trash-alt"></i> LIMPAR TELA</button>
     </aside>
 
     <section class="editor-container">
         <div class="sticky-tools">
             <div id="identificador-peca" onclick="window.renomear()">
-                <i class="fas fa-file-alt"></i> <span>ESTUDO SEM TÍTULO</span>
+                <i class="fas fa-file-signature"></i> <span>NOVO ESTUDO</span>
             </div>
         </div>
         <div class="paper">
             <div id="folha-total" contenteditable="true" spellcheck="false">
-                <b>SISTEMA DE ALTA PERFORMANCE</b><br>Toda a legislação PMDF e Senado restaurada.<br><br>
+                <b>INICIE SEU TRABALHO...</b><br><br>
             </div>
         </div>
     </section>
 
     <section id="pdf-viewer">
-        <div class="pdf-controls">
-            <span id="pdf-title" style="color:white; font-size:10px; font-weight:bold; text-transform: uppercase;">REFERÊNCIA</span>
-            <button onclick="window.fecharPDF()" style="background:var(--gold-senado); border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">X FECHAR</button>
+        <div style="background:var(--primary); padding:10px; display:flex; justify-content:space-between;">
+            <span id="pdf-title" style="font-size:10px; font-weight:bold;">PDF</span>
+            <button onclick="window.fecharPDF()" style="background:var(--gold-senado); border:none; cursor:pointer; padding:2px 8px; border-radius:4px;">FECHAR</button>
         </div>
         <iframe id="pdf-frame" src=""></iframe>
     </section>
 </main>
 
-<div class="modal" id="modal-base">
+<div class="modal" id="modal-gaveta">
     <div class="modal-body">
-        <h2 id="modal-title" style="margin-bottom:15px; border-bottom:2px solid var(--gold-senado); padding-bottom:10px; font-size:1rem;"></h2>
-        <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; padding:12px; background:black; color:white; border-radius:6px; margin-top:15px; cursor:pointer; border:none;">FECHAR</button>
+        <h2 id="modal-gaveta-title" style="margin-bottom:15px; border-bottom:2px solid var(--gold-senado); padding-bottom:10px; font-size:1rem; color:var(--primary)">📦 GAVETAS DE INTELIGÊNCIA</h2>
+        <div id="modal-gaveta-content"></div>
+        <button onclick="document.getElementById('modal-gaveta').style.display='none'" style="width:100%; padding:10px; background:black; color:white; border-radius:6px; margin-top:15px; cursor:pointer; border:none;">VOLTAR</button>
     </div>
 </div>
 
@@ -102,94 +100,112 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const BASE_PATH = "SISTEMA_MENTORIA_LEGISLATIVA/GAVETAS";
 
-    window.pecaNome = "ESTUDO SEM TÍTULO";
-    window.idEstudo = null;
+    window.pecaNome = "NOVO ESTUDO";
 
-    // --- ACERVO INTEGRAL (PMDF + SENADO + CÓDIGO PENAL) ---
-    const LEIS_ACERVO = [
-        { n: "CP", t: "Código Penal", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm" },
-        { n: "CPP", t: "Código de Processo Penal", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689.htm" },
-        { n: "CF/88", t: "Constituição Federal", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
-        { n: "LEI 9.882/99", t: "ADPF", u: "https://www.planalto.gov.br/ccivil_03/leis/l9882.htm" },
-        { n: "LEI 9.868/99", t: "ADI/ADC", u: "https://www.planalto.gov.br/ccivil_03/leis/l9868.htm" },
-        { n: "LEI 7.960/89", t: "Prisão Temporária", u: "https://www.planalto.gov.br/ccivil_03/leis/l7960.htm" },
-        { n: "LEI 9.099/95", t: "JECRIM", u: "https://www.planalto.gov.br/ccivil_03/leis/l9099.htm" },
-        { n: "LEI 9.296/96", t: "Interceptação Telefônica", u: "https://www.planalto.gov.br/ccivil_03/leis/l9296.htm" },
-        { n: "LEI 11.340/06", t: "Maria da Penha", u: "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11340.htm" },
-        { n: "LEI 12.850/13", t: "Orcrim", u: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12850.htm" },
-        { n: "LEI 12.037/09", t: "Identificação Criminal", u: "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/lei/l12037.htm" },
-        { n: "RISF", t: "Regimento Senado", u: "https://www25.senado.leg.br/web/atividade/regimento-interno" },
-        { n: "CLT", t: "Trabalho", u: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" }
+    const CATEGORIAS = [
+        { id: "PARECERES", nome: "Peças e Pareceres", icon: "fa-file-contract" },
+        { id: "DISCURSIVAS", nome: "Questões Discursivas", icon: "fa-pen-to-square" },
+        { id: "RESUMOS", nome: "Resumos de Lei", icon: "fa-book-open" },
+        { id: "SIMULADOS", nome: "Simulados e Provas", icon: "fa-list-check" }
     ];
 
-    window.abrirBibliotecaPDF = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "VADE MECUM - ACERVO COMPLETO";
+    // --- SISTEMA DE SALVAMENTO ---
+    window.salvarNasGavetas = () => {
+        const modal = document.getElementById('modal-gaveta');
+        const content = document.getElementById('modal-gaveta-content');
+        document.getElementById('modal-gaveta-title').innerText = "ESCOLHA A GAVETA PARA SALVAR";
         content.innerHTML = "";
-        LEIS_ACERVO.forEach(lei => {
-            const d = document.createElement('div');
-            d.className = 'opt-btn';
-            d.innerHTML = `<span><span class="tag-lei">${lei.n}</span> ${lei.t}</span> <i class="fas fa-external-link-alt"></i>`;
-            d.onclick = () => window.carregarPDF(lei.u, lei.n);
-            content.appendChild(d);
+
+        CATEGORIAS.forEach(cat => {
+            const btn = document.createElement('div');
+            btn.className = 'opt-btn';
+            btn.innerHTML = `<span><i class="fas ${cat.icon} gaveta-icon"></i> &nbsp; ${cat.nome}</span>`;
+            btn.onclick = async () => {
+                const id = Date.now().toString();
+                const conteudo = document.getElementById('folha-total').innerHTML;
+                await set(ref(db, `${BASE_PATH}/${cat.id}/${id}`), {
+                    nome: window.pecaNome,
+                    data: new Date().toLocaleString(),
+                    conteudo: conteudo
+                });
+                alert(`Salvo com sucesso em ${cat.nome}!`);
+                modal.style.display = 'none';
+            };
+            content.appendChild(btn);
         });
         modal.style.display = 'flex';
     };
 
-    window.carregarPDF = (url, titulo) => {
-        document.getElementById('pdf-frame').src = url;
-        document.getElementById('pdf-title').innerText = titulo;
-        document.getElementById('pdf-viewer').classList.add('active');
-        document.getElementById('modal-base').style.display = 'none';
+    // --- SISTEMA DE ABERTURA ---
+    window.abrirGavetas = () => {
+        const modal = document.getElementById('modal-gaveta');
+        const content = document.getElementById('modal-gaveta-content');
+        document.getElementById('modal-gaveta-title').innerText = "ABRIR QUAL GAVETA?";
+        content.innerHTML = "";
+
+        CATEGORIAS.forEach(cat => {
+            const btn = document.createElement('div');
+            btn.className = 'opt-btn';
+            btn.innerHTML = `<span><i class="fas ${cat.icon} gaveta-icon"></i> &nbsp; ${cat.nome}</span>`;
+            btn.onclick = () => window.listarArquivosGaveta(cat.id, cat.nome);
+            content.appendChild(btn);
+        });
+        modal.style.display = 'flex';
     };
 
-    window.fecharPDF = () => document.getElementById('pdf-viewer').classList.remove('active');
-
-    window.finalizarEstudo = async () => {
-        const conteudo = document.getElementById('folha-total').innerHTML;
-        const id = window.idEstudo || Date.now().toString();
-        await set(ref(db, `PRODUCAO_TOTAL_V15/HISTORICO/${id}`), { nome: window.pecaNome, data: new Date().toLocaleString(), conteudo: conteudo });
-        window.idEstudo = id;
-        alert("Salvo com sucesso!");
-    };
-
-    window.gerenciadorPasta = async () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "GAVETA DE ARQUIVOS";
-        const snap = await get(ref(db, `PRODUCAO_TOTAL_V15/HISTORICO`));
-        if(snap.exists()){
-            content.innerHTML = "";
+    window.listarArquivosGaveta = async (catId, catNome) => {
+        const content = document.getElementById('modal-gaveta-content');
+        content.innerHTML = "Carregando arquivos...";
+        const snap = await get(ref(db, `${BASE_PATH}/${catId}`));
+        
+        content.innerHTML = `<div onclick="window.abrirGavetas()" style="cursor:pointer; color:var(--secondary); margin-bottom:10px; font-weight:bold;">← Voltar</div>`;
+        
+        if (snap.exists()) {
             Object.keys(snap.val()).reverse().forEach(k => {
                 const item = snap.val()[k];
                 const d = document.createElement('div');
                 d.className = 'opt-btn';
-                d.innerHTML = `<span>${item.nome} <small style="opacity:0.6">${item.data}</small></span>`;
+                d.innerHTML = `<span>${item.nome} <br><small>${item.data}</small></span>`;
                 d.onclick = () => {
                     document.getElementById('folha-total').innerHTML = item.conteudo;
                     window.pecaNome = item.nome;
-                    window.idEstudo = k;
                     document.getElementById('identificador-peca').querySelector('span').innerText = item.nome;
-                    modal.style.display = 'none';
+                    document.getElementById('modal-gaveta').style.display = 'none';
                 };
                 content.appendChild(d);
             });
-        } else { content.innerHTML = "Gaveta vazia."; }
+        } else {
+            content.innerHTML += "<p>Nenhum arquivo nesta gaveta.</p>";
+        }
+    };
+
+    // --- BIBLIOTECA (SEM SUPRESSÃO) ---
+    window.abrirBibliotecaPDF = () => {
+        const modal = document.getElementById('modal-gaveta');
+        const content = document.getElementById('modal-gaveta-content');
+        document.getElementById('modal-gaveta-title').innerText = "VADE MECUM";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm', 'CP')">CP</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689.htm', 'CPP')">CPP</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm', 'CF')">CF/88</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9882.htm', 'ADPF')">ADPF</div>
+            <div class="opt-btn" onclick="window.carregarPDF('https://www.planalto.gov.br/ccivil_03/leis/l9868.htm', 'ADI')">ADI/ADC</div>
+        `;
         modal.style.display = 'flex';
     };
 
-    window.renomear = () => {
-        const n = prompt("NOME DO TRABALHO:", window.pecaNome);
-        if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span').innerText = n; }
+    window.carregarPDF = (url, tit) => {
+        document.getElementById('pdf-frame').src = url;
+        document.getElementById('pdf-viewer').classList.add('active');
+        document.getElementById('modal-gaveta').style.display = 'none';
     };
 
-    window.limparTela = () => confirm("Limpar tela?") && (document.getElementById('folha-total').innerHTML = "");
-
-    setInterval(() => {
-        document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR');
-    }, 1000);
+    window.fecharPDF = () => document.getElementById('pdf-viewer').classList.remove('active');
+    window.renomear = () => { const n = prompt("TÍTULO:", window.pecaNome); if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span').innerText = n; } };
+    window.limparTela = () => confirm("Limpar?") && (document.getElementById('folha-total').innerHTML = "");
+    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
 </html>
