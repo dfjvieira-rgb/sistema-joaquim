@@ -25,6 +25,7 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
+        /* SIDEBAR MASTER ICON */
         .sidebar { 
             width: var(--sidebar-w); background: #1e293b; display: flex; 
             flex-direction: column; align-items: center; gap: 12px; 
@@ -48,38 +49,26 @@
         }
         .btn-side:hover::after { opacity: 1; }
 
+        /* EDITOR AREA */
         .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
-
-        .editor-container { 
-            flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); 
-            overflow-y: auto; align-items: center; padding: 25px;
-        }
-        .editor-container.hidden { display: none; }
-
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 25px; }
         .sticky-header {
             width: 100%; max-width: 850px; background: #f8fafc; padding: 15px;
             border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
-            color: #020617; font-weight: 900; text-align: center; margin-bottom: 0;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            color: #020617; font-weight: 900; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
+        .paper { width: 100%; max-width: 850px; background: white; min-height: 1500px; padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        #folha-total { outline: none; min-height: 1200px; line-height: 1.8; font-size: 16px; text-align: justify; }
 
-        .paper { 
-            width: 100%; max-width: 850px; background: white; min-height: 1200px; 
-            padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        }
-        #folha-total { outline: none; min-height: 1000px; line-height: 1.8; font-size: 16px; text-align: justify; }
-
+        /* VIEWERS */
         .viewer { width: 0; background: #334155; display: flex; flex-direction: column; overflow: hidden; border-left: 0 solid var(--gold); transition: width 0.4s ease; }
         .viewer.active { width: 50%; border-left: 3px solid var(--gold); }
-
-        .pdf-header { background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: white; }
-        .pdf-header button { background: var(--gold); border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: 900; }
-
         iframe { flex: 1; border: none; background: white; }
 
+        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 92%; max-width: 500px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ddd; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; color: var(--primary); }
+        .modal-body { background: white; width: 92%; max-width: 600px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ddd; background: #f8fafc; font-weight: 800; cursor: pointer; text-align: left; color: var(--primary); }
         .opt-btn:hover { background: var(--gold); }
     </style>
 </head>
@@ -94,28 +83,39 @@
     <aside class="sidebar">
         <button class="btn-side" data-label="SALVAR / ATUALIZAR" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
         <button class="btn-side" data-label="ABRIR GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
+        
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
-        <button class="btn-side" data-label="INJETAR PROVA (SIMULADO)" style="background:var(--info);" onclick="window.abrirModalInjecao()"><i class="fas fa-file-signature"></i></button>
-        <button class="btn-side" data-label="GABARITOS" style="background:var(--juris);" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
+        
+        <button class="btn-side" data-label="INJETAR PROVA INTEGRAL" style="background:var(--info);" onclick="window.abrirModalInjecao()"><i class="fas fa-file-signature"></i></button>
+        <button class="btn-side" data-label="NÚCLEO DURO (LEIS)" style="background:var(--juris);" onclick="window.abrirNucleoDuro()"><i class="fas fa-balance-scale"></i></button>
+        <button class="btn-side" data-label="GABARITOS" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
+        
+        <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
+        
+        <button class="btn-side" data-label="DUAL VIEW" onclick="window.toggleDualPDF()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" data-label="MODO ESCRITA" onclick="window.resetView()"><i class="fas fa-pen-fancy"></i></button>
+        
         <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
     </aside>
 
     <div class="content-wrapper">
         <section class="editor-container" id="container-folha">
             <div class="sticky-header">
-                <i class="fas fa-edit"></i> <span id="txt-titulo-topo">FOLHA DE RESPOSTAS - MASTER ICON</span>
+                <i class="fas fa-edit"></i> <span id="txt-titulo-topo">FOLHA DE RESPOSTAS - MPU ELITE</span>
             </div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <p style="text-align: center;"><b>AMBIENTE DE PROVA SIMULADO</b></p>
+                    <p style="text-align: center;"><b>AMBIENTE SIMULADO - ANALISTA MPU</b></p>
                     <hr style="margin: 20px 0;">
-                    <p><i>Aguardando injeção de enunciado...</i></p>
+                    <p><i>Clique no ícone de "Folha com Caneta" na barra lateral para injetar a prova completa...</i></p>
                 </div>
             </div>
         </section>
 
+        <section class="viewer" id="viewer-1">
+            <iframe id="frame-1" src=""></iframe>
+        </section>
         <section class="viewer" id="viewer-2">
-            <div class="pdf-header"><span id="title-2">GABARITO / APOIO</span><button onclick="window.fecharV(2)">X</button></div>
             <iframe id="frame-2" src=""></iframe>
         </section>
     </div>
@@ -125,7 +125,7 @@
     <div class="modal-body">
         <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold); padding-bottom:10px;"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px; cursor:pointer;">VOLTAR</button>
+        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
@@ -143,77 +143,98 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // BANCO DE ENUNCIADOS (Onde o PDF vira texto editável)
-    const PROVAS_PARA_INJETAR = [
-        { 
-            nome: "ANALISTA MPU 2025 - QUESTÃO 1", 
-            enunciado: "<h3>ENUNCIADO DA QUESTÃO 01</h3><p>Considere que o Ministério Público Federal tenha recebido representação versando sobre irregularidades em contrato administrativo... [TEXTO EDITÁVEL]</p>" 
-        },
-        { 
-            nome: "OAB EXAME 42 - PEÇA PRÁTICA", 
-            enunciado: "<h3>ENUNCIADO DA PEÇA</h3><p>João, ex-empregado da empresa Beta, foi dispensado sem justa causa... [TEXTO EDITÁVEL]</p>" 
+    // --- NÚCLEO DURO ANALISTA MPU ---
+    const NUCLEO_DURO = [
+        { n: "Constituição Federal (MP/ADM)", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
+        { n: "LC 75/93 (Estatuto do MPU)", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" },
+        { n: "Lei 8.112/90 (Servidores)", u: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" },
+        { n: "Lei 8.429/92 (Improbidade)", u: "https://www.planalto.gov.br/ccivil_03/leis/l8429.htm" },
+        { n: "Lei 9.784/99 (Processo ADM)", u: "https://www.planalto.gov.br/ccivil_03/leis/l9784.htm" }
+    ];
+
+    // --- PROVA INTEGRAL (TEXTO PARA INJEÇÃO) ---
+    const PROVAS_INTEGRAIS = [
+        {
+            id: "MPU_2025_DISCURSIVA",
+            titulo: "PROVA DISCURSIVA - ANALISTA MPU 2025",
+            conteudo: `
+                <div style="border: 2px solid #000; padding: 20px; margin-bottom: 30px;">
+                    <h2 style="text-align:center;">CADERNO DE PROVA DISCURSIVA</h2>
+                    <p><b>TEXTO MOTIVADOR:</b> O Ministério Público é instituição permanente, essencial à função jurisdicional do Estado, incumbindo-lhe a defesa da ordem jurídica, do regime democrático e dos interesses sociais e individuais indisponíveis.</p>
+                    <hr>
+                    <p><b>QUESTÃO 1:</b> Discorra sobre a legitimidade do MPU para ajuizamento de Ação Civil Pública em face de ente federado que descumpre normas de saúde pública. Aborde necessariamente: 1. Competência da Justiça Federal; 2. Prerrogativas de Intimação Pessoal; 3. Prazos Processuais diferenciados.</p>
+                    <br>
+                    <p><b>QUESTÃO 2:</b> Analise o regime jurídico da Lei 8.112/90 no que tange ao processo administrativo disciplinar (PAD), especificamente sobre a prescrição da pretensão punitiva administrativa.</p>
+                </div>
+                <p style="text-align:center; background: #eee;"><b>--- INÍCIO DA FOLHA DE RESPOSTAS ---</b></p>
+                <p><br></p>
+            `
         }
     ];
 
     window.abrirModalInjecao = () => {
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "INJETAR PROVA NA FOLHA";
-        content.innerHTML = PROVAS_PARA_INJETAR.map((p, i) => `
-            <button class="opt-btn" onclick="window.executarInjecao(${i})">
-                <strong>${p.nome}</strong>
-                <span style="font-size:10px; color:#666;">Clique para transformar em folha editável</span>
+        const c = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "INJETAR PROVA INTEGRAL";
+        c.innerHTML = PROVAS_INTEGRAIS.map((p, i) => `
+            <button class="opt-btn" onclick="window.injetarProva(${i})">
+                <i class="fas fa-file-alt"></i> ${p.titulo}
             </button>
         `).join('');
         document.getElementById('modal-base').style.display = 'flex';
     };
 
-    window.executarInjecao = (index) => {
-        const prova = PROVAS_PARA_INJETAR[index];
-        const areaTotal = document.getElementById('folha-total');
-        
-        // Injeção do conteúdo no HTML
-        areaTotal.innerHTML = `
-            <div style="background:#f8fafc; padding:20px; border:2px dashed var(--gold); color:#1e293b; margin-bottom:30px;">
-                <p style="text-align:center; color:var(--gold-dark); font-weight:bold;">MODO PROVA: ENUNCIADO EDITÁVEL</p>
-                <hr style="margin:10px 0;">
-                ${prova.enunciado}
-            </div>
-            <p style="text-align:center;"><b>SUA RESPOSTA ABAIXO:</b></p>
-            <hr>
-            <p><br></p>
-        `;
-
-        document.getElementById('txt-titulo-topo').innerText = "SIMULADO: " + prova.nome;
+    window.injetarProva = (idx) => {
+        const p = PROVAS_INTEGRAIS[idx];
+        document.getElementById('folha-total').innerHTML = p.conteudo;
+        document.getElementById('txt-titulo-topo').innerText = p.titulo;
         document.getElementById('modal-base').style.display = 'none';
-        
-        // Garante que o usuário veja a folha
-        document.getElementById('container-folha').classList.remove('hidden');
-        document.getElementById('viewer-2').classList.remove('active');
+        alert("PROVA INTEGRAL INJETADA! Agora você pode editar o enunciado e responder.");
     };
 
-    // FUNÇÕES DE SALVAMENTO (RESTAURADAS)
-    window.modalSalvar = () => {
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "SALVAR TRABALHO";
-        content.innerHTML = `
-            <input type="text" id="save-name" value="${document.getElementById('txt-titulo-topo').innerText}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="opt-btn" onclick="window.saveTo('QUESTOES')">QUESTÕES</button>
-                <button class="opt-btn" onclick="window.saveTo('PECAS')">PEÇAS</button>
-            </div>
-        `;
+    window.abrirNucleoDuro = () => {
+        const c = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "NÚCLEO DURO - LEGISLAÇÃO";
+        c.innerHTML = NUCLEO_DURO.map(l => `
+            <button class="opt-btn" onclick="window.carregarPDF('${l.u}', '${l.n}', 'PDF2')">
+                <i class="fas fa-gavel"></i> ${l.n}
+            </button>
+        `).join('');
         document.getElementById('modal-base').style.display = 'flex';
     };
 
-    window.saveTo = async (pasta) => {
-        const nome = document.getElementById('save-name').value.toUpperCase();
-        const html = document.getElementById('folha-total').innerHTML;
-        await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/${pasta}/${Date.now()}`), { nome, conteudo: html, data: new Date().toLocaleString() });
-        alert("Salvo com sucesso!");
+    window.carregarPDF = (url, nome, alvo) => {
+        const frame = alvo === 'PDF1' ? 'frame-1' : 'frame-2';
+        const viewer = alvo === 'PDF1' ? 'viewer-1' : 'viewer-2';
+        document.getElementById(frame).src = url;
+        document.getElementById(viewer).classList.add('active');
         document.getElementById('modal-base').style.display = 'none';
     };
 
-    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "<p><i>Aguardando injeção...</i></p>");
+    window.toggleDualPDF = () => {
+        document.getElementById('viewer-1').classList.add('active');
+        document.getElementById('viewer-2').classList.add('active');
+        document.getElementById('container-folha').style.display = 'none';
+    };
+
+    window.resetView = () => {
+        document.getElementById('container-folha').style.display = 'flex';
+        document.getElementById('viewer-1').classList.remove('active');
+        document.getElementById('viewer-2').classList.remove('active');
+    };
+
+    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
+
+    window.modalSalvar = () => {
+        const nome = prompt("Nome do arquivo:", document.getElementById('txt-titulo-topo').innerText);
+        if(nome) window.saveFirebase(nome);
+    };
+
+    window.saveFirebase = async (nome) => {
+        const html = document.getElementById('folha-total').innerHTML;
+        await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/PECAS/${Date.now()}`), { nome, conteudo: html, data: new Date().toLocaleString() });
+        alert("Salvo!");
+    };
+
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
