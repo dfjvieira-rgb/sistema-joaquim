@@ -6,153 +6,169 @@
     <title>JOAQUIM ELITE 2026 - MPU MASTER</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --gold-dark: #d97706;
-            --bg-paper: #cbd5e1; --sidebar-w: 75px; --sucesso: #166534; --perigo: #ef4444;
-            --info: #3b82f6; --mentoria: #6366f1;
+            --bg-paper: #cbd5e1; --paper-color: #ffffff; 
+            --mentoria: #6366f1; --sidebar-w: 70px; --perigo: #ef4444;
+            --sucesso: #10b981; --questoes: #3b82f6; --teses: #f97316;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
+        body.dark-mode { --bg-paper: #0f172a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
+
         header { 
-            background: var(--primary); height: 55px; padding: 0 20px; 
+            background: var(--primary); height: 60px; padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 5000; 
+            border-bottom: 2px solid var(--gold); z-index: 5000;
         }
+
+        .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: -1px; }
+        .logo span { color: var(--gold); }
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR - NÚCLEO DURO MPU */
+        /* SIDEBAR COMPACTA */
         .sidebar { 
             width: var(--sidebar-w); background: #1e293b; display: flex; 
             flex-direction: column; align-items: center; gap: 10px; 
-            padding: 15px 0; border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            padding: 15px 0; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;
         }
 
         .btn-side { 
-            width: 52px; height: 52px; border: none; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; cursor: pointer; transition: 0.3s; 
-            background: rgba(255,255,255,0.05); position: relative;
+            width: 50px; min-height: 50px; border: none; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; color: white; 
+            cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.05);
+            position: relative;
         }
-        .btn-side:hover { background: rgba(255,255,255,0.15); border-left: 3px solid var(--gold); transform: scale(1.05); }
-        .btn-side i { font-size: 1.3rem; color: var(--gold); }
-        
-        /* Labels Flutuantes */
+        .btn-side:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+        .btn-side i { font-size: 1.1rem; color: var(--gold); }
+
         .btn-side::after {
-            content: attr(data-label); position: absolute; left: 75px; background: #000; 
-            color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; 
-            white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 10000;
-            border: 1px solid var(--gold); font-weight: bold;
+            content: attr(data-label); position: absolute; left: 60px; background: #000; color: #fff;
+            padding: 6px 12px; border-radius: 6px; font-size: 10px; white-space: nowrap; opacity: 0; 
+            pointer-events: none; transition: 0.2s; z-index: 6000; border: 1px solid var(--gold); font-weight: bold;
         }
-        .btn-side:hover::after { opacity: 1; }
+        .btn-side:hover::after { opacity: 1; left: 75px; }
 
-        /* EDITOR WRAPPER */
-        .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
         .editor-container { 
-            flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); 
-            overflow-y: auto; align-items: center; padding: 25px; position: relative;
+            flex: 1; display: flex; flex-direction: column; 
+            background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px 10px;
+            transition: all 0.4s ease;
+        }
+        .editor-container.collapsed { flex: 0.3; opacity: 0.5; }
+
+        .sticky-tools { 
+            position: sticky; top: -20px; z-index: 1000; background: white; 
+            width: 100%; max-width: 850px; border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-bottom: 10px;
         }
 
-        /* TOOLBAR MARCA TEXTO FLUTUANTE */
-        .floating-toolbar {
-            position: sticky; top: 0; z-index: 1000; background: #fff; 
-            padding: 8px 15px; border-radius: 30px; margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px;
-            border: 2px solid var(--gold); color: #000;
+        #identificador-peca { 
+            padding: 12px; background: #f8fafc; text-align: center; 
+            font-weight: 900; color: #0f172a; border-bottom: 3px solid var(--gold);
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .color-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; }
+        
+        .toolbar-liberdade { display: flex; background: #fff; flex-wrap: wrap; align-items: center; }
+        .btn-lib { 
+            flex: 1; padding: 12px; border: none; background: transparent; 
+            cursor: pointer; font-weight: 800; font-size: 0.7rem; 
+            text-transform: uppercase; color: #64748b; border-right: 1px solid #f1f5f9;
+        }
+
+        .highlight-box { display: flex; align-items: center; background: #f1f5f9; padding: 0 10px; gap: 8px; border-right: 1px solid #f1f5f9; height: 45px; }
+        .color-dot { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .color-dot.active { border-color: #000; transform: scale(1.1); }
 
-        .sticky-header {
-            width: 100%; max-width: 900px; background: #f8fafc; padding: 12px;
-            border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
-            color: #020617; font-weight: 900; text-align: center;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
+        .paper { width: 100%; max-width: 850px; background: white; box-shadow: 0 20px 50px rgba(0,0,0,0.4); min-height: 5250px; position: relative; }
+        
         /* FOLHA ENGINE 150 LINHAS */
-        .folha-moldura { width: 100%; max-width: 900px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); margin-bottom: 50px; }
-        .folha-container { display: grid; grid-template-columns: 50px 1fr; background: #fff; border: 2px solid #000; }
-        .numeracao { background: #f1f5f9; border-right: 2px solid #000; user-select: none; }
-        .num-mecanico { height: 35px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; border-bottom: 1px solid #cbd5e1; color: #1e293b; }
-        .area-editor { 
-            outline: none; font-size: 19px !important; font-weight: 700 !important; color: #000 !important; 
-            line-height: 35px !important; padding: 0 20px !important; white-space: pre-wrap; word-wrap: break-word; 
-            min-height: 1500px; background-image: linear-gradient(to bottom, transparent 34px, #e2e8f0 34px);
-            background-size: 100% 35px; background-repeat: repeat-y; background-position: 0 -1px; text-align: justify;
-            font-family: 'Courier New', Courier, monospace;
+        .folha-container { display: grid; grid-template-columns: 50px 1fr; background: #fff; border: 2px solid #000; font-family: 'Courier New', monospace; }
+        .num-col { background: #f1f5f9; border-right: 2px solid #000; user-select: none; }
+        .num-linha { height: 35px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; border-bottom: 1px solid #cbd5e1; color: #1e293b; }
+        .area-escrita { 
+            outline: none; font-size: 19px; font-weight: 700; color: #000; line-height: 35px; 
+            padding: 0 20px; min-height: 5250px; text-align: justify;
+            background-image: linear-gradient(to bottom, transparent 34px, #e2e8f0 34px);
+            background-size: 100% 35px;
         }
 
-        /* MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 92%; max-width: 550px; padding: 25px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 14px; margin-bottom: 8px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #1e293b; transition: 0.2s; }
-        .opt-btn:hover { background: var(--gold); border-color: #000; }
-        .item-historico { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; color: #1e293b; }
-        .item-actions { display: flex; gap: 15px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
-        .btn-action { cursor: pointer; font-size: 11px; font-weight: bold; color: var(--info); text-transform: uppercase; }
+        #pdf-viewer { width: 0; background: #334155; transition: 0.4s; display: flex; flex-direction: column; overflow: hidden; }
+        #pdf-viewer.active { width: 50%; border-left: 4px solid var(--gold); }
+        #pdf-viewer.full-view { width: 100% !important; flex: 1; }
+        .pdf-controls { background: #1e293b; padding: 12px; display: flex; justify-content: space-between; color: white; font-weight: 900; font-size: 12px; align-items: center;}
+        iframe { width: 100%; flex: 1; border: none; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 110000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 95%; max-width: 500px; padding: 25px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 18px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #eee; background: #f8fafc; font-weight: 800; display: flex; justify-content: space-between; cursor: pointer; align-items: center; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <header>
-    <div class="logo" style="font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
-    <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold);">00:00:00</div>
+    <div class="logo">JOAQUIM <span>ELITE MPU</span></div>
+    <div style="color:var(--gold); font-size:10px; font-weight:bold;">MODO: <span id="ex-display">LOMPU</span></div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" data-label="SALVAR NA GAVETA" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" data-label="MINHAS GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-box-open"></i></button>
-        
-        <div style="height:1px; width:35px; background:rgba(255,255,255,0.1); margin:5px 0;"></div>
-        
-        <button class="btn-side" data-label="QUAL A PEÇA?" onclick="window.alert('Em desenvolvimento: Qual a Peça')"><i class="fas fa-gavel"></i></button>
-        <button class="btn-side" data-label="TESES" onclick="window.alert('Em desenvolvimento: Teses')"><i class="fas fa-balance-scale"></i></button>
-        <button class="btn-side" data-label="INTELIGÊNCIA NÃO CONFUNDA" onclick="window.alert('Em desenvolvimento: Inteligência')"><i class="fas fa-brain"></i></button>
-        <button class="btn-side" data-label="ESTRUTURAS (PERGAMINHO)" onclick="window.abrirGavetas()"><i class="fas fa-scroll"></i></button>
-        
-        <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
+        <button class="btn-side" style="background:var(--gold); color:#000" data-label="GAVETAS MPU" onclick="window.gerenciadorPasta()"><i class="fas fa-folder-open"></i></button>
+        <button class="btn-side" style="background:var(--sucesso);" data-label="FINALIZAR / SALVAR" onclick="window.finalizarPeca()"><i class="fas fa-save"></i></button>
+        <hr style="width:70%; opacity:0.1; margin:5px 0">
+        <button class="btn-side" style="background:var(--teses);" data-label="QUAL A PEÇA MPU?" onclick="window.inteligenciaMPU()"><i class="fas fa-gavel"></i></button>
+        <button class="btn-side" style="background:var(--mentoria);" data-label="PERGAMINHO (ESTRUTURAS)" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i></button>
+        <hr style="width:70%; opacity:0.1; margin:5px 0">
+        <button class="btn-side" style="background:#475569;" data-label="LOMPU (LC 75)" onclick="window.verPDF('LOMPU')"><i class="fas fa-balance-scale"></i></button>
+        <button class="btn-side" style="background:#475569;" data-label="PROCESSO COLETIVO" onclick="window.verPDF('PC')"><i class="fas fa-users"></i></button>
+        <button class="btn-side" style="background:var(--perigo);" data-label="IMPROBIDADE" onclick="window.verPDF('IA')"><i class="fas fa-hand-paper"></i></button>
     </aside>
 
-    <div class="content-wrapper">
-        <section class="editor-container">
-            
-            <div class="floating-toolbar">
-                <i class="fas fa-highlighter" style="margin-right:5px"></i>
-                <div class="color-dot active" id="dot-yellow" style="background:#fef08a;" onclick="window.setHighlightColor('#fef08a', 'dot-yellow')"></div>
-                <div class="color-dot" id="dot-green" style="background:#bbf7d0;" onclick="window.setHighlightColor('#bbf7d0', 'dot-green')"></div>
-                <div class="color-dot" id="dot-blue" style="background:#bfdbfe;" onclick="window.setHighlightColor('#bfdbfe', 'dot-blue')"></div>
-                <div style="width:1px; height:20px; background:#ddd; margin:0 5px"></div>
-                <button id="toggle-marker" onclick="window.toggleHighlight()" style="background:none; border:none; cursor:pointer; font-weight:bold; font-size:11px">DESATIVAR</button>
+    <section class="editor-container" id="editor-container">
+        <div class="sticky-tools">
+            <div id="identificador-peca" onclick="window.renomearTreino()">NOVO ESTUDO MPU <i class="fas fa-pen" style="font-size:10px; opacity:0.5"></i></div>
+            <div class="toolbar-liberdade">
+                <button class="btn-lib" onclick="window.desfazer()"><i class="fas fa-undo"></i> Desfazer</button>
+                <div class="highlight-box">
+                    <div class="color-dot active" id="dot-yellow" style="background:#fef08a;" onclick="window.setHighlightColor('#fef08a', 'dot-yellow')"></div>
+                    <div class="color-dot" id="dot-green" style="background:#bbf7d0;" onclick="window.setHighlightColor('#bbf7d0', 'dot-green')"></div>
+                    <div class="color-dot" id="dot-blue" style="background:#bfdbfe;" onclick="window.setHighlightColor('#bfdbfe', 'dot-blue')"></div>
+                </div>
+                <button class="btn-lib" onclick="window.limparFolha()"><i class="fas fa-trash"></i> Limpar</button>
+                <button class="btn-lib" style="background:#22c55e; color:white" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
             </div>
+        </div>
+        <div class="paper">
+            <div class="folha-container">
+                <div class="num-col" id="coluna-numeros"></div>
+                <div class="area-escrita" id="editor-principal" contenteditable="true" spellcheck="false"></div>
+            </div>
+        </div>
+    </section>
 
-            <div class="sticky-header">
-                <span id="info-pasta" style="font-size: 10px; color: #64748b;">GAVETA: CADERNO</span>
-                <span id="txt-titulo-topo">NOVO DOCUMENTO</span>
-                <i class="fas fa-pen" style="cursor:pointer; font-size:12px; opacity:0.5" onclick="window.renomearAtual()"></i>
-            </div>
-            
-            <div class="folha-moldura" id="engine-container"></div>
-        </section>
-    </div>
+    <section id="pdf-viewer">
+        <div class="pdf-controls">
+            <span id="pdf-title">DOCUMENTO</span>
+            <button onclick="window.fecharPDF()" style="background:var(--gold); border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer">X</button>
+        </div>
+        <iframe id="pdf-frame"></iframe>
+    </section>
 </main>
 
-<div class="modal" id="modal-base">
+<div class="modal" id="universal-modal">
     <div class="modal-body">
-        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold); padding-bottom:10px; font-size:18px;"></h2>
+        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:2px solid var(--gold)"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px; cursor:pointer; font-weight:bold;">VOLTAR</button>
+        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:15px; background:#000; color:#fff; border-radius:10px; margin-top:15px; font-weight:bold; cursor:pointer;">FECHAR</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
@@ -164,140 +180,131 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- FOLHA ENGINE FIXA ---
-    const FolhaEngine = {
-        montar: (containerId) => {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="folha-container"><div class="numeracao" id="num-col"></div><div class="area-editor" id="editor-principal" contenteditable="true" spellcheck="false"></div></div>`;
-            const numCol = document.getElementById('num-col');
-            for(let i=1; i<=150; i++) {
-                const n = document.createElement('div'); n.className = 'num-mecanico'; n.innerText = i;
-                numCol.appendChild(n);
-            }
-            const editor = document.getElementById('editor-principal');
-            editor.addEventListener('keydown', (e) => {
-                if (e.key === 'Tab') {
-                    e.preventDefault();
-                    document.execCommand('insertText', false, '    ');
-                }
-            });
-        }
-    };
-    FolhaEngine.montar('engine-container');
+    // --- PARTE 2: LÓGICA E MOTOR ---
 
-    const GAVETAS = ["PECAS", "TESES", "PRELIMINARES", "QUESTOES", "CADERNO"];
+    // Inicialização da Folha 150 Linhas
+    const col = document.getElementById('coluna-numeros');
+    for(let i=1; i<=150; i++) {
+        const d = document.createElement('div');
+        d.className = 'num-linha'; d.innerText = i;
+        col.appendChild(d);
+    }
+
     window.currentColor = '#fef08a';
-    window.highlightActive = true;
+    window.historicoUndo = [];
+    window.pecaAtualNome = "NOVO ESTUDO MPU";
 
-    // --- LÓGICA MARCA TEXTO ---
+    // Marca-Texto Funcional
     window.setHighlightColor = (color, id) => {
         window.currentColor = color;
         document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.highlightActive = true;
-        document.getElementById('toggle-marker').innerText = "ATIVO";
     };
 
-    window.toggleHighlight = () => {
-        window.highlightActive = !window.highlightActive;
-        document.getElementById('toggle-marker').innerText = window.highlightActive ? "ATIVO" : "DESATIVADO";
+    document.getElementById('editor-principal').onmouseup = () => {
+        const sel = window.getSelection();
+        if(sel.toString().length > 0) document.execCommand('backColor', false, window.currentColor);
     };
 
-    document.addEventListener('mouseup', () => {
-        if(window.highlightActive) {
-            const sel = window.getSelection();
-            if(sel.toString().length > 0) document.execCommand('backColor', false, window.currentColor);
-        }
-    });
-
-    // --- LÓGICA GAVETAS (FIREBASE) ---
-    window.modalSalvar = () => {
+    // Inteligência de Peças MPU
+    window.inteligenciaMPU = () => {
+        const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        const titulo = document.getElementById('txt-titulo-topo').innerText;
-        document.getElementById('modal-title').innerText = "SALVAR EM:";
+        document.getElementById('modal-title').innerText = "🧠 QUAL O INSTRUMENTO MPU?";
         content.innerHTML = `
-            <input type="text" id="save-name" value="${titulo}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-weight:bold; text-transform: uppercase;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                ${GAVETAS.map(g => `<button class="opt-btn" onclick="window.executarSalvar('${g}')">${g}</button>`).join('')}
-            </div>`;
-        document.getElementById('modal-base').style.display = 'flex';
+            <div class="opt-btn" onclick="alert('Fundamento: Art. 129, III, CF + Lei 7.347/85')">AÇÃO CIVIL PÚBLICA</div>
+            <div class="opt-btn" onclick="alert('Fundamento: Art. 8º, §1º, Lei 7.347/85')">INQUÉRITO CIVIL</div>
+            <div class="opt-btn" onclick="alert('Fundamento: Art. 6º, XX, LC 75/93')">RECOMENDAÇÃO</div>
+        `;
+        modal.style.display = 'flex';
     };
 
-    window.executarSalvar = async (gaveta) => {
-        const nome = document.getElementById('save-name').value.toUpperCase() || "SEM TITULO";
+    // Pergaminho: Estruturas Prontas
+    window.abrirPergaminho = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "📜 ESTRUTURAS NÚCLEO DURO";
+        content.innerHTML = `
+            <div class="opt-btn" onclick="window.injetar('ACP')">AÇÃO CIVIL PÚBLICA</div>
+            <div class="opt-btn" onclick="window.injetar('PARECER')">PARECER MINISTERIAL</div>
+        `;
+        modal.style.display = 'flex';
+    };
+
+    window.injetar = (tipo) => {
+        const ed = document.getElementById('editor-principal');
+        if(tipo === 'ACP') ed.innerHTML = "<b>EXCELENTÍSSIMO SENHOR JUIZ FEDERAL DA ... VARA FEDERAL...</b><br><br>O <b>MINISTÉRIO PÚBLICO FEDERAL</b>...";
+        if(tipo === 'PARECER') ed.innerHTML = "<b>PROCESSO Nº:</b> ...<br><b>EMENTA:</b> ...<br><br><b>1. RELATÓRIO</b>...";
+        document.getElementById('universal-modal').style.display = 'none';
+    };
+
+    // Sistema de Gavetas (Firebase)
+    window.finalizarPeca = async () => {
+        const nome = prompt("Nome do Estudo:", window.pecaAtualNome);
+        if(!nome) return;
+        const gaveta = prompt("Gaveta (PARECERES, LOMPU, DISCURSIVAS):", "PARECERES").toUpperCase();
         const html = document.getElementById('editor-principal').innerHTML;
-        const path = `SISTEMA_MPU_ELITE/GAVETAS/${gaveta}`;
-        const snap = await get(ref(db, path));
-        let idFinal = Date.now().toString();
-
-        if(snap.exists()){
-            const jaExiste = Object.entries(snap.val()).find(([id, d]) => d.nome === nome);
-            if(jaExiste && !confirm(`Substituir "${nome}"?`)) return;
-            if(jaExiste) idFinal = jaExiste[0];
-        }
-
-        await set(ref(db, `${path}/${idFinal}`), {
-            nome: nome,
+        
+        await set(ref(db, `SISTEMA_MPU/GAVETAS/${gaveta}/${Date.now()}`), {
+            nome: nome.toUpperCase(),
             conteudo: btoa(unescape(encodeURIComponent(html))),
-            data: new Date().toLocaleString('pt-BR')
+            data: new Date().toLocaleString()
         });
-
-        document.getElementById('txt-titulo-topo').innerText = nome;
-        document.getElementById('info-pasta').innerText = `GAVETA: ${gaveta}`;
-        alert("Salvo com sucesso!");
-        document.getElementById('modal-base').style.display = 'none';
+        alert("✓ Guardado na Gaveta!");
     };
 
-    window.abrirGavetas = () => {
+    window.gerenciadorPasta = () => {
+        const modal = document.getElementById('universal-modal');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "GAVETAS MPU";
-        content.innerHTML = GAVETAS.map(g => `
-            <div class="opt-btn" onclick="window.listarArquivos('${g}')">
-                <span><i class="fas fa-folder" style="color:var(--gold)"></i> &nbsp; ${g}</span>
-                <i class="fas fa-chevron-right"></i>
-            </div>`).join('');
-        document.getElementById('modal-base').style.display = 'flex';
+        document.getElementById('modal-title').innerText = "📂 MINHAS GAVETAS";
+        content.innerHTML = ["PARECERES", "LOMPU", "DISCURSIVAS"].map(g => `
+            <div class="opt-btn" onclick="window.listarGaveta('${g}')"><span>${g}</span> <i class="fas fa-folder"></i></div>
+        `).join('');
+        modal.style.display = 'flex';
     };
 
-    window.listarArquivos = async (gaveta) => {
+    window.listarGaveta = async (gaveta) => {
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = `GAVETA: ${gaveta}`;
-        content.innerHTML = "Carregando...";
-        const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/${gaveta}`));
-        if(!snap.exists()) { content.innerHTML = "Vazio."; return; }
-
+        content.innerHTML = "Buscando...";
+        const snap = await get(ref(db, `SISTEMA_MPU/GAVETAS/${gaveta}`));
+        if(!snap.exists()) { content.innerHTML = "Vazia."; return; }
+        
         let h = "";
-        Object.entries(snap.val()).reverse().forEach(([id, item]) => {
-            h += `
-                <div class="item-historico">
-                    <div style="cursor:pointer; font-weight:bold;" onclick="window.abrirEstudo('${gaveta}', '${id}')">${item.nome}</div>
-                    <div style="font-size:9px; color:#999">${item.data}</div>
-                    <div class="item-actions">
-                        <span class="btn-action" onclick="window.removerArquivo('${gaveta}', '${id}')">Excluir</span>
-                    </div>
-                </div>`;
+        Object.entries(snap.val()).forEach(([id, item]) => {
+            h += `<div class="opt-btn" onclick="window.abrirDoc('${gaveta}','${id}')">${item.nome}</div>`;
         });
         content.innerHTML = h;
     };
 
-    window.abrirEstudo = async (gaveta, id) => {
-        const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/${gaveta}/${id}`));
-        if(snap.exists()){
-            const item = snap.val();
-            document.getElementById('editor-principal').innerHTML = decodeURIComponent(escape(atob(item.conteudo)));
-            document.getElementById('txt-titulo-topo').innerText = item.nome;
-            document.getElementById('info-pasta').innerText = `GAVETA: ${gaveta}`;
-            document.getElementById('modal-base').style.display = 'none';
-        }
+    window.abrirDoc = async (gaveta, id) => {
+        const snap = await get(ref(db, `SISTEMA_MPU/GAVETAS/${gaveta}/${id}`));
+        const data = snap.val();
+        document.getElementById('editor-principal').innerHTML = decodeURIComponent(escape(atob(data.conteudo)));
+        document.getElementById('identificador-peca').innerText = data.nome;
+        document.getElementById('universal-modal').style.display = 'none';
     };
 
-    window.renomearAtual = () => {
-        const n = prompt("Novo nome:", document.getElementById('txt-titulo-topo').innerText);
-        if(n) document.getElementById('txt-titulo-topo').innerText = n.toUpperCase();
+    // Interface PDF
+    window.verPDF = (t) => {
+        const f = document.getElementById('pdf-frame');
+        const tit = document.getElementById('pdf-title');
+        let url = "vade.pdf";
+        if(t === 'LOMPU') url = "lc75.pdf";
+        if(t === 'PC') url = "processo_coletivo.pdf";
+        if(t === 'IA') url = "improbidade.pdf";
+        f.src = url; tit.innerText = url.toUpperCase();
+        document.getElementById('pdf-viewer').classList.add('active');
+        document.getElementById('editor-container').classList.add('collapsed');
     };
 
-    window.limpar = () => confirm("Limpar tela?") && (document.getElementById('editor-principal').innerHTML = "");
-    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
+    window.fecharPDF = () => {
+        document.getElementById('pdf-viewer').classList.remove('active');
+        document.getElementById('editor-container').classList.remove('collapsed');
+    };
+
+    window.desfazer = () => { if(window.historicoUndo.length > 0) document.getElementById('editor-principal').innerHTML = window.historicoUndo.pop(); };
+    window.limparFolha = () => confirm("Limpar?") && (document.getElementById('editor-principal').innerHTML = "");
+    window.renomearTreino = () => { const n = prompt("Nome:"); if(n) document.getElementById('identificador-peca').innerText = n.toUpperCase(); };
 
 </script>
 </body>
