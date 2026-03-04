@@ -3,119 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - MPU SIMULADOR</title>
+    <title>JOAQUIM ELITE 2026 - MASTER ICON FULL</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --gold-dark: #d97706;
             --bg-paper: #cbd5e1; --sidebar-w: 70px; --sucesso: #166534; --perigo: #ef4444;
-            --info: #3b82f6; --juris: #4338ca; --fgv-blue: #004a8d;
+            --info: #3b82f6; --juris: #4338ca; --redacao: #f97316;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
-        header { background: var(--primary); height: 55px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 5000; }
+        
+        header { 
+            background: var(--primary); height: 55px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 2px solid var(--gold); z-index: 5000; 
+        }
+
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 15px 0; border-right: 1px solid rgba(255,255,255,0.1); z-index: 100; }
-        .btn-side { width: 48px; height: 48px; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.05); position: relative; }
+        
+        /* SIDEBAR MASTER ICON */
+        .sidebar { 
+            width: var(--sidebar-w); background: #1e293b; display: flex; 
+            flex-direction: column; align-items: center; gap: 12px; 
+            padding: 15px 0; border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
+        }
+
+        .btn-side { 
+            width: 48px; height: 48px; border: none; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; cursor: pointer; transition: 0.3s; 
+            background: rgba(255,255,255,0.05); position: relative;
+        }
         .btn-side:hover { background: rgba(255,255,255,0.15); border-left: 3px solid var(--gold); transform: scale(1.05); }
         .btn-side i { font-size: 1.2rem; color: var(--gold); }
-        .btn-side::after { content: attr(data-label); position: absolute; left: 65px; background: #000; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 10000; border: 1px solid var(--gold); font-weight: bold; }
+
+        .btn-side::after {
+            content: attr(data-label); position: absolute; left: 65px; background: #000; 
+            color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; 
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 10000;
+            border: 1px solid var(--gold); font-weight: bold;
+        }
         .btn-side:hover::after { opacity: 1; }
+
+        /* AREAS DE CONTEÚDO */
         .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 25px; }
-        .sticky-header { width: 100%; max-width: 850px; background: #f8fafc; padding: 15px; border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0; color: #020617; font-weight: 900; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .paper { width: 100%; max-width: 850px; background: white; min-height: 1200px; padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        #folha-total { outline: none; min-height: 1000px; line-height: 1.6; font-size: 15px; text-align: justify; color: #000; }
+
+        .editor-container { 
+            flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); 
+            overflow-y: auto; align-items: center; padding: 25px;
+        }
+        .editor-container.hidden { display: none; }
+
+        .sticky-header {
+            width: 100%; max-width: 850px; background: #f8fafc; padding: 15px;
+            border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
+            color: #020617; font-weight: 900; text-align: center; margin-bottom: 0;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+
+        .paper { 
+            width: 100%; max-width: 850px; background: white; min-height: 1200px; 
+            padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        #folha-total { outline: none; min-height: 1000px; line-height: 1.8; font-size: 16px; text-align: justify; }
+
+        /* VIEWERS PDF */
+        .viewer { 
+            width: 0; background: #334155; display: flex; flex-direction: column; 
+            overflow: hidden; border-left: 0 solid var(--gold); transition: width 0.4s ease;
+        }
+        .viewer.active { width: 50%; border-left: 3px solid var(--gold); }
+        .viewer.full { width: 100% !important; }
+
+        .pdf-header { background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: white; }
+        .pdf-header button { background: var(--gold); border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: 900; }
+
+        iframe { flex: 1; border: none; background: white; }
+
+        /* MODAIS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 92%; max-width: 500px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary); }
+        .opt-btn:hover { background: var(--gold); }
         
-        /* Estilização da Prova Injetada */
-        .prova-header { border: 2px solid #000; padding: 15px; text-align: center; margin-bottom: 30px; }
-        .questao-box { margin-bottom: 25px; page-break-inside: avoid; }
-        .q-num { font-weight: bold; color: var(--fgv-blue); margin-right: 8px; }
-        .alternativas { list-style: none; margin-left: 20px; margin-top: 10px; }
-        .alternativas li { margin-bottom: 5px; }
-        .redacao-area { border-top: 2px dashed #000; margin-top: 40px; padding-top: 20px; }
-        .linha-redacao { border-bottom: 1px solid #ccc; height: 30px; margin-bottom: 5px; }
+        .folder-tag { font-size: 9px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" style="font-weight:900; letter-spacing: 1px;">JOAQUIM <span style="color:var(--gold)">MPU ELITE</span></div>
+    <div class="logo" style="font-weight:900; letter-spacing: 1px;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
     <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold);">00:00:00</div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" data-label="INJETAR PROVA PDF" style="background:var(--redacao);" onclick="window.injetarProva()"><i class="fas fa-file-import"></i></button>
+        <button class="btn-side" data-label="INJETAR PROVA" style="background:var(--redacao);" onclick="window.injetarConteudo()"><i class="fas fa-file-import"></i></button>
+        
+        <button class="btn-side" data-label="SALVAR / ATUALIZAR" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" data-label="ABRIR GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
         
-        <button class="btn-side" data-label="SALVAR ATUALIZAR" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" data-label="ABRIR GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
-        <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo);" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
+        <button class="btn-side" data-label="PROVAS (ESQUERDA)" style="background:var(--info);" onclick="window.abrirModal('PDF1')"><i class="fas fa-file-invoice"></i></button>
+        <button class="btn-side" data-label="GABARITOS (DIREITA)" style="background:var(--juris);" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
+        <button class="btn-side" data-label="NÚCLEO DURO" onclick="window.abrirModal('PDF2')"><i class="fas fa-balance-scale"></i></button>
+        
+        <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
+        
+        <button class="btn-side" data-label="VER PDF + PDF" onclick="window.toggleDualPDF()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" data-label="MODO ESCRITA TOTAL" onclick="window.resetView()"><i class="fas fa-pen-fancy"></i></button>
+        
+        <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
     </aside>
 
     <div class="content-wrapper">
         <section class="editor-container" id="container-folha">
             <div class="sticky-header">
-                <i class="fas fa-pen-nib"></i> <span id="txt-titulo-topo">AMBIENTE DE PROVA SIMULADO</span>
+                <i class="fas fa-file-signature"></i> <span id="txt-titulo-topo">FOLHA DE RESPOSTAS - MASTER ICON</span>
             </div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <p style="text-align: center; color: #666;">Clique no ícone de Importar (Laranja) para carregar o conteúdo do AnalistaMPU.pdf aqui...</p>
+                    <p style="text-align: center;"><b>FOLHA DE RESPOSTAS - MPU ELITE / OAB</b></p>
+                    <hr style="margin: 20px 0;">
+                    <br>
                 </div>
             </div>
+        </section>
+
+        <section class="viewer" id="viewer-1">
+            <div class="pdf-header"><span id="title-1">VISUALIZADOR 1</span><button onclick="window.fecharV(1)">X</button></div>
+            <iframe id="frame-1" src=""></iframe>
+        </section>
+
+        <section class="viewer" id="viewer-2">
+            <div class="pdf-header"><span id="title-2">VISUALIZADOR 2</span><button onclick="window.fecharV(2)">X</button></div>
+            <iframe id="frame-2" src=""></iframe>
         </section>
     </div>
 </main>
 
-<script>
-    window.injetarProva = () => {
-        const area = document.getElementById('folha-total');
-        area.innerHTML = `
-            <div class="prova-header">
-                <h2 style="margin:0">MINISTÉRIO PÚBLICO DA UNIÃO</h2>
-                <h3 style="margin:5px 0">ANALISTA DO MPU - DIREITO | TIPO 1-BRANCA</h3>
-                <p style="font-size:12px">Tempo disponível: 4 horas e 30 minutos [cite: 11, 20]</p>
-            </div>
+<div class="modal" id="modal-base">
+    <div class="modal-body">
+        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold); padding-bottom:10px;"></h2>
+        <div id="modal-content"></div>
+        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px; cursor:pointer;">VOLTAR</button>
+    </div>
+</div>
 
-            <h4 style="background:#eee; padding:5px; border-left:5px solid #000; margin-bottom:15px;">MÓDULO I - LÍNGUA PORTUGUESA</h4>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-            <div class="questao-box">
-                <span class="q-num">01.</span> Leia o texto abaixo: <br>
-                "O problema em matéria de audição vem do fato de que o cérebro é um órgão muito rápido e que se pensa muito mais depressa do que se fala. Assim que escutamos uma pessoa, solicitamos ao cérebro que trabalhe muito mais lentamente em comparação com sua capacidade..." [cite: 41-42]
-                <br><br>Levando em consideração que o conteúdo temático do texto é de difícil acesso pelo leitor comum, o processo utilizado para tornar esse conteúdo mais claro foi:
-                <ul class="alternativas">
-                    <li>(A) indicar a estruturação do texto no início da leitura;</li>
-                    <li>(B) acrescentar exemplos práticos ao texto;</li>
-                    <li>(C) reformular as informações já dadas;</li>
-                    <li>(D) utilizar sinônimos mais comuns para termos difíceis;</li>
-                    <li>(E) repetir informações com os mesmos termos.</li>
-                </ul>
-            </div>
-
-            <div class="questao-box">
-                <span class="q-num">16.</span> Em relação aos princípios, normas e regras estabelecidos no Art. 225 da Constituição Federal sobre Meio Ambiente, é correto afirmar que: [cite: 182-183]
-                <ul class="alternativas">
-                    <li>(A) será inferior à dos combustíveis fósseis o regime fiscal para os biocombustíveis...</li>
-                    <li>(B) são consideradas cruéis as práticas desportivas que utilizem animais...</li>
-                    <li>(C) são patrimônio nacional os biomas da floresta amazônica, mata atlântica, caatinga... [cite: 186]</li>
-                    <li>(D) incumbe ao poder público o dever de preservar e manter os processos ecológicos...</li>
-                    <li>(E) incumbe ao poder público definir os espaços territoriais especialmente protegidos... [cite: 188]</li>
-                </ul>
-            </div>
-
-            <div class="redacao-area">
-                <h3 style="text-align:center">PROVA DISCURSIVA - REDAÇÃO</h3>
-                <p style="font-size:13px; margin:10px 0;">Utilize as linhas abaixo para a transcrição definitiva da sua redação. Não assine nem rubrique fora do local apropriado[cite: 18, 27].</p>
-                ${Array(30).fill('<div class="linha-redacao"></div>').join('')}
-            </div>
-        `;
-        document.getElementById('txt-titulo-topo').innerText = "PROVA CARREGADA: ANALISTA MPU";
-        alert("Conteúdo integral injetado na folha de treino!");
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com",
+        projectId: "masteroab-db5e1"
     };
 
-    window.limpar = () => confirm("Deseja limpar a folha?") && (document.getElementById('folha-total').innerHTML = "");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const PASTAS = ["PECAS", "TESES", "PRELIMINARES", "QUESTOES"];
+    const BIBLIOTECA = [
+        { n: "PROVA ANALISTA 2025", u: "AnalistaMPU.pdf" },
+        { n: "GABARITO ANALISTA 2025", u: "AnalistaMPU_Gabarito.pdf" },
+        { n: "LC 75/93", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" }
+    ];
+
+    let alvoPDF = "";
+
+    // FUNÇÃO PARA INJETAR CONTEÚDO OFICIAL (ANALISTA MPU)
+    window.injetarConteudo = () => {
+        const conteudo = `
+            <div style="font-family: 'Times New Roman', serif;">
+                <h3 style="text-align:center;">MPU - ANALISTA DO MPU - DIREITO (TIPO 1 BRANCA)</h3>
+                <hr>
+                <p><b>MÓDULO I - LÍNGUA PORTUGUESA</b></p>
+                <p><i>Questão 1:</i> O problema em matéria de audição vem do fato de que o cérebro é um órgão muito rápido e que se pensa muito mais depressa do que se fala...</p>
+                <p><b>MÓDULO II - SUSTENTABILIDADE</b></p>
+                <p><i>Questão 16:</i> Em relação aos princípios, normas e regras estabelecidos no Art. 225 da Constituição Federal sobre Meio Ambiente...</p>
+                <br>
+                <h4 style="text-align:center;">PROVA DISCURSIVA - REDAÇÃO</h4>
+                <p style="border: 1px solid #000; padding: 10px;">Com base nos textos motivadores, redija um texto dissertativo-argumentativo sobre o tema: <b>"O impacto da inteligência artificial na preservação da memória institucional do Ministério Público".</b></p>
+                <div style="border-left: 2px solid #ccc; padding-left: 10px;">
+                    ${Array.from({length: 30}, (_, i) => `<div style="border-bottom: 1px solid #eee; height: 25px;">${i+1}. </div>`).join('')}
+                </div>
+            </div>
+        `;
+        document.getElementById('folha-total').innerHTML = conteudo;
+        document.getElementById('txt-titulo-topo').innerText = "PROVA INJETADA - ANALISTA MPU";
+    };
+
+    // SALVAMENTO INTELIGENTE
+    window.modalSalvar = () => {
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "SALVAR / ATUALIZAR";
+        content.innerHTML = `
+            <input type="text" id="save-name" placeholder="NOME DO ARQUIVO" value="${document.getElementById('txt-titulo-topo').innerText.replace('FOLHA DE RESPOSTAS - ', '')}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-weight:bold;">
+            <p style="margin-bottom:10px; font-size:12px; font-weight:bold;">SELECIONE A PASTA:</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                ${PASTAS.map(p => `<button class="opt-btn" onclick="window.verificarEExecutarSalvar('${p}')">${p}</button>`).join('')}
+            </div>
+        `;
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.verificarEExecutarSalvar = async (pasta) => {
+        const nome = document.getElementById('save-name').value.toUpperCase() || "SEM TITULO";
+        const html = document.getElementById('folha-total').innerHTML;
+        const caminho = `SISTEMA_MPU_ELITE/GAVETAS/${pasta}`;
+        const snap = await get(ref(db, caminho));
+        let idExistente = null;
+        if(snap.exists()){
+            Object.entries(snap.val()).forEach(([id, dados]) => {
+                if(dados.nome === nome) idExistente = id;
+            });
+        }
+        if(idExistente) {
+            await update(ref(db, `${caminho}/${idExistente}`), { conteudo: html, data: new Date().toLocaleString() });
+            alert(`ARQUIVO "${nome}" ATUALIZADO EM ${pasta}!`);
+        } else {
+            const novoId = Date.now();
+            await set(ref(db, `${caminho}/${novoId}`), { nome, conteudo: html, data: new Date().toLocaleString() });
+            alert(`NOVO ARQUIVO "${nome}" CRIADO EM ${pasta}!`);
+        }
+        document.getElementById('txt-titulo-topo').innerText = nome;
+        document.getElementById('modal-base').style.display = 'none';
+    };
+
+    window.abrirGavetas = async () => {
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "MEUS ARQUIVOS";
+        content.innerHTML = "Carregando...";
+        let htmlFinal = "";
+        for (const p of PASTAS) {
+            const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/${p}`));
+            if(snap.exists()){
+                Object.values(snap.val()).reverse().forEach(item => {
+                    htmlFinal += `<div class="opt-btn" onclick="window.carregarEstudo('${btoa(unescape(encodeURIComponent(item.conteudo)))}', '${item.nome}')">
+                        <span>${item.nome} <br><small>${item.data}</small></span><span class="folder-tag">${p}</span>
+                    </div>`;
+                });
+            }
+        }
+        content.innerHTML = htmlFinal || "Pasta vazia.";
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.carregarEstudo = (cont64, nome) => {
+        document.getElementById('folha-total').innerHTML = decodeURIComponent(escape(atob(cont64)));
+        document.getElementById('txt-titulo-topo').innerText = nome;
+        document.getElementById('modal-base').style.display = 'none';
+    };
+
+    window.abrirModal = (alvo) => {
+        alvoPDF = alvo;
+        document.getElementById('modal-title').innerText = "BIBLIOTECA";
+        document.getElementById('modal-content').innerHTML = BIBLIOTECA.map(p => `<div class="opt-btn" onclick="window.carregarPDF('${p.u}', '${p.n}')">${p.n}</div>`).join('');
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.carregarPDF = (u, n) => {
+        if(alvoPDF === 'PDF1') {
+            document.getElementById('frame-1').src = u;
+            document.getElementById('title-1').innerText = n;
+            document.getElementById('viewer-1').classList.add('active');
+            document.getElementById('container-folha').classList.add('hidden');
+        } else {
+            document.getElementById('frame-2').src = u;
+            document.getElementById('title-2').innerText = n;
+            document.getElementById('viewer-2').classList.add('active');
+        }
+        document.getElementById('modal-base').style.display = 'none';
+    };
+
+    window.toggleDualPDF = () => {
+        document.getElementById('container-folha').classList.add('hidden');
+        document.getElementById('viewer-1').classList.add('active');
+        document.getElementById('viewer-2').classList.add('active');
+    };
+
+    window.resetView = () => {
+        document.getElementById('container-folha').classList.remove('hidden');
+        document.getElementById('viewer-1').classList.remove('active');
+        document.getElementById('viewer-2').classList.remove('active');
+    };
+
+    window.fecharV = (n) => {
+        document.getElementById(`viewer-${n}`).classList.remove('active');
+        if(n === 1) document.getElementById('container-folha').classList.remove('hidden');
+    };
+
+    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
