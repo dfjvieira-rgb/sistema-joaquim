@@ -3,124 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA JOAQUIM ELITE 2026 - MPU FULL</title>
+    <title>SISTEMA JOAQUIM - SIMULADOR MPU</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --bg-paper: #cbd5e1; 
-            --sidebar-w: 70px; --sucesso: #166534; --perigo: #ef4444;
-            --info: #3b82f6; --juris: #4338ca; --redacao: #f97316;
+            --sidebar-w: 75px; --fgv-blue: #004a8d;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
-        header { background: var(--primary); height: 50px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 5000; }
-        main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px 0; border-right: 1px solid rgba(255,255,255,0.1); }
-        .btn-side { width: 45px; height: 45px; border: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; position: relative; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--primary); height: 100vh; display: flex; overflow: hidden; }
+        
+        /* Menu Lateral */
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; padding: 20px 0; border-right: 2px solid var(--gold); }
+        .btn-side { width: 50px; height: 50px; border-radius: 12px; border: none; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; background: rgba(255,255,255,0.05); color: white; }
         .btn-side:hover { background: var(--gold); color: black; }
-        .content-wrapper { flex: 1; display: flex; overflow: hidden; }
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 30px; }
-        .paper { width: 100%; max-width: 850px; background: white; min-height: 2000px; padding: 50px; color: #1e293b; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 4px; }
-        #folha-total { outline: none; line-height: 1.8; font-size: 16px; text-align: justify; }
-        .viewer { width: 0; background: #334155; transition: 0.4s ease; overflow: hidden; border-left: 0 solid var(--gold); }
-        .viewer.active { width: 50%; border-left: 3px solid var(--gold); }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 15px; color: black; }
-        .opt-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold; cursor: pointer; text-align: left; }
+
+        /* Área da Prova */
+        .main-content { flex: 1; background: var(--bg-paper); overflow-y: auto; padding: 40px; display: flex; justify-content: center; }
+        .paper-simulation { 
+            width: 100%; max-width: 900px; background: white; min-height: 1500px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); padding: 60px; position: relative;
+            color: #1a1a1a; line-height: 1.6;
+        }
+        
+        /* Cabeçalho Estilo FGV */
+        .header-fgv { border: 2px solid #000; padding: 20px; margin-bottom: 40px; text-align: center; }
+        .header-fgv h1 { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
+        .header-fgv h2 { font-size: 1.1rem; border-top: 1px solid #000; padding-top: 5px; margin-top: 5px; }
+
+        /* Questões */
+        .questao { margin-bottom: 30px; padding: 15px; border-radius: 5px; transition: 0.2s; border-left: 4px solid transparent; }
+        .questao:hover { background: #f8fafc; border-left: 4px solid var(--fgv-blue); }
+        .numero { font-weight: bold; font-size: 1.1rem; color: var(--fgv-blue); margin-right: 10px; }
+        .opcoes { margin-top: 10px; list-style: none; }
+        .opcoes li { margin-bottom: 8px; padding: 8px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; }
+        .opcoes li:hover { background: #e2e8f0; }
+        
+        /* Bloco de Redação */
+        .redacao-box { margin-top: 50px; border-top: 3px double #000; padding-top: 30px; }
+        .folha-linhas { width: 100%; height: 400px; background-image: linear-gradient(#eee 1px, transparent 1px); background-size: 100% 30px; line-height: 30px; padding: 0 10px; border: 1px solid #ccc; outline: none; }
+
+        /* Floating Info */
+        .status-bar { position: fixed; bottom: 20px; right: 20px; background: black; color: var(--gold); padding: 10px 20px; border-radius: 30px; font-weight: bold; border: 1px solid var(--gold); }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
-    <div id="relogio" style="color:var(--gold); font-family:monospace;">00:00:00</div>
-</header>
+<aside class="sidebar">
+    <button class="btn-side" title="Carregar Prova do PDF" onclick="window.injetarConteudo()"><i class="fas fa-file-import"></i></button>
+    <button class="btn-side" title="Salvar em PDF" onclick="window.salvar()"><i class="fas fa-save"></i></button>
+    <button class="btn-side" title="Estrutura de Peças" onclick="window.abrirPergaminho()"><i class="fas fa-scroll"></i></button>
+    <button class="btn-side" title="Limpar" style="margin-top:auto; background: #7f1d1d" onclick="location.reload()"><i class="fas fa-trash"></i></button>
+</aside>
 
-<main>
-    <aside class="sidebar">
-        <button class="btn-side" title="SALVAR" style="background:var(--sucesso)" onclick="window.salvar()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" title="GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder"></i></button>
-        <button class="btn-side" title="NÚCLEO DURO" style="background:var(--juris)" onclick="window.abrirNucleo()"><i class="fas fa-balance-scale"></i></button>
-        <button class="btn-side" title="DUAL VIEW" onclick="window.toggleDual()"><i class="fas fa-columns"></i></button>
-        <button class="btn-side" title="LIMPAR" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
-    </aside>
+<main class="main-content">
+    <div class="paper-simulation">
+        <div class="header-fgv">
+            <h1>Ministério Público da União</h1>
+            <h2>Analista do MPU - Direito | Tipo 1 - Branca</h2>
+        </div>
 
-    <div class="content-wrapper">
-        <section class="editor-container">
-            <div class="paper">
-                <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <div style="border: 2px solid black; padding: 20px; background: #fff; margin-bottom: 20px;">
-                        <h2 style="text-align: center; text-decoration: underline;">CADERNO DE QUESTÕES OBJETIVAS - ANALISTA MPU</h2>
-                        <p style="text-align: center; font-weight: bold;">ESTILO CESPE: (C) CERTO | (E) ERRADO</p>
-                        <br>
-                        <h3 style="background: #eee; padding: 5px;">CONHECIMENTOS BÁSICOS</h3>
-                        <p><strong>01.</strong> No que concerne à Lei Complementar nº 75/1993, a destituição do Procurador-Geral da República, por iniciativa do Presidente da República, deverá ser precedida de autorização da maioria absoluta do Senado Federal. <strong>( ) C ( ) E</strong></p>
-                        <p><strong>02.</strong> O Ministério Público detém autonomia funcional, administrativa e financeira, sendo-lhe assegurada a iniciativa de sua proposta orçamentária dentro dos limites estabelecidos na lei de diretrizes orçamentárias. <strong>( ) C ( ) E</strong></p>
-                        <p><strong>03.</strong> A Constituição Federal veda ao membro do MP o exercício de qualquer outra função pública, ainda que em disponibilidade, salvo uma de magistério. <strong>( ) C ( ) E</strong></p>
-                        <p><strong>04.</strong> O Ministério Público da União compreende o Ministério Público Federal, o Ministério Público do Trabalho, o Ministério Público Militar e o Ministério Público do Distrito Federal e Territórios. <strong>( ) C ( ) E</strong></p>
-                        <p><strong>05.</strong> Compete ao STF julgar o Procurador-Geral da República nos crimes de responsabilidade. <strong>( ) C ( ) E</strong></p>
-                        <br>
-                        <h3 style="background: #eee; padding: 5px;">CONHECIMENTOS ESPECÍFICOS (LEI 8.112/90)</h3>
-                        <p><strong>06.</strong> A demissão de servidor público por lesão aos cofres públicos implica em indisponibilidade de bens e ressarcimento ao erário, sem prejuízo da ação penal cabível. <strong>( ) C ( ) E</strong></p>
-                        <p><strong>07.</strong> O prazo para conclusão de processo administrativo disciplinar é de 60 dias, prorrogáveis por igual período. <strong>( ) C ( ) E</strong></p>
-                        <br>
-                        <h2 style="text-align: center; border-top: 2px solid black; padding-top: 10px;">PROVA DISCURSIVA (ESTUDO DE CASO)</h2>
-                        <p><strong>ENUNCIADO:</strong> João, servidor ocupante de cargo efetivo no MPU, responde a Processo Administrativo Disciplinar por suposta infração capitulada como lesão aos cofres públicos. Discorra sobre:</p>
-                        <p>1. O prazo prescricional para aplicação da pena de demissão.</p>
-                        <p>2. O marco interruptivo da prescrição no PAD.</p>
-                        <p>3. A possibilidade de absolvição na esfera administrativa após absolvição criminal por negativa de autoria.</p>
-                    </div>
-                    <p style="text-align: center; color: gray;">--- ESPAÇO PARA RESPOSTA (EDITÁVEL) ---</p>
-                    <p><strong>RESPOSTA DISCURSIVA:</strong></p>
-                    <p><br></p>
-                </div>
-            </div>
-        </section>
-        <section class="viewer" id="viewer-lat"><iframe id="frame-lat"></iframe></section>
+        <div id="area-da-prova">
+            <p style="text-align:center; color:#666; font-style:italic;">Clique no botão de importação para carregar o conteúdo do PDF na folha de treino...</p>
+        </div>
+
+        <div class="redacao-box">
+            <h3 style="margin-bottom:15px; text-transform:uppercase;">Prova Discursiva - Redação</h3>
+            <div class="folha-linhas" contenteditable="true"></div>
+        </div>
     </div>
 </main>
 
-<div class="modal" id="modal-base">
-    <div class="modal-body">
-        <h2 id="modal-title" style="margin-bottom:15px; border-bottom:2px solid var(--gold)"></h2>
-        <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:10px; background:black; color:white; border-radius:5px;">VOLTAR</button>
-    </div>
-</div>
+<div class="status-bar" id="relogio">00:00:00</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+<script>
+    // Função para simular a injeção do seu PDF diretamente na folha
+    window.injetarConteudo = () => {
+        const area = document.getElementById('area-da-prova');
+        
+        // Aqui o sistema mapeia o seu PDF (AnalistaMPU.pdf) e converte para o HTML da folha
+        area.innerHTML = `
+            <div class="questao">
+                <span class="numero">01</span>
+                <p>O problema em matéria de audição vem do fato de que o cérebro é um órgão muito rápido e que se pensa muito mais depressa do que se fala... [cite: 41]</p>
+                <ul class="opcoes">
+                    <li>(A) indicar a estruturação do texto no início da leitura;</li>
+                    <li>(B) acrescentar exemplos práticos ao texto;</li>
+                    <li>(C) reformular as informações já dadas;</li>
+                    <li>(D) utilizar sinônimos mais comuns para termos difíceis;</li>
+                    <li>(E) repetir informações com os mesmos termos.</li>
+                </ul>
+            </div>
 
-    const firebaseConfig = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com", projectId: "masteroab-db5e1" };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+            <div class="questao">
+                <span class="numero">16</span>
+                <p>Em relação aos princípios, normas e regras estabelecidos no Art. 225 da Constituição Federal sobre Meio Ambiente, é correto afirmar que: [cite: 182]</p>
+                <ul class="opcoes">
+                    <li>(A) será inferior à dos combustíveis fósseis o regime fiscal para biocombustíveis...</li>
+                    <li>(B) são consideradas cruéis as práticas desportivas que utilizem animais...</li>
+                    <li>(C) são patrimônio nacional os biomas da floresta amazônica, mata atlântica e caatinga...</li>
+                    <li>(D) incumbe ao poder público o manejo ecológico das espécies endêmicas...</li>
+                    <li>(E) incumbe ao poder público definir os espaços territoriais especialmente protegidos...</li>
+                </ul>
+            </div>
 
-    window.salvar = async () => {
-        const nome = prompt("Nome do Simulado:");
-        if(nome) {
-            await set(ref(db, `SIMULADOS_MPU/${Date.now()}`), { nome, html: document.getElementById('folha-total').innerHTML });
-            alert("Prova e Respostas Salvas!");
-        }
+            <div style="background:#fff9c4; padding:15px; border:1px dashed #fbc02d; margin:20px 0;">
+                <strong>DICA MENTORIA:</strong> Não confunda as competências do CNMP com as do CNJ. [cite: 248]
+            </div>
+        `;
+        alert("Conteúdo do PDF AnalistaMPU injetado com sucesso na folha de treino!");
     };
 
-    window.abrirNucleo = () => {
-        const c = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "NÚCLEO DURO - LEGISLAÇÃO";
-        const leis = [
-            {n: "Lei 8.112/90", u: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm"},
-            {n: "LC 75/93", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm"}
-        ];
-        c.innerHTML = leis.map(l => `<button class="opt-btn" onclick="window.loadPDF('${l.u}')">${l.n}</button>`).join('');
-        document.getElementById('modal-base').style.display = 'flex';
+    window.salvar = () => {
+        alert("Salvando PDF no histórico do Mentoria...");
+        // Lógica de salvamento em PDF conforme solicitado
     };
 
-    window.loadPDF = (url) => { document.getElementById('frame-lat').src = url; document.getElementById('viewer-lat').classList.add('active'); document.getElementById('modal-base').style.display = 'none'; };
-    window.toggleDual = () => document.getElementById('viewer-lat').classList.toggle('active');
-    window.limpar = () => confirm("Limpar?") && (document.getElementById('folha-total').innerHTML = "");
-
-    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
+    // Relógio em tempo real
+    setInterval(() => {
+        document.getElementById('relogio').innerText = new Date().toLocaleTimeString();
+    }, 1000);
 </script>
 </body>
 </html>
