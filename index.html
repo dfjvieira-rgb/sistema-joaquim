@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - MODO SIMULADO</title>
+    <title>JOAQUIM ELITE 2026 - MASTER ICON FULL</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -11,7 +11,7 @@
         :root {
             --primary: #020617; --gold: #fbbf24; --gold-dark: #d97706;
             --bg-paper: #cbd5e1; --sidebar-w: 70px; --sucesso: #166534; --perigo: #ef4444;
-            --info: #3b82f6; --juris: #4338ca;
+            --info: #3b82f6; --juris: #4338ca; --redacao: #f97316;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,6 +25,7 @@
 
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
+        /* SIDEBAR MASTER ICON */
         .sidebar { 
             width: var(--sidebar-w); background: #1e293b; display: flex; 
             flex-direction: column; align-items: center; gap: 12px; 
@@ -59,7 +60,7 @@
         .sticky-header {
             width: 100%; max-width: 850px; background: #f8fafc; padding: 15px;
             border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
-            color: #020617; font-weight: 900; text-align: center;
+            color: #020617; font-weight: 900; text-align: center; margin-bottom: 0;
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
@@ -69,6 +70,7 @@
         }
         #folha-total { outline: none; min-height: 1000px; line-height: 1.8; font-size: 16px; text-align: justify; }
 
+        /* VIEWERS PDF */
         .viewer { 
             width: 0; background: #334155; display: flex; flex-direction: column; 
             overflow: hidden; border-left: 0 solid var(--gold); transition: width 0.4s ease;
@@ -82,12 +84,8 @@
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
         .modal-body { background: white; width: 92%; max-width: 500px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary); }
+        .opt-btn { width: 100%; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #ddd; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary); }
         .opt-btn:hover { background: var(--gold); }
-        
-        .btn-inject { background: #dcfce7 !important; border: 2px solid #166534 !important; }
-
-        .folder-tag { font-size: 9px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -104,10 +102,14 @@
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
         
-        <button class="btn-side" data-label="BIBLIOTECA (SIMULADO)" style="background:var(--info);" onclick="window.abrirModal('PDF1')"><i class="fas fa-file-pdf"></i></button>
+        <button class="btn-side" data-label="PROVAS (EDITÁVEL)" style="background:var(--info);" onclick="window.abrirModal('PDF1')"><i class="fas fa-file-invoice"></i></button>
         <button class="btn-side" data-label="GABARITOS (DIREITA)" style="background:var(--juris);" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
+        <button class="btn-side" data-label="NÚCLEO DURO" onclick="window.abrirModal('PDF2')"><i class="fas fa-balance-scale"></i></button>
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
+        
+        <button class="btn-side" data-label="VER PDF + PDF" onclick="window.toggleDualPDF()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" data-label="MODO ESCRITA TOTAL" onclick="window.resetView()"><i class="fas fa-pen-fancy"></i></button>
         
         <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
     </aside>
@@ -115,19 +117,17 @@
     <div class="content-wrapper">
         <section class="editor-container" id="container-folha">
             <div class="sticky-header">
-                <i class="fas fa-edit"></i> <span id="txt-titulo-topo">AMBIENTE SIMULADO - EDITÁVEL</span>
+                <i class="fas fa-file-signature"></i> <span id="txt-titulo-topo">FOLHA DE RESPOSTAS - MASTER ICON</span>
             </div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <p style="text-align: center;"><b>FOLHA DE RESPOSTAS E ENUNCIADO EDITÁVEL</b></p>
+                    <p style="text-align: center;"><b>FOLHA DE RESPOSTAS - MPU ELITE / OAB</b></p>
                     <hr style="margin: 20px 0;">
-                    <div id="area-enunciado" style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid var(--gold);">
-                        <i>Selecione uma prova na biblioteca para injetar o texto aqui e começar a responder...</i>
+                    <div id="container-prova-injetada" style="background:#f1f5f9; padding:15px; border-left:4px solid var(--gold); margin-bottom:20px;">
+                        <i>ENUNCIADO DA PROVA APARECERÁ AQUI (EDITÁVEL)...</i>
                     </div>
-                    <div id="area-resposta">
-                        <p><b>RESPOSTA:</b></p>
-                        <p>Escreva aqui sua tese...</p>
-                    </div>
+                    <p><b>RESPOSTA:</b></p>
+                    <br>
                 </div>
             </div>
         </section>
@@ -165,30 +165,19 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     const PASTAS = ["PECAS", "TESES", "PRELIMINARES", "QUESTOES"];
-    
-    // Simulação de banco de dados de textos de provas (Enunciados convertidos)
-    const BIBLIOTECA_SIMULADA = [
-        { 
-            n: "PROVA MPU 2025 - ANALISTA", 
-            u: "AnalistaMPU.pdf",
-            texto: "<h3>QUESTÃO 1</h3><p>O Ministério Público da União ajuizou ação civil pública... [TEXTO DA PROVA CONVERTIDO]</p>"
-        },
-        { 
-            n: "OAB EXAME 42 - PEÇA", 
-            u: "Exame42.pdf",
-            texto: "<h3>ENUNCIADO DA PEÇA</h3><p>João da Silva, empregado da empresa X, foi demitido... [TEXTO DA PEÇA CONVERTIDO]</p>"
-        }
-    ];
 
-    let alvoPDF = "";
+    // BANCO DE DADOS DE TEXTO PARA INJEÇÃO (MODO SIMULADO)
+    const PROVAS_EDITAVEIS = [
+        { n: "SIMULADO MPU ANALISTA", u: "AnalistaMPU.pdf", txt: "<b>ENUNCIADO:</b> O Ministério Público Federal... (Texto Editável Aqui)" },
+        { n: "EXAME OAB PEÇA PRÁTICA", u: "OAB42.pdf", txt: "<b>PEÇA:</b> João das Couves ajuizou reclamação trabalhista... (Texto Editável Aqui)" }
+    ];
 
     window.modalSalvar = () => {
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "SALVAR SIMULADO";
+        document.getElementById('modal-title').innerText = "SALVAR / ATUALIZAR";
         content.innerHTML = `
-            <input type="text" id="save-name" placeholder="NOME DO SIMULADO" value="${document.getElementById('txt-titulo-topo').innerText}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-weight:bold;">
+            <input type="text" id="save-name" placeholder="NOME DO ARQUIVO" value="${document.getElementById('txt-titulo-topo').innerText}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-weight:bold;">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 ${PASTAS.map(p => `<button class="opt-btn" onclick="window.verificarEExecutarSalvar('${p}')">${p}</button>`).join('')}
             </div>
@@ -200,43 +189,50 @@
         const nome = document.getElementById('save-name').value.toUpperCase();
         const html = document.getElementById('folha-total').innerHTML;
         const caminho = `SISTEMA_MPU_ELITE/GAVETAS/${pasta}`;
-        const novoId = Date.now();
-        await set(ref(db, `${caminho}/${novoId}`), { nome, conteudo: html, data: new Date().toLocaleString() });
-        alert(`Simulado Salvo em ${pasta}!`);
+        const snap = await get(ref(db, caminho));
+        let idExistente = null;
+        if(snap.exists()){
+            Object.entries(snap.val()).forEach(([id, dados]) => { if(dados.nome === nome) idExistente = id; });
+        }
+        if(idExistente) {
+            await update(ref(db, `${caminho}/${idExistente}`), { conteudo: html, data: new Date().toLocaleString() });
+            alert(`ATUALIZADO!`);
+        } else {
+            await set(ref(db, `${caminho}/${Date.now()}`), { nome, conteudo: html, data: new Date().toLocaleString() });
+            alert(`CRIADO NOVO!`);
+        }
         document.getElementById('modal-base').style.display = 'none';
     };
 
     window.abrirModal = (alvo) => {
-        alvoPDF = alvo;
-        document.getElementById('modal-title').innerText = "ESCOLHER PROVA";
-        let html = BIBLIOTECA_SIMULADA.map((p, index) => `
-            <div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
-                <p style="font-weight:bold; margin-bottom:5px;">${p.n}</p>
-                <div style="display:flex; gap:5px;">
-                    <button class="opt-btn" style="font-size:11px;" onclick="window.carregarPDF('${p.u}', '${p.n}')">APENAS VER PDF</button>
-                    <button class="opt-btn btn-inject" style="font-size:11px;" onclick="window.injetarProva(${index})">INJETAR E EDITAR</button>
-                </div>
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "BIBLIOTECA EDITÁVEL";
+        content.innerHTML = PROVAS_EDITAVEIS.map((p, i) => `
+            <div style="margin-bottom:10px; padding:10px; border:1px solid #eee;">
+                <strong>${p.n}</strong><br>
+                <button class="opt-btn" style="background:#dcfce7" onclick="window.injetarNaFolha(${i})">INJETAR NA FOLHA (EDITAR)</button>
+                <button class="opt-btn" onclick="window.carregarPDF('${p.u}', '${p.n}', '${alvo}')">SÓ VISUALIZAR PDF</button>
             </div>
         `).join('');
-        document.getElementById('modal-content').innerHTML = html;
         document.getElementById('modal-base').style.display = 'flex';
     };
 
-    window.injetarProva = (index) => {
-        const prova = BIBLIOTECA_SIMULADA[index];
-        document.getElementById('area-enunciado').innerHTML = prova.texto;
-        document.getElementById('txt-titulo-topo').innerText = "SIMULANDO: " + prova.n;
-        window.resetView(); // Garante que a folha apareça
+    window.injetarNaFolha = (index) => {
+        const prova = PROVAS_EDITAVEIS[index];
+        document.getElementById('container-prova-injetada').innerHTML = prova.txt;
+        document.getElementById('txt-titulo-topo').innerText = prova.n;
+        window.resetView();
         document.getElementById('modal-base').style.display = 'none';
-        alert("Enunciado injetado! Você pode editar o texto da prova e responder abaixo.");
+        alert("Enunciado Injetado! Agora você pode editar a prova e responder abaixo.");
     };
 
-    window.carregarPDF = (u, n) => {
-        const frame = alvoPDF === 'PDF1' ? 'frame-1' : 'frame-2';
-        const viewer = alvoPDF === 'PDF1' ? 'viewer-1' : 'viewer-2';
+    window.carregarPDF = (u, n, alvo) => {
+        const frame = alvo === 'PDF1' ? 'frame-1' : 'frame-2';
+        const viewer = alvo === 'PDF1' ? 'viewer-1' : 'viewer-2';
         document.getElementById(frame).src = u;
-        document.getElementById(`title-${alvoPDF === 'PDF1' ? '1' : '2'}`).innerText = n;
+        document.getElementById(`title-${alvo === 'PDF1' ? '1' : '2'}`).innerText = n;
         document.getElementById(viewer).classList.add('active');
+        if(alvo === 'PDF1') document.getElementById('container-folha').classList.add('hidden');
         document.getElementById('modal-base').style.display = 'none';
     };
 
@@ -248,9 +244,10 @@
 
     window.fecharV = (n) => {
         document.getElementById(`viewer-${n}`).classList.remove('active');
+        if(n === 1) document.getElementById('container-folha').classList.remove('hidden');
     };
 
-    window.limpar = () => confirm("Limpar simulado?") && (document.getElementById('area-enunciado').innerHTML = "<i>Aguardando enunciado...</i>");
+    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
