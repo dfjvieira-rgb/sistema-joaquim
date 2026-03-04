@@ -3,191 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - MPU ANALISTA FULL</title>
-    
+    <title>SISTEMA JOAQUIM ELITE 2026 - MPU FULL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
-            --primary: #020617; --gold: #fbbf24; --gold-dark: #d97706;
-            --bg-paper: #cbd5e1; --sidebar-w: 70px; --sucesso: #166534; --perigo: #ef4444;
+            --primary: #020617; --gold: #fbbf24; --bg-paper: #cbd5e1; 
+            --sidebar-w: 70px; --sucesso: #166534; --perigo: #ef4444;
             --info: #3b82f6; --juris: #4338ca; --redacao: #f97316;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
-        
-        header { 
-            background: var(--primary); height: 55px; padding: 0 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 2px solid var(--gold); z-index: 5000; 
-        }
-
+        header { background: var(--primary); height: 50px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 5000; }
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
-        
-        /* SIDEBAR MASTER ICON */
-        .sidebar { 
-            width: var(--sidebar-w); background: #1e293b; display: flex; 
-            flex-direction: column; align-items: center; gap: 12px; 
-            padding: 15px 0; border-right: 1px solid rgba(255,255,255,0.1); z-index: 100;
-        }
-
-        .btn-side { 
-            width: 48px; height: 48px; border: none; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; cursor: pointer; transition: 0.3s; 
-            background: rgba(255,255,255,0.05); position: relative;
-        }
-        .btn-side:hover { background: rgba(255,255,255,0.15); border-left: 3px solid var(--gold); transform: scale(1.05); }
-        .btn-side i { font-size: 1.2rem; color: var(--gold); }
-
-        .btn-side::after {
-            content: attr(data-label); position: absolute; left: 65px; background: #000; 
-            color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; 
-            white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 10000;
-            border: 1px solid var(--gold); font-weight: bold;
-        }
-        .btn-side:hover::after { opacity: 1; }
-
-        /* EDITOR E PAPEL */
-        .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 25px; }
-        
-        .sticky-header {
-            width: 100%; max-width: 850px; background: #f8fafc; padding: 15px;
-            border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
-            color: #020617; font-weight: 900; text-align: center;
-        }
-
-        .paper { width: 100%; max-width: 850px; background: white; min-height: 2500px; padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        #folha-total { outline: none; min-height: 2000px; line-height: 1.8; font-size: 16px; text-align: justify; }
-
-        /* VIEWERS LATERAIS */
-        .viewer { width: 0; background: #334155; display: flex; flex-direction: column; overflow: hidden; transition: width 0.4s ease; }
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px 0; border-right: 1px solid rgba(255,255,255,0.1); }
+        .btn-side { width: 45px; height: 45px; border: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; position: relative; }
+        .btn-side:hover { background: var(--gold); color: black; }
+        .content-wrapper { flex: 1; display: flex; overflow: hidden; }
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 30px; }
+        .paper { width: 100%; max-width: 850px; background: white; min-height: 2000px; padding: 50px; color: #1e293b; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 4px; }
+        #folha-total { outline: none; line-height: 1.8; font-size: 16px; text-align: justify; }
+        .viewer { width: 0; background: #334155; transition: 0.4s ease; overflow: hidden; border-left: 0 solid var(--gold); }
         .viewer.active { width: 50%; border-left: 3px solid var(--gold); }
-        iframe { flex: 1; border: none; background: white; }
-
-        /* MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 92%; max-width: 600px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd; background: #f8fafc; font-weight: 800; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 15px; }
-        .opt-btn:hover { background: var(--gold); }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 15px; color: black; }
+        .opt-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold; cursor: pointer; text-align: left; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" style="font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
-    <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold);">00:00:00</div>
+    <div style="font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
+    <div id="relogio" style="color:var(--gold); font-family:monospace;">00:00:00</div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" data-label="SALVAR SIMULADO" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" data-label="GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
-        
-        <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
-        
-        <button class="btn-side" data-label="REINJETAR PROVA" style="background:var(--info);" onclick="window.injetarSimulado()"><i class="fas fa-file-signature"></i></button>
-        <button class="btn-side" data-label="NÚCLEO DURO (LEIS)" style="background:var(--juris);" onclick="window.abrirNucleoDuro()"><i class="fas fa-balance-scale"></i></button>
-        <button class="btn-side" data-label="INTELIGÊNCIAS" style="background:var(--redacao);" onclick="window.abrirInteligencias()"><i class="fas fa-brain"></i></button>
-        
-        <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
-        
-        <button class="btn-side" data-label="DUAL VIEW" onclick="window.toggleDual()"><i class="fas fa-columns"></i></button>
-        <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
+        <button class="btn-side" title="SALVAR" style="background:var(--sucesso)" onclick="window.salvar()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" title="GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder"></i></button>
+        <button class="btn-side" title="NÚCLEO DURO" style="background:var(--juris)" onclick="window.abrirNucleo()"><i class="fas fa-balance-scale"></i></button>
+        <button class="btn-side" title="DUAL VIEW" onclick="window.toggleDual()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" title="LIMPAR" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
     </aside>
 
     <div class="content-wrapper">
         <section class="editor-container">
-            <div class="sticky-header" id="txt-titulo-topo">PROVA INTEGRAL: ANALISTA DO MPU</div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <div style="background:#f8fafc; padding:30px; border:4px double #000; color:#1e293b;">
-                        <h2 style="text-align:center;">CADERNO DE QUESTÕES OBJETIVAS - ANALISTA MPU</h2>
-                        <p style="text-align:center; font-size:12px;">ESTILO CESPE: (C) CERTO | (E) ERRADO</p>
-                        <hr>
-                        <h3 style="background:#020617; color:#fff; padding:5px;">CONHECIMENTOS BÁSICOS</h3>
-                        <p><b>01.</b> No que concerne à Lei Complementar nº 75/1993, a destituição do Procurador-Geral da República, por iniciativa do Presidente da República, deverá ser precedida de autorização da maioria absoluta do Senado Federal. <b>( ) C ( ) E</b></p>
-                        <p><b>02.</b> O Ministério Público detém autonomia funcional, administrativa e financeira, sendo-lhe assegurada a iniciativa de sua proposta orçamentária dentro dos limites estabelecidos na lei de diretrizes orçamentárias. <b>( ) C ( ) E</b></p>
-                        <p><b>03.</b> A Constituição Federal veda ao membro do MP o exercício de qualquer outra função pública, ainda que em disponibilidade, salvo uma de magistério. <b>( ) C ( ) E</b></p>
-                        <p><b>04.</b> O Ministério Público da União compreende o Ministério Público Federal, o Ministério Público do Trabalho, o Ministério Público Militar e o Ministério Público do Distrito Federal e Territórios. <b>( ) C ( ) E</b></p>
-                        <p><b>05.</b> Compete ao STF julgar o Procurador-Geral da República nos crimes de responsabilidade. <b>( ) C ( ) E</b></p>
+                    <div style="border: 2px solid black; padding: 20px; background: #fff; margin-bottom: 20px;">
+                        <h2 style="text-align: center; text-decoration: underline;">CADERNO DE QUESTÕES OBJETIVAS - ANALISTA MPU</h2>
+                        <p style="text-align: center; font-weight: bold;">ESTILO CESPE: (C) CERTO | (E) ERRADO</p>
                         <br>
-                        <h3 style="background:#020617; color:#fff; padding:5px;">CONHECIMENTOS ESPECÍFICOS (LEI 8.112/90)</h3>
-                        <p><b>06.</b> A demissão de servidor público por lesão aos cofres públicos implica em indisponibilidade de bens e ressarcimento ao erário, sem prejuízo da ação penal cabível. <b>( ) C ( ) E</b></p>
-                        <p><b>07.</b> O prazo para conclusão de processo administrativo disciplinar é de 60 dias, prorrogáveis por igual período. <b>( ) C ( ) E</b></p>
+                        <h3 style="background: #eee; padding: 5px;">CONHECIMENTOS BÁSICOS</h3>
+                        <p><strong>01.</strong> No que concerne à Lei Complementar nº 75/1993, a destituição do Procurador-Geral da República, por iniciativa do Presidente da República, deverá ser precedida de autorização da maioria absoluta do Senado Federal. <strong>( ) C ( ) E</strong></p>
+                        <p><strong>02.</strong> O Ministério Público detém autonomia funcional, administrativa e financeira, sendo-lhe assegurada a iniciativa de sua proposta orçamentária dentro dos limites estabelecidos na lei de diretrizes orçamentárias. <strong>( ) C ( ) E</strong></p>
+                        <p><strong>03.</strong> A Constituição Federal veda ao membro do MP o exercício de qualquer outra função pública, ainda que em disponibilidade, salvo uma de magistério. <strong>( ) C ( ) E</strong></p>
+                        <p><strong>04.</strong> O Ministério Público da União compreende o Ministério Público Federal, o Ministério Público do Trabalho, o Ministério Público Militar e o Ministério Público do Distrito Federal e Territórios. <strong>( ) C ( ) E</strong></p>
+                        <p><strong>05.</strong> Compete ao STF julgar o Procurador-Geral da República nos crimes de responsabilidade. <strong>( ) C ( ) E</strong></p>
                         <br>
-                        <h2 style="text-align:center; border-top:2px solid #000; padding-top:20px;">PROVA DISCURSIVA (ESTUDO DE CASO)</h2>
-                        <p><b>ENUNCIADO:</b> João, servidor ocupante de cargo efetivo no MPU, responde a Processo Administrativo Disciplinar por suposta infração capitulada como lesão aos cofres públicos. Discorra sobre:</p>
+                        <h3 style="background: #eee; padding: 5px;">CONHECIMENTOS ESPECÍFICOS (LEI 8.112/90)</h3>
+                        <p><strong>06.</strong> A demissão de servidor público por lesão aos cofres públicos implica em indisponibilidade de bens e ressarcimento ao erário, sem prejuízo da ação penal cabível. <strong>( ) C ( ) E</strong></p>
+                        <p><strong>07.</strong> O prazo para conclusão de processo administrativo disciplinar é de 60 dias, prorrogáveis por igual período. <strong>( ) C ( ) E</strong></p>
+                        <br>
+                        <h2 style="text-align: center; border-top: 2px solid black; padding-top: 10px;">PROVA DISCURSIVA (ESTUDO DE CASO)</h2>
+                        <p><strong>ENUNCIADO:</strong> João, servidor ocupante de cargo efetivo no MPU, responde a Processo Administrativo Disciplinar por suposta infração capitulada como lesão aos cofres públicos. Discorra sobre:</p>
                         <p>1. O prazo prescricional para aplicação da pena de demissão.</p>
                         <p>2. O marco interruptivo da prescrição no PAD.</p>
                         <p>3. A possibilidade de absolvição na esfera administrativa após absolvição criminal por negativa de autoria.</p>
                     </div>
-                    <hr style="margin:40px 0; border:2px dashed var(--gold);">
-                    <h3 style="text-align:center;">--- ESPAÇO PARA RESPOSTA (EDITÁVEL) ---</h3>
-                    <p><b>RESPOSTA DISCURSIVA:</b></p>
+                    <p style="text-align: center; color: gray;">--- ESPAÇO PARA RESPOSTA (EDITÁVEL) ---</p>
+                    <p><strong>RESPOSTA DISCURSIVA:</strong></p>
                     <p><br></p>
                 </div>
             </div>
         </section>
-        <section class="viewer" id="viewer-v"><iframe id="frame-v"></iframe></section>
+        <section class="viewer" id="viewer-lat"><iframe id="frame-lat"></iframe></section>
     </div>
 </main>
 
 <div class="modal" id="modal-base">
     <div class="modal-body">
-        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold);"></h2>
+        <h2 id="modal-title" style="margin-bottom:15px; border-bottom:2px solid var(--gold)"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px;">FECHAR</button>
+        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:10px; background:black; color:white; border-radius:5px;">VOLTAR</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com", projectId: "masteroab-db5e1" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // FUNÇÕES RESTAURADAS
-    window.injetarSimulado = () => location.reload();
-
-    window.abrirNucleoDuro = () => {
-        const c = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "NÚCLEO DURO ANALISTA";
-        const leis = [
-            {n:"LC 75/93 (MPU)", u:"https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm"},
-            {n:"Lei 8.112/90", u:"https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm"},
-            {n:"CF/88 (Art. 127-130)", u:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"}
-        ];
-        c.innerHTML = leis.map(l => `<button class="opt-btn" onclick="window.carregar('${l.u}')"><i class="fas fa-gavel"></i> ${l.n}</button>`).join('');
-        document.getElementById('modal-base').style.display = 'flex';
-    };
-
-    window.abrirInteligencias = () => {
-        const c = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "INTELIGÊNCIA NÃO CONFUNDA";
-        c.innerHTML = `
-            <button class="opt-btn" onclick="alert('Qual a Peça: Ação Civil Pública / MS / PAD')">QUAL É A PEÇA?</button>
-            <button class="opt-btn" onclick="alert('Principais Teses: Prescrição 5 anos / Independência de Instâncias')">TESES MPU</button>
-            <button class="opt-btn" onclick="alert('50 Questões Gabaritadas liberadas em breve')">50 QUESTÕES</button>
-        `;
-        document.getElementById('modal-base').style.display = 'flex';
-    };
-
-    window.carregar = (u) => { document.getElementById('frame-v').src = u; document.getElementById('viewer-v').classList.add('active'); document.getElementById('modal-base').style.display = 'none'; };
-    window.toggleDual = () => document.getElementById('viewer-v').classList.toggle('active');
-    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
-
-    window.modalSalvar = async () => {
-        const nome = prompt("Nome para salvar nas Gavetas:");
+    window.salvar = async () => {
+        const nome = prompt("Nome do Simulado:");
         if(nome) {
-            await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/SIMULADOS/${Date.now()}`), { nome, conteudo: document.getElementById('folha-total').innerHTML, data: new Date().toLocaleString() });
-            alert("Salvo com sucesso!");
+            await set(ref(db, `SIMULADOS_MPU/${Date.now()}`), { nome, html: document.getElementById('folha-total').innerHTML });
+            alert("Prova e Respostas Salvas!");
         }
     };
+
+    window.abrirNucleo = () => {
+        const c = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "NÚCLEO DURO - LEGISLAÇÃO";
+        const leis = [
+            {n: "Lei 8.112/90", u: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm"},
+            {n: "LC 75/93", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm"}
+        ];
+        c.innerHTML = leis.map(l => `<button class="opt-btn" onclick="window.loadPDF('${l.u}')">${l.n}</button>`).join('');
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.loadPDF = (url) => { document.getElementById('frame-lat').src = url; document.getElementById('viewer-lat').classList.add('active'); document.getElementById('modal-base').style.display = 'none'; };
+    window.toggleDual = () => document.getElementById('viewer-lat').classList.toggle('active');
+    window.limpar = () => confirm("Limpar?") && (document.getElementById('folha-total').innerHTML = "");
 
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
