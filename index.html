@@ -52,6 +52,7 @@
         /* AREAS DE CONTEÚDO */
         .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
 
+        /* EDITOR MASTER ICON */
         .editor-container { 
             flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); 
             overflow-y: auto; align-items: center; padding: 25px;
@@ -102,8 +103,6 @@
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" data-label="INJETAR PROVA" style="background:var(--redacao);" onclick="window.injetarConteudo()"><i class="fas fa-file-import"></i></button>
-        
         <button class="btn-side" data-label="SALVAR / ATUALIZAR" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
         <button class="btn-side" data-label="ABRIR GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
         
@@ -112,6 +111,7 @@
         <button class="btn-side" data-label="PROVAS (ESQUERDA)" style="background:var(--info);" onclick="window.abrirModal('PDF1')"><i class="fas fa-file-invoice"></i></button>
         <button class="btn-side" data-label="GABARITOS (DIREITA)" style="background:var(--juris);" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
         <button class="btn-side" data-label="NÚCLEO DURO" onclick="window.abrirModal('PDF2')"><i class="fas fa-balance-scale"></i></button>
+        <button class="btn-side" data-label="ESTRUTURAS (PERGAMINHO)" onclick="window.abrirGavetas()"><i class="fas fa-scroll"></i></button>
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
         
@@ -178,29 +178,6 @@
 
     let alvoPDF = "";
 
-    // FUNÇÃO PARA INJETAR CONTEÚDO OFICIAL (ANALISTA MPU)
-    window.injetarConteudo = () => {
-        const conteudo = `
-            <div style="font-family: 'Times New Roman', serif;">
-                <h3 style="text-align:center;">MPU - ANALISTA DO MPU - DIREITO (TIPO 1 BRANCA)</h3>
-                <hr>
-                <p><b>MÓDULO I - LÍNGUA PORTUGUESA</b></p>
-                <p><i>Questão 1:</i> O problema em matéria de audição vem do fato de que o cérebro é um órgão muito rápido e que se pensa muito mais depressa do que se fala...</p>
-                <p><b>MÓDULO II - SUSTENTABILIDADE</b></p>
-                <p><i>Questão 16:</i> Em relação aos princípios, normas e regras estabelecidos no Art. 225 da Constituição Federal sobre Meio Ambiente...</p>
-                <br>
-                <h4 style="text-align:center;">PROVA DISCURSIVA - REDAÇÃO</h4>
-                <p style="border: 1px solid #000; padding: 10px;">Com base nos textos motivadores, redija um texto dissertativo-argumentativo sobre o tema: <b>"O impacto da inteligência artificial na preservação da memória institucional do Ministério Público".</b></p>
-                <div style="border-left: 2px solid #ccc; padding-left: 10px;">
-                    ${Array.from({length: 30}, (_, i) => `<div style="border-bottom: 1px solid #eee; height: 25px;">${i+1}. </div>`).join('')}
-                </div>
-            </div>
-        `;
-        document.getElementById('folha-total').innerHTML = conteudo;
-        document.getElementById('txt-titulo-topo').innerText = "PROVA INJETADA - ANALISTA MPU";
-    };
-
-    // SALVAMENTO INTELIGENTE
     window.modalSalvar = () => {
         const content = document.getElementById('modal-content');
         document.getElementById('modal-title').innerText = "SALVAR / ATUALIZAR";
@@ -218,13 +195,16 @@
         const nome = document.getElementById('save-name').value.toUpperCase() || "SEM TITULO";
         const html = document.getElementById('folha-total').innerHTML;
         const caminho = `SISTEMA_MPU_ELITE/GAVETAS/${pasta}`;
+        
         const snap = await get(ref(db, caminho));
         let idExistente = null;
+
         if(snap.exists()){
             Object.entries(snap.val()).forEach(([id, dados]) => {
                 if(dados.nome === nome) idExistente = id;
             });
         }
+
         if(idExistente) {
             await update(ref(db, `${caminho}/${idExistente}`), { conteudo: html, data: new Date().toLocaleString() });
             alert(`ARQUIVO "${nome}" ATUALIZADO EM ${pasta}!`);
@@ -233,6 +213,7 @@
             await set(ref(db, `${caminho}/${novoId}`), { nome, conteudo: html, data: new Date().toLocaleString() });
             alert(`NOVO ARQUIVO "${nome}" CRIADO EM ${pasta}!`);
         }
+
         document.getElementById('txt-titulo-topo').innerText = nome;
         document.getElementById('modal-base').style.display = 'none';
     };
