@@ -13,7 +13,6 @@
             --bg-paper: #cbd5e1; --sidebar-w: 260px; --sucesso: #166534; --perigo: #991b1b;
             --juris: #4338ca; --redacao: #c2410c; --info: #0369a1;
         }
-        body.dark-mode { --bg-paper: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--mpu-blue); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
         
@@ -41,82 +40,61 @@
 
         .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px 10px; }
         
-        .sticky-tools { 
-            position: sticky; top: -20px; z-index: 1000; background: #fff; width: 100%; max-width: 850px; 
-            border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 15px;
-        }
-        
-        #identificador-peca { 
-            padding: 12px; background: #f8fafc; text-align: left; padding-left: 20px; 
-            font-weight: 800; color: var(--mpu-blue); border-bottom: 2px solid var(--mpu-gold); 
-            cursor: pointer; font-size: 0.85rem; display: flex; justify-content: space-between;
-        }
-        
         .paper { 
             width: 100%; max-width: 850px; background: white; min-height: 1000px; 
-            padding: 80px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin-top: 20px;
         }
         
         #folha-total { outline: none; min-height: 900px; line-height: 1.6; font-size: 16px; text-align: justify; }
 
-        /* MODO ALTERNADO: PDF SOBREPÕE A TELA TODA QUANDO ATIVO */
+        /* MODO ALTERNADO: PDF EM TELA CHEIA */
         #pdf-viewer { 
             position: absolute; left: 0; right: 0; top: 0; bottom: 0; width: 100%; 
             background: white; transition: transform 0.4s ease-in-out; z-index: 6000;
             display: flex; flex-direction: column; overflow: hidden;
-            transform: translateX(100%); /* Escondido à direita */
+            transform: translateX(100%);
         }
-        #pdf-viewer.active { transform: translateX(0); } /* Entra na tela */
+        #pdf-viewer.active { transform: translateX(0); }
         #pdf-viewer iframe { flex: 1; border: none; width: 100%; height: 100%; }
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 110000; align-items: center; justify-content: center; padding: 20px; }
         .modal-body { background: white; width: 100%; max-width: 550px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
         
-        .opt-btn { width: 100%; padding: 10px; margin-bottom: 6px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.75rem; align-items: center; color: var(--mpu-blue); }
+        .opt-btn { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.75rem; align-items: center; color: var(--mpu-blue); }
         .opt-btn:hover { background: var(--mpu-blue); color: white; }
-        .tag-lei { font-size: 9px; background: var(--mpu-green); color: #fff; padding: 2px 6px; border-radius: 4px; }
-        
-        #timer-box { font-family: monospace; color: var(--mpu-gold); font-size: 14px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo"><i class="fas fa-balance-scale"></i> ARSENAL MPU | <span>NÚCLEO DURO</span></div>
+    <div class="logo"><i class="fas fa-balance-scale"></i> ARSENAL MPU | <span>BIBLIOTECA DE TREINO</span></div>
     <div style="display: flex; gap: 20px; align-items: center;">
-        <div id="timer-box">SESSÃO: <span id="sessao-timer">00:00:00</span></div>
-        <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--mpu-gold);"></div>
+        <div id="timer-box" style="font-family:monospace; color:var(--mpu-gold)">SESSÃO: <span id="sessao-timer">00:00:00</span></div>
     </div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <div style="font-size: 9px; color: var(--mpu-gold); font-weight: 900; margin: 10px 0; letter-spacing: 1px;">SISTEMA DE CONTROLE</div>
+        <div style="font-size: 9px; color: var(--mpu-gold); font-weight: 900; margin: 10px 0;">CONTROLE DE FLUXO</div>
         <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-save"></i> SALVAR NA NUVEM</button>
         <button class="btn-side" onclick="window.abrirGavetas()"><i class="fas fa-box-archive"></i> MEUS ARQUIVOS</button>
         
         <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         
+        <button class="btn-side" style="background:var(--info);" onclick="window.abrirBibliotecaProvas()"><i class="fas fa-file-pdf"></i> PROVAS E GABARITOS</button>
+        
         <button class="btn-side" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-book-atlas"></i> NÚCLEO DURO (LEIS)</button>
-        <button class="btn-side" style="background:var(--juris);" onclick="window.abrirJurisprudencia()"><i class="fas fa-gavel"></i> JURIS / STF / STJ</button>
         <button class="btn-side" style="background:var(--redacao);" onclick="window.abrirRedacao()"><i class="fas fa-pen-nib"></i> TREINO DISCURSIVO</button>
-        <button class="btn-side" style="background:var(--info);" onclick="window.inteligenciaNaoConfunda()"><i class="fas fa-lightbulb"></i> NÃO CONFUNDA</button>
+        <button class="btn-side" style="background:var(--juris);" onclick="window.abrirJurisprudencia()"><i class="fas fa-gavel"></i> JURISPRUDÊNCIA</button>
 
         <div style="margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
         <button class="btn-side" style="background:var(--perigo);" onclick="window.limparTela()"><i class="fas fa-eraser"></i> LIMPAR TELA</button>
     </aside>
 
     <section class="editor-container">
-        <div class="sticky-tools">
-            <div id="identificador-peca" onclick="window.renomear()">
-                <span><i class="fas fa-file-contract"></i> <span>ESTUDO MPU: SEM TÍTULO</span></span>
-                <span style="font-size: 10px; opacity: 0.7;">CLIQUE PARA RENOMEAR</span>
-            </div>
-        </div>
         <div class="paper">
             <div id="folha-total" contenteditable="true" spellcheck="false">
-                <p style="text-align: center;"><b>MINISTÉRIO PÚBLICO DA UNIÃO</b></p>
-                <p style="text-align: center; font-size: 12px;">SISTEMA INTEGRADO DE PREPARAÇÃO JURÍDICA</p>
+                <p style="text-align: center;"><b>FOLHA DE RESPOSTAS - MPU ELITE</b></p>
                 <hr style="margin: 20px 0;">
                 <br>
             </div>
@@ -125,8 +103,8 @@
 
     <section id="pdf-viewer">
         <div style="background:#001a33; padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
-            <span id="pdf-title" style="color:white; font-size:12px; font-weight:bold;">MODO CONSULTA</span>
-            <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:8px 25px; border-radius:4px; font-weight:800; cursor:pointer; color:black; font-size:12px">VOLTAR PARA FOLHA <i class="fas fa-reply"></i></button>
+            <span id="pdf-title" style="color:white; font-size:12px; font-weight:bold;">MODO LEITURA</span>
+            <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:8px 20px; border-radius:4px; font-weight:900; cursor:pointer;">VOLTAR PARA A FOLHA <i class="fas fa-reply"></i></button>
         </div>
         <iframe id="pdf-frame" src=""></iframe>
     </section>
@@ -156,100 +134,31 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const BASE_PATH = "SISTEMA_MPU_ELITE/GAVETAS";
 
-    window.pecaNome = "ESTUDO MPU: SEM TÍTULO";
+    // --- ARQUIVOS DE TREINO (FGV E CESPE) ---
+    const BIBLIOTECA_TREINO = [
+        { n: "PROVA ANALISTA (FGV 2025)", u: "AnalistaMPU.pdf" },
+        { n: "GABARITO ANALISTA (FGV 2025)", u: "AnalistaMPU_Gabarito.pdf" },
+        { n: "PROVA ANALISTA (CESPE)", u: "mpu10_045.pdf" },
+        { n: "GABARITO ANALISTA (CESPE)", u: "gabaritos_mpu45.pdf" }
+    ];
 
     const NUCLEO_DURO = [
-        { n: "CF/88", t: "Constituição Federal (Arts 127-130A)", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
         { n: "LC 75/93", t: "Lei Orgânica do MPU", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" },
-        { n: "L. 8.429", t: "Improbidade Administrativa", u: "https://www.planalto.gov.br/ccivil_03/leis/l8429.htm" },
-        { n: "L. 7.347", t: "Ação Civil Pública", u: "https://www.planalto.gov.br/ccivil_03/leis/l7347orig.htm" },
-        { n: "L. 8.112", t: "Regime dos Servidores", u: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" },
-        { n: "L. 8.078", t: "Cód. Defesa Consumidor", u: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm" },
-        { n: "L. 13.105", t: "Código de Processo Civil", u: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm" },
-        { n: "L. 14.133", t: "Nova Lei de Licitações", u: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm" }
+        { n: "CF/88", t: "Constituição (Arts 127-130)", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" }
     ];
 
-    const CATEGORIAS = [
-        { id: "PECAS", nome: "Peças e Pareceres", icon: "fa-file-signature" },
-        { id: "TESES", nome: "Teses Jurídicas", icon: "fa-scale-balanced" },
-        { id: "JURIS", nome: "Jurisprudência", icon: "fa-gavel" },
-        { id: "NAO_CONFUNDA", nome: "Diferenças/Dicas", icon: "fa-lightbulb" }
-    ];
-
-    window.salvarNasGavetas = () => {
+    window.abrirBibliotecaProvas = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "SINCRONIZAR ARQUIVO";
-        content.innerHTML = `<p style="font-size:11px; margin-bottom:10px;">Documento: <b>${window.pecaNome}</b></p>`;
-        CATEGORIAS.forEach(cat => {
-            const btn = document.createElement('div'); btn.className = 'opt-btn';
-            btn.innerHTML = `<span><i class="fas ${cat.icon}"></i> &nbsp; ${cat.nome}</span>`;
-            btn.onclick = async () => {
-                const conteudo = document.getElementById('folha-total').innerHTML;
-                const path = `${BASE_PATH}/${cat.id}`;
-                const snap = await get(ref(db, path));
-                let keyEncontrada = null;
-                if (snap.exists()) {
-                    const dados = snap.val();
-                    keyEncontrada = Object.keys(dados).find(key => dados[key].nome === window.pecaNome);
-                }
-                const finalKey = keyEncontrada || Date.now().toString();
-                await set(ref(db, `${path}/${finalKey}`), { nome: window.pecaNome, data: new Date().toLocaleString(), conteudo: conteudo });
-                alert("Base MPU Atualizada!"); modal.style.display = 'none';
-            };
-            content.appendChild(btn);
-        });
-        modal.style.display = 'flex';
-    };
-
-    window.abrirGavetas = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "ACERVO DE ESTUDOS";
+        document.getElementById('modal-title').innerText = "BIBLIOTECA DE PROVAS";
         content.innerHTML = "";
-        CATEGORIAS.forEach(cat => {
-            const btn = document.createElement('div'); btn.className = 'opt-btn';
-            btn.innerHTML = `<span><i class="fas ${cat.icon}"></i> &nbsp; ${cat.nome}</span>`;
-            btn.onclick = () => window.listarArquivos(cat.id, cat.nome);
-            content.appendChild(btn);
-        });
-        modal.style.display = 'flex';
-    };
-
-    window.listarArquivos = async (catId, catNome) => {
-        const content = document.getElementById('modal-content');
-        content.innerHTML = "Lendo nuvem...";
-        const snap = await get(ref(db, `${BASE_PATH}/${catId}`));
-        content.innerHTML = `<div onclick="window.abrirGavetas()" style="cursor:pointer; color:var(--mpu-blue); font-weight:bold; margin-bottom:10px;">← Voltar</div>`;
-        if (snap.exists()) {
-            Object.keys(snap.val()).reverse().forEach(k => {
-                const item = snap.val()[k];
-                const d = document.createElement('div'); d.className = 'opt-btn';
-                d.innerHTML = `<span>${item.nome} <br><small style="font-size:9px;">Sinc: ${item.data}</small></span>`;
-                d.onclick = () => {
-                    document.getElementById('folha-total').innerHTML = item.conteudo;
-                    window.pecaNome = item.nome;
-                    document.getElementById('identificador-peca').querySelector('span span').innerText = item.nome;
-                    document.getElementById('modal-base').style.display = 'none';
-                };
-                content.appendChild(d);
-            });
-        } else { content.innerHTML += "<p>Gaveta Vazia.</p>"; }
-    };
-
-    window.abrirBibliotecaPDF = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "VADE MECUM NÚCLEO DURO MPU";
-        content.innerHTML = "";
-        NUCLEO_DURO.forEach(lei => {
+        BIBLIOTECA_TREINO.forEach(p => {
             const d = document.createElement('div'); d.className = 'opt-btn';
-            d.innerHTML = `<span><span class="tag-lei">${lei.n}</span> ${lei.t}</span>`;
+            d.innerHTML = `<span><i class="fas fa-file-alt"></i> ${p.n}</span>`;
             d.onclick = () => {
-                document.getElementById('pdf-frame').src = lei.u;
-                document.getElementById('pdf-title').innerText = lei.n + " - " + lei.t;
+                document.getElementById('pdf-frame').src = p.u;
+                document.getElementById('pdf-title').innerText = p.n;
                 document.getElementById('pdf-viewer').classList.add('active');
                 modal.style.display = 'none';
             };
@@ -258,77 +167,61 @@
         modal.style.display = 'flex';
     };
 
-    window.abrirJurisprudencia = () => {
+    window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "SISTEMA DE JURISPRUDÊNCIA";
-        const links = [
-            { n: "STF Informativos", u: "https://portal.stf.jus.br/informativo/" },
-            { n: "STJ Juris Tese", u: "https://scon.stj.jus.br/SCON/" },
-            { n: "Dizer o Direito", u: "https://www.dizerodireito.com.br/" }
-        ];
-        content.innerHTML = "<p style='font-size:10px; margin-bottom:10px; color:red'>Abre em nova aba para evitar bloqueio do Tribunal:</p>";
-        links.forEach(l => {
-            const btn = document.createElement('div'); btn.className = 'opt-btn';
-            btn.innerHTML = `<span>${l.n} <i class="fas fa-external-link-alt"></i></span>`;
-            btn.onclick = () => { window.open(l.u, '_blank'); };
-            content.appendChild(btn);
-        });
-        modal.style.display = 'flex';
-    };
-
-    window.inteligenciaNaoConfunda = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "INTELIGÊNCIA: NÃO CONFUNDA";
-        const dicas = [
-            { t: "MPU vs. MPE", d: "MPU é Federal (MPF, MPT, MPM, MPDFT). MPE é Estadual." },
-            { t: "Promotor vs. Procurador", d: "No MPF (União), o cargo inicial já é Procurador da República. No Estadual, é Promotor." },
-            { t: "Mandato PGR", d: "PGR tem mandato de 2 anos, permitidas reconduções. Nomeado pelo Presidente após aprovação do Senado." }
-        ];
+        document.getElementById('modal-title').innerText = "NÚCLEO DURO (LEIS)";
         content.innerHTML = "";
-        dicas.forEach(item => {
-            const b = document.createElement('div'); b.className = 'opt-btn';
-            b.innerHTML = `<span><b>${item.t}</b></span>`;
-            b.onclick = () => { document.getElementById('folha-total').innerHTML += `<div style="background:#fef9c3; padding:10px; border-left:4px solid var(--mpu-gold); margin:10px 0;"><b>NÃO CONFUNDA:</b> ${item.d}</div>`; modal.style.display='none'; };
-            content.appendChild(b);
-        });
-        modal.style.display = 'flex';
-    };
-
-    window.abrirRedacao = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "TREINO DISCURSIVO MPU";
-        const temas = ["Responsabilidade Civil do Estado e o MP", "O Inquérito Civil e sua Natureza Jurídica", "Intervenção do MP como 'Custos Iuris'"];
-        content.innerHTML = "";
-        temas.forEach(t => {
-            const btn = document.createElement('div'); btn.className = 'opt-btn';
-            btn.innerHTML = `<span>${t}</span>`;
-            btn.onclick = () => {
-                document.getElementById('folha-total').innerHTML = `<h2>TEMA DISCURSIVO: ${t}</h2><hr><br><p>[ESCREVA SUA RESPOSTA FUNDAMENTADA AQUI]</p>`;
-                window.pecaNome = "TREINO: " + t.substring(0, 10);
-                document.getElementById('identificador-peca').querySelector('span span').innerText = window.pecaNome;
+        NUCLEO_DURO.forEach(lei => {
+            const d = document.createElement('div'); d.className = 'opt-btn';
+            d.innerHTML = `<span>${lei.n} - ${lei.t}</span>`;
+            d.onclick = () => {
+                document.getElementById('pdf-frame').src = lei.u;
+                document.getElementById('pdf-viewer').classList.add('active');
                 modal.style.display = 'none';
             };
-            content.appendChild(btn);
+            content.appendChild(d);
         });
         modal.style.display = 'flex';
     };
 
-    let segundos = 0;
-    setInterval(() => {
-        segundos++;
-        const h = Math.floor(segundos / 3600).toString().padStart(2, '0');
-        const m = Math.floor((segundos % 3600) / 60).toString().padStart(2, '0');
-        const s = (segundos % 60).toString().padStart(2, '0');
-        document.getElementById('sessao-timer').innerText = `${h}:${m}:${s}`;
-    }, 1000);
+    // Lógica Firebase (Gavetas)
+    window.salvarNasGavetas = async () => {
+        const titulo = prompt("Nome do arquivo:") || "Sem Titulo";
+        const html = document.getElementById('folha-total').innerHTML;
+        await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/PECAS/${Date.now()}`), { nome: titulo.toUpperCase(), conteudo: html, data: new Date().toLocaleString() });
+        alert("Salvo com sucesso!");
+    };
+
+    window.abrirGavetas = async () => {
+        const modal = document.getElementById('modal-base');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "MEUS ESTUDOS";
+        content.innerHTML = "Buscando...";
+        const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/PECAS`));
+        content.innerHTML = "";
+        if(snap.exists()){
+            Object.values(snap.val()).reverse().forEach(item => {
+                const b = document.createElement('div'); b.className = 'opt-btn';
+                b.innerHTML = `<span>${item.nome} <br><small>${item.data}</small></span>`;
+                b.onclick = () => { document.getElementById('folha-total').innerHTML = item.conteudo; modal.style.display='none'; };
+                content.appendChild(b);
+            });
+        }
+        modal.style.display = 'flex';
+    };
 
     window.fecharPDF = () => document.getElementById('pdf-viewer').classList.remove('active');
-    window.renomear = () => { const n = prompt("NOME DO ESTUDO:", window.pecaNome); if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span span').innerText = n; } };
-    window.limparTela = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
-    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
+    window.limparTela = () => confirm("Limpar?") && (document.getElementById('folha-total').innerHTML = "");
+
+    let segs = 0;
+    setInterval(() => {
+        segs++;
+        const h = Math.floor(segs / 3600).toString().padStart(2, '0');
+        const m = Math.floor((segs % 3600) / 60).toString().padStart(2, '0');
+        const s = (segs % 60).toString().padStart(2, '0');
+        document.getElementById('sessao-timer').innerText = `${h}:${m}:${s}`;
+    }, 1000);
 </script>
 </body>
 </html>
