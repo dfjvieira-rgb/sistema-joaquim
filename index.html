@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - MPU ANALISTA FULL</title>
+    <title>JOAQUIM ELITE 2026 - MASTER ICON FULL</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -49,146 +49,243 @@
         }
         .btn-side:hover::after { opacity: 1; }
 
-        /* EDITOR E PAPEL */
+        /* AREAS DE CONTEÚDO */
         .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; }
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 25px; }
-        
+
+        /* EDITOR MASTER ICON (VOLTOU AO ORIGINAL) */
+        .editor-container { 
+            flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); 
+            overflow-y: auto; align-items: center; padding: 25px;
+        }
+        .editor-container.hidden { display: none; }
+
         .sticky-header {
             width: 100%; max-width: 850px; background: #f8fafc; padding: 15px;
             border-bottom: 4px solid var(--gold); border-radius: 8px 8px 0 0;
-            color: #020617; font-weight: 900; text-align: center;
+            color: #020617; font-weight: 900; text-align: center; margin-bottom: 0;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
-        .paper { width: 100%; max-width: 850px; background: white; min-height: 2500px; padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        #folha-total { outline: none; min-height: 2000px; line-height: 1.8; font-size: 16px; text-align: justify; }
+        .paper { 
+            width: 100%; max-width: 850px; background: white; min-height: 1200px; 
+            padding: 60px; color: #1e293b; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        #folha-total { outline: none; min-height: 1000px; line-height: 1.8; font-size: 16px; text-align: justify; }
 
-        /* VIEWERS LATERAIS */
-        .viewer { width: 0; background: #334155; display: flex; flex-direction: column; overflow: hidden; transition: width 0.4s ease; }
+        /* VIEWERS PDF */
+        .viewer { 
+            width: 0; background: #334155; display: flex; flex-direction: column; 
+            overflow: hidden; border-left: 0 solid var(--gold); transition: width 0.4s ease;
+        }
         .viewer.active { width: 50%; border-left: 3px solid var(--gold); }
+        .viewer.full { width: 100% !important; }
+
+        .pdf-header { background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: white; }
+        .pdf-header button { background: var(--gold); border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: 900; }
+
         iframe { flex: 1; border: none; background: white; }
 
         /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 110000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 92%; max-width: 600px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
-        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd; background: #f8fafc; font-weight: 800; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 15px; }
+        .modal-body { background: white; width: 92%; max-width: 500px; padding: 30px; border-radius: 20px; color: #0f172a; max-height: 85vh; overflow-y: auto; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary); }
         .opt-btn:hover { background: var(--gold); }
+        
+        .folder-tag { font-size: 9px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" style="font-weight:900;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
+    <div class="logo" style="font-weight:900; letter-spacing: 1px;">JOAQUIM <span style="color:var(--gold)">ELITE</span> 2026</div>
     <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--gold);">00:00:00</div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" data-label="SALVAR SIMULADO" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
-        <button class="btn-side" data-label="GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
+        <button class="btn-side" data-label="SALVAR / ATUALIZAR" style="background:var(--sucesso);" onclick="window.modalSalvar()"><i class="fas fa-save"></i></button>
+        <button class="btn-side" data-label="ABRIR GAVETAS" onclick="window.abrirGavetas()"><i class="fas fa-folder-open"></i></button>
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
         
-        <button class="btn-side" data-label="REINJETAR PROVA" style="background:var(--info);" onclick="window.injetarSimulado()"><i class="fas fa-file-signature"></i></button>
-        <button class="btn-side" data-label="NÚCLEO DURO (LEIS)" style="background:var(--juris);" onclick="window.abrirNucleoDuro()"><i class="fas fa-balance-scale"></i></button>
-        <button class="btn-side" data-label="INTELIGÊNCIAS" style="background:var(--redacao);" onclick="window.abrirInteligencias()"><i class="fas fa-brain"></i></button>
+        <button class="btn-side" data-label="PROVAS (ESQUERDA)" style="background:var(--info);" onclick="window.abrirModal('PDF1')"><i class="fas fa-file-invoice"></i></button>
+        <button class="btn-side" data-label="GABARITOS (DIREITA)" style="background:var(--juris);" onclick="window.abrirModal('PDF2')"><i class="fas fa-spell-check"></i></button>
+        <button class="btn-side" data-label="NÚCLEO DURO" onclick="window.abrirModal('PDF2')"><i class="fas fa-balance-scale"></i></button>
         
         <div style="height:1px; width:30px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
         
-        <button class="btn-side" data-label="DUAL VIEW" onclick="window.toggleDual()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" data-label="VER PDF + PDF" onclick="window.toggleDualPDF()"><i class="fas fa-columns"></i></button>
+        <button class="btn-side" data-label="MODO ESCRITA TOTAL" onclick="window.resetView()"><i class="fas fa-pen-fancy"></i></button>
+        
         <button class="btn-side" data-label="LIMPAR TELA" style="background:var(--perigo); margin-top:auto" onclick="window.limpar()"><i class="fas fa-eraser"></i></button>
     </aside>
 
     <div class="content-wrapper">
-        <section class="editor-container">
-            <div class="sticky-header" id="txt-titulo-topo">PROVA INTEGRAL: ANALISTA DO MPU</div>
+        <section class="editor-container" id="container-folha">
+            <div class="sticky-header">
+                <i class="fas fa-file-signature"></i> <span id="txt-titulo-topo">FOLHA DE RESPOSTAS - MASTER ICON</span>
+            </div>
             <div class="paper">
                 <div id="folha-total" contenteditable="true" spellcheck="false">
-                    <div style="background:#f8fafc; padding:30px; border:4px double #000; color:#1e293b;">
-                        <h2 style="text-align:center;">CADERNO DE QUESTÕES OBJETIVAS - ANALISTA MPU</h2>
-                        <p style="text-align:center; font-size:12px;">ESTILO CESPE: (C) CERTO | (E) ERRADO</p>
-                        <hr>
-                        <h3 style="background:#020617; color:#fff; padding:5px;">CONHECIMENTOS BÁSICOS</h3>
-                        <p><b>01.</b> No que concerne à Lei Complementar nº 75/1993, a destituição do Procurador-Geral da República, por iniciativa do Presidente da República, deverá ser precedida de autorização da maioria absoluta do Senado Federal. <b>( ) C ( ) E</b></p>
-                        <p><b>02.</b> O Ministério Público detém autonomia funcional, administrativa e financeira, sendo-lhe assegurada a iniciativa de sua proposta orçamentária dentro dos limites estabelecidos na lei de diretrizes orçamentárias. <b>( ) C ( ) E</b></p>
-                        <p><b>03.</b> A Constituição Federal veda ao membro do MP o exercício de qualquer outra função pública, ainda que em disponibilidade, salvo uma de magistério. <b>( ) C ( ) E</b></p>
-                        <p><b>04.</b> O Ministério Público da União compreende o Ministério Público Federal, o Ministério Público do Trabalho, o Ministério Público Militar e o Ministério Público do Distrito Federal e Territórios. <b>( ) C ( ) E</b></p>
-                        <p><b>05.</b> Compete ao STF julgar o Procurador-Geral da República nos crimes de responsabilidade. <b>( ) C ( ) E</b></p>
-                        <br>
-                        <h3 style="background:#020617; color:#fff; padding:5px;">CONHECIMENTOS ESPECÍFICOS (LEI 8.112/90)</h3>
-                        <p><b>06.</b> A demissão de servidor público por lesão aos cofres públicos implica em indisponibilidade de bens e ressarcimento ao erário, sem prejuízo da ação penal cabível. <b>( ) C ( ) E</b></p>
-                        <p><b>07.</b> O prazo para conclusão de processo administrativo disciplinar é de 60 dias, prorrogáveis por igual período. <b>( ) C ( ) E</b></p>
-                        <br>
-                        <h2 style="text-align:center; border-top:2px solid #000; padding-top:20px;">PROVA DISCURSIVA (ESTUDO DE CASO)</h2>
-                        <p><b>ENUNCIADO:</b> João, servidor ocupante de cargo efetivo no MPU, responde a Processo Administrativo Disciplinar por suposta infração capitulada como lesão aos cofres públicos. Discorra sobre:</p>
-                        <p>1. O prazo prescricional para aplicação da pena de demissão.</p>
-                        <p>2. O marco interruptivo da prescrição no PAD.</p>
-                        <p>3. A possibilidade de absolvição na esfera administrativa após absolvição criminal por negativa de autoria.</p>
-                    </div>
-                    <hr style="margin:40px 0; border:2px dashed var(--gold);">
-                    <h3 style="text-align:center;">--- ESPAÇO PARA RESPOSTA (EDITÁVEL) ---</h3>
-                    <p><b>RESPOSTA DISCURSIVA:</b></p>
-                    <p><br></p>
+                    <p style="text-align: center;"><b>FOLHA DE RESPOSTAS - MPU ELITE / OAB</b></p>
+                    <hr style="margin: 20px 0;">
+                    <br>
                 </div>
             </div>
         </section>
-        <section class="viewer" id="viewer-v"><iframe id="frame-v"></iframe></section>
+
+        <section class="viewer" id="viewer-1">
+            <div class="pdf-header"><span id="title-1">VISUALIZADOR 1</span><button onclick="window.fecharV(1)">X</button></div>
+            <iframe id="frame-1" src=""></iframe>
+        </section>
+
+        <section class="viewer" id="viewer-2">
+            <div class="pdf-header"><span id="title-2">VISUALIZADOR 2</span><button onclick="window.fecharV(2)">X</button></div>
+            <iframe id="frame-2" src=""></iframe>
+        </section>
     </div>
 </main>
 
 <div class="modal" id="modal-base">
     <div class="modal-body">
-        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold);"></h2>
+        <h2 id="modal-title" style="margin-bottom:20px; border-bottom:3px solid var(--gold); padding-bottom:10px;"></h2>
         <div id="modal-content"></div>
-        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px;">FECHAR</button>
+        <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; margin-top:20px; padding:15px; background:black; color:white; border-radius:10px; cursor:pointer;">VOLTAR</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ", authDomain: "masteroab-db5e1.firebaseapp.com", databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com", projectId: "masteroab-db5e1" };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmigODFK8R9c0-fWtagdxLWu9xkODfKYQ",
+        authDomain: "masteroab-db5e1.firebaseapp.com",
+        databaseURL: "https://masteroab-db5e1-default-rtdb.firebaseio.com",
+        projectId: "masteroab-db5e1"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // FUNÇÕES RESTAURADAS
-    window.injetarSimulado = () => location.reload();
+    const PASTAS = ["PECAS", "TESES", "PRELIMINARES", "QUESTOES"];
+    const BIBLIOTECA = [
+        { n: "PROVA ANALISTA 2025", u: "AnalistaMPU.pdf" },
+        { n: "GABARITO ANALISTA 2025", u: "AnalistaMPU_Gabarito.pdf" },
+        { n: "LC 75/93", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" }
+    ];
 
-    window.abrirNucleoDuro = () => {
-        const c = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "NÚCLEO DURO ANALISTA";
-        const leis = [
-            {n:"LC 75/93 (MPU)", u:"https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm"},
-            {n:"Lei 8.112/90", u:"https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm"},
-            {n:"CF/88 (Art. 127-130)", u:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"}
-        ];
-        c.innerHTML = leis.map(l => `<button class="opt-btn" onclick="window.carregar('${l.u}')"><i class="fas fa-gavel"></i> ${l.n}</button>`).join('');
-        document.getElementById('modal-base').style.display = 'flex';
-    };
+    let alvoPDF = "";
 
-    window.abrirInteligencias = () => {
-        const c = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "INTELIGÊNCIA NÃO CONFUNDA";
-        c.innerHTML = `
-            <button class="opt-btn" onclick="alert('Qual a Peça: Ação Civil Pública / MS / PAD')">QUAL É A PEÇA?</button>
-            <button class="opt-btn" onclick="alert('Principais Teses: Prescrição 5 anos / Independência de Instâncias')">TESES MPU</button>
-            <button class="opt-btn" onclick="alert('50 Questões Gabaritadas liberadas em breve')">50 QUESTÕES</button>
+    // SALVAMENTO INTELIGENTE: CRIA OU ATUALIZA
+    window.modalSalvar = () => {
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "SALVAR / ATUALIZAR";
+        content.innerHTML = `
+            <input type="text" id="save-name" placeholder="NOME DO ARQUIVO" value="${document.getElementById('txt-titulo-topo').innerText.replace('FOLHA DE RESPOSTAS - ', '')}" style="width:100%; padding:15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-weight:bold;">
+            <p style="margin-bottom:10px; font-size:12px; font-weight:bold;">SELECIONE A PASTA:</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                ${PASTAS.map(p => `<button class="opt-btn" onclick="window.verificarEExecutarSalvar('${p}')">${p}</button>`).join('')}
+            </div>
         `;
         document.getElementById('modal-base').style.display = 'flex';
     };
 
-    window.carregar = (u) => { document.getElementById('frame-v').src = u; document.getElementById('viewer-v').classList.add('active'); document.getElementById('modal-base').style.display = 'none'; };
-    window.toggleDual = () => document.getElementById('viewer-v').classList.toggle('active');
-    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
+    window.verificarEExecutarSalvar = async (pasta) => {
+        const nome = document.getElementById('save-name').value.toUpperCase() || "SEM TITULO";
+        const html = document.getElementById('folha-total').innerHTML;
+        const caminho = `SISTEMA_MPU_ELITE/GAVETAS/${pasta}`;
+        
+        // Busca se já existe arquivo com esse nome na pasta
+        const snap = await get(ref(db, caminho));
+        let idExistente = null;
 
-    window.modalSalvar = async () => {
-        const nome = prompt("Nome para salvar nas Gavetas:");
-        if(nome) {
-            await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/SIMULADOS/${Date.now()}`), { nome, conteudo: document.getElementById('folha-total').innerHTML, data: new Date().toLocaleString() });
-            alert("Salvo com sucesso!");
+        if(snap.exists()){
+            Object.entries(snap.val()).forEach(([id, dados]) => {
+                if(dados.nome === nome) idExistente = id;
+            });
         }
+
+        if(idExistente) {
+            // ATUALIZA
+            await update(ref(db, `${caminho}/${idExistente}`), { conteudo: html, data: new Date().toLocaleString() });
+            alert(`ARQUIVO "${nome}" ATUALIZADO EM ${pasta}!`);
+        } else {
+            // CRIA NOVO
+            const novoId = Date.now();
+            await set(ref(db, `${caminho}/${novoId}`), { nome, conteudo: html, data: new Date().toLocaleString() });
+            alert(`NOVO ARQUIVO "${nome}" CRIADO EM ${pasta}!`);
+        }
+
+        document.getElementById('txt-titulo-topo').innerText = nome;
+        document.getElementById('modal-base').style.display = 'none';
     };
 
+    window.abrirGavetas = async () => {
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "MEUS ARQUIVOS";
+        content.innerHTML = "Carregando...";
+        let htmlFinal = "";
+        for (const p of PASTAS) {
+            const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/${p}`));
+            if(snap.exists()){
+                Object.values(snap.val()).reverse().forEach(item => {
+                    htmlFinal += `<div class="opt-btn" onclick="window.carregarEstudo('${btoa(unescape(encodeURIComponent(item.conteudo)))}', '${item.nome}')">
+                        <span>${item.nome} <br><small>${item.data}</small></span><span class="folder-tag">${p}</span>
+                    </div>`;
+                });
+            }
+        }
+        content.innerHTML = htmlFinal || "Pasta vazia.";
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.carregarEstudo = (cont64, nome) => {
+        document.getElementById('folha-total').innerHTML = decodeURIComponent(escape(atob(cont64)));
+        document.getElementById('txt-titulo-topo').innerText = nome;
+        document.getElementById('modal-base').style.display = 'none';
+    };
+
+    // MULTI-VIEW
+    window.abrirModal = (alvo) => {
+        alvoPDF = alvo;
+        document.getElementById('modal-title').innerText = "BIBLIOTECA";
+        document.getElementById('modal-content').innerHTML = BIBLIOTECA.map(p => `<div class="opt-btn" onclick="window.carregarPDF('${p.u}', '${p.n}')">${p.n}</div>`).join('');
+        document.getElementById('modal-base').style.display = 'flex';
+    };
+
+    window.carregarPDF = (u, n) => {
+        if(alvoPDF === 'PDF1') {
+            document.getElementById('frame-1').src = u;
+            document.getElementById('title-1').innerText = n;
+            document.getElementById('viewer-1').classList.add('active');
+            document.getElementById('container-folha').classList.add('hidden');
+        } else {
+            document.getElementById('frame-2').src = u;
+            document.getElementById('title-2').innerText = n;
+            document.getElementById('viewer-2').classList.add('active');
+        }
+        document.getElementById('modal-base').style.display = 'none';
+    };
+
+    window.toggleDualPDF = () => {
+        document.getElementById('container-folha').classList.add('hidden');
+        document.getElementById('viewer-1').classList.add('active');
+        document.getElementById('viewer-2').classList.add('active');
+    };
+
+    window.resetView = () => {
+        document.getElementById('container-folha').classList.remove('hidden');
+        document.getElementById('viewer-1').classList.remove('active');
+        document.getElementById('viewer-2').classList.remove('active');
+    };
+
+    window.fecharV = (n) => {
+        document.getElementById(`viewer-${n}`).classList.remove('active');
+        if(n === 1) document.getElementById('container-folha').classList.remove('hidden');
+    };
+
+    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
