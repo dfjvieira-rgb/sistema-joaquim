@@ -3,119 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SISTEMA JURÍDICO | MPU ELITE DASHBOARD</title>
+    <title>SISTEMA MPU | ESTAÇÃO DE TRABALHO DINÂMICA</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
             --mpu-green: #064e3b; --mpu-blue: #0c4a6e; --mpu-gold: #b45309;
-            --bg-paper: #cbd5e1; --sidebar-w: 65px; --sucesso: #166534; --perigo: #991b1b;
-            --juris: #4338ca; --redacao: #c2410c; --info: #0369a1;
+            --sidebar-w: 60px; --work-panel-w: 450px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #020617; height: 100vh; display: flex; overflow: hidden; color: white; }
+        body { font-family: 'Inter', sans-serif; background: #020617; height: 100vh; display: flex; overflow: hidden; }
 
-        /* SIDEBAR COMPACTA (FLIGHT PLAN) */
-        .sidebar { 
+        /* BARRA DE FERRAMENTAS LATERAL (FIXA) */
+        .sidebar-fixed { 
             width: var(--sidebar-w); background: #000; display: flex; flex-direction: column; 
-            align-items: center; padding: 20px 0; border-right: 2px solid var(--mpu-gold); z-index: 100;
+            align-items: center; padding: 15px 0; border-right: 1px solid var(--mpu-gold); z-index: 1000;
         }
-        .icon-btn { 
-            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.1rem; margin-bottom: 20px; cursor: pointer; 
-            transition: 0.2s; border-radius: 8px; background: rgba(255,255,255,0.05);
+        .nav-icon { 
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.1rem; margin-bottom: 15px; cursor: pointer; 
+            border-radius: 8px; transition: 0.2s; background: rgba(255,255,255,0.05);
         }
-        .icon-btn:hover { background: var(--mpu-gold); color: white; transform: scale(1.1); }
-        .icon-btn.save { background: var(--sucesso); }
+        .nav-icon:hover { background: var(--mpu-gold); color: white; }
+        .nav-icon.active-work { background: var(--mpu-blue); border: 1px solid white; }
 
-        /* MAIN CONTENT STRUCTURE */
-        .main-content { flex: 1; display: flex; flex-direction: column; background: #0f172a; position: relative; }
+        /* CONTAINER PRINCIPAL */
+        .viewport { flex: 1; display: flex; position: relative; overflow: hidden; background: #0f172a; }
 
+        /* ÁREA DE LEITURA (PDFs) */
+        .reading-area { 
+            flex: 1; display: flex; gap: 5px; padding: 5px; background: #1e293b;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pdf-frame-container { flex: 1; background: white; border-radius: 4px; display: flex; flex-direction: column; overflow: hidden; }
+        .pdf-label { background: #f1f5f9; padding: 5px 10px; font-size: 10px; font-weight: 800; color: var(--mpu-blue); border-bottom: 1px solid #ddd; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* PAINEL DE TRABALHO (FOLHA RETRÁTIL) */
+        .work-panel { 
+            width: 0; background: white; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+        .work-panel.expanded { width: var(--work-panel-w); border-left: 4px solid var(--mpu-gold); }
+        
+        .work-header { 
+            background: var(--mpu-blue); color: white; padding: 12px; font-size: 12px; 
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold;
+        }
+        .work-content { flex: 1; padding: 30px; overflow-y: auto; color: #1e293b; }
+        #folha-total { outline: none; min-height: 100%; font-size: 15px; line-height: 1.6; text-align: justify; }
+
+        /* HEADER INFO */
         header { 
-            height: 45px; background: linear-gradient(90deg, #001a33 0%, var(--mpu-green) 100%); 
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-            border-bottom: 2px solid var(--mpu-gold);
+            position: absolute; top: 10px; left: 75px; z-index: 500; 
+            display: flex; gap: 15px; align-items: center; pointer-events: none;
         }
-        #id-estudo { font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; cursor: pointer; }
-        #timer-box { font-family: monospace; color: var(--mpu-gold); font-size: 13px; }
-
-        /* ÁREA DUAL PDF (55% DA TELA) */
-        #top-dual-viewer { height: 55%; display: flex; gap: 4px; background: #1e293b; padding: 4px; }
-        .pdf-box { flex: 1; background: #fff; border-radius: 4px; display: flex; flex-direction: column; overflow: hidden; }
-        .pdf-header { 
-            background: #f8fafc; padding: 5px 10px; font-size: 9px; 
-            font-weight: 900; color: var(--mpu-blue); border-bottom: 1px solid #ddd;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        /* ÁREA DE ESCRITA / RASCUNHO (45% DA TELA) */
-        #bottom-editor { 
-            height: 45%; background: white; border-top: 4px solid var(--mpu-gold); 
-            padding: 25px; overflow-y: auto; color: #1e293b; position: relative;
-        }
-        #folha-total { outline: none; min-height: 100%; font-size: 16px; line-height: 1.6; text-align: justify; }
+        .status-pill { background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 20px; font-size: 10px; color: var(--mpu-gold); font-weight: bold; border: 1px solid var(--mpu-gold); }
 
         /* MODAIS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 80vh; overflow-y: auto; }
-        
-        .opt-btn { 
-            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 8px;
-            display: flex; justify-content: space-between; cursor: pointer; font-size: 11px; font-weight: 700; background: #f8fafc;
-        }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 400px; padding: 20px; border-radius: 8px; color: black; }
+        .opt-btn { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; cursor: pointer; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
         .opt-btn:hover { background: var(--mpu-blue); color: white; }
-        .slot-btn { padding: 4px 8px; background: var(--mpu-gold); color: white; border-radius: 4px; font-size: 9px; border: none; cursor: pointer; margin-left: 5px; }
-
-        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="icon-btn save" onclick="window.salvarNasGavetas()" title="Salvar na Nuvem"><i class="fas fa-cloud-upload-alt"></i></div>
-        <div class="icon-btn" onclick="window.abrirGavetas()" title="Meus Arquivos"><i class="fas fa-folder-open"></i></div>
-        <div style="height: 1px; width: 30px; background: rgba(255,255,255,0.2); margin-bottom: 20px;"></div>
-        <button class="icon-btn" onclick="window.abrirBibliotecaPDF()" title="Biblioteca de PDFs"><i class="fas fa-book-open"></i></button>
-        <button class="icon-btn" style="background:var(--juris)" onclick="window.abrirJurisprudencia()" title="Jurisprudência"><i class="fas fa-gavel"></i></button>
-        <button class="icon-btn" style="background:var(--info)" onclick="window.inteligenciaNaoConfunda()" title="Não Confunda"><i class="fas fa-lightbulb"></i></button>
-        <button class="icon-btn" style="background:var(--perigo)" onclick="window.limparTela()" title="Limpar"><i class="fas fa-eraser"></i></button>
+    <nav class="sidebar-fixed">
+        <div class="nav-icon active-work" id="toggle-work" onclick="window.toggleWork()" title="Alternar Folha de Trabalho"><i class="fas fa-edit"></i></div>
+        <div class="nav-icon" onclick="window.abrirBiblioteca()" title="Escolher PDFs"><i class="fas fa-book-open"></i></div>
+        <div style="height: 1px; width: 30px; background: rgba(255,255,255,0.2); margin-bottom: 15px;"></div>
+        <div class="nav-icon" onclick="window.salvarCloud()" title="Salvar Estudo"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="nav-icon" onclick="window.abrirGavetas()" title="Meus Estudos"><i class="fas fa-folder-open"></i></div>
+        <div class="nav-icon" style="margin-top: auto; color: #ef4444;" onclick="window.limparTudo()" title="Limpar Tudo"><i class="fas fa-trash-alt"></i></div>
     </nav>
 
-    <div class="main-content">
-        <header>
-            <div id="id-estudo" onclick="window.renomear()">
-                <i class="fas fa-edit"></i> <span id="txt-titulo">ESTUDO MPU: SEM TÍTULO</span>
-            </div>
-            <div id="timer-box">SESSÃO: <span id="sessao-timer">00:00:00</span></div>
-            <div id="relogio" style="font-size: 11px; font-family: monospace; color: white;">00:00:00</div>
-        </header>
+    <header>
+        <div class="status-pill" id="display-titulo">ESTUDO: SEM TÍTULO</div>
+        <div class="status-pill" id="sessao-timer">00:00:00</div>
+    </header>
 
-        <section id="top-dual-viewer">
-            <div class="pdf-box">
-                <div class="pdf-header"><span>LADO ESQUERDO (PROVA)</span> <span id="label-l" style="color:var(--mpu-gold)">Vazio</span></div>
+    <main class="viewport">
+        <section class="reading-area" id="reading-area">
+            <div class="pdf-frame-container">
+                <div class="pdf-label" id="label-l">PDF ESQUERDA</div>
                 <iframe id="frame-l" src="about:blank"></iframe>
             </div>
-            <div class="pdf-box">
-                <div class="pdf-header"><span>LADO DIREITO (GABARITO)</span> <span id="label-r" style="color:var(--mpu-gold)">Vazio</span></div>
+            <div class="pdf-frame-container">
+                <div class="pdf-label" id="label-r">PDF DIREITA</div>
                 <iframe id="frame-r" src="about:blank"></iframe>
             </div>
         </section>
 
-        <section id="bottom-editor">
-            <div id="folha-total" contenteditable="true" spellcheck="false">
-                <p style="text-align: center;"><b>MINISTÉRIO PÚBLICO DA UNIÃO - CADERNO DE TREINAMENTO</b></p>
-                <hr style="margin: 10px 0;">
-                <p>Utilize os PDFs acima para consulta simultânea e registre aqui sua fundamentação.</p>
+        <section class="work-panel expanded" id="work-panel">
+            <div class="work-header">
+                <span>FOLHA DE TRABALHO</span>
+                <i class="fas fa-chevron-right" style="cursor:pointer" onclick="window.toggleWork()"></i>
+            </div>
+            <div class="work-content">
+                <div id="folha-total" contenteditable="true" spellcheck="false">
+                    <p><b>Caderno de Resolução de Questões</b></p>
+                    <hr style="margin: 10px 0;">
+                </div>
             </div>
         </section>
-    </div>
+    </main>
 
-    <div class="modal" id="modal-base">
+    <div class="modal" id="modal-sys">
         <div class="modal-body">
-            <h2 id="modal-title" style="margin-bottom:15px; font-size:1.1rem; color:var(--mpu-blue); border-bottom:2px solid var(--mpu-gold)">SISTEMA</h2>
+            <h3 id="modal-title" style="margin-bottom:15px; color:var(--mpu-blue); border-bottom:2px solid var(--mpu-gold)">SISTEMA</h3>
             <div id="modal-content"></div>
-            <button onclick="document.getElementById('modal-base').style.display='none'" style="width:100%; padding:12px; background:#000; color:white; border:none; border-radius:8px; margin-top:15px; cursor:pointer;">FECHAR</button>
+            <button onclick="document.getElementById('modal-sys').style.display='none'" style="width:100%; padding:10px; background:black; color:white; border:none; margin-top:15px; cursor:pointer;">FECHAR</button>
         </div>
     </div>
 
@@ -135,33 +134,38 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const BASE_PATH = "SISTEMA_MPU_ELITE/GAVETAS";
 
-    // --- INTELIGÊNCIA DA BIBLIOTECA (DUAL PDF) ---
-    window.LISTA_PDF_BIBLIOTECA = [
-        { nome: "PROVA ANALISTA MPU (FGV)", url: "AnalistaMPU.pdf" },
-        { nome: "GABARITO ANALISTA (FGV)", url: "AnalistaMPU_Gabarito.pdf" },
-        { nome: "PROVA ANALISTA (CESPE)", url: "mpu10_045.pdf" },
-        { nome: "GABARITO ANALISTA (CESPE)", url: "gabaritos_mpu45.pdf" },
-        { nome: "TABELA IDENTIFICAÇÃO DE PEÇAS", url: "identificacaopecas.pdf" },
-        { nome: "LINHA DO TEMPO - PEÇAS", url: "LINHA DO TEMPO - Identificação de Peças_231123_182636.pdf" }
+    // --- LÓGICA DE INTERFACE (RECUO DA FOLHA) ---
+    window.toggleWork = () => {
+        const panel = document.getElementById('work-panel');
+        const btn = document.getElementById('toggle-work');
+        panel.classList.toggle('expanded');
+        btn.classList.toggle('active-work');
+    };
+
+    // --- BIBLIOTECA DE PDFs ---
+    window.LISTA_PDFS = [
+        { n: "PROVA ANALISTA MPU (FGV)", u: "AnalistaMPU.pdf" },
+        { n: "GABARITO ANALISTA (FGV)", u: "AnalistaMPU_Gabarito.pdf" },
+        { n: "PROVA ANALISTA (CESPE)", u: "mpu10_045.pdf" },
+        { n: "GABARITO ANALISTA (CESPE)", u: "gabaritos_mpu45.pdf" },
+        { n: "TABELA DE PEÇAS", u: "identificacaopecas.pdf" }
     ];
 
-    window.abrirBibliotecaPDF = () => {
-        const modal = document.getElementById('modal-base');
+    window.abrirBiblioteca = () => {
+        const modal = document.getElementById('modal-sys');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "BIBLIOTECA TÉCNICA (ESCOLHA O LADO)";
+        document.getElementById('modal-title').innerText = "ESCOLHA O PDF E O LADO";
         content.innerHTML = "";
-        
-        window.LISTA_PDF_BIBLIOTECA.forEach(pdf => {
-            const btn = document.createElement('div');
-            btn.className = 'opt-btn';
-            btn.innerHTML = `<span>${pdf.nome}</span>
+        window.LISTA_PDFS.forEach(pdf => {
+            const div = document.createElement('div');
+            div.className = 'opt-btn';
+            div.innerHTML = `<span>${pdf.n}</span>
                 <div>
-                    <button class="slot-btn" onclick="window.setPDF(1, '${pdf.url}', '${pdf.nome}')">ESQ</button>
-                    <button class="slot-btn" style="background:var(--mpu-blue)" onclick="window.setPDF(2, '${pdf.url}', '${pdf.nome}')">DIR</button>
+                    <button onclick="window.setPDF(1, '${pdf.u}', '${pdf.n}')" style="padding:4px 8px; cursor:pointer;">ESQ</button>
+                    <button onclick="window.setPDF(2, '${pdf.u}', '${pdf.n}')" style="padding:4px 8px; cursor:pointer; background:var(--mpu-blue); color:white;">DIR</button>
                 </div>`;
-            content.appendChild(btn);
+            content.appendChild(div);
         });
         modal.style.display = 'flex';
     };
@@ -170,80 +174,48 @@
         const frame = lado === 1 ? 'frame-l' : 'frame-r';
         const label = lado === 1 ? 'label-l' : 'label-r';
         document.getElementById(frame).src = url;
-        document.getElementById(label).innerText = nome.substring(0, 20);
+        document.getElementById(label).innerText = nome.substring(0, 25);
     };
 
-    // --- SALVAMENTO E GAVETAS (FIREBASE) ---
-    window.salvarNasGavetas = async () => {
-        const titulo = document.getElementById('txt-titulo').innerText;
-        const conteudo = document.getElementById('folha-total').innerHTML;
+    // --- SALVAMENTO E GAVETAS ---
+    window.salvarCloud = async () => {
+        const titulo = prompt("Nome para este estudo?", "ESTUDO MPU") || "ESTUDO_MPU";
+        const html = document.getElementById('folha-total').innerHTML;
         const slug = titulo.replace(/\s+/g, '_').toLowerCase();
-        
-        try {
-            await set(ref(db, `${BASE_PATH}/ESTUDOS/${slug}`), {
-                nome: titulo, conteudo: conteudo, data: new Date().toLocaleString()
-            });
-            alert("✅ ESTUDO SINCRONIZADO NA NUVEM!");
-        } catch (e) { alert("Erro ao salvar."); }
+        await set(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/ESTUDOS/${slug}`), {
+            nome: titulo.toUpperCase(), conteudo: html, data: new Date().toLocaleString()
+        });
+        document.getElementById('display-titulo').innerText = "ESTUDO: " + titulo.toUpperCase();
+        alert("Sincronizado com as Gavetas!");
     };
 
     window.abrirGavetas = async () => {
-        const modal = document.getElementById('modal-base');
+        const modal = document.getElementById('modal-sys');
         const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "MEUS ARQUIVOS SALVOS";
+        document.getElementById('modal-title').innerText = "MEUS ESTUDOS SALVOS";
         content.innerHTML = "Carregando...";
-        
-        const snap = await get(ref(db, `${BASE_PATH}/ESTUDOS`));
+        const snap = await get(ref(db, `SISTEMA_MPU_ELITE/GAVETAS/ESTUDOS`));
         content.innerHTML = "";
-        if (snap.exists()) {
+        if(snap.exists()) {
             Object.values(snap.val()).reverse().forEach(item => {
-                const d = document.createElement('div'); d.className = 'opt-btn';
-                d.innerHTML = `<span>${item.nome} <br><small style="font-size:9px;">${item.data}</small></span>`;
-                d.onclick = () => {
+                const btn = document.createElement('div');
+                btn.className = 'opt-btn';
+                btn.innerHTML = `<span>${item.nome} <br><small>${item.data}</small></span>`;
+                btn.onclick = () => {
                     document.getElementById('folha-total').innerHTML = item.conteudo;
-                    document.getElementById('txt-titulo').innerText = item.nome;
+                    document.getElementById('display-titulo').innerText = "ESTUDO: " + item.nome;
                     modal.style.display = 'none';
+                    if(!document.getElementById('work-panel').classList.contains('expanded')) window.toggleWork();
                 };
-                content.appendChild(d);
+                content.appendChild(btn);
             });
-        } else { content.innerHTML = "Nenhuma gaveta encontrada."; }
+        }
         modal.style.display = 'flex';
     };
 
-    // --- FUNCIONALIDADES ADICIONAIS ---
-    window.inteligenciaNaoConfunda = () => {
-        const modal = document.getElementById('modal-base');
-        const content = document.getElementById('modal-content');
-        document.getElementById('modal-title').innerText = "NÃO CONFUNDA: DICAS RÁPIDAS";
-        const dicas = [
-            { t: "PGR vs MPU", d: "O PGR chefia o MPU, mas o MPU engloba 4 ramos distintos." },
-            { t: "Mandato PGR", d: "2 anos, permitidas reconduções. Nomeação pelo Presidente + Senado." }
-        ];
-        content.innerHTML = "";
-        dicas.forEach(item => {
-            const b = document.createElement('div'); b.className = 'opt-btn';
-            b.innerHTML = `<span><b>${item.t}</b></span>`;
-            b.onclick = () => { 
-                document.getElementById('folha-total').innerHTML += `<div style="background:#fef9c3; padding:10px; border-left:4px solid var(--mpu-gold); margin:10px 0;"><b>NÃO CONFUNDA:</b> ${item.d}</div>`; 
-                modal.style.display='none'; 
-            };
-            content.appendChild(b);
-        });
-        modal.style.display = 'flex';
-    };
+    window.limparTudo = () => confirm("Limpar papel de rascunho?") && (document.getElementById('folha-total').innerHTML = "");
 
-    window.abrirJurisprudencia = () => {
-        window.open("https://portal.stf.jus.br/informativo/", "_blank");
-    };
-
-    window.renomear = () => {
-        const n = prompt("NOME DO ESTUDO:");
-        if(n) document.getElementById('txt-titulo').innerText = n.toUpperCase();
-    };
-
-    window.limparTela = () => confirm("Limpar papel de rascunho?") && (document.getElementById('folha-total').innerHTML = "");
-
-    // TIMERS
+    // TIMER
     let segs = 0;
     setInterval(() => {
         segs++;
@@ -251,7 +223,6 @@
         const m = Math.floor((segs % 3600) / 60).toString().padStart(2, '0');
         const s = (segs % 60).toString().padStart(2, '0');
         document.getElementById('sessao-timer').innerText = `${h}:${m}:${s}`;
-        document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR');
     }, 1000);
 </script>
 </body>
