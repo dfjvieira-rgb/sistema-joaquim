@@ -82,35 +82,30 @@
         }
         .content-wrapper.dual-active #pdf-viewer { flex: 1 0 50%; border-left-width: 4px; }
         #pdf-viewer iframe { flex: 1; border: none; background: #525659; }
-
-        /* BOTÃO SWITCH MOBILE (Invisível no desktop) */
+        
+        /* BOTÃO SWITCH MOBILE */
         #mobile-switch {
-            display: none; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
+            display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
             background: var(--mpu-gold); color: white; border-radius: 50%; border: none;
-            z-index: 99999; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-size: 24px; cursor: pointer;
+            z-index: 99999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 20px;
         }
 
-        /* --- APENAS AJUSTES MOBILE --- */
+        /* AJUSTES MOBILE EXCLUSIVOS (Apenas celulares) */
         @media (max-width: 768px) {
-            /* Força a folha a ter 100% mesmo em modo dual */
             .content-wrapper.dual-active .editor-container { flex: 1 0 100%; }
-            
-            /* PDF ocupa a tela toda por cima da folha no mobile */
+            /* No mobile, o PDF vira uma camada inteira em cima da folha */
             .content-wrapper.dual-active #pdf-viewer { 
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
                 flex: none; z-index: 2000; transform: translateX(0); border-left: none;
             }
-            
-            /* Quando a classe 'show-editor' está ativa, joga o PDF para o lado */
+            /* Esconde o PDF para mostrar a folha quando a classe show-editor está ativa */
             .content-wrapper.dual-active.show-editor #pdf-viewer { transform: translateX(100%); }
-            
-            /* Exibe o botão de troca apenas se houver PDF aberto */
-            .content-wrapper.dual-active #mobile-switch { display: flex; align-items: center; justify-content: center; }
-            
+            .content-wrapper.dual-active #mobile-switch { display: block; }
             .sidebar { position: absolute; height: 100%; z-index: 6000; }
-            .paper { padding: 40px 15px; }
-            header .logo { font-size: 12px; }
-            header .logo span { display: none; }
+            .paper { padding: 30px 15px; }
+            
+            /* Botão de Foco no Header do PDF no mobile */
+            .btn-foco-mobile { display: inline-block !important; }
         }
 
         /* MODAIS */
@@ -155,8 +150,8 @@
     </aside>
 
     <div class="content-wrapper" id="master-wrapper">
-        <button id="mobile-switch" onclick="window.toggleMobileView()"><i class="fas fa-pen-fancy"></i></button>
-
+        <button id="mobile-switch" onclick="window.toggleMobileView()"><i class="fas fa-exchange-alt"></i></button>
+        
         <section class="editor-container">
             <div class="sticky-tools">
                 <div id="identificador-peca" onclick="window.renomear()">
@@ -175,8 +170,11 @@
         </section>
 
         <section id="pdf-viewer">
-            <div style="background:#001a33; padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
-                <span id="pdf-title" style="color:white; font-size:11px; font-weight:bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">MODO CONSULTA</span>
+            <div style="background:#001a33; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="btn-foco-mobile" style="display:none; background:var(--mpu-gold); border:none; padding:4px 8px; border-radius:4px; color:white; font-weight:bold; font-size:10px;" onclick="window.toggleMobileView()">FOCO: PEÇA</button>
+                    <span id="pdf-title" style="color:white; font-size:11px; font-weight:bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 150px;">MODO CONSULTA</span>
+                </div>
                 <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:5px 15px; border-radius:4px; font-weight:bold; cursor:pointer; color:white; font-size:10px;">FECHAR X</button>
             </div>
             <iframe id="pdf-frame" src=""></iframe>
@@ -212,18 +210,9 @@
 
     window.pecaNome = "ESTUDO MPU: SEM TÍTULO";
 
-    // Função para o botão flutuante mobile
+    // LÓGICA MOBILE SWITCH (Alternar entre PDF e Peça no Mobile)
     window.toggleMobileView = () => {
-        const wrapper = document.getElementById('master-wrapper');
-        const btn = document.getElementById('mobile-switch');
-        wrapper.classList.toggle('show-editor');
-        
-        // Troca o ícone do botão conforme o que está sendo visto
-        if(wrapper.classList.contains('show-editor')) {
-            btn.innerHTML = '<i class="fas fa-book-open"></i>';
-        } else {
-            btn.innerHTML = '<i class="fas fa-pen-fancy"></i>';
-        }
+        document.getElementById('master-wrapper').classList.toggle('show-editor');
     };
 
     const NUCLEO_DURO = [
@@ -261,10 +250,10 @@
                 document.getElementById('pdf-frame').src = lei.u;
                 document.getElementById('pdf-title').innerText = lei.n + " - " + lei.t;
                 document.getElementById('master-wrapper').classList.add('dual-active');
-                // Reseta visualização mobile para mostrar o PDF recém aberto
-                document.getElementById('master-wrapper').classList.remove('show-editor');
                 modal.style.display = 'none';
                 document.getElementById('sidebar-menu').classList.add('collapsed');
+                // Garante que o PDF abra primeiro no mobile
+                document.getElementById('master-wrapper').classList.remove('show-editor');
             };
             content.appendChild(d);
         });
