@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JOAQUIM ELITE 2026 - MPU MASTER</title>
+    <title>JOAQUIM ELITE 2026 - MPU MASTER FULL</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #020617; --gold: #fbbf24; --bg-paper: #cbd5e1;
-            --sidebar-w: 75px; --perigo: #ef4444; --questoes: #3b82f6;
+            --sidebar-w: 80px; --perigo: #ef4444; --inteligencia: #a855f7;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--primary); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
@@ -18,119 +18,143 @@
         
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; border-right: 1px solid rgba(255,255,255,0.1); }
+        /* SIDEBAR COMPLETA */
+        .sidebar { width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 0; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
 
-        .btn-side { width: 60px; height: 60px; border: none; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; background: rgba(255,255,255,0.05); gap: 4px; }
+        .btn-side { width: 65px; min-height: 60px; border: none; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; background: rgba(255,255,255,0.05); gap: 4px; }
         .btn-side i { font-size: 1.2rem; color: var(--gold); }
-        .btn-side span { font-size: 8px; font-weight: bold; text-transform: uppercase; }
+        .btn-side span { font-size: 8px; font-weight: bold; text-transform: uppercase; text-align: center; }
+        .btn-intel { background: rgba(168, 85, 247, 0.2) !important; border: 1px solid var(--inteligencia) !important; }
 
-        /* DIVISÃO 50/50 */
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; transition: 0.3s; }
+        /* EDITOR E LAYOUT 50/50 */
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 10px; transition: 0.3s; }
         .editor-container.split { flex: 0.5; }
 
-        .sticky-tools { position: sticky; top: 0; z-index: 1000; background: white; width: 100%; border-bottom: 2px solid var(--gold); }
-        #identificador-peca { padding: 10px; text-align: center; font-weight: 900; color: #0f172a; border-bottom: 1px solid #ddd; }
+        .sticky-tools { position: sticky; top: 0; z-index: 1000; background: white; width: 100%; max-width: 850px; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #identificador-peca { padding: 10px; background: #f8fafc; text-align: center; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--gold); outline: none; }
         
-        .toolbar { display: flex; background: #fff; padding: 5px; gap: 5px; align-items: center; justify-content: center; }
-        .btn-lib { padding: 8px 12px; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .toolbar { display: flex; background: #fff; padding: 5px; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; }
+        .btn-lib { padding: 10px; border: 1px solid #eee; background: transparent; cursor: pointer; color: #475569; border-radius: 4px; font-weight: bold; }
 
-        .color-dot { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 1px solid #000; }
+        .color-dot { width: 22px; height: 22px; border-radius: 4px; cursor: pointer; border: 1px solid rgba(0,0,0,0.2); }
 
-        .paper { width: 100%; max-width: 800px; background: white; min-height: 2000px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .paper { width: 100%; max-width: 800px; background: white; min-height: 5250px; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.3); margin-top: 10px; }
+        #editor-principal { 
+            width: 100%; min-height: 5000px; outline: none; color: #1e293b; 
+            font-family: 'Courier New', monospace; font-size: 16px; line-height: 25px;
+            background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 100% 25px;
+        }
 
-        #pdf-viewer { width: 0; background: #334155; transition: 0.3s; display: flex; flex-direction: column; border-left: 0 solid var(--gold); }
+        /* PDF VIEWER */
+        #pdf-viewer { width: 0; background: #334155; transition: 0.3s; display: flex; flex-direction: column; border-left: 0 solid var(--gold); position: relative; }
         #pdf-viewer.active { width: 50%; border-left-width: 4px; }
-        
-        .pdf-bar { background: #0f172a; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: bold; }
-        iframe { width: 100%; flex: 1; border: none; }
+        .pdf-header { background: #0f172a; padding: 10px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 11px; }
+        iframe { width: 100%; flex: 1; border: none; background: #525659; }
+
+        /* MODAIS DE INTELIGÊNCIA */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 12px; color: #0f172a; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-header { padding: 15px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+        .search-box { width: 100%; padding: 12px; border: 2px solid var(--gold); border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+        .item-list { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .item-list:hover { background: #fef08a; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight:900">JOAQUIM ELITE 2026</div>
-    <div id="status-bar" style="font-size:10px; color:var(--gold)">PRONTO</div>
+    <div style="font-weight:900">JOAQUIM <span style="color:var(--gold)">ELITE MPU</span></div>
+    <div id="relogio" style="font-size:12px; font-weight:bold"></div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" onclick="window.verPDF('LP')"><i class="fas fa-book"></i><span>LC 75</span></button>
-        <button class="btn-side" onclick="window.verPDF('LM')"><i class="fas fa-shield-alt"></i><span>LIA</span></button>
-        <button class="btn-side" onclick="window.verPDF('V')"><i class="fas fa-balance-scale"></i><span>VADE</span></button>
-        <hr style="width:70%; opacity:0.2">
-        <button class="btn-side" onclick="window.limparFolha()"><i class="fas fa-eraser"></i><span>LIMPAR</span></button>
-        <button class="btn-side" style="background:var(--perigo)" onclick="window.finalizarPeca()"><i class="fas fa-save"></i><span>SALVAR</span></button>
+        <button class="btn-side btn-intel" onclick="window.abrirIntel('PECA')"><i class="fas fa-gavel"></i><span>QUAL A PEÇA</span></button>
+        <button class="btn-side btn-intel" onclick="window.abrirIntel('TESES')"><i class="fas fa-balance-scale-right"></i><span>TESES</span></button>
+        <button class="btn-side btn-intel" onclick="window.abrirIntel('QUESTOES')"><i class="fas fa-tasks"></i><span>50 QUESTÕES</span></button>
+        <hr style="width:70%; opacity:0.1; margin:5px 0">
+        <button class="btn-side" onclick="window.verPDF('lc75.pdf')"><i class="fas fa-file-pdf"></i><span>LC 75</span></button>
+        <button class="btn-side" onclick="window.verPDF('lei_improbidade.pdf')"><i class="fas fa-shield-alt"></i><span>LIA</span></button>
+        <button class="btn-side" onclick="window.verPDF('vade_mpu.pdf')"><i class="fas fa-book"></i><span>VADE</span></button>
+        <hr style="width:70%; opacity:0.1; margin:5px 0">
+        <button class="btn-side" style="background:var(--perigo)" onclick="window.salvar()"><i class="fas fa-save"></i><span>SALVAR</span></button>
     </aside>
 
     <section class="editor-container" id="editor-container">
         <div class="sticky-tools">
-            <div id="identificador-peca">NOVO TREINO MPU</div>
+            <div id="identificador-peca" contenteditable="true">NOVO PARECER / PEÇA MPU</div>
             <div class="toolbar">
                 <button class="btn-lib" onclick="document.execCommand('undo')"><i class="fas fa-undo"></i></button>
-                <button class="btn-lib" id="btn-highlight" onclick="window.toggleMarcaTexto()"><i class="fas fa-highlighter"></i></button>
-                <div class="color-dot" style="background:#fef08a;" onclick="window.setHighlightColor('#fef08a')"></div>
-                <div class="color-dot" style="background:#bbf7d0;" onclick="window.setHighlightColor('#bbf7d0')"></div>
-                <div class="color-dot" style="background:#bfdbfe;" onclick="window.setHighlightColor('#bfdbfe')"></div>
-                <button class="btn-lib" onclick="window.toggleFullPDF()">TELA CHEIA</button>
+                <div class="highlight-box" style="display:flex; gap:5px">
+                    <div class="color-dot" style="background:#fef08a;" onclick="window.setMT('#fef08a')"></div>
+                    <div class="color-dot" style="background:#bbf7d0;" onclick="window.setMT('#bbf7d0')"></div>
+                    <div class="color-dot" style="background:#bfdbfe;" onclick="window.setMT('#bfdbfe')"></div>
+                </div>
+                <button class="btn-lib" onclick="window.limpar()"><i class="fas fa-trash"></i></button>
+                <button class="btn-lib" onclick="window.toggleSplit()"><i class="fas fa-columns"></i> 50/50</button>
             </div>
         </div>
         <div class="paper">
-            <div id="folha-total"></div>
+            <div id="editor-principal" contenteditable="true" spellcheck="false"></div>
         </div>
     </section>
 
     <section id="pdf-viewer">
-        <div class="pdf-bar">
-            <span id="pdf-title">DOCUMENTO</span>
-            <button onclick="window.fecharPDF()" style="background:var(--perigo); border:none; color:white; padding:4px 8px; cursor:pointer">FECHAR X</button>
+        <div class="pdf-header">
+            <span id="pdf-title">SISTEMA DE APOIO</span>
+            <button onclick="window.fecharPDF()" style="background:var(--perigo); border:none; color:white; padding:5px; cursor:pointer">X</button>
         </div>
-        <iframe id="pdf-frame" src=""></iframe>
+        <iframe id="pdf-frame"></iframe>
     </section>
 </main>
+
+<div class="modal" id="modal-intel">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="intel-title">INTELIGÊNCIA</h3>
+            <button onclick="window.fecharIntel()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="text" class="search-box" id="intel-search" placeholder="Pesquisar..." onkeyup="window.filtrarIntel()">
+            <div id="intel-results"></div>
+        </div>
+    </div>
+</div>
 
 <script type="module">
     import { db } from './firebase-config.js';
     import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { FolhaEngine } from './folha-engine.js';
 
-    // Globais para garantir que os botões funcionem
-    window.marcaTextoAtivo = false;
-    window.currentColor = '#fef08a';
-
-    window.onload = () => {
-        // Inicializa a FolhaEngine (Verifique se o arquivo folha-engine.js está na mesma pasta)
-        if(typeof FolhaEngine !== 'undefined') {
-            FolhaEngine.montar('folha-total');
-        }
-
-        // Lógica de Marca-Texto
-        document.addEventListener('mouseup', () => {
-            if(window.marcaTextoAtivo) {
-                const sel = window.getSelection();
-                if(sel.toString().length > 0) {
-                    document.execCommand('backColor', false, window.currentColor);
-                }
-            }
-        });
+    // DADOS DAS INTELIGÊNCIAS (Injetados conforme sua análise de PDFs)
+    const DATA_INTEL = {
+        PECA: [
+            { t: "Ação Civil Pública - Improbidade", d: "Uso quando houver dano ao erário ou violação a princípios. Base: Lei 8.429/92." },
+            { t: "Parecer em Recurso Extraordinário", d: "Manifestação do MPU como custos legis em matéria constitucional." },
+            { t: "Ação de Impugnação de Mandato Eletivo", d: "Matéria eleitoral (MPF). Base: Art. 14, §10 da CF." }
+        ],
+        TESES: [
+            { t: "Inexistência de Foro por Prerrogativa", d: "Tese para manter processo na 1ª instância em crimes comuns após término do mandato." },
+            { t: "Imprescritibilidade do Ressarcimento", d: "Dano ao erário decorrente de ato doloso de improbidade (STF Tema 897)." }
+        ],
+        QUESTOES: [
+            { t: "Questão 01 - LOMPU", d: "Sobre a autonomia funcional e administrativa do MPU. Art. 4º da LC 75." },
+            { t: "Questão 02 - Inquérito Civil", d: "Prazos e prorrogações do IC no âmbito do MP Federal." }
+        ]
     };
 
-    // FUNÇÕES DE PDF CORRIGIDAS
-    window.verPDF = (tipo) => {
-        const viewer = document.getElementById('pdf-viewer');
+    window.corMT = '#fef08a';
+    window.tipoAtivo = '';
+
+    // CONTROLE DE PDF (BLINDADO)
+    window.verPDF = (arq) => {
         const frame = document.getElementById('pdf-frame');
+        const viewer = document.getElementById('pdf-viewer');
         const container = document.getElementById('editor-container');
-        let arquivo = "";
-
-        if(tipo === 'LP') arquivo = "lc75.pdf";
-        else if(tipo === 'LM') arquivo = "lei_improbidade.pdf";
-        else if(tipo === 'V') arquivo = "vade_mpu.pdf";
-
-        // O segredo está em garantir o caminho relativo correto
-        const path = `./pdfs/${arquivo}`;
         
-        frame.src = path;
-        document.getElementById('pdf-title').innerText = arquivo.toUpperCase();
-        
+        frame.src = `./pdfs/${arq}`;
+        document.getElementById('pdf-title').innerText = arq.toUpperCase();
         viewer.classList.add('active');
         container.classList.add('split');
     };
@@ -141,43 +165,56 @@
         document.getElementById('pdf-frame').src = "";
     };
 
-    window.toggleFullPDF = () => {
-        const viewer = document.getElementById('pdf-viewer');
-        if(viewer.style.width === "100%") {
-            viewer.style.width = "50%";
-        } else {
-            viewer.style.width = "100%";
-        }
+    // INTELIGÊNCIAS
+    window.abrirIntel = (tipo) => {
+        window.tipoAtivo = tipo;
+        document.getElementById('intel-title').innerText = tipo === 'PECA' ? "QUAL A PEÇA?" : tipo;
+        document.getElementById('modal-intel').style.display = 'flex';
+        window.filtrarIntel();
     };
 
-    window.setHighlightColor = (cor) => {
-        window.currentColor = cor;
-        window.marcaTextoAtivo = true;
-        document.getElementById('btn-highlight').style.background = cor;
+    window.fecharIntel = () => document.getElementById('modal-intel').style.display = 'none';
+
+    window.filtrarIntel = () => {
+        const busca = document.getElementById('intel-search').value.toLowerCase();
+        const res = document.getElementById('intel-results');
+        res.innerHTML = "";
+        
+        DATA_INTEL[window.tipoAtivo].forEach(item => {
+            if(item.t.toLowerCase().includes(busca) || item.d.toLowerCase().includes(busca)) {
+                const div = document.createElement('div');
+                div.className = 'item-list';
+                div.innerHTML = `<div>${item.t}</div><div style="font-size:10px; color:#666">${item.d}</div>`;
+                div.onclick = () => {
+                    document.getElementById('editor-principal').innerHTML += `<p><strong>[${item.t}]:</strong> ${item.d}</p><br>`;
+                    window.fecharIntel();
+                };
+                res.appendChild(div);
+            }
+        });
     };
 
-    window.toggleMarcaTexto = () => {
-        window.marcaTextoAtivo = !window.marcaTextoAtivo;
-        document.getElementById('btn-highlight').style.background = window.marcaTextoAtivo ? window.currentColor : "#fff";
+    // MARCA TEXTO
+    window.setMT = (cor) => {
+        window.corMT = cor;
+        const sel = window.getSelection();
+        if(sel.toString().length > 0) document.execCommand('backColor', false, cor);
     };
 
-    window.limparFolha = () => {
-        if(confirm("Deseja apagar toda a folha?")) {
-            const ed = document.getElementById('editor-principal');
-            if(ed) ed.innerHTML = "";
-        }
+    // FIREBASE & AUX
+    window.salvar = async () => {
+        const html = document.getElementById('editor-principal').innerHTML;
+        await set(ref(db, `SISTEMA_MPU/ESTUDOS/${Date.now()}`), { texto: html });
+        alert("SALVO NA GAVETA!");
     };
 
-    window.finalizarPeca = async () => {
-        const ed = document.getElementById('editor-principal');
-        if(!ed) return;
-        try {
-            await set(ref(db, `SISTEMA_MPU/RASCUNHO`), { conteudo: ed.innerHTML, data: new Date().toISOString() });
-            alert("Estudo salvo com sucesso!");
-        } catch (e) {
-            alert("Erro ao salvar no Firebase.");
-        }
-    };
+    window.limpar = () => confirm("Limpar tudo?") && (document.getElementById('editor-principal').innerHTML = "");
+    
+    // RELÓGIO
+    setInterval(() => {
+        document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR');
+    }, 1000);
+
 </script>
 </body>
 </html>
