@@ -10,7 +10,7 @@
         :root {
             --primary: #020617; --gold: #fbbf24; --gold-dark: #d97706;
             --bg-paper: #cbd5e1; --paper-color: #ffffff; 
-            --mentoria: #a855f7; --sidebar-w: 240px; --perigo: #ef4444;
+            --mentoria: #a855f7; --sidebar-w: 220px; --perigo: #ef4444;
             --questoes: #3b82f6; --teses: #f97316; --biblioteca: #475569;
         }
 
@@ -25,7 +25,6 @@
 
         main { display: flex; flex: 1; overflow: hidden; }
         
-        /* Sidebar */
         .sidebar { 
             width: var(--sidebar-w); background: #1e293b; display: flex; flex-direction: column; 
             padding: 10px; gap: 8px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; 
@@ -37,97 +36,105 @@
             cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.05);
             font-size: 11px; font-weight: bold; text-transform: uppercase;
         }
-        .btn-side:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); }
+        .btn-side:hover { background: rgba(255,255,255,0.15); }
         .btn-side i { font-size: 1rem; width: 20px; text-align: center; color: var(--gold); }
 
-        /* DIVISÃO 50/50 CONFIGURADA AQUI */
-        .editor-container { 
-            flex: 1; display: flex; flex-direction: column; 
-            background: var(--bg-paper); overflow-y: auto; align-items: center; 
-            padding: 20px; transition: flex 0.4s ease; 
-        }
-        
-        /* Quando o PDF ativa, o editor encolhe para 50% */
+        /* AJUSTE PARA DIVISÃO 50/50 */
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px; transition: 0.4s; }
         .editor-container.split-view { flex: 0.5; }
 
         .sticky-tools { position: sticky; top: -20px; z-index: 1000; background: white; width: 100%; max-width: 850px; border-radius: 0 0 12px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-bottom: 10px; }
-        #identificador-peca { padding: 12px; background: #f8fafc; text-align: center; font-weight: 900; color: #0f172a; border-bottom: 3px solid var(--gold); cursor: pointer; text-transform: uppercase; }
+        #identificador-peca { padding: 12px; background: #f8fafc; text-align: center; font-weight: 900; color: #0f172a; border-bottom: 3px solid var(--gold); cursor: pointer; }
         
         .toolbar-liberdade { display: flex; background: #fff; flex-wrap: wrap; }
         .btn-lib { flex: 1; padding: 12px; border: none; background: transparent; cursor: pointer; font-weight: 800; font-size: 10px; color: #64748b; border-right: 1px solid #f1f5f9; }
 
-        .paper { width: 100%; max-width: 850px; background: white; box-shadow: 0 20px 50px rgba(0,0,0,0.4); min-height: 2500px; padding: 50px; color: black; outline: none; line-height: 1.6; }
+        .paper { width: 100%; max-width: 850px; background: white; box-shadow: 0 20px 50px rgba(0,0,0,0.4); min-height: 2000px; padding: 40px; color: black; outline: none; }
 
-        /* PDF ocupando os outros 50% */
-        #pdf-viewer { width: 0; background: #334155; transition: width 0.4s ease; display: flex; flex-direction: column; overflow: hidden; border-left: 0 solid var(--gold); }
+        /* AJUSTE PDF LATERAL 50% */
+        #pdf-viewer { width: 0; background: #334155; transition: 0.4s; display: flex; flex-direction: column; overflow: hidden; }
         #pdf-viewer.active { width: 50%; border-left: 4px solid var(--gold); }
+        #pdf-viewer.full-view { width: 100% !important; }
 
-        .pdf-controls { background: #1e293b; padding: 12px; display: flex; justify-content: space-between; color: white; font-size: 12px; font-weight: bold; align-items: center; }
+        .pdf-controls { background: #1e293b; padding: 10px; display: flex; justify-content: space-between; color: white; font-size: 12px; }
         iframe { width: 100%; flex: 1; border: none; background: white; }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; }
-        .modal-body { background: white; width: 90%; max-width: 450px; padding: 25px; border-radius: 15px; color: black; }
-        .opt-btn { width: 100%; padding: 16px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; cursor: pointer; font-weight: 800; display: flex; justify-content: space-between; background: #f9fafb; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; }
+        .modal-body { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; color: black; }
+        .opt-btn { width: 100%; padding: 15px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
 <header>
     <div class="logo">JOAQUIM <span>ELITE MPU</span></div>
-    <div id="ex-display" style="font-size: 11px; font-weight: 900; color: var(--gold);">MPU MASTER 2026</div>
+    <div id="ex-display" style="font-size: 12px; font-weight: bold; color: var(--gold);">CONCURSO: --</div>
 </header>
 
 <main>
     <aside class="sidebar">
-        <button class="btn-side" onclick="window.abrirExames()"><i class="fas fa-list"></i> ESCOLHER EXAME</button>
+        <button class="btn-side" onclick="window.abrirExames()"><i class="fas fa-list"></i> ESCOLHER CONCURSO</button>
         <button class="btn-side" onclick="window.ativarTreinoLivre()"><i class="fas fa-edit"></i> NOVO PARECER</button>
-        <button class="btn-side" onclick="window.ativarModoQuestoes()"><i class="fas fa-question-circle"></i> QUESTÕES</button>
-        <button class="btn-side" onclick="window.ativarModoTeses()"><i class="fas fa-gavel"></i> TREINO TESES</button>
+        <button class="btn-side" onclick="window.ativarModoQuestoes()"><i class="fas fa-question-circle"></i> QUESTÃO DISCURSIVA</button>
+        <button class="btn-side" onclick="window.ativarModoTeses()"><i class="fas fa-gavel"></i> TREINO DE TESES</button>
+        <button class="btn-side" onclick="window.abrirBibliotecaPDF()"><i class="fas fa-folder"></i> PASTA DE PDFS</button>
+        <button class="btn-side" onclick="window.gerenciadorPasta()"><i class="fas fa-archive"></i> MEUS ARQUIVOS</button>
         <hr style="opacity: 0.1">
-        <button class="btn-side" onclick="window.verPDF('LP')" style="background: rgba(59, 130, 246, 0.2);"><i class="fas fa-book"></i> LEI LC 75 (LOMPU)</button>
-        <button class="btn-side" onclick="window.verPDF('LM')" style="background: rgba(16, 185, 129, 0.2);"><i class="fas fa-shield-alt"></i> IMPROBIDADE (LIA)</button>
-        <button class="btn-side" onclick="window.verPDF('V')" style="background: rgba(255, 255, 255, 0.1);"><i class="fas fa-balance-scale"></i> VADE MECUM MPU</button>
+        <button class="btn-side" onclick="window.verPDF('LP')" style="background: #3b82f6;"><i class="fas fa-book"></i> LEI LC 75 (LOMPU)</button>
+        <button class="btn-side" onclick="window.verPDF('LM')" style="background: #10b981;"><i class="fas fa-shield-alt"></i> IMPROBIDADE (LIA)</button>
+        <button class="btn-side" onclick="window.verPDF('V')" style="background: #000;"><i class="fas fa-balance-scale"></i> VADE MECUM MPU</button>
         <hr style="opacity: 0.1">
-        <button class="btn-side" onclick="window.finalizarPeca()" style="background: var(--gold); color: black;"><i class="fas fa-save"></i> FINALIZAR / SALVAR</button>
+        <button class="btn-side" onclick="window.finalizarPeca()" style="background: var(--gold); color: black;"><i class="fas fa-save"></i> FINALIZAR E SALVAR</button>
     </aside>
 
     <section class="editor-container" id="editor-container">
         <div class="sticky-tools">
-            <div id="identificador-peca">ESTUDO MPU</div>
+            <div id="identificador-peca">CLIQUE NO MENU LATERAL PARA INICIAR</div>
             <div class="toolbar-liberdade">
                 <button class="btn-lib" onclick="document.execCommand('undo')"><i class="fas fa-undo"></i> DESFAZER</button>
-                <button class="btn-lib" onclick="window.limparFolha()"><i class="fas fa-eraser"></i> LIMPAR</button>
-                <button class="btn-lib" style="background: #166534; color: white;" onclick="window.print()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
+                <button class="btn-lib" onclick="window.limparFolha()"><i class="fas fa-eraser"></i> LIMPAR TUDO</button>
+                <button class="btn-lib" onclick="window.toggleRecolherEditor()"><i class="fas fa-expand"></i> FOCO PDF</button>
+                <button class="btn-lib" style="background: #22c55e; color: white;" onclick="window.print()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
             </div>
         </div>
         <div class="paper" id="editor-principal" contenteditable="true">
-            Selecione uma função lateral para iniciar...
+            Comece a digitar seu parecer ou resposta aqui...
         </div>
     </section>
 
     <section id="pdf-viewer">
         <div class="pdf-controls">
-            <span id="pdf-title">CONSULTA</span>
-            <button onclick="window.fecharPDF()" style="background:red; color:white; border:none; padding:4px 10px; cursor:pointer; border-radius:4px;">FECHAR [X]</button>
+            <span id="pdf-title">VISUALIZADOR</span>
+            <button onclick="window.fecharPDF()" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer">X</button>
         </div>
-        <iframe id="pdf-frame"></iframe>
+        <iframe id="pdf-frame" src="about:blank"></iframe>
     </section>
 </main>
+
+<div class="modal" id="universal-modal">
+    <div class="modal-body">
+        <h3 id="modal-title">Menu</h3>
+        <div id="modal-content" style="margin-top: 15px;"></div>
+        <button onclick="document.getElementById('universal-modal').style.display='none'" style="width:100%; padding:10px; margin-top:10px;">FECHAR</button>
+    </div>
+</div>
 
 <script type="module">
     import { db } from './firebase-config.js';
     import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     window.db = db;
+    window.activeEx = localStorage.getItem('activeEx') || "2025";
     window.pecaAtualNome = localStorage.getItem('pecaAtualNome') || "NOVO ESTUDO";
 
     window.onload = () => {
+        document.getElementById('ex-display').innerText = "MPU CONCURSO: " + window.activeEx;
         document.getElementById('identificador-peca').innerText = window.pecaAtualNome;
         carregarRascunho();
         setInterval(salvarAutomatico, 20000);
     };
 
-    // ABRE PDF DENTRO DA SUBPASTA "pdfs/"
+    // FUNÇÃO DE PDF CORRIGIDA PARA PASTA pdfs/ E DIVISÃO 50/50
     window.verPDF = (tipo) => {
         const v = document.getElementById('pdf-viewer');
         const f = document.getElementById('pdf-frame');
@@ -138,18 +145,53 @@
         if(tipo === 'LM') arquivo = "lei_improbidade.pdf";
         if(tipo === 'V') arquivo = "vade_mpu.pdf";
         
-        // Caminho ajustado para sua pasta pdfs/
+        // Abre o PDF da subpasta pdfs/
         f.src = `pdfs/${arquivo}`;
         v.classList.add('active');
         container.classList.add('split-view');
     };
 
     window.fecharPDF = () => {
-        document.getElementById('pdf-viewer').classList.remove('active');
+        document.getElementById('pdf-viewer').classList.remove('active', 'full-view');
         document.getElementById('editor-container').classList.remove('split-view');
     };
 
-    window.limparFolha = () => { if(confirm("Limpar toda a folha?")) document.getElementById('editor-principal').innerHTML = ""; };
+    // MANTIDO O RESTANTE DAS FUNÇÕES ORIGINAIS
+    window.ativarTreinoLivre = () => { 
+        let n = prompt("Nome do Parecer/Peça:"); 
+        if(n) { window.pecaAtualNome = n; localStorage.setItem('pecaAtualNome', n); location.reload(); }
+    };
+
+    window.ativarModoQuestoes = () => { 
+        let n = prompt("Número/Tema da Questão:"); 
+        if(n) { window.pecaAtualNome = "QUESTÃO: " + n; localStorage.setItem('pecaAtualNome', n); location.reload(); }
+    };
+
+    window.ativarModoTeses = () => { 
+        let n = prompt("Assunto da Tese:"); 
+        if(n) { window.pecaAtualNome = "TESE: " + n; localStorage.setItem('pecaAtualNome', n); location.reload(); }
+    };
+
+    window.abrirExames = () => {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        document.getElementById('modal-title').innerText = "SELECIONE O CONCURSO MPU";
+        content.innerHTML = "";
+        ["2025", "2023", "2018", "2015"].forEach(ano => {
+            let b = document.createElement('div');
+            b.className = 'opt-btn';
+            b.innerHTML = `MPU - ANO ${ano} <i class="fas fa-chevron-right"></i>`;
+            b.onclick = () => { localStorage.setItem('activeEx', ano); location.reload(); };
+            content.appendChild(b);
+        });
+        modal.style.display = 'flex';
+    };
+
+    window.toggleRecolherEditor = () => {
+        document.getElementById('pdf-viewer').classList.toggle('full-view');
+    };
+
+    window.limparFolha = () => { if(confirm("Deseja apagar tudo na folha?")) document.getElementById('editor-principal').innerHTML = ""; };
 
     async function salvarAutomatico() {
         const html = document.getElementById('editor-principal').innerHTML;
@@ -166,19 +208,11 @@
         const id = Date.now();
         await set(ref(db, `SISTEMA_MPU/HISTORICO_OFICIAL/${id}`), {
             peca: window.pecaAtualNome,
+            exame: window.activeEx,
             conteudo: html,
             data: new Date().toLocaleString()
         });
-        alert("ESTUDO SALVO COM SUCESSO!");
-    };
-
-    window.ativarTreinoLivre = () => { 
-        let n = prompt("Nome do Parecer:"); 
-        if(n) { 
-            window.pecaAtualNome = n; 
-            localStorage.setItem('pecaAtualNome', n); 
-            document.getElementById('identificador-peca').innerText = n;
-        } 
+        alert("ESTUDO SALVO NA GAVETA COM SUCESSO!");
     };
 </script>
 
