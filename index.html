@@ -14,7 +14,19 @@
             --juris: #4338ca; --redacao: #c2410c; --info: #0369a1;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--mpu-blue); height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: white; }
+        
+        /* 1. FORÇAR TEMA CLARO NO DOCUMENTO */
+        :root { color-scheme: light !important; }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--mpu-blue); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            color: white;
+        }
         
         header { 
             background: linear-gradient(90deg, #001a33 0%, var(--mpu-green) 100%); 
@@ -24,11 +36,9 @@
 
         .logo-area { display: flex; align-items: center; gap: 15px; }
         #toggle-menu { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        #toggle-menu:hover { background: var(--mpu-gold); border-color: var(--mpu-gold); }
         
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR RECOLHÍVEL */
         .sidebar { 
             width: var(--sidebar-w); background: #020617; display: flex; flex-direction: column; gap: 8px; 
             padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; z-index: 100;
@@ -43,12 +53,9 @@
             font-size: 0.7rem; text-transform: uppercase; transition: 0.2s; 
             background: rgba(255,255,255,0.05); 
         }
-        .btn-side:hover { background: rgba(255,255,255,0.12); border-left: 4px solid var(--mpu-gold); }
 
-        /* CONTENT WRAPPER */
         .content-wrapper { flex: 1; display: flex; width: 100%; transition: all 0.4s ease; overflow: hidden; position: relative; }
 
-        /* EDITOR */
         .editor-container { 
             flex: 1 0 100%; display: flex; flex-direction: column; background: var(--bg-paper); 
             overflow-y: auto; align-items: center; padding: 20px 10px; transition: all 0.4s ease;
@@ -75,45 +82,50 @@
         
         #folha-total { outline: none; min-height: 900px; font-family: 'Courier New', monospace; font-size: 16px; text-align: justify; }
 
-        /* PDF VIEWER */
+        /* 2. PROTEÇÃO AGRESSIVA CONTRA MODO ESCURO NO PDF */
         #pdf-viewer { 
-            flex: 0 0 0%; background: white; transition: all 0.4s ease; 
-            display: flex; flex-direction: column; overflow: hidden; border-left: 0 solid var(--mpu-gold);
+            flex: 0 0 0%; 
+            background: #FFFFFF !important; 
+            transition: all 0.4s ease; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            border-left: 0 solid var(--mpu-gold);
+            filter: none !important; /* Desativa filtros de cor */
         }
         .content-wrapper.dual-active #pdf-viewer { flex: 1 0 50%; border-left-width: 4px; }
-        #pdf-viewer iframe { flex: 1; border: none; background: #525659; }
         
-        /* BOTÃO SWITCH MOBILE */
+        #pdf-frame { 
+            flex: 1; 
+            border: none; 
+            background: #FFFFFF !important; 
+            /* Esta linha abaixo tenta reverter a inversão de cores se o navegador forçar */
+            color-scheme: light !important; 
+        }
+        
         #mobile-switch {
             display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
             background: var(--mpu-gold); color: white; border-radius: 50%; border: none;
             z-index: 99999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 20px;
         }
 
-        /* AJUSTES MOBILE EXCLUSIVOS (Apenas celulares) */
         @media (max-width: 768px) {
             .content-wrapper.dual-active .editor-container { flex: 1 0 100%; }
-            /* No mobile, o PDF vira uma camada inteira em cima da folha */
             .content-wrapper.dual-active #pdf-viewer { 
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
                 flex: none; z-index: 2000; transform: translateX(0); border-left: none;
+                background: #FFFFFF !important;
             }
-            /* Esconde o PDF para mostrar a folha quando a classe show-editor está ativa */
             .content-wrapper.dual-active.show-editor #pdf-viewer { transform: translateX(100%); }
             .content-wrapper.dual-active #mobile-switch { display: block; }
             .sidebar { position: absolute; height: 100%; z-index: 6000; }
             .paper { padding: 30px 15px; }
-            
-            /* Botão de Foco no Header do PDF no mobile */
-            .btn-foco-mobile { display: inline-block !important; }
         }
 
-        /* MODAIS */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 110000; align-items: center; justify-content: center; padding: 20px; }
         .modal-body { background: white; width: 100%; max-width: 550px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
         
         .opt-btn { width: 100%; padding: 10px; margin-bottom: 6px; border-radius: 6px; border: 1px solid #ddd; background: #f8fafc; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer; font-size: 0.75rem; align-items: center; color: var(--mpu-blue); }
-        .opt-btn:hover { background: var(--mpu-blue); color: white; }
         .tag-lei { font-size: 9px; background: var(--mpu-green); color: #fff; padding: 2px 6px; border-radius: 4px; }
         
         #timer-box { font-family: monospace; color: var(--mpu-gold); font-size: 14px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; }
@@ -172,8 +184,8 @@
         <section id="pdf-viewer">
             <div style="background:#001a33; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <button class="btn-foco-mobile" style="display:none; background:var(--mpu-gold); border:none; padding:4px 8px; border-radius:4px; color:white; font-weight:bold; font-size:10px;" onclick="window.toggleMobileView()">FOCO: PEÇA</button>
-                    <span id="pdf-title" style="color:white; font-size:11px; font-weight:bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 150px;">MODO CONSULTA</span>
+                    <button class="btn-foco-mobile" style="display:none; background:var(--mpu-gold); border:none; padding:4px 8px; border-radius:4px; color:white; font-weight:bold; font-size:10px;" onclick="window.toggleMobileView()">LER / ESCREVER</button>
+                    <span id="pdf-title" style="color:white; font-size:11px; font-weight:bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 150px;">CONSULTA</span>
                 </div>
                 <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:5px 15px; border-radius:4px; font-weight:bold; cursor:pointer; color:white; font-size:10px;">FECHAR X</button>
             </div>
@@ -210,7 +222,6 @@
 
     window.pecaNome = "ESTUDO MPU: SEM TÍTULO";
 
-    // LÓGICA MOBILE SWITCH (Alternar entre PDF e Peça no Mobile)
     window.toggleMobileView = () => {
         document.getElementById('master-wrapper').classList.toggle('show-editor');
     };
@@ -248,11 +259,10 @@
             d.innerHTML = `<span><span class="tag-lei">${lei.n}</span> ${lei.t}</span>`;
             d.onclick = () => {
                 document.getElementById('pdf-frame').src = lei.u;
-                document.getElementById('pdf-title').innerText = lei.n + " - " + lei.t;
+                document.getElementById('pdf-title').innerText = lei.n;
                 document.getElementById('master-wrapper').classList.add('dual-active');
                 modal.style.display = 'none';
                 document.getElementById('sidebar-menu').classList.add('collapsed');
-                // Garante que o PDF abra primeiro no mobile
                 document.getElementById('master-wrapper').classList.remove('show-editor');
             };
             content.appendChild(d);
@@ -335,7 +345,7 @@
             { n: "STJ Juris Tese", u: "https://scon.stj.jus.br/SCON/" },
             { n: "Dizer o Direito", u: "https://www.dizerodireito.com.br/" }
         ];
-        content.innerHTML = "<p style='font-size:10px; margin-bottom:10px; color:red'>Abre em nova aba para evitar bloqueio do Tribunal:</p>";
+        content.innerHTML = "";
         links.forEach(l => {
             const btn = document.createElement('div'); btn.className = 'opt-btn';
             btn.innerHTML = `<span>${l.n} <i class="fas fa-external-link-alt"></i></span>`;
