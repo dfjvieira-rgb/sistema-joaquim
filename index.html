@@ -25,6 +25,7 @@
         
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
+        /* SIDEBAR */
         .sidebar { 
             width: var(--sidebar-w); background: #020617; display: flex; flex-direction: column; gap: 8px; 
             padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; 
@@ -39,7 +40,11 @@
         }
         .btn-side:hover { background: rgba(255,255,255,0.12); border-left: 4px solid var(--mpu-gold); }
 
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px 10px; }
+        /* CONTENT WRAPPER PARA DUAL VIEW */
+        .content-wrapper { flex: 1; display: flex; transition: all 0.4s ease; overflow: hidden; }
+
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-paper); overflow-y: auto; align-items: center; padding: 20px 10px; transition: 0.4s; }
+        .editor-container.split { flex: 0.5; } /* LOGICA 50/50 */
         
         .sticky-tools { 
             position: sticky; top: -20px; z-index: 1000; background: #fff; width: 100%; max-width: 850px; 
@@ -53,19 +58,21 @@
         }
         
         .paper { 
-            width: 100%; max-width: 850px; background: white; min-height: 1000px; 
-            padding: 80px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%; max-width: 850px; background: white; min-height: 1200px; 
+            padding: 60px; color: #1e293b; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 100% 28px; line-height: 28px;
         }
         
-        #folha-total { outline: none; min-height: 900px; line-height: 1.6; font-size: 16px; text-align: justify; }
+        #folha-total { outline: none; min-height: 900px; font-family: 'Courier New', monospace; font-size: 16px; text-align: justify; }
 
+        /* PDF VIEWER 50/50 */
         #pdf-viewer { 
-            position: absolute; right: 0; top: 0; bottom: 0; width: 0; 
-            background: white; transition: 0.3s ease-in-out; z-index: 6000;
-            display: flex; flex-direction: column; overflow: hidden; visibility: hidden; 
+            width: 0; background: white; transition: 0.4s ease-in-out; 
+            display: flex; flex-direction: column; overflow: hidden; border-left: 0 solid var(--mpu-gold);
         }
-        #pdf-viewer.active { width: 100%; visibility: visible; }
-        #pdf-viewer iframe { flex: 1; border: none; }
+        #pdf-viewer.active { width: 50%; border-left-width: 4px; }
+        #pdf-viewer iframe { flex: 1; border: none; background: #525659; }
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 110000; align-items: center; justify-content: center; padding: 20px; }
         .modal-body { background: white; width: 100%; max-width: 550px; padding: 25px; border-radius: 12px; color: #0f172a; max-height: 90vh; overflow-y: auto; }
@@ -104,30 +111,32 @@
         <button class="btn-side" style="background:var(--perigo);" onclick="window.limparTela()"><i class="fas fa-eraser"></i> LIMPAR TELA</button>
     </aside>
 
-    <section class="editor-container">
-        <div class="sticky-tools">
-            <div id="identificador-peca" onclick="window.renomear()">
-                <span><i class="fas fa-file-contract"></i> <span>ESTUDO MPU: SEM TÍTULO</span></span>
-                <span style="font-size: 10px; opacity: 0.7;">CLIQUE PARA RENOMEAR</span>
+    <div class="content-wrapper">
+        <section class="editor-container" id="editor-main">
+            <div class="sticky-tools">
+                <div id="identificador-peca" onclick="window.renomear()">
+                    <span><i class="fas fa-file-contract"></i> <span>ESTUDO MPU: SEM TÍTULO</span></span>
+                    <span style="font-size: 10px; opacity: 0.7;">CLIQUE PARA RENOMEAR</span>
+                </div>
             </div>
-        </div>
-        <div class="paper">
-            <div id="folha-total" contenteditable="true" spellcheck="false">
-                <p style="text-align: center;"><b>MINISTÉRIO PÚBLICO DA UNIÃO</b></p>
-                <p style="text-align: center; font-size: 12px;">SISTEMA INTEGRADO DE PREPARAÇÃO JURÍDICA</p>
-                <hr style="margin: 20px 0;">
-                <br>
+            <div class="paper">
+                <div id="folha-total" contenteditable="true" spellcheck="false">
+                    <p style="text-align: center;"><b>MINISTÉRIO PÚBLICO DA UNIÃO</b></p>
+                    <p style="text-align: center; font-size: 12px;">SISTEMA INTEGRADO DE PREPARAÇÃO JURÍDICA</p>
+                    <hr style="margin: 20px 0;">
+                    <br>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="pdf-viewer">
-        <div style="background:#001a33; padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
-            <span id="pdf-title" style="color:white; font-size:12px; font-weight:bold;">MODO CONSULTA</span>
-            <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:8px 20px; border-radius:4px; font-weight:bold; cursor:pointer;">FECHAR E VOLTAR</button>
-        </div>
-        <iframe id="pdf-frame" src=""></iframe>
-    </section>
+        <section id="pdf-viewer">
+            <div style="background:#001a33; padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid var(--mpu-gold);">
+                <span id="pdf-title" style="color:white; font-size:11px; font-weight:bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">MODO CONSULTA</span>
+                <button onclick="window.fecharPDF()" style="background:var(--mpu-gold); border:none; padding:5px 15px; border-radius:4px; font-weight:bold; cursor:pointer; color:white; font-size:10px;">FECHAR X</button>
+            </div>
+            <iframe id="pdf-frame" src=""></iframe>
+        </section>
+    </div>
 </main>
 
 <div class="modal" id="modal-base">
@@ -158,7 +167,6 @@
 
     window.pecaNome = "ESTUDO MPU: SEM TÍTULO";
 
-    // --- LEIS DO NÚCLEO DURO (RECONSTRUÍDO SEM SUPRESSÃO) ---
     const NUCLEO_DURO = [
         { n: "CF/88", t: "Constituição Federal (Arts 127-130A)", u: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" },
         { n: "LC 75/93", t: "Lei Orgânica do MPU", u: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp75.htm" },
@@ -249,7 +257,9 @@
             d.onclick = () => {
                 document.getElementById('pdf-frame').src = lei.u;
                 document.getElementById('pdf-title').innerText = lei.n + " - " + lei.t;
+                // ATIVA DUAL VIEW 50/50
                 document.getElementById('pdf-viewer').classList.add('active');
+                document.getElementById('editor-main').classList.add('split');
                 modal.style.display = 'none';
             };
             content.appendChild(d);
@@ -325,7 +335,11 @@
         document.getElementById('sessao-timer').innerText = `${h}:${m}:${s}`;
     }, 1000);
 
-    window.fecharPDF = () => document.getElementById('pdf-viewer').classList.remove('active');
+    window.fecharPDF = () => {
+        document.getElementById('pdf-viewer').classList.remove('active');
+        document.getElementById('editor-main').classList.remove('split');
+    };
+    
     window.renomear = () => { const n = prompt("NOME DO ESTUDO:", window.pecaNome); if(n) { window.pecaNome = n.toUpperCase(); document.getElementById('identificador-peca').querySelector('span span').innerText = n; } };
     window.limparTela = () => confirm("Limpar tudo?") && (document.getElementById('folha-total').innerHTML = "");
     setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
