@@ -21,14 +21,20 @@
             height: 60px; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 3px solid var(--mpu-gold); z-index: 5000; 
         }
+
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        #toggle-menu { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        #toggle-menu:hover { background: var(--mpu-gold); border-color: var(--mpu-gold); }
         
         main { display: flex; flex: 1; overflow: hidden; position: relative; }
         
-        /* SIDEBAR */
+        /* SIDEBAR RECOLHÍVEL */
         .sidebar { 
             width: var(--sidebar-w); background: #020617; display: flex; flex-direction: column; gap: 8px; 
             padding: 15px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; z-index: 100;
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .sidebar.collapsed { margin-left: calc(var(--sidebar-w) * -1); }
         
         .btn-side { 
             width: 100%; min-height: 42px; border: none; border-radius: 6px; 
@@ -39,10 +45,10 @@
         }
         .btn-side:hover { background: rgba(255,255,255,0.12); border-left: 4px solid var(--mpu-gold); }
 
-        /* CONTENT WRAPPER - O SEGREDO DA DIVISÃO */
+        /* CONTENT WRAPPER */
         .content-wrapper { flex: 1; display: flex; width: 100%; transition: all 0.4s ease; overflow: hidden; }
 
-        /* EDITOR - OCUPA 100% POR PADRÃO, 50% QUANDO SPLIT */
+        /* EDITOR */
         .editor-container { 
             flex: 1 0 100%; display: flex; flex-direction: column; background: var(--bg-paper); 
             overflow-y: auto; align-items: center; padding: 20px 10px; transition: all 0.4s ease;
@@ -69,7 +75,7 @@
         
         #folha-total { outline: none; min-height: 900px; font-family: 'Courier New', monospace; font-size: 16px; text-align: justify; }
 
-        /* PDF VIEWER - OCUPA 0% POR PADRÃO, 50% QUANDO ACTIVE */
+        /* PDF VIEWER */
         #pdf-viewer { 
             flex: 0 0 0%; background: white; transition: all 0.4s ease; 
             display: flex; flex-direction: column; overflow: hidden; border-left: 0 solid var(--mpu-gold);
@@ -91,7 +97,10 @@
 <body>
 
 <header>
-    <div class="logo"><i class="fas fa-balance-scale"></i> ARSENAL MPU | <span>NÚCLEO DURO</span></div>
+    <div class="logo-area">
+        <button id="toggle-menu" onclick="window.alternarSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="logo"><i class="fas fa-balance-scale"></i> ARSENAL MPU | <span>NÚCLEO DURO</span></div>
+    </div>
     <div style="display: flex; gap: 20px; align-items: center;">
         <div id="timer-box">SESSÃO: <span id="sessao-timer">00:00:00</span></div>
         <div id="relogio" style="font-family: monospace; font-weight: bold; color: var(--mpu-gold);"></div>
@@ -99,7 +108,7 @@
 </header>
 
 <main>
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar-menu">
         <div style="font-size: 9px; color: var(--mpu-gold); font-weight: 900; margin: 10px 0; letter-spacing: 1px;">SISTEMA DE CONTROLE</div>
         <button class="btn-side" style="background:var(--sucesso);" onclick="window.salvarNasGavetas()"><i class="fas fa-save"></i> SALVAR NA NUVEM</button>
         <button class="btn-side" onclick="window.abrirGavetas()"><i class="fas fa-box-archive"></i> MEUS ARQUIVOS</button>
@@ -189,7 +198,12 @@
         { id: "NAO_CONFUNDA", nome: "Diferenças/Dicas", icon: "fa-lightbulb" }
     ];
 
-    // FUNÇÕES DE PDF E DIVISÃO 50/50
+    // FUNÇÃO DE OCULTAR SIDEBAR
+    window.alternarSidebar = () => {
+        const side = document.getElementById('sidebar-menu');
+        side.classList.toggle('collapsed');
+    };
+
     window.abrirBibliotecaPDF = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
@@ -201,9 +215,10 @@
             d.onclick = () => {
                 document.getElementById('pdf-frame').src = lei.u;
                 document.getElementById('pdf-title').innerText = lei.n + " - " + lei.t;
-                // APLICA CLASSE MASTER PARA DIVIDIR 50/50
                 document.getElementById('master-wrapper').classList.add('dual-active');
                 modal.style.display = 'none';
+                // Opcional: fechar a sidebar ao abrir a lei para focar 100%
+                document.getElementById('sidebar-menu').classList.add('collapsed');
             };
             content.appendChild(d);
         });
@@ -215,7 +230,6 @@
         document.getElementById('pdf-frame').src = "";
     };
 
-    // MANTENDO TODAS AS OUTRAS FUNÇÕES ORIGINAIS
     window.salvarNasGavetas = () => {
         const modal = document.getElementById('modal-base');
         const content = document.getElementById('modal-content');
